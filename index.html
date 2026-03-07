@@ -50,7 +50,8 @@
     display: flex; align-items: center; justify-content: space-between;
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   }
-  .nav-logo { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.6rem; color: var(--red); letter-spacing: -0.03em; text-transform: uppercase; }
+  .nav-logo { display: flex; align-items: center; }
+  .nav-logo img { height: 36px; width: auto; }
   .nav-right { display: flex; align-items: center; gap: 24px; }
   .nav-link { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
   .nav-link:hover { color: var(--text); }
@@ -337,7 +338,8 @@
     background: var(--dark); padding: 32px 48px; display: flex; align-items: center;
     justify-content: space-between; flex-wrap: wrap; gap: 16px;
   }
-  .footer-logo { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.3rem; color: rgba(253,235,195,0.2); text-transform: uppercase; }
+  .footer-logo { display: flex; align-items: center; }
+  .footer-logo img { height: 28px; width: auto; opacity: 0.2; }
   footer p { color: rgba(253,235,195,0.15); font-size: 0.75rem; font-weight: 600; }
   .footer-links { display: flex; gap: 20px; }
   .footer-links a { color: rgba(253,235,195,0.2); font-size: 0.75rem; font-weight: 600; text-decoration: none; transition: color 0.15s; }
@@ -376,7 +378,7 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Stand</div>
+  <div class="nav-logo"><img src="images/stand-logo.svg" alt="Stand" /></div>
   <div class="nav-right">
     <a href="#how-it-works" class="nav-link">How It Works</a>
     <a href="#starters" class="nav-link">Starter Stands</a>
@@ -715,7 +717,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Stand</div>
+  <div class="footer-logo"><img src="images/stand-logo.svg" alt="Stand" /></div>
   <p>&copy; 2026 Stand Kids, Inc. All rights reserved.</p>
   <div class="footer-links">
     <a href="/privacy.html">Privacy Policy</a>
