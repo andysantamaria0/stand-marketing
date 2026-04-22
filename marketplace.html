@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Stand Marketplace — Meet the kid founders</title>
+<meta name="description" content="A curated shop of real businesses built by kids on Stand. Stickers, hats, cookies, jewelry — designed, branded, and run by the kid whose name is on it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F3D9;
+    --red: #DB1F26;
+    --black: #1a1a1a;
+    --mustard: #FFC712;
+    --postit: #F7F080;
+    --green: #005F3F;
+    --blue: #1C458E;
+    --pink: #EE4599;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Announcement tape ===== */
+  .tape {
+    background: var(--black);
+    color: var(--cream);
+    padding: 9px 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .tape-track {
+    display: inline-flex;
+    gap: 48px;
+    animation: tape-scroll 36s linear infinite;
+    padding-right: 48px;
+  }
+  .tape-track em { color: var(--mustard); font-style: normal; letter-spacing: 0; }
+  @keyframes tape-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: sticky;
+    top: 0; z-index: 100;
+    background: var(--cream);
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--black);
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 0;
+  }
+  .logo img {
+    display: block;
+    height: 44px;
+    width: auto;
+  }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--black);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    position: relative;
+    padding: 6px 0;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute;
+    left: 0; right: 100%; bottom: 0;
+    height: 3px; background: var(--red);
+    transition: right 0.2s ease;
+  }
+  .nav-links a:hover::after { right: 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    border: 2px solid var(--black);
+    border-radius: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .btn-primary { background: var(--red); color: var(--cream); box-shadow: 5px 5px 0 var(--black); }
+  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    padding: 100px 40px 90px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--black); color: var(--cream);
+    padding: 7px 16px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%; background: var(--red);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(56px, 9vw, 140px);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin-bottom: 24px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 em { font-style: italic; font-weight: 300; }
+  .hero h1 .script-em {
+    font-family: 'Yellowtail', cursive;
+    font-style: normal;
+    color: var(--red);
+    font-weight: 400;
+    display: inline-block;
+    transform: rotate(-3deg);
+    margin: 0 0.05em;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 1.5vw, 20px);
+    max-width: 640px;
+    margin: 0 auto 32px;
+    color: var(--black);
+    line-height: 1.55;
+  }
+  .hero-sub b {
+    font-weight: 700;
+    background: var(--postit);
+    padding: 2px 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .hero-meta {
+    font-family: 'Yellowtail', cursive;
+    font-size: 26px;
+    color: var(--red);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+
+  /* ===== Hero stickers ===== */
+  .sticker {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-weight: 700;
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    z-index: 2;
+    animation: bob 5s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(0); }
+    50% { transform: rotate(var(--rot, 0deg)) translateY(-8px); }
+  }
+  .sticker.circle {
+    width: 130px; height: 130px; border-radius: 50%;
+    font-family: 'Bagel Fat One', serif;
+    font-size: 15px; padding: 10px; line-height: 1.1;
+  }
+  .sticker.note {
+    width: 150px; height: 140px; padding: 16px;
+    font-family: 'Yellowtail', cursive;
+    font-size: 30px; line-height: 1;
+  }
+  .sticker.pill {
+    padding: 12px 22px; border-radius: 999px;
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: 'Helvetica Neue', sans-serif; font-weight: 700;
+  }
+  .s1 { --rot: -8deg; top: 70px; left: 4%; background: var(--mustard); color: var(--black); }
+  .s2 { --rot: 10deg; top: 120px; right: 5%; background: var(--pink); color: var(--cream); animation-delay: 1s; }
+  .s3 { --rot: -5deg; bottom: 40px; left: 7%; background: var(--postit); color: var(--black); animation-delay: 2s; }
+  .s4 { --rot: 8deg; bottom: 20px; right: 6%; background: var(--blue); color: var(--cream); animation-delay: 0.5s; }
+
+  /* ===== Featured grid ===== */
+  .grid-section {
+    padding: 80px 40px 120px;
+    background: var(--postit);
+    border-top: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+  }
+  .sec-head {
+    max-width: 1280px; margin: 0 auto 50px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .sec-head .lbl {
+    font-family: 'Yellowtail', cursive;
+    font-size: 28px;
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(-2deg);
+    margin-bottom: 6px;
+  }
+  .sec-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    max-width: 720px;
+  }
+  .sec-head h2 em { font-style: italic; font-weight: 300; }
+  .sec-head .lede {
+    max-width: 340px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .shop-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .shop {
+    background: var(--cream);
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: var(--black);
+    position: relative;
+  }
+  .shop:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
+  .shop:nth-child(2) { background: var(--white); }
+  .shop:nth-child(4) { background: var(--white); }
+
+  .shop-scene {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #fff3d6;
+    border-bottom: 3px solid var(--black);
+    position: relative;
+  }
+  .shop-scene img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+  .shop:hover .shop-scene img { transform: scale(1.04); }
+
+  .status {
+    position: absolute;
+    top: 12px; left: 12px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    background: var(--mustard);
+    color: var(--black);
+  }
+  .status.open { background: var(--red); color: var(--cream); }
+
+  .shop-body {
+    padding: 22px 24px 26px;
+    display: flex; flex-direction: column; gap: 10px;
+    flex: 1;
+  }
+  .shop-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    opacity: 0.55;
+  }
+  .shop-body h3 {
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--red);
+    line-height: 1;
+  }
+  .shop-body .founder {
+    font-family: 'Yellowtail', cursive;
+    font-size: 20px;
+    color: var(--black);
+    opacity: 0.75;
+    line-height: 1;
+    display: inline-block;
+    transform: rotate(-1.5deg);
+    margin-top: 2px;
+  }
+  .shop-body p {
+    font-size: 14px;
+    color: var(--black);
+    opacity: 0.78;
+    line-height: 1.5;
+  }
+  .shop-cta {
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--black);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .shop-cta::after {
+    content: "→";
+    transition: transform 0.2s ease;
+  }
+  .shop:hover .shop-cta::after { transform: translateX(4px); }
+
+  /* ===== Curators note ===== */
+  .curate {
+    padding: 110px 40px;
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .curate .lbl {
+    font-family: 'Yellowtail', cursive;
+    font-size: 28px;
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(-2deg);
+    margin-bottom: 12px;
+  }
+  .curate h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+  }
+  .curate h2 em { font-style: italic; font-weight: 300; }
+  .curate h2 .emph {
+    background: var(--mustard);
+    padding: 0 10px;
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    display: inline-block;
+    transform: rotate(-1deg);
+    font-style: normal;
+  }
+  .curate p {
+    font-size: clamp(17px, 1.5vw, 20px);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+
+  /* ===== Marquee ===== */
+  .marquee-wrap {
+    padding: 16px 0;
+    background: var(--cream);
+    color: var(--red);
+    overflow: hidden;
+    border-top: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+  }
+  .marquee {
+    display: flex; gap: 40px;
+    white-space: nowrap; align-items: center;
+    animation: marquee-scroll 30s linear infinite;
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: clamp(22px, 2.8vw, 38px);
+    letter-spacing: -0.01em;
+  }
+  .marquee span { display: inline-block; }
+  .marquee .dot {
+    color: var(--red); opacity: 0.5;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.6em;
+    transform: translateY(-0.15em);
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== Closing ===== */
+  .closing {
+    padding: 140px 40px 100px;
+    background: var(--red);
+    color: var(--cream);
+    text-align: center;
+  }
+  .closing h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 9vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    margin-bottom: 22px;
+  }
+  .closing h2 em { font-style: italic; font-weight: 300; color: var(--mustard); }
+  .closing h2 .you {
+    font-family: 'Yellowtail', cursive;
+    color: var(--mustard);
+    font-style: normal;
+    font-weight: 400;
+    display: inline-block;
+    transform: rotate(-3deg);
+    margin: 0 0.04em;
+  }
+  .closing .sub {
+    font-size: 18px;
+    max-width: 540px;
+    margin: 0 auto 38px;
+    line-height: 1.5;
+    color: var(--cream);
+  }
+  .closing .btn-mustard {
+    background: var(--mustard);
+    color: var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    padding: 16px 32px;
+    font-size: 15px;
+  }
+  .closing .btn-mustard:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--black);
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    background: var(--black);
+    color: var(--cream);
+    padding: 40px;
+  }
+  .footer-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  footer .logo img { height: 36px; }
+  footer .foot {
+    font-family: 'Yellowtail', cursive;
+    font-size: 22px;
+    color: var(--mustard);
+  }
+  footer .meta {
+    font-size: 12px;
+    opacity: 0.6;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== Reveal ===== */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1100px) {
+    .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 60px 24px 70px; }
+    .sticker { display: none; }
+    .grid-section { padding: 60px 24px 90px; }
+    .sec-head { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .shop-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Announcement tape -->
+<div class="tape" aria-hidden="true">
+  <div class="tape-track">
+    <span>The <em>marketplace</em></span>
+    <span>Built by kids. For real.</span>
+    <span>Open for <em>business</em></span>
+    <span>Ages 8–14</span>
+    <span>The <em>marketplace</em></span>
+    <span>Built by kids. For real.</span>
+    <span>Open for <em>business</em></span>
+    <span>Ages 8–14</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <a href="/" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Founder Red.svg" alt="Stand"></a>
+  <div class="nav-links">
+    <a href="#shops">The shops</a>
+    <a href="/">Back to Stand</a>
+    <a href="/#waitlist">Log in</a>
+  </div>
+  <a href="/#waitlist" class="btn btn-primary">Join waitlist</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="sticker circle s1">open<br>for<br>business</div>
+  <div class="sticker pill s2">meet them</div>
+  <div class="sticker note s3">brand new!</div>
+  <div class="sticker circle s4">ages<br>8 to 14</div>
+
+  <div class="eyebrow">The Stand Marketplace · Spring 2026</div>
+
+  <h1>
+    Meet the <span class="script-em">kid</span><br>
+    <em>founders.</em>
+  </h1>
+
+  <p class="hero-sub">
+    A curated shop of <b>real businesses</b> built on Stand. Every logo, every product, every tagline — designed, named, and run by the kid whose name is on it.
+  </p>
+
+  <div class="hero-meta">real brands. real kids.</div>
+</section>
+
+<!-- Featured grid -->
+<section class="grid-section" id="shops">
+  <header class="sec-head">
+    <div>
+      <span class="lbl">this week's featured</span>
+      <h2>Five kid-run <em>shops</em>,<br>all open for you.</h2>
+    </div>
+    <p class="lede">Hand-picked by the Stand team. New founders spotlighted every week — from cookies to custom caps, these are businesses we'd shop at ourselves.</p>
+  </header>
+
+  <div class="shop-grid">
+
+    <!-- Azzy — real storefront -->
+    <a class="shop" href="https://app.standkids.com/store/azzys-stick-stylish" target="_blank" rel="noopener">
+      <div class="shop-scene">
+        <span class="status open">Open now</span>
+        <img src="https://img.recraft.ai/PBUQ6VbIVZOT_mABdJ9BpOzdvMn3_k_V0gmYrSDnw1Y/rs:fit:832:832:0/raw:1/plain/abs://external/images/e9fbc1cf-5712-4113-b495-e3b8123e8581" alt="Azzy's Stick & Stylish">
+      </div>
+      <div class="shop-body">
+        <div class="shop-meta">
+          <span>Fashion · Stickers</span>
+          <span>Age 12</span>
+        </div>
+        <h3>Azzy's Stick &amp; Stylish</h3>
+        <span class="founder">by Azzy</span>
+        <p>Y2K-inspired vinyl stickers with a soft spot for pets. A slice of her profits goes to pet causes.</p>
+        <span class="shop-cta">Visit the shop</span>
+      </div>
+    </a>
+
+    <!-- Theo's stickers -->
+    <a class="shop" href="#">
+      <div class="shop-scene">
+        <span class="status">Launching soon</span>
+        <img src="/images/businesses/mockups/sticker-laptop.png" alt="Theo's Loud Stickers">
+      </div>
+      <div class="shop-body">
+        <div class="shop-meta">
+          <span>Stickers</span>
+          <span>Age 13</span>
+        </div>
+        <h3>Theo's Loud Stickers</h3>
+        <span class="founder">by Theo</span>
+        <p>Vinyl stickers loud enough for the back row. Skate decks, water bottles, laptops — anywhere that needs the volume up.</p>
+        <span class="shop-cta">Watch this shop</span>
+      </div>
+    </a>
+
+    <!-- Rio's hats -->
+    <a class="shop" href="#">
+      <div class="shop-scene">
+        <span class="status">Launching soon</span>
+        <img src="/images/businesses/mockups/hat-lifestyle.png" alt="Rio's Road Caps">
+      </div>
+      <div class="shop-body">
+        <div class="shop-meta">
+          <span>Hats · Apparel</span>
+          <span>Age 11</span>
+        </div>
+        <h3>Rio's Road Caps</h3>
+        <span class="founder">by Rio</span>
+        <p>Real embroidered hats, made-to-order. Every cap tells a little story stitched into the front.</p>
+        <span class="shop-cta">Watch this shop</span>
+      </div>
+    </a>
+
+    <!-- Maya's cookies -->
+    <a class="shop" href="#">
+      <div class="shop-scene">
+        <span class="status">Launching soon</span>
+        <img src="/images/businesses/mockups/treats-lifestyle.png" alt="Maya's Sweet Deal">
+      </div>
+      <div class="shop-body">
+        <div class="shop-meta">
+          <span>Baked goods</span>
+          <span>Age 10</span>
+        </div>
+        <h3>Maya's Sweet Deal</h3>
+        <span class="founder">by Maya</span>
+        <p>Cookies with chaos energy. Baked at home, branded in the box, and never the same flavor twice in a row.</p>
+        <span class="shop-cta">Watch this shop</span>
+      </div>
+    </a>
+
+    <!-- Nora's jewelry -->
+    <a class="shop" href="#">
+      <div class="shop-scene">
+        <span class="status">Launching soon</span>
+        <img src="/images/businesses/mockups/charms-lifestyle.png" alt="Nora's Mood Beads">
+      </div>
+      <div class="shop-body">
+        <div class="shop-meta">
+          <span>Jewelry · Charms</span>
+          <span>Age 11</span>
+        </div>
+        <h3>Nora's Mood Beads</h3>
+        <span class="founder">by Nora</span>
+        <p>Phone charms, friendship bracelets, beaded rings. The stuff kids actually trade at recess — now with a brand on it.</p>
+        <span class="shop-cta">Watch this shop</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Curator's note -->
+<section class="curate">
+  <span class="lbl">a note from the team</span>
+  <h2>Stand picks the <span class="emph">best</span><em>,</em><br>and sends them <em>up.</em></h2>
+  <p>The marketplace is curated. We feature businesses that tell a real story, ship on time, and make us look twice. If your kid wants their shop on this page, they build it first — and we'll do the rest.</p>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Built by kids</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Open for business</span><span class="dot">/</span>
+    <span>Built by kids</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Open for business</span><span class="dot">/</span>
+    <span>Built by kids</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+  </div>
+</div>
+
+<!-- Closing -->
+<section class="closing">
+  <h2>Want <span class="you">yours</span><br>on <em>this page?</em></h2>
+  <p class="sub">Stand is how kids build real brands, real products, and real storefronts. Get on the list — the next cohort opens in weeks, not months.</p>
+  <a href="/#waitlist" class="btn btn-mustard">Join the waitlist</a>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <a href="/" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Blank Slate.svg" alt="Stand"></a>
+    <div class="foot">build your own thing.</div>
+    <div class="meta">&copy; 2026 Stand LLC</div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(
+    (es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll('.grid-section, .curate, .closing').forEach(el => {
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
+</script>
+
+</body>
+</html>
