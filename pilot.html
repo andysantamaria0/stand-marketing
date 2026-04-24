@@ -55,7 +55,11 @@
     width: auto;
   }
   footer .logo img { height: 36px; }
-  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links {
+    display: flex; gap: 36px; align-items: center;
+    position: absolute; left: 50%; transform: translateX(-50%);
+    pointer-events: auto;
+  }
   .nav-links a {
     color: var(--black);
     text-decoration: none;
