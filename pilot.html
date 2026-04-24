@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stand — Pilot Early Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F3D9;
+    --red: #DB1F26;
+    --black: #1a1a1a;
+    --mustard: #FFC712;
+    --postit: #F7F080;
+    --green: #005F3F;
+    --blue: #1C458E;
+    --pink: #EE4599;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 300; letter-spacing: -0.03em; }
+  .script { font-family: 'Yellowtail', cursive; font-weight: 400; }
+
+  /* ===== Announcement tape ===== */
+  .tape {
+    background: var(--black);
+    color: var(--cream);
+    padding: 9px 0;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .tape-track {
+    display: inline-flex;
+    gap: 48px;
+    animation: tape-scroll 36s linear infinite;
+    padding-right: 48px;
+  }
+  .tape-track em { color: var(--mustard); font-style: normal; letter-spacing: 0; }
+  @keyframes tape-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: sticky;
+    top: 0; z-index: 100;
+    background: var(--cream);
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--black);
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 0;
+  }
+  .logo img {
+    display: block;
+    height: 44px;
+    width: auto;
+  }
+  footer .logo img { height: 36px; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--black);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    position: relative;
+    padding: 6px 0;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute;
+    left: 0; right: 100%; bottom: 0;
+    height: 3px; background: var(--red);
+    transition: right 0.2s ease;
+  }
+  .nav-links a:hover::after { right: 0; }
+
+  .nav-left { display: flex; align-items: center; gap: 20px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-cta {
+    padding: 9px 16px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  .login-prompt {
+    font-size: 13px;
+    color: var(--black);
+    font-weight: 500;
+  }
+  .login-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--red);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .login-link:hover { color: var(--black); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    border: 2px solid var(--black);
+    border-radius: 0;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .btn-primary { background: var(--red); color: var(--cream); box-shadow: 5px 5px 0 var(--black); }
+  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
+  .btn-primary:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--black); }
+  .btn-ghost { background: transparent; color: var(--black); box-shadow: 5px 5px 0 transparent; }
+  .btn-ghost:hover { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
+  .btn-mustard { background: var(--mustard); color: var(--black); box-shadow: 5px 5px 0 var(--black); }
+  .btn-mustard:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
+  .btn-dark { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
+  .btn-dark:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--red); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    padding: 100px 40px 140px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--black); color: var(--cream);
+    padding: 7px 16px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%; background: var(--red);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  h1.hero-slogan {
+    margin-bottom: 28px;
+    line-height: 0;
+  }
+  /* Stacked slogan: "Build your own thing." on top, a skewed cream cover in
+     the middle, "For real." on the bottom. The slogan fades in on cream,
+     then the cover sweeps off to the right to reveal the script "For real."
+     with a hand-painted brushstroke edge. Matches the GSAP intro animation
+     from /test-mockups/intro, reduced to CSS-only so the static landing
+     has no JS dependency. */
+  .slogan-stack {
+    position: relative;
+    overflow: hidden;
+    width: min(560px, 88vw);
+    aspect-ratio: 120.82 / 105.14;
+    margin: 0 auto;
+    opacity: 0;
+    animation: slogan-fade-in 0.6s ease-out 0.33s forwards;
+  }
+  .slogan-stack img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .slogan-stack .slogan-cover {
+    position: absolute;
+    top: -5%;
+    bottom: -5%;
+    left: -20%;
+    right: -20%;
+    background: var(--cream);
+    transform-origin: top center;
+    transform: translateX(0) skewX(-8deg);
+    animation: slogan-sweep 0.935s ease-out 1.205s forwards;
+  }
+  .slogan-stack .slogan-build { pointer-events: none; }
+  @keyframes slogan-fade-in {
+    to { opacity: 1; }
+  }
+  @keyframes slogan-sweep {
+    to { transform: translateX(130%) skewX(-8deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slogan-stack {
+      opacity: 1;
+      animation: none;
+    }
+    .slogan-stack .slogan-cover {
+      transform: translateX(130%) skewX(-8deg);
+      animation: none;
+    }
+  }
+
+  .hero-sub {
+    font-size: clamp(17px, 1.5vw, 21px);
+    max-width: 640px;
+    margin: 0 auto 40px;
+    color: var(--black);
+    line-height: 1.5;
+  }
+  .hero-sub b {
+    font-weight: 700;
+    background: var(--postit);
+    padding: 2px 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .hero-form {
+    max-width: 540px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    background: var(--white);
+  }
+  .hero-form input {
+    flex: 1;
+    padding: 14px 18px;
+    border: none; outline: none;
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    background: var(--white); color: var(--black);
+  }
+  .hero-form input:focus { background: var(--postit); }
+  .hero-form button {
+    background: var(--red); color: var(--cream);
+    padding: 14px 24px;
+    font-family: inherit; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    border: none; border-left: 3px solid var(--black);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .hero-form button:hover { background: var(--black); }
+  .hero-meta {
+    margin-top: 22px;
+    font-family: 'Yellowtail', cursive;
+    font-size: 26px;
+    color: var(--red);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+
+  /* ===== Hero stickers ===== */
+  .sticker {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-weight: 700;
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    z-index: 2;
+    animation: bob 5s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(0); }
+    50% { transform: rotate(var(--rot, 0deg)) translateY(-8px); }
+  }
+  .sticker.circle {
+    width: 130px; height: 130px; border-radius: 50%;
+    font-family: 'Bagel Fat One', serif;
+    font-size: 15px; padding: 10px; line-height: 1.1;
+  }
+  .sticker.note {
+    width: 150px; height: 140px; padding: 16px;
+    font-family: 'Yellowtail', cursive;
+    font-size: 36px; line-height: 1;
+  }
+  .sticker.pill {
+    padding: 12px 22px; border-radius: 999px;
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: 'Helvetica Neue', sans-serif; font-weight: 700;
+  }
+  .s1 { --rot: -8deg; top: 70px; left: 4%; background: var(--mustard); color: var(--black); }
+  .s2 { --rot: 10deg; top: 130px; right: 5%; background: var(--pink); color: var(--cream); animation-delay: 1s; }
+  .s3 { --rot: -5deg; bottom: 120px; left: 7%; background: var(--postit); color: var(--black); animation-delay: 2s; }
+  .s4 { --rot: 8deg; bottom: 80px; right: 6%; background: var(--blue); color: var(--cream); animation-delay: 0.5s; }
+
+  /* ===== Intro copy (We're not playing here) ===== */
+  .intro {
+    padding: 120px 40px 100px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .section-eyebrow {
+    display: inline-block;
+    font-family: 'Yellowtail', cursive;
+    font-size: 28px;
+    color: var(--red);
+    margin-bottom: 10px;
+    transform: rotate(-2deg);
+  }
+  .intro h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.94;
+    font-weight: 300;
+    letter-spacing: -0.045em;
+    margin-bottom: 28px;
+  }
+  .intro h2 em { font-style: italic; font-weight: 300; }
+  .intro h2 .emph {
+    background: var(--mustard);
+    padding: 0 10px;
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    display: inline-block;
+    transform: rotate(-1deg);
+    font-style: normal;
+  }
+  .intro p {
+    font-size: clamp(18px, 1.6vw, 22px);
+    max-width: 780px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+
+  /* ===== Marketplace preview ===== */
+  .marketplace-preview {
+    padding: 100px 40px;
+    background: var(--cream);
+    border-top: 3px solid var(--black);
+  }
+  .booth-body .by {
+    font-family: 'Yellowtail', cursive;
+    font-size: 18px;
+    color: var(--red);
+    line-height: 1;
+    display: inline-block;
+    transform: rotate(-2deg);
+    margin-top: 2px;
+  }
+  .booth .status {
+    position: absolute;
+    top: 10px; left: 10px;
+    padding: 4px 9px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 2px solid var(--black);
+    background: var(--mustard);
+    color: var(--black);
+  }
+  .booth .status.open { background: var(--red); color: var(--cream); }
+  .booth-scene { position: relative; }
+  .mp-cta {
+    max-width: 1200px;
+    margin: 48px auto 0;
+    text-align: center;
+  }
+  .mp-cta .btn-dark {
+    padding: 16px 32px;
+    font-size: 14px;
+  }
+
+  /* ===== Booths (the flow) ===== */
+  .booths {
+    padding: 100px 40px;
+    background: var(--postit);
+    border-top: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+  }
+  .sec-head {
+    max-width: 1200px; margin: 0 auto 50px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .sec-head .lbl {
+    font-family: 'Yellowtail', cursive;
+    font-size: 28px;
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(-2deg);
+    margin-bottom: 6px;
+  }
+  .sec-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 76px);
+    font-weight: 300;
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    max-width: 600px;
+  }
+  .sec-head h2 em { font-style: italic; font-weight: 300; }
+  .sec-head h2 .script-em {
+    font-family: 'Yellowtail', cursive;
+    font-style: normal;
+    color: var(--red);
+    font-size: 1.05em;
+    display: inline-block;
+    transform: rotate(-3deg);
+    margin-right: 4px;
+  }
+  .sec-head .lede {
+    max-width: 340px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .booth-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .booth {
+    background: var(--cream);
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .booth:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
+  .booth:nth-child(2) { background: var(--white); }
+  .booth:nth-child(3) { background: var(--cream); }
+  .booth:nth-child(4) { background: var(--white); }
+
+  .booth-scene {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #fff3d6;
+    border-bottom: 3px solid var(--black);
+  }
+  .booth-scene img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+  .booth:hover .booth-scene img { transform: scale(1.04); }
+  .booth-body {
+    padding: 18px 20px 22px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .booth-body h3 {
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--red);
+    line-height: 1;
+  }
+  .booth-body p {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 13px;
+    color: var(--black);
+    opacity: 0.75;
+    line-height: 1.45;
+  }
+
+  /* ===== CEO cards ===== */
+  .ceo {
+    padding: 120px 40px;
+    background: var(--cream);
+  }
+  .ceo-head {
+    max-width: 1200px; margin: 0 auto 56px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 40px; flex-wrap: wrap;
+  }
+  .ceo-head .lbl {
+    font-family: 'Yellowtail', cursive;
+    font-size: 28px; color: var(--red);
+    display: inline-block; transform: rotate(-2deg);
+    margin-bottom: 6px;
+  }
+  .ceo-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 76px);
+    font-weight: 300;
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    max-width: 600px;
+  }
+  .ceo-head h2 em { font-style: italic; font-weight: 300; }
+  .ceo-head h2 .script-em {
+    font-family: 'Yellowtail', cursive;
+    font-style: normal;
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(-3deg);
+  }
+  .ceo-head .lede { max-width: 340px; font-size: 15px; line-height: 1.5; }
+
+  .ceo-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .ceo-card {
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    padding: 28px 22px 30px;
+    display: flex; flex-direction: column; gap: 14px;
+    min-height: 240px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ceo-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
+  .ceo-card:nth-child(1) { background: var(--pink); color: var(--cream); }
+  .ceo-card:nth-child(2) { background: var(--mustard); color: var(--black); }
+  .ceo-card:nth-child(3) { background: var(--blue); color: var(--cream); }
+  .ceo-card:nth-child(4) { background: var(--green); color: var(--cream); }
+  .ceo-card .num {
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .ceo-card:nth-child(1) .num { color: var(--mustard); }
+  .ceo-card:nth-child(2) .num { color: var(--red); }
+  .ceo-card:nth-child(3) .num { color: var(--mustard); }
+  .ceo-card:nth-child(4) .num { color: var(--mustard); }
+  .ceo-card h3 {
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-top: auto;
+  }
+  .ceo-card p {
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ===== Marquee ===== */
+  .marquee-wrap {
+    padding: 16px 0;
+    background: var(--cream);
+    color: var(--red);
+    overflow: hidden;
+    border-top: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+  }
+  .marquee {
+    display: flex; gap: 40px;
+    white-space: nowrap; align-items: center;
+    animation: marquee-scroll 30s linear infinite;
+    font-family: 'Bagel Fat One', serif;
+    font-weight: 400;
+    font-size: clamp(22px, 2.8vw, 38px);
+    letter-spacing: -0.01em;
+  }
+  .marquee span { display: inline-block; }
+  .marquee .dot {
+    color: var(--red); opacity: 0.5;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 0.6em;
+    transform: translateY(-0.15em);
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== Manifesto ===== */
+  .manifesto {
+    padding: 140px 40px;
+    background: var(--red);
+    color: var(--cream);
+    text-align: center;
+  }
+  .manifesto blockquote {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(44px, 7vw, 104px);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .manifesto blockquote em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--mustard);
+  }
+  .manifesto blockquote .big {
+    font-family: 'Bagel Fat One', serif;
+    font-style: normal;
+    color: var(--mustard);
+    font-weight: 400;
+    font-size: 0.9em;
+    letter-spacing: -0.02em;
+    display: inline-block;
+  }
+
+  /* ===== Closing ===== */
+  .closing {
+    padding: 140px 40px 100px;
+    background: var(--cream);
+    color: var(--black);
+    text-align: center;
+    position: relative;
+  }
+  .closing h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(64px, 11vw, 176px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    margin-bottom: 18px;
+  }
+  .closing h2 em { font-style: italic; font-weight: 300; }
+  .closing h2 .you {
+    font-family: 'Yellowtail', cursive;
+    color: var(--red);
+    font-style: normal;
+    font-weight: 400;
+    display: inline-block;
+    transform: rotate(-3deg);
+    margin: 0 0.06em;
+  }
+  .closing .sub {
+    font-size: 18px;
+    max-width: 540px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+  }
+  .waitlist-form {
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    border: 3px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    background: var(--white);
+  }
+  .waitlist-form input {
+    flex: 1;
+    padding: 16px 20px;
+    border: none; outline: none;
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    background: var(--white); color: var(--black);
+  }
+  .waitlist-form input:focus { background: var(--postit); }
+  .waitlist-form button {
+    background: var(--black); color: var(--cream);
+    padding: 16px 28px;
+    font-family: inherit; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: none; border-left: 3px solid var(--black);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .waitlist-form button:hover { background: var(--red); }
+  .ages {
+    margin-top: 32px;
+    font-family: 'Yellowtail', cursive;
+    font-size: 30px;
+    color: var(--red);
+    display: inline-block;
+    transform: rotate(-2deg);
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    background: var(--black);
+    color: var(--cream);
+    padding: 40px;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+  }
+  footer .foot {
+    font-family: 'Yellowtail', cursive;
+    font-size: 22px;
+    color: var(--mustard);
+  }
+  footer .meta {
+    font-size: 12px;
+    opacity: 0.6;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== Reveal animations ===== */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .login-prompt { display: none; }
+    .hero { padding: 60px 24px 100px; }
+    .sticker { display: none; }
+    .booths, .ceo { padding: 80px 24px; }
+    .booth-grid { grid-template-columns: 1fr 1fr; }
+    .ceo-grid { grid-template-columns: 1fr 1fr; }
+    .sec-head, .ceo-head { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .booth-grid { grid-template-columns: 1fr; }
+    .ceo-grid { grid-template-columns: 1fr; }
+    .hero-form, .waitlist-form { flex-direction: column; }
+    .hero-form button, .waitlist-form button { border-left: 0; border-top: 3px solid var(--black); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Announcement tape -->
+<div class="tape" aria-hidden="true">
+  <div class="tape-track">
+    <span>We're not <em>playing</em> here</span>
+    <span>Built with stand</span>
+    <span>Ages 8–14</span>
+    <span>Summer cohort <em>2026</em></span>
+    <span>We're not <em>playing</em> here</span>
+    <span>Built with stand</span>
+    <span>Ages 8–14</span>
+    <span>Summer cohort <em>2026</em></span>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-left">
+    <a href="#" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Founder Red.svg" alt="Stand"></a>
+    <a href="https://app.standkids.com/pilot" class="btn btn-primary nav-cta">Early Access Here</a>
+  </div>
+  <div class="nav-links">
+    <a href="#flow">The flow</a>
+    <a href="#ceo">As a CEO</a>
+  </div>
+  <div class="nav-right">
+    <span class="login-prompt">Already have an account?</span>
+    <a href="https://app.standkids.com/parent/login" class="login-link">Log in</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="sticker circle s1">we're<br>not playing<br>here</div>
+  <div class="sticker pill s2">for real.</div>
+  <div class="sticker note s3">open!</div>
+  <div class="sticker circle s4">ages<br>8 to 14</div>
+
+  <div class="eyebrow">Summer cohort · 2026</div>
+
+  <h1 class="hero-slogan" aria-label="Build your own thing. For real.">
+    <div class="slogan-stack" role="img">
+      <img class="slogan-forreal" src="/landing-explorations-2026-04-21/slogans/STAND_ForReal_only.svg" alt="" aria-hidden="true" draggable="false">
+      <div class="slogan-cover" aria-hidden="true"></div>
+      <img class="slogan-build" src="/landing-explorations-2026-04-21/slogans/STAND_BuildYourOwn_only.svg" alt="" aria-hidden="true" draggable="false">
+    </div>
+  </h1>
+
+  <p class="hero-sub">
+    stand is a <b>business-in-a-box</b> where kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.
+  </p>
+
+  <form class="hero-form" id="waitlist-top" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You are in';">
+    <input type="email" placeholder="example@email.com" required>
+    <button type="submit">Join waitlist</button>
+  </form>
+
+  <div class="hero-meta">built by kids. for real.</div>
+</section>
+
+<!-- Intro -->
+<section class="intro">
+  <span class="section-eyebrow">a note, up front</span>
+  <h2>We're not <em>playing</em> <span class="emph">here.</span></h2>
+  <p>Stand is a business-in-a-box where kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.</p>
+</section>
+
+<!-- Marketplace preview -->
+<section class="marketplace-preview" id="marketplace">
+  <header class="sec-head">
+    <div>
+      <span class="lbl">in the marketplace</span>
+      <h2>Real kids, <span class="script-em">real</span><br><em>shops.</em></h2>
+    </div>
+    <p class="lede">A few of the founders currently open for business. The marketplace is curated — Stand picks the best and sends them up.</p>
+  </header>
+
+  <div class="booth-grid">
+    <!-- Azzy — real -->
+    <a class="booth" href="https://app.standkids.com/store/azzys-stick-stylish" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+      <div class="booth-scene">
+        <span class="status open">Open now</span>
+        <img src="https://img.recraft.ai/PBUQ6VbIVZOT_mABdJ9BpOzdvMn3_k_V0gmYrSDnw1Y/rs:fit:832:832:0/raw:1/plain/abs://external/images/e9fbc1cf-5712-4113-b495-e3b8123e8581" alt="Azzy's Stick & Stylish">
+      </div>
+      <div class="booth-body">
+        <h3>Azzy's Stick &amp; Stylish</h3>
+        <span class="by">by Azzy, age 12</span>
+        <p>Y2K-inspired vinyl with a soft spot for pet causes.</p>
+      </div>
+    </a>
+
+    <!-- Theo -->
+    <a class="booth" href="https://app.standkids.com/store/theos-loud-stickers" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+      <div class="booth-scene">
+        <span class="status open">Open now</span>
+        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/theo/51b7a52f5e-hero.jpg" alt="Theo's Loud Stickers">
+      </div>
+      <div class="booth-body">
+        <h3>Theo's Loud Stickers</h3>
+        <span class="by">by Theo, age 13</span>
+        <p>Skate-adjacent graffiti vinyl, sketched in the back of math class.</p>
+      </div>
+    </a>
+
+    <!-- Rio -->
+    <a class="booth" href="https://app.standkids.com/store/rios-road-caps" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+      <div class="booth-scene">
+        <span class="status open">Open now</span>
+        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/rio/1491dead67-hero.jpg" alt="Rio's Road Caps">
+      </div>
+      <div class="booth-body">
+        <h3>Rio's Road Caps</h3>
+        <span class="by">by Rio, age 11</span>
+        <p>Embroidered caps with real hiking-trail patches stitched on.</p>
+      </div>
+    </a>
+
+    <!-- Maya -->
+    <a class="booth" href="https://app.standkids.com/store/mayas-sweet-deal" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+      <div class="booth-scene">
+        <span class="status open">Open now</span>
+        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/maya/fe0c55f26b-hero.jpg" alt="Maya's Sweet Deal">
+      </div>
+      <div class="booth-body">
+        <h3>Maya's Sweet Deal</h3>
+        <span class="by">by Maya, age 10</span>
+        <p>Cookies with chaos energy. No flavor is the same twice in a row.</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="mp-cta">
+    <a href="/marketplace.html" class="btn btn-dark">See the full marketplace →</a>
+  </div>
+</section>
+
+<!-- Booths -->
+<section class="booths" id="flow">
+  <header class="sec-head">
+    <div>
+      <span class="lbl">the flow</span>
+      <h2>Idea to <span class="script-em">first sale,</span><br>step by <em>step.</em></h2>
+    </div>
+    <p class="lede">Every kid picks a starter and walks the same path: land on it, brand it, make it, sell it. Four booths to start with, more on the way.</p>
+  </header>
+  <div class="booth-grid">
+    <article class="booth">
+      <div class="booth-scene"><img src="/images/businesses/mockups/sticker-laptop.png" alt="Sticker Drop"></div>
+      <div class="booth-body">
+        <h3>Sticker Drop</h3>
+        <p>Design. Print. Ship. No inventory to touch.</p>
+      </div>
+    </article>
+    <article class="booth">
+      <div class="booth-scene"><img src="/images/businesses/mockups/hat-lifestyle.png" alt="Custom Caps"></div>
+      <div class="booth-body">
+        <h3>Custom Caps</h3>
+        <p>Real embroidered hats with the kid's logo.</p>
+      </div>
+    </article>
+    <article class="booth">
+      <div class="booth-scene"><img src="/images/businesses/mockups/treats-lifestyle.png" alt="Baked Goods"></div>
+      <div class="booth-body">
+        <h3>Baked Goods</h3>
+        <p>Bake at home. Brand it. Sell it. Wild margins.</p>
+      </div>
+    </article>
+    <article class="booth">
+      <div class="booth-scene"><img src="/images/businesses/mockups/charms-lifestyle.png" alt="Jewelry"></div>
+      <div class="booth-body">
+        <h3>Jewelry</h3>
+        <p>Phone charms, bracelets, beads. What kids trade now.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- CEO -->
+<section class="ceo" id="ceo">
+  <header class="ceo-head">
+    <div>
+      <span class="lbl">ongoing, not one-and-done</span>
+      <h2>As a Stand <span class="script-em">CEO</span><em>&hellip;</em></h2>
+    </div>
+    <p class="lede">Launching is just day one. Stand is an ongoing platform — new things to sell, new ways to sell them, and a community of kids doing the same.</p>
+  </header>
+  <div class="ceo-grid">
+    <div class="ceo-card">
+      <span class="num">01.</span>
+      <h3>New product drops</h3>
+      <p>Fresh starters and kit refills every month.</p>
+    </div>
+    <div class="ceo-card">
+      <span class="num">02.</span>
+      <h3>New ways to market</h3>
+      <p>Playbooks, templates, and prompts for every channel.</p>
+    </div>
+    <div class="ceo-card">
+      <span class="num">03.</span>
+      <h3>Creative challenges</h3>
+      <p>Monthly briefs that push your kid's brand forward.</p>
+    </div>
+    <div class="ceo-card">
+      <span class="num">04.</span>
+      <h3>A real community</h3>
+      <p>Young founders building right alongside yours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Built with stand</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Built with stand</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Built with stand</span><span class="dot">/</span>
+    <span>We're not playing here</span><span class="dot">/</span>
+    <span>Built with stand</span><span class="dot">/</span>
+  </div>
+</div>
+
+<!-- Manifesto -->
+<section class="manifesto">
+  <blockquote>
+    We're <em>not just consuming.</em><br>We're <span class="big">building.</span>
+  </blockquote>
+</section>
+
+<!-- Closing -->
+<section class="closing" id="waitlist">
+  <h2>What will <span class="you">you</span><br><em>stand for?</em></h2>
+  <p class="sub">Join the waitlist. Founding member pricing, locked in.</p>
+  <form class="waitlist-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You are in';">
+    <input type="email" placeholder="example@email.com" required>
+    <button type="submit">Save our spot</button>
+  </form>
+  <div class="ages">Ages 8 to 14 / Summer cohort 2026</div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <a href="#" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Blank Slate.svg" alt="Stand"></a>
+    <div class="foot">build your own thing.</div>
+    <div class="meta">&copy; 2026 Stand LLC</div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))), { threshold: 0.12 });
+  document.querySelectorAll('.intro, .marketplace-preview, .booths, .ceo, .manifesto, .closing').forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+</script>
+
+</body>
+</html>
