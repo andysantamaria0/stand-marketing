@@ -34,30 +34,6 @@
   .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 300; letter-spacing: -0.03em; }
   .script { font-family: 'Yellowtail', cursive; font-weight: 400; }
 
-  /* ===== Announcement tape ===== */
-  .tape {
-    background: var(--black);
-    color: var(--cream);
-    padding: 9px 0;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .tape-track {
-    display: inline-flex;
-    gap: 48px;
-    animation: tape-scroll 36s linear infinite;
-    padding-right: 48px;
-  }
-  .tape-track em { color: var(--mustard); font-style: normal; letter-spacing: 0; }
-  @keyframes tape-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
   /* ===== Nav ===== */
   nav {
     position: sticky;
@@ -744,20 +720,6 @@
 </style>
 </head>
 <body>
-
-<!-- Announcement tape -->
-<div class="tape" aria-hidden="true">
-  <div class="tape-track">
-    <span>We're not <em>playing</em> here</span>
-    <span>Built with stand</span>
-    <span>Ages 8–14</span>
-    <span>Summer cohort <em>2026</em></span>
-    <span>We're not <em>playing</em> here</span>
-    <span>Built with stand</span>
-    <span>Ages 8–14</span>
-    <span>Summer cohort <em>2026</em></span>
-  </div>
-</div>
 
 <!-- Nav -->
 <nav>
