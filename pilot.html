@@ -95,6 +95,7 @@
     height: 3px; background: var(--red);
     transition: right 0.2s ease;
   }
+  .nav-links a:hover::after { right: 0; }
 
   .nav-left { display: flex; align-items: center; gap: 20px; }
   .nav-right { display: flex; align-items: center; gap: 10px; }
@@ -115,7 +116,9 @@
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
+    transition: color 0.15s ease;
   }
+  .login-link:hover { color: var(--black); }
 
   .btn {
     display: inline-flex; align-items: center; gap: 10px;
@@ -132,13 +135,18 @@
     text-transform: uppercase;
   }
   .btn-primary { background: var(--red); color: var(--cream); box-shadow: 5px 5px 0 var(--black); }
+  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
   .btn-primary:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--black); }
   .btn-ghost { background: transparent; color: var(--black); box-shadow: 5px 5px 0 transparent; }
+  .btn-ghost:hover { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
   .btn-mustard { background: var(--mustard); color: var(--black); box-shadow: 5px 5px 0 var(--black); }
+  .btn-mustard:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
   .btn-dark { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
+  .btn-dark:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--red); }
 
   /* ===== Hero ===== */
   .hero {
+    perspective: 900px;
     position: relative;
     padding: 100px 40px 140px;
     text-align: center;
@@ -254,6 +262,7 @@
     cursor: pointer;
     transition: background 0.15s;
   }
+  .hero-form button:hover { background: var(--black); }
   .hero-meta {
     margin-top: 22px;
     font-family: 'Yellowtail', cursive;
@@ -272,6 +281,18 @@
     box-shadow: 6px 6px 0 var(--black);
     z-index: 2;
     transform: rotate(var(--rot, 0deg));
+    transform-origin: 50% 85%; /* pivot near the bottom so the top peels forward */
+    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
+                box-shadow 0.35s cubic-bezier(0.34, 1.4, 0.5, 1);
+    cursor: pointer;
+    will-change: transform;
+  }
+  .sticker:hover {
+    /* Peel: lift the sticker up and tilt its top edge forward, like
+       a corner pulling off the surface. Perspective on .hero gives depth. */
+    transform: rotate(var(--rot, 0deg)) translateY(-10px) rotate3d(1, 0.25, 0, -18deg) scale(1.04);
+    box-shadow: 12px 18px 0 var(--black), 0 16px 28px rgba(0,0,0,0.2);
+    z-index: 3;
   }
   .sticker.circle {
     width: 130px; height: 130px; border-radius: 50%;
@@ -432,6 +453,7 @@
     display: flex; flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
+  .booth:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
   .booth:nth-child(2) { background: var(--white); }
   .booth:nth-child(3) { background: var(--cream); }
   .booth:nth-child(4) { background: var(--white); }
@@ -448,6 +470,7 @@
     display: block;
     transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
   }
+  .booth:hover .booth-scene img { transform: scale(1.04); }
   .booth-body {
     padding: 18px 20px 22px;
     display: flex; flex-direction: column; gap: 6px;
@@ -516,6 +539,7 @@
     min-height: 240px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
+  .ceo-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
   .ceo-card:nth-child(1) { background: var(--pink); color: var(--cream); }
   .ceo-card:nth-child(2) { background: var(--mustard); color: var(--black); }
   .ceo-card:nth-child(3) { background: var(--blue); color: var(--cream); }
@@ -664,6 +688,7 @@
     cursor: pointer;
     transition: background 0.15s;
   }
+  .waitlist-form button:hover { background: var(--red); }
   .ages {
     margin-top: 32px;
     font-family: 'Yellowtail', cursive;
