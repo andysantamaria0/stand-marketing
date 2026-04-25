@@ -762,7 +762,7 @@
     stand is a <b>business-in-a-box</b> where kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.
   </p>
 
-  <form class="hero-form" id="waitlist-top" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You are in';">
+  <form class="hero-form" id="waitlist-top" data-source="pilot-hero" onsubmit="event.preventDefault(); window.submitPilotWaitlist(this);">
     <input type="email" placeholder="example@email.com" required>
     <button type="submit">Join waitlist</button>
   </form>
@@ -945,7 +945,7 @@
 <section class="closing" id="waitlist">
   <h2>What will <span class="you">you</span><br><em>stand for?</em></h2>
   <p class="sub">Join the waitlist. Founding member pricing, locked in.</p>
-  <form class="waitlist-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='You are in';">
+  <form class="waitlist-form" data-source="pilot-closing" onsubmit="event.preventDefault(); window.submitPilotWaitlist(this);">
     <input type="email" placeholder="example@email.com" required>
     <button type="submit">Save our spot</button>
   </form>
@@ -964,6 +964,41 @@
 <script>
   const obs = new IntersectionObserver((es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))), { threshold: 0.12 });
   document.querySelectorAll('.intro, .marketplace-preview, .booths, .ceo, .manifesto, .closing').forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+
+  /**
+   * Waitlist submit — POSTs to the stand-app waitlist endpoint on
+   * app.standkids.com. Cross-origin; the endpoint sets CORS headers
+   * for standkids.com. Source is read from the form's data-source
+   * attribute (pilot-hero or pilot-closing).
+   */
+  window.submitPilotWaitlist = async function(form) {
+    const input = form.querySelector('input[type="email"]');
+    const btn = form.querySelector('button');
+    const email = (input && input.value || '').trim();
+    const source = form.getAttribute('data-source') || 'pilot';
+    if (!email || !email.includes('@')) {
+      input && input.focus();
+      return;
+    }
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const res = await fetch('https://app.standkids.com/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: source }),
+      });
+      if (!res.ok) throw new Error('bad status ' + res.status);
+      btn.textContent = 'You are in';
+      input && (input.value = '');
+    } catch (err) {
+      console.warn('waitlist submit failed:', err);
+      btn.disabled = false;
+      btn.textContent = 'Try again';
+      setTimeout(function() { btn.textContent = originalText; }, 2500);
+    }
+  };
 </script>
 
 </body>
