@@ -261,18 +261,23 @@
     box-shadow: 6px 6px 0 var(--black);
     z-index: 2;
     transform: rotate(var(--rot, 0deg));
-    transform-origin: 50% 85%; /* pivot near the bottom so the top peels forward */
+    transform-origin: 50% 50%; /* JS overrides on mousemove to peel from cursor */
     transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
+                transform-origin 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
                 box-shadow 0.35s cubic-bezier(0.34, 1.4, 0.5, 1);
     cursor: pointer;
     will-change: transform;
   }
-  .sticker:hover {
-    /* Peel: lift the sticker up and tilt its top edge forward, like
-       a corner pulling off the surface. Perspective on .hero gives depth. */
-    transform: rotate(var(--rot, 0deg)) translateY(-10px) rotate3d(1, 0.25, 0, -18deg) scale(1.04);
-    box-shadow: 12px 18px 0 var(--black), 0 16px 28px rgba(0,0,0,0.2);
-    z-index: 3;
+  /* Static fallback for touch / no-hover devices (JS doesn't run mousemove there). */
+  @media (hover: none) {
+    .sticker:active {
+      transform: rotate(var(--rot, 0deg)) translateY(-6px) scale(1.03);
+    }
+  }
+  /* Reduced motion: no peel, just a subtle lift on hover. */
+  @media (prefers-reduced-motion: reduce) {
+    .sticker { transition: box-shadow 0.2s ease; }
+    .sticker:hover { box-shadow: 9px 9px 0 var(--black); }
   }
   .sticker.circle {
     width: 130px; height: 130px; border-radius: 50%;
@@ -964,6 +969,78 @@
 <script>
   const obs = new IntersectionObserver((es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))), { threshold: 0.12 });
   document.querySelectorAll('.intro, .marketplace-preview, .booths, .ceo, .manifesto, .closing').forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+
+  /**
+   * Cursor-tracked sticker peel.
+   * The point under the cursor lifts toward the camera; the opposite
+   * side stays planted. Peel angle, lift, and shadow extension all
+   * scale with the cursor's distance from the sticker's centre, so
+   * corners feel like they pull harder than the middle.
+   *
+   * Skipped when prefers-reduced-motion is set (the CSS media query
+   * already disables the transition there); the early return keeps
+   * the inline-style overrides off too.
+   */
+  (function initStickerPeel() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const stickers = document.querySelectorAll('.sticker');
+    const MAX_PEEL_DEG = 22;
+    const MAX_LIFT_PX = 14;
+    const MAX_SHADOW_OFFSET = 14;
+    stickers.forEach(function(s) {
+      const restRot = parseFloat(getComputedStyle(s).getPropertyValue('--rot')) || 0;
+      let raf = null;
+      let lastEvent = null;
+      function applyPeel() {
+        raf = null;
+        if (!lastEvent) return;
+        const rect = s.getBoundingClientRect();
+        const dx = ((lastEvent.clientX - rect.left) / rect.width - 0.5) * 2;  // -1..1
+        const dy = ((lastEvent.clientY - rect.top) / rect.height - 0.5) * 2;  // -1..1
+        const dist = Math.min(1, Math.hypot(dx, dy));
+        // Anchor the pivot on the side OPPOSITE the cursor — that side stays
+        // planted while the cursor side lifts. (50%, 50%) at centre maps to
+        // (100%, 100%) when cursor is at top-left, etc.
+        const ox = (0.5 - dx * 0.5) * 100;
+        const oy = (0.5 - dy * 0.5) * 100;
+        // Peel scales with distance from centre (corners peel harder).
+        const angle = MAX_PEEL_DEG * (0.45 + 0.55 * dist);
+        const lift = MAX_LIFT_PX * (0.4 + 0.6 * dist);
+        // Hard offset shadow grows toward the lifted side; soft drop shadow
+        // deepens with distance to anchor the lift.
+        const sx = 6 + dx * MAX_SHADOW_OFFSET;
+        const sy = 6 + dy * MAX_SHADOW_OFFSET;
+        const blur = 12 + dist * 14;
+        const dropAlpha = 0.18 + dist * 0.12;
+        s.style.transformOrigin = ox + '% ' + oy + '%';
+        s.style.transform =
+          'rotate(' + restRot + 'deg) ' +
+          'translateY(-' + lift.toFixed(2) + 'px) ' +
+          'rotate3d(' + (-dy).toFixed(3) + ', ' + dx.toFixed(3) + ', 0, -' + angle.toFixed(2) + 'deg) ' +
+          'scale(1.04)';
+        s.style.boxShadow =
+          sx.toFixed(2) + 'px ' + sy.toFixed(2) + 'px 0 var(--black), ' +
+          '0 ' + (8 + dist * 14).toFixed(2) + 'px ' + blur.toFixed(2) + 'px rgba(0,0,0,' + dropAlpha.toFixed(3) + ')';
+        s.style.zIndex = '3';
+      }
+      s.addEventListener('mousemove', function(e) {
+        lastEvent = e;
+        if (raf) return;
+        raf = requestAnimationFrame(applyPeel);
+      });
+      s.addEventListener('mouseleave', function() {
+        if (raf) cancelAnimationFrame(raf);
+        raf = null;
+        lastEvent = null;
+        // Clear inline styles -> CSS transitions ease back to rest.
+        s.style.transformOrigin = '';
+        s.style.transform = '';
+        s.style.boxShadow = '';
+        s.style.zIndex = '';
+      });
+    });
+  })();
 
   /**
    * Waitlist submit — POSTs to the stand-app waitlist endpoint on
