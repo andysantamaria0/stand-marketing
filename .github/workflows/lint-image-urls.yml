@@ -1,0 +1,28 @@
+name: Lint image URLs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-image-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ban ephemeral image URLs in HTML
+        run: |
+          # Recraft CDN URLs and Supabase signed URLs expire. Marketing HTML
+          # is long-lived — anything pointing at one of these will eventually
+          # 404 (see the Azzy booth incident). Use public Supabase Storage URLs.
+          set -e
+          patterns='img\.recraft\.ai/|/storage/v1/object/sign/'
+          if grep -REn "$patterns" --include='*.html' .; then
+            echo ""
+            echo "ERROR: ephemeral image URL(s) found above."
+            echo "Fix: replace with a public Supabase Storage URL (storage/v1/object/public/...)."
+            exit 1
+          fi
+          echo "OK: no ephemeral image URLs in HTML."
