@@ -6,17 +6,36 @@
 <title>Stand — Pilot Early Access</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=Yellowtail&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
 <style>
+  @font-face {
+    font-family: 'Piepie';
+    src: url('/brand-2026-04-20/fonts/live/PiepieW01-Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pangram Sans';
+    src: url('/brand-2026-04-20/fonts/live/PPPangramSans-Light.otf') format('opentype');
+    font-weight: 300; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pangram Sans';
+    src: url('/brand-2026-04-20/fonts/live/PPPangramSans-Medium.otf') format('opentype');
+    font-weight: 500; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pangram Sans';
+    src: url('/brand-2026-04-20/fonts/live/PPPangramSans-Bold.otf') format('opentype');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+
   :root {
     --cream: #F9F3D9;
     --red: #DB1F26;
-    --black: #1a1a1a;
+    --black: #232120;
     --mustard: #FFC712;
     --postit: #F7F080;
     --green: #005F3F;
-    --blue: #1C458E;
-    --pink: #EE4599;
     --white: #FFFFFF;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,12 +46,23 @@
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 17px;
     line-height: 1.5;
-    letter-spacing: -0.01em;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
-  .serif { font-family: 'Fraunces', Georgia, serif; font-weight: 300; letter-spacing: -0.03em; }
-  .script { font-family: 'Yellowtail', cursive; font-weight: 400; }
+
+  /* Stripe pattern band — used between sections */
+  .stripe-band {
+    height: 64px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--green) 0,
+      var(--green) 8px,
+      var(--cream) 8px,
+      var(--cream) 16px
+    );
+    border-top: 3px solid var(--black);
+    border-bottom: 3px solid var(--black);
+  }
 
   /* ===== Nav ===== */
   nav {
@@ -41,671 +71,436 @@
     background: var(--cream);
     padding: 18px 40px;
     display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 3px solid var(--black);
   }
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    line-height: 0;
-  }
-  .logo img {
-    display: block;
-    height: 44px;
-    width: auto;
-  }
-  footer .logo img { height: 36px; }
+  .logo { display: inline-flex; align-items: center; text-decoration: none; line-height: 0; }
+  .logo img { display: block; height: 36px; width: auto; }
   .nav-links {
     display: flex; gap: 36px; align-items: center;
     position: absolute; left: 50%; transform: translateX(-50%);
-    pointer-events: auto;
   }
   .nav-links a {
     color: var(--black);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.02em;
-    position: relative;
+    font-family: 'Pangram Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
     padding: 6px 0;
   }
-  .nav-links a::after {
-    content: ''; position: absolute;
-    left: 0; right: 100%; bottom: 0;
-    height: 3px; background: var(--red);
-    transition: right 0.2s ease;
-  }
-  .nav-links a:hover::after { right: 0; }
-
+  .nav-links a:hover { color: var(--red); }
   .nav-left { display: flex; align-items: center; gap: 20px; }
-  .nav-right { display: flex; align-items: center; gap: 10px; }
-  .nav-cta {
-    padding: 9px 16px;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-  }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
   .login-prompt {
-    font-size: 13px;
-    color: var(--black);
+    font-size: 12px;
+    font-family: 'Pangram Sans', sans-serif;
     font-weight: 500;
+    color: var(--black);
   }
   .login-link {
-    font-size: 13px;
+    font-family: 'Pangram Sans', sans-serif;
     font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
     color: var(--red);
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
-    transition: color 0.15s ease;
   }
   .login-link:hover { color: var(--black); }
 
-  .btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 13px 22px;
-    font-weight: 700;
-    font-size: 14px;
+  /* ===== Buttons ===== */
+  .btn-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--postit);
+    color: var(--black);
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
     text-decoration: none;
-    border: 2px solid var(--black);
-    border-radius: 0;
+    border: 3px solid var(--black);
+    border-radius: 999px;
+    padding: 10px 18px 12px 26px;
+    gap: 12px;
     cursor: pointer;
-    font-family: inherit;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
   }
-  .btn-primary { background: var(--red); color: var(--cream); box-shadow: 5px 5px 0 var(--black); }
-  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
-  .btn-primary:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--black); }
-  .btn-ghost { background: transparent; color: var(--black); box-shadow: 5px 5px 0 transparent; }
-  .btn-ghost:hover { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
-  .btn-mustard { background: var(--mustard); color: var(--black); box-shadow: 5px 5px 0 var(--black); }
-  .btn-mustard:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--black); }
-  .btn-dark { background: var(--black); color: var(--cream); box-shadow: 5px 5px 0 var(--red); }
-  .btn-dark:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--red); }
+  .btn-pill .arrow { font-weight: 700; font-size: 30px; }
+  .btn-pill:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--black); }
+
+  .btn-primary {
+    display: inline-flex; align-items: center;
+    background: var(--red);
+    color: var(--cream);
+    font-family: 'Pangram Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    border: 3px solid var(--black);
+    border-radius: 999px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--black); }
 
   /* ===== Hero ===== */
   .hero {
-    perspective: 900px;
-    position: relative;
-    padding: 100px 40px 140px;
+    padding: 60px 40px 90px;
     text-align: center;
-    overflow: hidden;
+    background: var(--cream);
   }
   .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--black); color: var(--cream);
-    padding: 7px 16px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-    margin-bottom: 36px;
-  }
-  .eyebrow::before {
-    content: '';
-    width: 8px; height: 8px;
-    border-radius: 50%; background: var(--red);
-  }
-
-  h1.hero-slogan {
-    margin-bottom: 28px;
-    line-height: 0;
-  }
-  /* Stacked slogan: "Build your own thing." on top, a skewed cream cover in
-     the middle, "For real." on the bottom. The slogan fades in on cream,
-     then the cover sweeps off to the right to reveal the script "For real."
-     with a hand-painted brushstroke edge. Matches the GSAP intro animation
-     from /test-mockups/intro, reduced to CSS-only so the static landing
-     has no JS dependency. */
-  .slogan-stack {
-    position: relative;
-    overflow: hidden;
-    width: min(560px, 88vw);
-    aspect-ratio: 120.82 / 105.14;
-    margin: 0 auto;
-    opacity: 0;
-    animation: slogan-fade-in 0.6s ease-out 0.33s forwards;
-  }
-  .slogan-stack img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-  .slogan-stack .slogan-cover {
-    position: absolute;
-    top: -5%;
-    bottom: -5%;
-    left: -20%;
-    right: -20%;
-    background: var(--cream);
-    transform-origin: top center;
-    transform: translateX(0) skewX(-8deg);
-    animation: slogan-sweep 0.935s ease-out 1.205s forwards;
-  }
-  .slogan-stack .slogan-build { pointer-events: none; }
-  @keyframes slogan-fade-in {
-    to { opacity: 1; }
-  }
-  @keyframes slogan-sweep {
-    to { transform: translateX(130%) skewX(-8deg); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .slogan-stack {
-      opacity: 1;
-      animation: none;
-    }
-    .slogan-stack .slogan-cover {
-      transform: translateX(130%) skewX(-8deg);
-      animation: none;
-    }
-  }
-
-  .hero-sub {
-    font-size: clamp(17px, 1.5vw, 21px);
-    max-width: 640px;
-    margin: 0 auto 40px;
-    color: var(--black);
-    line-height: 1.5;
-  }
-  .hero-sub b {
+    display: inline-block;
+    font-family: 'Pangram Sans', sans-serif;
     font-weight: 700;
-    background: var(--postit);
-    padding: 2px 6px;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-
-  .hero-form {
-    max-width: 540px;
-    margin: 0 auto;
-    display: flex;
-    gap: 0;
-    border: 3px solid var(--black);
-    box-shadow: 5px 5px 0 var(--black);
-    background: var(--white);
-  }
-  .hero-form input {
-    flex: 1;
-    padding: 14px 18px;
-    border: none; outline: none;
-    font-family: inherit; font-size: 15px; font-weight: 500;
-    background: var(--white); color: var(--black);
-  }
-  .hero-form input:focus { background: var(--postit); }
-  .hero-form button {
-    background: var(--red); color: var(--cream);
-    padding: 14px 24px;
-    font-family: inherit; font-weight: 700;
-    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
-    border: none; border-left: 3px solid var(--black);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .hero-form button:hover { background: var(--black); }
-  .hero-meta {
-    margin-top: 22px;
-    font-family: 'Yellowtail', cursive;
-    font-size: 26px;
-    color: var(--red);
-    transform: rotate(-2deg);
-    display: inline-block;
-  }
-
-  /* ===== Hero stickers ===== */
-  .sticker {
-    position: absolute;
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    font-weight: 700;
-    border: 3px solid var(--black);
-    box-shadow: 6px 6px 0 var(--black);
-    z-index: 2;
-    transform: rotate(var(--rot, 0deg));
-    transform-origin: 50% 50%; /* JS overrides on mousemove to peel from cursor */
-    transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
-                transform-origin 0.35s cubic-bezier(0.34, 1.4, 0.5, 1),
-                box-shadow 0.35s cubic-bezier(0.34, 1.4, 0.5, 1);
-    cursor: pointer;
-    will-change: transform;
-  }
-  /* Static fallback for touch / no-hover devices (JS doesn't run mousemove there). */
-  @media (hover: none) {
-    .sticker:active {
-      transform: rotate(var(--rot, 0deg)) translateY(-6px) scale(1.03);
-    }
-  }
-  /* Reduced motion: no peel, just a subtle lift on hover. */
-  @media (prefers-reduced-motion: reduce) {
-    .sticker { transition: box-shadow 0.2s ease; }
-    .sticker:hover { box-shadow: 9px 9px 0 var(--black); }
-  }
-  .sticker.circle {
-    width: 130px; height: 130px; border-radius: 50%;
-    font-family: 'Bagel Fat One', serif;
-    font-size: 15px; padding: 10px; line-height: 1.1;
-  }
-  .sticker.note {
-    width: 150px; height: 140px; padding: 16px;
-    font-family: 'Yellowtail', cursive;
-    font-size: 36px; line-height: 1;
-  }
-  .sticker.pill {
-    padding: 12px 22px; border-radius: 999px;
-    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
-    font-family: 'Helvetica Neue', sans-serif; font-weight: 700;
-  }
-  .s1 { --rot: -8deg; top: 70px; left: 4%; background: var(--mustard); color: var(--black); }
-  .s2 { --rot: 10deg; top: 130px; right: 5%; background: var(--pink); color: var(--cream); }
-  .s3 { --rot: -5deg; bottom: 120px; left: 7%; background: var(--postit); color: var(--black); }
-  .s4 { --rot: 8deg; bottom: 80px; right: 6%; background: var(--blue); color: var(--cream); }
-
-  /* ===== Intro copy (We're not playing here) ===== */
-  .intro {
-    padding: 120px 40px 100px;
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .section-eyebrow {
-    display: inline-block;
-    font-family: 'Yellowtail', cursive;
-    font-size: 28px;
-    color: var(--red);
-    margin-bottom: 10px;
-    transform: rotate(-2deg);
-  }
-  .intro h2 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(48px, 7vw, 96px);
-    line-height: 0.94;
-    font-weight: 300;
-    letter-spacing: -0.045em;
-    margin-bottom: 28px;
-  }
-  .intro h2 em { font-style: italic; font-weight: 300; }
-  .intro h2 .emph {
-    background: var(--mustard);
-    padding: 0 10px;
-    border: 3px solid var(--black);
-    box-shadow: 5px 5px 0 var(--black);
-    display: inline-block;
-    transform: rotate(-1deg);
-    font-style: normal;
-  }
-  .intro p {
-    font-size: clamp(18px, 1.6vw, 22px);
-    max-width: 780px;
-    margin: 0 auto;
-    line-height: 1.55;
-  }
-
-  /* ===== Marketplace preview ===== */
-  .marketplace-preview {
-    padding: 100px 40px;
-    background: var(--cream);
-    border-top: 3px solid var(--black);
-  }
-  .booth-body .by {
-    font-family: 'Yellowtail', cursive;
-    font-size: 18px;
-    color: var(--red);
-    line-height: 1;
-    display: inline-block;
-    transform: rotate(-2deg);
-    margin-top: 2px;
-  }
-  .booth .status {
-    position: absolute;
-    top: 10px; left: 10px;
-    padding: 4px 9px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    font-size: 12px;
     text-transform: uppercase;
-    border: 2px solid var(--black);
-    background: var(--mustard);
+    letter-spacing: 0.18em;
+    margin-bottom: 40px;
     color: var(--black);
   }
-  .booth .status.open { background: var(--red); color: var(--cream); }
-  .booth-scene { position: relative; }
-  .mp-cta {
-    max-width: 1200px;
-    margin: 48px auto 0;
-    text-align: center;
-  }
-  .mp-cta .btn-dark {
-    padding: 16px 32px;
-    font-size: 14px;
-  }
-
-  /* ===== Booths (the flow) ===== */
-  .booths {
-    padding: 100px 40px;
-    background: var(--postit);
-    border-top: 3px solid var(--black);
-    border-bottom: 3px solid var(--black);
-  }
-  .sec-head {
-    max-width: 1200px; margin: 0 auto 50px;
-    display: flex; justify-content: space-between; align-items: flex-end;
-    gap: 40px; flex-wrap: wrap;
-  }
-  .sec-head .lbl {
-    font-family: 'Yellowtail', cursive;
-    font-size: 28px;
-    color: var(--red);
-    display: inline-block;
-    transform: rotate(-2deg);
-    margin-bottom: 6px;
-  }
-  .sec-head h2 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(40px, 5.5vw, 76px);
-    font-weight: 300;
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    color: var(--black);
+  .hero-stage {
+    position: relative;
     max-width: 600px;
+    margin: 0 auto;
+    padding-top: 40px;
+    padding-bottom: 80px;
   }
-  .sec-head h2 em { font-style: italic; font-weight: 300; }
-  .sec-head h2 .script-em {
-    font-family: 'Yellowtail', cursive;
-    font-style: normal;
-    color: var(--red);
-    font-size: 1.05em;
-    display: inline-block;
-    transform: rotate(-3deg);
-    margin-right: 4px;
+  .hero-wordmark {
+    display: block;
+    width: 100%;
+    height: auto;
   }
-  .sec-head .lede {
-    max-width: 340px;
-    font-size: 15px;
-    line-height: 1.5;
+  .hero-sign {
+    position: absolute;
+    width: 28%;
+    top: 62%;
+    right: -8%;
+    transform: rotate(-8deg);
+    transform-origin: top center;
+    filter: drop-shadow(4px 6px 0 rgba(0, 0, 0, 0.15));
+  }
+  @media (max-width: 720px) {
+    .hero-stage { max-width: 460px; padding-bottom: 60px; }
+    .hero-sign {
+      width: 32%;
+      top: 60%;
+      right: -10%;
+    }
   }
 
-  .booth-grid {
-    max-width: 1200px;
+  /* ===== About ===== */
+  .about {
+    background: var(--mustard);
+    border-top: 3px solid var(--black);
+    padding: 90px 40px 56px;
+  }
+  .about-inner {
+    max-width: 1300px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: start;
   }
-  .booth {
-    background: var(--cream);
-    border: 3px solid var(--black);
-    box-shadow: 6px 6px 0 var(--black);
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .about-eyebrow,
+  .ceo-eyebrow,
+  .mp-eyebrow {
+    font-family: 'Pangram Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 22px;
   }
-  .booth:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
-  .booth:nth-child(2) { background: var(--white); }
-  .booth:nth-child(3) { background: var(--cream); }
-  .booth:nth-child(4) { background: var(--white); }
-
-  .booth-scene {
-    aspect-ratio: 4/3;
-    overflow: hidden;
-    background: #fff3d6;
-    border-bottom: 3px solid var(--black);
-  }
-  .booth-scene img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
-  }
-  .booth:hover .booth-scene img { transform: scale(1.04); }
-  .booth-body {
-    padding: 18px 20px 22px;
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .booth-body h3 {
-    font-family: 'Bagel Fat One', serif;
-    font-weight: 400;
-    font-size: 22px;
-    letter-spacing: -0.02em;
-    color: var(--red);
-    line-height: 1;
-  }
-  .booth-body p {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 13px;
-    color: var(--black);
-    opacity: 0.75;
-    line-height: 1.45;
-  }
-
-  /* ===== CEO cards ===== */
-  .ceo {
-    padding: 120px 40px;
-    background: var(--cream);
-  }
-  .ceo-head {
-    max-width: 1200px; margin: 0 auto 56px;
-    display: flex; justify-content: space-between; align-items: flex-end;
-    gap: 40px; flex-wrap: wrap;
-  }
-  .ceo-head .lbl {
-    font-family: 'Yellowtail', cursive;
-    font-size: 28px; color: var(--red);
-    display: inline-block; transform: rotate(-2deg);
-    margin-bottom: 6px;
-  }
-  .ceo-head h2 {
+  .about-copy {
     font-family: 'Fraunces', serif;
-    font-size: clamp(40px, 5.5vw, 76px);
     font-weight: 300;
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    max-width: 600px;
+    font-size: clamp(30px, 4.2vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--black);
+    max-width: 1100px;
   }
-  .ceo-head h2 em { font-style: italic; font-weight: 300; }
-  .ceo-head h2 .script-em {
-    font-family: 'Yellowtail', cursive;
-    font-style: normal;
-    color: var(--red);
-    display: inline-block;
-    transform: rotate(-3deg);
+  .about-hand {
+    width: clamp(140px, 18vw, 240px);
+    height: auto;
+    margin-top: 8px;
   }
-  .ceo-head .lede { max-width: 340px; font-size: 15px; line-height: 1.5; }
-
-  .ceo-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-  .ceo-card {
-    border: 3px solid var(--black);
-    box-shadow: 6px 6px 0 var(--black);
-    padding: 28px 22px 30px;
-    display: flex; flex-direction: column; gap: 14px;
-    min-height: 240px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .ceo-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--black); }
-  .ceo-card:nth-child(1) { background: var(--pink); color: var(--cream); }
-  .ceo-card:nth-child(2) { background: var(--mustard); color: var(--black); }
-  .ceo-card:nth-child(3) { background: var(--blue); color: var(--cream); }
-  .ceo-card:nth-child(4) { background: var(--green); color: var(--cream); }
-  .ceo-card .num {
-    font-family: 'Bagel Fat One', serif;
-    font-weight: 400;
-    font-size: 44px;
-    line-height: 1;
-    letter-spacing: -0.02em;
-  }
-  .ceo-card:nth-child(1) .num { color: var(--mustard); }
-  .ceo-card:nth-child(2) .num { color: var(--red); }
-  .ceo-card:nth-child(3) .num { color: var(--mustard); }
-  .ceo-card:nth-child(4) .num { color: var(--mustard); }
-  .ceo-card h3 {
-    font-family: 'Bagel Fat One', serif;
-    font-weight: 400;
-    font-size: 24px;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    margin-top: auto;
-  }
-  .ceo-card p {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* ===== Marquee ===== */
-  .marquee-wrap {
-    padding: 16px 0;
-    background: var(--cream);
-    color: var(--red);
-    overflow: hidden;
+  .waitlist-row {
+    max-width: 1300px;
+    margin: 56px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
     border-top: 3px solid var(--black);
-    border-bottom: 3px solid var(--black);
+    padding-top: 26px;
   }
-  .marquee {
-    display: flex; gap: 40px;
-    white-space: nowrap; align-items: center;
-    animation: marquee-scroll 30s linear infinite;
-    font-family: 'Bagel Fat One', serif;
-    font-weight: 400;
-    font-size: clamp(22px, 2.8vw, 38px);
+  .waitlist-row label {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.6vw, 30px);
+    flex-shrink: 0;
     letter-spacing: -0.01em;
   }
-  .marquee span { display: inline-block; }
-  .marquee .dot {
-    color: var(--red); opacity: 0.5;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 0.6em;
-    transform: translateY(-0.15em);
+  .waitlist-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 20px;
+    border: 3px solid var(--black);
+    border-radius: 999px;
+    background: var(--cream);
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--black);
+    outline: none;
   }
-  @keyframes marquee-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* ===== Manifesto ===== */
-  .manifesto {
-    padding: 140px 40px;
+  .waitlist-row input::placeholder { color: var(--black); opacity: 0.45; }
+  .waitlist-row input:focus { background: var(--white); }
+  .waitlist-row button {
     background: var(--red);
     color: var(--cream);
-    text-align: center;
+    font-family: 'Pangram Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border: 3px solid var(--black);
+    border-radius: 999px;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: background 0.15s ease;
   }
-  .manifesto blockquote {
+  .waitlist-row button:hover { background: var(--black); }
+
+  /* ===== CEO band ===== */
+  .ceo {
+    background: var(--red);
+    color: var(--cream);
+    padding: 90px 40px 100px;
+  }
+  .ceo-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: start;
+  }
+  .ceo-eyebrow { color: var(--cream); }
+  .ceo-list {
+    list-style: none;
+    counter-reset: ceo-counter;
+  }
+  .ceo-list li {
     font-family: 'Fraunces', serif;
     font-weight: 300;
-    font-size: clamp(44px, 7vw, 104px);
-    line-height: 1;
-    letter-spacing: -0.045em;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  .manifesto blockquote em {
-    font-style: italic;
-    font-weight: 300;
-    color: var(--mustard);
-  }
-  .manifesto blockquote .big {
-    font-family: 'Bagel Fat One', serif;
-    font-style: normal;
-    color: var(--mustard);
-    font-weight: 400;
-    font-size: 0.9em;
+    font-size: clamp(28px, 3.8vw, 52px);
+    line-height: 1.18;
     letter-spacing: -0.02em;
-    display: inline-block;
+    counter-increment: ceo-counter;
+  }
+  .ceo-list li::before {
+    content: counter(ceo-counter, decimal-leading-zero) "  ";
+    color: var(--cream);
+    opacity: 0.6;
+    margin-right: 18px;
+    font-feature-settings: "tnum";
+  }
+  .ceo-photo {
+    width: clamp(220px, 26vw, 340px);
+    height: auto;
+    border: 3px solid var(--black);
+    display: block;
+  }
+  .ceo-cta {
+    margin-top: 50px;
+    max-width: 360px;
   }
 
-  /* ===== Closing ===== */
-  .closing {
-    padding: 140px 40px 100px;
+  /* ===== Build? ===== */
+  .build {
     background: var(--cream);
-    color: var(--black);
-    text-align: center;
     position: relative;
+    padding: 90px 40px 110px;
+    overflow: hidden;
   }
-  .closing h2 {
+  .build-inner {
+    max-width: 1500px;
+    margin: 0 auto;
+    position: relative;
+    min-height: clamp(300px, 36vw, 520px);
+  }
+  .build-stack {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 90px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: clamp(16px, 6%, 80px);
+    position: relative;
+    z-index: 1;
+  }
+  .build-stack span { display: block; }
+  .build-stack span:nth-child(2) { margin-left: 0.35em; }
+  .build-stack span:nth-child(3) { margin-left: 0.7em; }
+  .build-script {
+    position: absolute;
+    top: 38%;
+    left: 30%;
+    width: 65%;
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+  }
+  @media (max-width: 720px) {
+    .build-script { top: 45%; left: 18%; width: 78%; }
+  }
+
+  /* ===== Marketplace ===== */
+  .marketplace {
+    background: var(--cream);
+    padding: 90px 0 0;
+  }
+  .marketplace-header {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px 64px;
+  }
+  .mp-headline {
     font-family: 'Fraunces', serif;
     font-weight: 300;
-    font-size: clamp(64px, 11vw, 176px);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    margin-bottom: 18px;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    max-width: 900px;
+    margin-bottom: 32px;
   }
-  .closing h2 em { font-style: italic; font-weight: 300; }
-  .closing h2 .you {
-    font-family: 'Yellowtail', cursive;
-    color: var(--red);
-    font-style: normal;
-    font-weight: 400;
-    display: inline-block;
-    transform: rotate(-3deg);
-    margin: 0 0.06em;
-  }
-  .closing .sub {
-    font-size: 18px;
-    max-width: 540px;
-    margin: 0 auto 40px;
-    line-height: 1.5;
-  }
-  .waitlist-form {
-    max-width: 520px;
-    margin: 0 auto;
-    display: flex;
+  .mp-cta-top { max-width: 360px; }
+
+  .booth-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 0;
-    border: 3px solid var(--black);
-    box-shadow: 5px 5px 0 var(--black);
-    background: var(--white);
   }
-  .waitlist-form input {
-    flex: 1;
-    padding: 16px 20px;
-    border: none; outline: none;
-    font-family: inherit; font-size: 15px; font-weight: 500;
-    background: var(--white); color: var(--black);
+  .booth-cell {
+    aspect-ratio: 360 / 503;
+    overflow: hidden;
+    background: var(--cream);
+    position: relative;
   }
-  .waitlist-form input:focus { background: var(--postit); }
-  .waitlist-form button {
-    background: var(--black); color: var(--cream);
-    padding: 16px 28px;
-    font-family: inherit; font-weight: 700; font-size: 13px;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    border: none; border-left: 3px solid var(--black);
-    cursor: pointer;
-    transition: background 0.15s;
+  .booth-cell.image,
+  .booth-cell.image > a {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
-  .waitlist-form button:hover { background: var(--red); }
-  .ages {
-    margin-top: 32px;
-    font-family: 'Yellowtail', cursive;
-    font-size: 30px;
+  .booth-cell.image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .booth-cell.text {
+    text-decoration: none;
+    color: inherit;
+    padding: 36px 30px 36px;
+    display: flex;
+    flex-direction: column;
+  }
+  .booth-cell.graphic {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .booth-cell.graphic-pink { background: #ff2d9b; }
+  .booth-cell.graphic-yellow { background: #ffc400; }
+  .booth-donut {
+    width: 60%;
+    aspect-ratio: 496 / 482;
+    background: #ffeef7;
+    -webkit-mask: url('/figma-faye/asset-donut-mask.png') center/contain no-repeat;
+            mask: url('/figma-faye/asset-donut-mask.png') center/contain no-repeat;
+  }
+  .booth-by {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(15px, 1.25vw, 20px);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    margin-bottom: 26px;
+  }
+  .booth-name {
+    font-family: 'Bagel Fat One', cursive;
+    font-weight: 400;
+    font-size: clamp(30px, 3.3vw, 52px);
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin-bottom: 26px;
+  }
+  .booth-tag {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(14px, 1.15vw, 19px);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+    color: var(--black);
+  }
+  .booth-arrow {
+    margin-top: auto;
+    padding-top: 28px;
     color: var(--red);
-    display: inline-block;
-    transform: rotate(-2deg);
+    font-size: 22px;
+    line-height: 1;
+  }
+  @media (max-width: 900px) {
+    .booth-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   /* ===== Footer ===== */
   footer {
-    background: var(--black);
-    color: var(--cream);
-    padding: 40px;
+    background: var(--cream);
+    color: var(--black);
+    padding: 50px 40px 60px;
   }
   .footer-inner {
-    max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
   }
-  footer .foot {
-    font-family: 'Yellowtail', cursive;
-    font-size: 22px;
-    color: var(--mustard);
-  }
+  footer .logo img { height: 32px; }
   footer .meta {
+    font-family: 'Pangram Sans', sans-serif;
     font-size: 12px;
-    opacity: 0.6;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  /* ===== Reveal animations ===== */
+  /* Reveal animations */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
@@ -713,18 +508,21 @@
     nav { padding: 14px 20px; }
     .nav-links { display: none; }
     .login-prompt { display: none; }
-    .hero { padding: 60px 24px 100px; }
-    .sticker { display: none; }
-    .booths, .ceo { padding: 80px 24px; }
+    .hero { padding: 50px 24px 80px; }
+    .about, .ceo, .build, .marketplace { padding: 70px 24px; }
+    .about-inner, .ceo-inner { grid-template-columns: 1fr; gap: 30px; }
+    .about-hand { display: none; }
+    .ceo-photo { max-width: 240px; }
     .booth-grid { grid-template-columns: 1fr 1fr; }
-    .ceo-grid { grid-template-columns: 1fr 1fr; }
-    .sec-head, .ceo-head { flex-direction: column; align-items: flex-start; }
+    .waitlist-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .waitlist-row label { text-align: left; }
   }
   @media (max-width: 600px) {
     .booth-grid { grid-template-columns: 1fr; }
-    .ceo-grid { grid-template-columns: 1fr; }
-    .hero-form, .waitlist-form { flex-direction: column; }
-    .hero-form button, .waitlist-form button { border-left: 0; border-top: 3px solid var(--black); }
   }
 </style>
 </head>
@@ -734,10 +532,10 @@
 <nav>
   <div class="nav-left">
     <a href="#" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Founder Red.svg" alt="Stand"></a>
-    <a href="https://app.standkids.com/pilot" class="btn btn-primary nav-cta">Early Access Here</a>
+    <a href="https://app.standkids.com/pilot" class="btn-primary">Early Access Here</a>
   </div>
   <div class="nav-links">
-    <a href="#flow">The flow</a>
+    <a href="#flow">The Flow</a>
     <a href="#ceo">As a CEO</a>
   </div>
   <div class="nav-right">
@@ -748,306 +546,152 @@
 
 <!-- Hero -->
 <section class="hero">
-  <div class="sticker circle s1">we're<br>not playing<br>here</div>
-  <div class="sticker pill s2">for real.</div>
-  <div class="sticker note s3">open!</div>
-  <div class="sticker circle s4">ages<br>8 to 14</div>
-
   <div class="eyebrow">Summer cohort · 2026</div>
+  <div class="hero-stage">
+    <svg class="hero-wordmark" viewBox="80 385 1700 360" xmlns="http://www.w3.org/2000/svg" aria-label="Stand">
+      <g fill="#df0000">
+        <path d="M445.36,431.57l-3.85,90.49c-.27,6.33-6.88,10.28-12.64,7.63-16.33-7.49-40.24-12.14-66.77-12.14h-.91c-11.02.03-11.98,16.22-1.04,17.55,64.35,7.81,96.1,36.71,96.1,88.14,0,78.78-43.72,105.68-168.62,105.68-36.48,0-78.6-3.46-127.16-10.8-4.45-.67-7.69-4.59-7.51-9.09l3.9-95.55c.25-6.24,6.73-10.23,12.43-7.66,19.27,8.69,48,14.06,77.99,14.06,3.22,0,6.25-.04,9.09-.14,11.02-.36,11.46-16.61.48-17.57-71.07-6.26-106.13-33.94-106.13-84.62,0-78.78,43.72-105.69,168.62-105.69,38.42,0,78.13,3.4,118.7,10.61,4.37.78,7.5,4.66,7.32,9.09h0Z"/>
+        <path d="M610.59,415.83l41.24-4.49c4.84-.53,9.19,2.97,9.72,7.81l10.68,98.05c.53,4.84-2.97,9.19-7.81,9.72l-41.22,4.49c-4.84.53-8.34,4.88-7.81,9.72l2.27,20.85c1.51,13.85,7.81,18.48,25.96,16.5,7.65-.83,15.43-2.62,23.47-5.7,5.42-2.08,11.35,1.47,11.97,7.24l13.01,119.51c.45,4.09-2.01,7.95-5.9,9.3-25.43,8.77-42.22,12.65-67.76,15.43-104.11,11.34-146.49-18.36-156.26-108.14l-25.77-235.61c-.53-4.84,2.97-9.19,7.81-9.72l142-15.46c4.83-.53,9.18,2.96,9.71,7.79l4.98,44.93c.54,4.83,4.88,8.32,9.71,7.79h0Z"/>
+        <path d="M1022.58,561.28v92.24c0,23.86.99,39.82,3.23,55.78.75,5.3-3.37,10.03-8.72,10.03h-134.04c-4.1,0-7.66-2.83-8.59-6.82l-4.66-20.08h-.96c-19.22,24.02-50.92,36.51-92.71,36.51-61.97,0-92.24-27.38-92.24-83.59s32.19-85.51,98.48-85.51c30.26,0,59.57,5.76,78.31,15.37h.96v-.96c0-24.5-21.61-35.55-69.66-35.55-31.93,0-62.53,4.97-83.54,13.54-5.64,2.3-11.84-1.78-12.06-7.87l-4.05-112.84c-.16-4.41,2.95-8.26,7.3-9.01,39.66-6.84,85.64-10.65,130.78-10.65,143.16,0,192.16,37.95,192.16,149.41h0ZM829.46,637.66c0,18.73,4.81,24.5,18.25,24.5,2.66,0,5.01-.2,7.14-.71,3.98-.93,6.79-4.51,6.79-8.6v-30.39c0-4.09-2.81-7.67-6.79-8.6-2.14-.5-4.49-.7-7.14-.7-13.45,0-18.25,5.76-18.25,24.5Z"/>
+        <path d="M1390.32,531.97v178.54c0,4.87-3.95,8.81-8.81,8.81h-142.82c-4.87,0-8.81-3.95-8.81-8.81v-154.04c0-19.22-4.33-25.94-16.81-25.94-3.08,0-6.17.49-9.06,1.47-3.53,1.2-5.83,4.62-5.83,8.35v170.16c0,4.87-3.95,8.81-8.81,8.81h-142.83c-4.87,0-8.81-3.95-8.81-8.81v-280.22c0-4.87,3.95-8.81,8.81-8.81h136.34c4.58,0,8.39,3.5,8.78,8.06l2.68,31.33h.96c21.14-34.11,51.4-49,98.48-49,70.14,0,96.56,33.15,96.56,120.1h-.02Z"/>
+        <path d="M1764.83,653.51c0,23.86.99,39.82,3.23,55.78.75,5.3-3.37,10.03-8.72,10.03h-139.67c-4.58,0-8.39-3.5-8.78-8.06l-2.68-31.33h-.96c-19.7,33.15-49.96,49-91.27,49-75.9,0-113.86-53.32-113.86-156.13s41.79-160.94,126.35-160.94c31.23,0,55.72,7.21,74.94,22.1h.96v-80.34c0-4.86,3.94-8.81,8.81-8.81h142.83c4.86,0,8.81,3.94,8.81,8.81v299.88h.01ZM1569.79,570.4c0,29.3,5.29,39.87,20.18,39.87,3.06,0,5.84-.4,8.35-1.21,3.63-1.17,6.06-4.59,6.06-8.4v-60.52c0-3.81-2.43-7.23-6.06-8.4-2.51-.81-5.3-1.21-8.35-1.21-14.89,0-20.18,10.57-20.18,39.87h0Z"/>
+      </g>
+    </svg>
+    <img class="hero-sign" src="/figma-faye/asset-group39-hero-bag.svg" alt="Open for business">
+  </div>
+</section>
 
-  <h1 class="hero-slogan" aria-label="Build your own thing. For real.">
-    <div class="slogan-stack" role="img">
-      <img class="slogan-forreal" src="/landing-explorations-2026-04-21/slogans/STAND_ForReal_only.svg" alt="" aria-hidden="true" draggable="false">
-      <div class="slogan-cover" aria-hidden="true"></div>
-      <img class="slogan-build" src="/landing-explorations-2026-04-21/slogans/STAND_BuildYourOwn_only.svg" alt="" aria-hidden="true" draggable="false">
+<!-- About -->
+<section class="about">
+  <div class="about-inner">
+    <div>
+      <div class="about-eyebrow">About Us</div>
+      <p class="about-copy">Stand® is a business in a box. Kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.</p>
     </div>
-  </h1>
-
-  <p class="hero-sub">
-    stand is a <b>business-in-a-box</b> where kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.
-  </p>
-
-  <form class="hero-form" id="waitlist-top" data-source="pilot-hero" onsubmit="event.preventDefault(); window.submitPilotWaitlist(this);">
-    <input type="email" placeholder="example@email.com" required>
-    <button type="submit">Join waitlist</button>
+    <img class="about-hand" src="/figma-faye/asset-rect21-red-hand.png" alt="">
+  </div>
+  <form class="waitlist-row" id="waitlist" data-source="pilot-about" onsubmit="event.preventDefault(); window.submitPilotWaitlist(this);">
+    <label for="waitlist-email">Join the Waitlist</label>
+    <input id="waitlist-email" type="email" placeholder="example@email.com" required>
+    <button type="submit">Save my spot</button>
   </form>
-
-  <div class="hero-meta">built by kids. for real.</div>
 </section>
 
-<!-- Intro -->
-<section class="intro">
-  <span class="section-eyebrow">a note, up front</span>
-  <h2>We're not <em>playing</em> <span class="emph">here.</span></h2>
-  <p>Stand is a business-in-a-box where kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.</p>
-</section>
-
-<!-- Marketplace preview -->
-<section class="marketplace-preview" id="marketplace">
-  <header class="sec-head">
-    <div>
-      <span class="lbl">in the marketplace</span>
-      <h2>Real kids, <span class="script-em">real</span><br><em>shops.</em></h2>
-    </div>
-    <p class="lede">A few of the founders currently open for business. The marketplace is curated — Stand picks the best and sends them up.</p>
-  </header>
-
-  <div class="booth-grid">
-    <!-- Azzy — real -->
-    <a class="booth" href="https://app.standkids.com/store/azzys-stick-stylish" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-      <div class="booth-scene">
-        <span class="status open">Open now</span>
-        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/sticker-art/Vw3x18oNydWgjPDp2xnAd/5b3917b2a839-logo.jpg" alt="Azzy's Stick & Stylish">
-      </div>
-      <div class="booth-body">
-        <h3>Azzy's Stick &amp; Stylish</h3>
-        <span class="by">by Azzy, age 12</span>
-        <p>Y2K-inspired vinyl with a soft spot for pet causes.</p>
-      </div>
-    </a>
-
-    <!-- Theo -->
-    <a class="booth" href="https://app.standkids.com/store/theos-loud-stickers" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-      <div class="booth-scene">
-        <span class="status open">Open now</span>
-        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/theo/51b7a52f5e-hero.jpg" alt="Theo's Loud Stickers">
-      </div>
-      <div class="booth-body">
-        <h3>Theo's Loud Stickers</h3>
-        <span class="by">by Theo, age 13</span>
-        <p>Skate-adjacent graffiti vinyl, sketched in the back of math class.</p>
-      </div>
-    </a>
-
-    <!-- Rio -->
-    <a class="booth" href="https://app.standkids.com/store/rios-road-caps" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-      <div class="booth-scene">
-        <span class="status open">Open now</span>
-        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/rio/1491dead67-hero.jpg" alt="Rio's Road Caps">
-      </div>
-      <div class="booth-body">
-        <h3>Rio's Road Caps</h3>
-        <span class="by">by Rio, age 11</span>
-        <p>Embroidered caps with real hiking-trail patches stitched on.</p>
-      </div>
-    </a>
-
-    <!-- Maya -->
-    <a class="booth" href="https://app.standkids.com/store/mayas-sweet-deal" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
-      <div class="booth-scene">
-        <span class="status open">Open now</span>
-        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/maya/fe0c55f26b-hero.jpg" alt="Maya's Sweet Deal">
-      </div>
-      <div class="booth-body">
-        <h3>Maya's Sweet Deal</h3>
-        <span class="by">by Maya, age 10</span>
-        <p>Cookies with chaos energy. No flavor is the same twice in a row.</p>
-      </div>
-    </a>
-  </div>
-
-  <div class="mp-cta">
-    <a href="/marketplace.html" class="btn btn-dark">See the full marketplace →</a>
-  </div>
-</section>
-
-<!-- Booths -->
-<section class="booths" id="flow">
-  <header class="sec-head">
-    <div>
-      <span class="lbl">the flow</span>
-      <h2>Idea to <span class="script-em">first sale,</span><br>step by <em>step.</em></h2>
-    </div>
-    <p class="lede">Every kid picks a starter and walks the same path: land on it, brand it, make it, sell it. Four booths to start with, more on the way.</p>
-  </header>
-  <div class="booth-grid">
-    <article class="booth">
-      <div class="booth-scene"><img src="/images/businesses/mockups/sticker-laptop.png" alt="Sticker Drop"></div>
-      <div class="booth-body">
-        <h3>Sticker Drop</h3>
-        <p>Design. Print. Ship. No inventory to touch.</p>
-      </div>
-    </article>
-    <article class="booth">
-      <div class="booth-scene"><img src="/images/businesses/mockups/hat-lifestyle.png" alt="Custom Caps"></div>
-      <div class="booth-body">
-        <h3>Custom Caps</h3>
-        <p>Real embroidered hats with the kid's logo.</p>
-      </div>
-    </article>
-    <article class="booth">
-      <div class="booth-scene"><img src="/images/businesses/mockups/treats-lifestyle.png" alt="Baked Goods"></div>
-      <div class="booth-body">
-        <h3>Baked Goods</h3>
-        <p>Bake at home. Brand it. Sell it. Wild margins.</p>
-      </div>
-    </article>
-    <article class="booth">
-      <div class="booth-scene"><img src="/images/businesses/mockups/charms-lifestyle.png" alt="Jewelry"></div>
-      <div class="booth-body">
-        <h3>Jewelry</h3>
-        <p>Phone charms, bracelets, beads. What kids trade now.</p>
-      </div>
-    </article>
-  </div>
-</section>
+<div class="stripe-band"></div>
 
 <!-- CEO -->
 <section class="ceo" id="ceo">
-  <header class="ceo-head">
+  <div class="ceo-inner">
     <div>
-      <span class="lbl">ongoing, not one-and-done</span>
-      <h2>As a Stand <span class="script-em">CEO</span><em>&hellip;</em></h2>
+      <div class="ceo-eyebrow">As a Stand CEO —</div>
+      <ol class="ceo-list">
+        <li>New product drops</li>
+        <li>New ways to market</li>
+        <li>Creative challenges</li>
+        <li>A real community</li>
+      </ol>
+      <div class="ceo-cta">
+        <a href="#waitlist" class="btn-pill">Become a CEO <span class="arrow">→</span></a>
+      </div>
     </div>
-    <p class="lede">Launching is just day one. Stand is an ongoing platform — new things to sell, new ways to sell them, and a community of kids doing the same.</p>
-  </header>
-  <div class="ceo-grid">
-    <div class="ceo-card">
-      <span class="num">01.</span>
-      <h3>New product drops</h3>
-      <p>Fresh starters and kit refills every month.</p>
-    </div>
-    <div class="ceo-card">
-      <span class="num">02.</span>
-      <h3>New ways to market</h3>
-      <p>Playbooks, templates, and prompts for every channel.</p>
-    </div>
-    <div class="ceo-card">
-      <span class="num">03.</span>
-      <h3>Creative challenges</h3>
-      <p>Monthly briefs that push your kid's brand forward.</p>
-    </div>
-    <div class="ceo-card">
-      <span class="num">04.</span>
-      <h3>A real community</h3>
-      <p>Young founders building right alongside yours.</p>
-    </div>
+    <img class="ceo-photo" src="/figma-faye/asset-image14-girl.png" alt="">
   </div>
 </section>
 
-<!-- Marquee -->
-<div class="marquee-wrap">
-  <div class="marquee">
-    <span>We're not playing here</span><span class="dot">/</span>
-    <span>Built with stand</span><span class="dot">/</span>
-    <span>We're not playing here</span><span class="dot">/</span>
-    <span>Built with stand</span><span class="dot">/</span>
-    <span>We're not playing here</span><span class="dot">/</span>
-    <span>Built with stand</span><span class="dot">/</span>
-    <span>We're not playing here</span><span class="dot">/</span>
-    <span>Built with stand</span><span class="dot">/</span>
+<div class="stripe-band"></div>
+
+<!-- Build? -->
+<section class="build">
+  <div class="build-inner">
+    <div class="build-stack">
+      <span>what</span>
+      <span>will</span>
+      <span>you</span>
+    </div>
+    <img class="build-script" src="/figma-faye/asset-build-script.svg" alt="Build?">
   </div>
-</div>
-
-<!-- Manifesto -->
-<section class="manifesto">
-  <blockquote>
-    We're <em>not just consuming.</em><br>We're <span class="big">building.</span>
-  </blockquote>
 </section>
 
-<!-- Closing -->
-<section class="closing" id="waitlist">
-  <h2>What will <span class="you">you</span><br><em>stand for?</em></h2>
-  <p class="sub">Join the waitlist. Founding member pricing, locked in.</p>
-  <form class="waitlist-form" data-source="pilot-closing" onsubmit="event.preventDefault(); window.submitPilotWaitlist(this);">
-    <input type="email" placeholder="example@email.com" required>
-    <button type="submit">Save our spot</button>
-  </form>
-  <div class="ages">Ages 8 to 14 / Summer cohort 2026</div>
+<div class="stripe-band"></div>
+
+<!-- Marketplace -->
+<section class="marketplace" id="flow">
+  <div class="marketplace-header">
+    <div class="mp-eyebrow">Marketplace</div>
+    <h2 class="mp-headline">Some of the stands open for business.</h2>
+    <div class="mp-cta-top">
+      <a href="/marketplace.html" class="btn-pill">Shop Marketplace <span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="booth-grid">
+    <!-- Row 1: photo | text | pink-donut | text -->
+    <div class="booth-cell image">
+      <a href="https://app.standkids.com/store/azzys-stick-stylish" target="_blank" rel="noopener">
+        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/sticker-art/Vw3x18oNydWgjPDp2xnAd/5b3917b2a839-logo.jpg" alt="Azzy's Stick & Stylish">
+      </a>
+    </div>
+    <a class="booth-cell text" href="https://app.standkids.com/store/azzys-stick-stylish" target="_blank" rel="noopener">
+      <span class="booth-by">Azzy, age 12</span>
+      <div class="booth-name">azzy's<br>stick &amp; stylish</div>
+      <p class="booth-tag">Y2K-inspired vinyl with a soft spot for pet causes.</p>
+      <span class="booth-arrow">&larr;</span>
+    </a>
+
+    <a class="booth-cell graphic graphic-pink" href="https://app.standkids.com/store/mayas-sweet-deal" target="_blank" rel="noopener">
+      <div class="booth-donut" aria-hidden="true"></div>
+    </a>
+    <a class="booth-cell text" href="https://app.standkids.com/store/mayas-sweet-deal" target="_blank" rel="noopener">
+      <span class="booth-by">Maya, age 10</span>
+      <div class="booth-name">maya's<br>sweet deal</div>
+      <p class="booth-tag">Cookies with chaos energy. No flavor is the same twice in a row.</p>
+      <span class="booth-arrow">&larr;</span>
+    </a>
+
+    <!-- Row 2: text | photo | text | yellow -->
+    <a class="booth-cell text" href="https://app.standkids.com/store/theos-loud-stickers" target="_blank" rel="noopener">
+      <span class="booth-by">CEO: Theo, age 13</span>
+      <div class="booth-name">theo's<br>loud stickers</div>
+      <p class="booth-tag">Skate-adjacent graffiti vinyl, sketched in the back of math class.</p>
+      <span class="booth-arrow">&larr;</span>
+    </a>
+    <div class="booth-cell image">
+      <a href="https://app.standkids.com/store/theos-loud-stickers" target="_blank" rel="noopener">
+        <img src="https://dhbhdcundicgyntkmbna.supabase.co/storage/v1/object/public/assets/marketplace/fake-founders/theo/51b7a52f5e-hero.jpg" alt="Theo's Loud Stickers">
+      </a>
+    </div>
+
+    <a class="booth-cell text" href="https://app.standkids.com/store/rios-road-caps" target="_blank" rel="noopener">
+      <span class="booth-by">CEO: Rio, age 11</span>
+      <div class="booth-name">rio's<br>road caps</div>
+      <p class="booth-tag">Embroidered caps with real hiking-trail patches stitched on.</p>
+      <span class="booth-arrow">&larr;</span>
+    </a>
+    <a class="booth-cell graphic graphic-yellow" href="https://app.standkids.com/store/rios-road-caps" target="_blank" rel="noopener"></a>
+  </div>
 </section>
+
+<div class="stripe-band"></div>
 
 <!-- Footer -->
 <footer>
   <div class="footer-inner">
-    <a href="#" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Blank Slate.svg" alt="Stand"></a>
-    <div class="foot">build your own thing.</div>
+    <a href="#" class="logo" aria-label="Stand"><img src="/brand/Stand_Logo_Founder Red.svg" alt="Stand"></a>
     <div class="meta">&copy; 2026 STAND, INC.</div>
   </div>
 </footer>
 
 <script>
-  const obs = new IntersectionObserver((es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))), { threshold: 0.12 });
-  document.querySelectorAll('.intro, .marketplace-preview, .booths, .ceo, .manifesto, .closing').forEach(el => { el.classList.add('reveal'); obs.observe(el); });
+  const obs = new IntersectionObserver(
+    (es) => es.forEach(e => e.isIntersecting && (e.target.classList.add('visible'), obs.unobserve(e.target))),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll('.about, .ceo, .build, .marketplace').forEach(el => {
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
 
-  /**
-   * Cursor-tracked sticker peel.
-   * The point under the cursor lifts toward the camera; the opposite
-   * side stays planted. Peel angle, lift, and shadow extension all
-   * scale with the cursor's distance from the sticker's centre, so
-   * corners feel like they pull harder than the middle.
-   *
-   * Skipped when prefers-reduced-motion is set (the CSS media query
-   * already disables the transition there); the early return keeps
-   * the inline-style overrides off too.
-   */
-  (function initStickerPeel() {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
-    const stickers = document.querySelectorAll('.sticker');
-    const MAX_PEEL_DEG = 22;
-    const MAX_LIFT_PX = 14;
-    const MAX_SHADOW_OFFSET = 14;
-    stickers.forEach(function(s) {
-      const restRot = parseFloat(getComputedStyle(s).getPropertyValue('--rot')) || 0;
-      let raf = null;
-      let lastEvent = null;
-      function applyPeel() {
-        raf = null;
-        if (!lastEvent) return;
-        const rect = s.getBoundingClientRect();
-        const dx = ((lastEvent.clientX - rect.left) / rect.width - 0.5) * 2;  // -1..1
-        const dy = ((lastEvent.clientY - rect.top) / rect.height - 0.5) * 2;  // -1..1
-        const dist = Math.min(1, Math.hypot(dx, dy));
-        // Anchor the pivot on the side OPPOSITE the cursor — that side stays
-        // planted while the cursor side lifts. (50%, 50%) at centre maps to
-        // (100%, 100%) when cursor is at top-left, etc.
-        const ox = (0.5 - dx * 0.5) * 100;
-        const oy = (0.5 - dy * 0.5) * 100;
-        // Peel scales with distance from centre (corners peel harder).
-        const angle = MAX_PEEL_DEG * (0.45 + 0.55 * dist);
-        const lift = MAX_LIFT_PX * (0.4 + 0.6 * dist);
-        // Hard offset shadow grows toward the lifted side; soft drop shadow
-        // deepens with distance to anchor the lift.
-        const sx = 6 + dx * MAX_SHADOW_OFFSET;
-        const sy = 6 + dy * MAX_SHADOW_OFFSET;
-        const blur = 12 + dist * 14;
-        const dropAlpha = 0.18 + dist * 0.12;
-        s.style.transformOrigin = ox + '% ' + oy + '%';
-        s.style.transform =
-          'rotate(' + restRot + 'deg) ' +
-          'translateY(-' + lift.toFixed(2) + 'px) ' +
-          'rotate3d(' + (-dy).toFixed(3) + ', ' + dx.toFixed(3) + ', 0, -' + angle.toFixed(2) + 'deg) ' +
-          'scale(1.04)';
-        s.style.boxShadow =
-          sx.toFixed(2) + 'px ' + sy.toFixed(2) + 'px 0 var(--black), ' +
-          '0 ' + (8 + dist * 14).toFixed(2) + 'px ' + blur.toFixed(2) + 'px rgba(0,0,0,' + dropAlpha.toFixed(3) + ')';
-        s.style.zIndex = '3';
-      }
-      s.addEventListener('mousemove', function(e) {
-        lastEvent = e;
-        if (raf) return;
-        raf = requestAnimationFrame(applyPeel);
-      });
-      s.addEventListener('mouseleave', function() {
-        if (raf) cancelAnimationFrame(raf);
-        raf = null;
-        lastEvent = null;
-        // Clear inline styles -> CSS transitions ease back to rest.
-        s.style.transformOrigin = '';
-        s.style.transform = '';
-        s.style.boxShadow = '';
-        s.style.zIndex = '';
-      });
-    });
-  })();
-
-  /**
-   * Waitlist submit — POSTs to the stand-app waitlist endpoint on
-   * app.standkids.com. Cross-origin; the endpoint sets CORS headers
-   * for standkids.com. Source is read from the form's data-source
-   * attribute (pilot-hero or pilot-closing).
-   */
+  /* Cross-origin POST to app.standkids.com — endpoint sets CORS for this origin. */
   window.submitPilotWaitlist = async function(form) {
     const input = form.querySelector('input[type="email"]');
     const btn = form.querySelector('button');
