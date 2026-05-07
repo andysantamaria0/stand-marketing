@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1437">
+<title>Stand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: "Piepie";
+    src: url("/fonts/Piepie-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --u: calc(100vw / 1437);
+    --cream: #F9F3D9;
+    --cream-2: #FAF3D6;
+    --red: #DB1F26;
+    --yellow: #FFC400;
+    --green: #00623B;
+    --postit: #F9F06C;
+    --magenta: #FF2D9B;
+    --black: #111111;
+    --white: #FFFFFF;
+    --sans-heavy: "Archivo Black", "Helvetica Neue", Arial, sans-serif;
+    --serif: "Fraunces", "Times New Roman", serif;
+    --script: "Yellowtail", cursive;
+    --display-script: "Piepie", "Lobster", cursive;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--cream); }
+  body {
+    width: 100vw;
+    font-family: var(--sans-heavy);
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  .page {
+    width: 1437px;
+    margin: 0 auto;
+    transform-origin: top left;
+    background: var(--cream);
+  }
+
+  /* Scale entire page to viewport on smaller screens */
+  @media (max-width: 1436px) {
+    body { overflow: auto; }
+    .page {
+      width: 1437px;
+      transform: scale(calc(100vw / 1437));
+    }
+    html, body { height: auto; }
+    .scale-wrap {
+      width: 100vw;
+      height: calc(4936px * 100vw / 1437);
+      overflow: hidden;
+    }
+  }
+
+  /* ───────── Top nav (0–98) ───────── */
+  .nav {
+    height: 98px;
+    background: var(--red);
+    color: var(--white);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 56px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+  }
+  .nav-left { justify-self: start; }
+  .pill-early {
+    position: relative;
+    display: inline-block;
+    color: var(--black);
+    text-decoration: none;
+    padding: 14px 32px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .pill-early svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    z-index: 0;
+  }
+  .pill-early span { position: relative; z-index: 1; }
+  .nav-center { display: flex; gap: 64px; }
+  .nav-center a {
+    color: var(--white);
+    text-decoration: none;
+    font-style: normal;
+    font-family: var(--sans-heavy);
+    letter-spacing: 0.06em;
+    font-size: 18px;
+  }
+  .nav-right { justify-self: end; display: flex; align-items: baseline; gap: 14px; color: var(--white); }
+  .nav-right .ask {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+  }
+  .nav-right a.login {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    font-family: var(--sans-heavy);
+    font-size: 18px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ───────── Hero (98–893) — cream w/ paper bag illustration ───────── */
+  .hero {
+    position: relative;
+    height: 795px;
+    background: var(--cream);
+  }
+  .hero .bag {
+    position: absolute;
+    top: 220px;
+    left: 940px;
+    width: 291px;
+    height: 338px;
+  }
+  .hero .bag img { width: 100%; height: 100%; object-fit: contain; }
+
+  /* ───────── About Us yellow (893–1871) ───────── */
+  .about {
+    position: relative;
+    height: 978px;
+    background: var(--yellow);
+    padding: 88px 100px 0 100px;
+    overflow: hidden;
+  }
+  .about .eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    color: var(--black);
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 2;
+  }
+  .about .copy {
+    font-family: var(--sans-heavy);
+    font-size: 80px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    max-width: 1100px;
+    position: relative;
+    z-index: 2;
+  }
+  .about .hand {
+    position: absolute;
+    top: 200px;
+    right: 80px;
+    width: 360px;
+    height: 500px;
+    background: var(--red);
+    -webkit-mask-image: url("/figma-faye/asset-hand.png");
+    mask-image: url("/figma-faye/asset-hand.png");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transform: rotate(-8deg);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .about .croissant {
+    position: absolute;
+    left: -50px;
+    bottom: 130px;
+    width: 246px;
+    height: 383px;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .about .croissant img { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+  /* Waitlist row (~1740–1871) */
+  .waitlist {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 130px;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    align-items: center;
+    background: var(--yellow);
+    border-top: 2px solid var(--black);
+    padding: 0 100px;
+    gap: 32px;
+    z-index: 3;
+  }
+  .waitlist label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 30px;
+    color: var(--black);
+  }
+  .waitlist .field-wrap {
+    position: relative;
+    transform: skewX(-3deg) rotate(-1deg);
+  }
+  .waitlist .field-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translate(8px, 10px);
+    background: var(--black);
+    z-index: 0;
+  }
+  .waitlist .field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 2px solid var(--black);
+    padding: 0 28px;
+    height: 70px;
+    z-index: 1;
+  }
+  .waitlist input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: var(--sans-heavy);
+    font-size: 26px;
+    color: var(--black);
+  }
+  .waitlist input::placeholder { color: #888; font-family: var(--serif); font-style: italic; font-weight: 300; }
+
+  /* ───────── Stripe dividers — three Faye variants ───────── */
+  /* yellow About Us → red CEO band: tall narrow green pickets on cream */
+  .stripe-yr {
+    height: 90px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        var(--green) 0 12px,
+        var(--cream) 12px 24px
+      );
+  }
+  /* red CEO band → cream Build?: red blocks with thin cream gaps */
+  .stripe-cb {
+    height: 46px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        var(--red) 0 96px,
+        var(--cream) 96px 104px
+      );
+  }
+  /* cream Build? → green Marketplace: yellow band with red square accents */
+  .stripe-bm {
+    height: 38px;
+    background-color: var(--yellow);
+    background-image:
+      linear-gradient(90deg, var(--red) 0 60px, transparent 60px 100%);
+    background-size: 380px 100%;
+    background-repeat: repeat-x;
+  }
+
+  /* ───────── Red CEO band (1872–2559) ───────── */
+  .ceo {
+    position: relative;
+    height: 687px;
+    background: var(--red);
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    grid-template-rows: 1fr auto;
+    padding: 80px 100px 90px 100px;
+    column-gap: 70px;
+    row-gap: 40px;
+  }
+  .ceo .list {
+    color: var(--white);
+    font-family: var(--sans-heavy);
+    font-size: 56px;
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+  }
+  .ceo .list .item {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .ceo .list .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--white);
+    opacity: 0.95;
+  }
+  .ceo .photo {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    border: 4px solid var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    align-self: stretch;
+  }
+  .ceo .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Shared yellow rectangle button (Become a CEO, Shop Marketplace) */
+  .btn-pill {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--black);
+  }
+  .btn-pill .lbl {
+    display: flex;
+    align-items: center;
+    background: var(--postit);
+    border: 2px solid var(--black);
+    padding: 18px 36px;
+    font-family: var(--serif);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1;
+    min-width: 420px;
+    justify-content: space-between;
+    gap: 80px;
+  }
+  .btn-pill .arrow {
+    font-family: var(--sans-heavy);
+    font-style: normal;
+    font-size: 28px;
+    font-weight: 400;
+  }
+
+  .become {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    align-self: end;
+  }
+
+  /* ───────── "what will you Build?" cream (2559–3245) ───────── */
+  .build {
+    position: relative;
+    height: 686px;
+    background: var(--cream);
+    padding: 110px 110px 0 110px;
+    overflow: hidden;
+  }
+  .build .stack {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 130px;
+    line-height: 0.95;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 2;
+  }
+  .build .stack .what  { display: block; padding-left: 0; }
+  .build .stack .will  { display: block; padding-left: 36px; }
+  .build .stack .you   { display: block; padding-left: 84px; }
+  .build .script {
+    position: absolute;
+    top: 200px;
+    left: 460px;
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: 420px;
+    line-height: 1;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    z-index: 1;
+  }
+
+  /* ───────── Marketplace heading green (3245–3804) ───────── */
+  .market-head {
+    position: relative;
+    height: 559px;
+    background: var(--green);
+    color: var(--white);
+    padding: 80px 100px 0 100px;
+  }
+  .market-head .eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 30px;
+    color: var(--white);
+    margin-bottom: 28px;
+  }
+  .market-head .h1 {
+    font-family: var(--sans-heavy);
+    font-size: 90px;
+    line-height: 1.05;
+    color: var(--white);
+    max-width: 1100px;
+    letter-spacing: -0.01em;
+  }
+  .shop-btn {
+    position: absolute;
+    left: 100px;
+    bottom: 80px;
+  }
+
+  /* ───────── Tile grid (3804–4810) — 4 cols × 2 rows ───────── */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 503px;
+    background: var(--cream);
+  }
+  .tile { position: relative; overflow: hidden; }
+  .tile.img-tile { background: #ddd; }
+  .tile.img-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile.cream-tile { background: var(--cream-2); padding: 28px; display: flex; flex-direction: column; }
+  .tile.magenta-tile { background: var(--magenta); display: flex; align-items: center; justify-content: center; }
+  .tile.magenta-tile img { width: 60%; }
+  .tile.yellow-tile { background: var(--yellow); position: relative; display: flex; align-items: center; justify-content: center; }
+  .tile.yellow-tile .cap {
+    width: 75%;
+    aspect-ratio: 552 / 408;
+    background: var(--magenta);
+    -webkit-mask-image: url("/figma-faye/asset-cap.png");
+    mask-image: url("/figma-faye/asset-cap.png");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+  .tile.cream-tile .meta {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+  .tile.cream-tile .brand {
+    font-family: var(--display-script);
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--black);
+    margin-bottom: 14px;
+  }
+  .tile.cream-tile .desc {
+    font-family: var(--sans-heavy);
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--black);
+    max-width: 90%;
+    margin-top: auto;
+  }
+
+  /* ───────── Footer green stripe (4810–4936) — same as yellow→red ───────── */
+  .foot {
+    height: 126px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        var(--green) 0 12px,
+        var(--cream) 12px 24px
+      );
+  }
+</style>
+</head>
+<body>
+<div class="scale-wrap">
+<main class="page">
+
+  <!-- TOP NAV -->
+  <nav class="nav">
+    <div class="nav-left">
+      <a class="pill-early" href="#waitlist">
+        <svg viewBox="0 0 200 56" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M6 4 L194 0 L198 50 L2 54 Z" fill="#000" transform="translate(5 6)"/>
+          <path d="M6 4 L194 0 L198 50 L2 54 Z" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
+        </svg>
+        <span>Early Access Here</span>
+      </a>
+    </div>
+    <div class="nav-center">
+      <a href="#flow">THE FLOW</a>
+      <a href="#ceo">AS A CEO</a>
+    </div>
+    <div class="nav-right">
+      <span class="ask">Already have an account?</span>
+      <a class="login" href="#login">LOG IN</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="bag">
+      <img src="/figma-faye/asset-group39-hero-bag.svg" alt="open Business paper bag">
+    </div>
+  </section>
+
+  <!-- ABOUT US -->
+  <section class="about">
+    <div class="eyebrow">About Us</div>
+    <p class="copy">Stand&reg; is a business in a box. Kids land on an idea, name it, brand it, design and make real products, price them, launch a storefront, and take real payments from real customers.</p>
+
+    <!-- Croissant, bottom-left, partially off-canvas -->
+    <div class="croissant" aria-hidden="true">
+      <img src="/figma-faye/asset-croissant.png" alt="">
+    </div>
+
+    <div class="hand" aria-hidden="true"></div>
+    <form class="waitlist" onsubmit="event.preventDefault();">
+      <label>Join the Waitlist</label>
+      <div class="field-wrap">
+        <div class="field">
+          <input type="email" placeholder="example@email.com">
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- STRIPE: yellow About Us → red CEO -->
+  <div class="stripe-yr"></div>
+
+  <!-- CEO BAND -->
+  <section class="ceo" id="ceo">
+    <div class="list">
+      <div class="item"><span class="num">01</span><span>New product drops.</span></div>
+      <div class="item"><span class="num">02</span><span>New ways to market.</span></div>
+      <div class="item"><span class="num">03</span><span>Creative challenges.</span></div>
+      <div class="item"><span class="num">04</span><span>A real community.</span></div>
+    </div>
+    <div class="photo">
+      <img src="/figma-faye/asset-image14-girl.png" alt="">
+    </div>
+    <a class="btn-pill become" href="#waitlist"><span class="lbl">Become a CEO <span class="arrow">&rarr;</span></span></a>
+  </section>
+
+  <!-- STRIPE: red CEO → cream Build? -->
+  <div class="stripe-cb"></div>
+
+  <!-- WHAT WILL YOU BUILD -->
+  <section class="build">
+    <div class="stack">
+      <span class="what">what</span>
+      <span class="will">will</span>
+      <span class="you">you</span>
+    </div>
+    <div class="script">Build?</div>
+  </section>
+
+  <!-- STRIPE: cream Build? → green Marketplace -->
+  <div class="stripe-bm"></div>
+
+  <!-- MARKETPLACE -->
+  <section class="market-head">
+    <div class="eyebrow">Marketplace</div>
+    <div class="h1">Some of the stands open<br>for business.</div>
+    <a class="btn-pill shop-btn" href="#shop"><span class="lbl">Shop Marketplace <span class="arrow">&rarr;</span></span></a>
+  </section>
+
+  <!-- TILES -->
+  <section class="tiles">
+    <div class="tile img-tile">
+      <img src="/figma-faye/asset-tile-lipstick.png" alt="">
+    </div>
+    <div class="tile cream-tile">
+      <div class="meta">Maya, age 13</div>
+      <div class="brand">maya's<br>bakery</div>
+      <div class="desc">Y2K-inspired vinyl with a soft spot for pet causes.</div>
+    </div>
+    <div class="tile magenta-tile">
+      <img src="/figma-faye/asset-donut-mask.png" alt="">
+    </div>
+    <div class="tile cream-tile">
+      <div class="meta">Maya, age 13</div>
+      <div class="brand">maya's<br>bakery</div>
+      <div class="desc">Y2K-inspired vinyl with a soft spot for pet causes.</div>
+    </div>
+
+    <div class="tile cream-tile">
+      <div class="meta">CEO: Maya, age 13</div>
+      <div class="brand">maya's<br>bakery</div>
+      <div class="desc">Y2K-inspired vinyl with a soft spot for pet causes.</div>
+    </div>
+    <div class="tile img-tile">
+      <img src="/figma-faye/asset-tile-skateboard.png" alt="">
+    </div>
+    <div class="tile cream-tile">
+      <div class="meta">Maya, age 13</div>
+      <div class="brand">maya's<br>bakery</div>
+      <div class="desc">Y2K-inspired vinyl with a soft spot for pet causes.</div>
+    </div>
+    <div class="tile yellow-tile">
+      <div class="cap" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER STRIPE -->
+  <div class="foot"></div>
+
+</main>
+</div>
+</body>
+</html>
