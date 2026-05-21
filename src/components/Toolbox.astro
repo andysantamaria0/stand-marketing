@@ -30,16 +30,18 @@ const slides = [
     <div class="slider" id="toolbox-slider">
       <button class="nav prev" aria-label="Previous">←</button>
 
-      <div class="track">
-        {
-          slides.map((s, i) => (
-            <article class="card" data-index={i}>
-              <span class="num">{s.num}</span>
-              <h3 class="name">{s.name}</h3>
-              <p class="desc">{s.desc}</p>
-            </article>
-          ))
-        }
+      <div class="track-clip">
+        <div class="track">
+          {
+            slides.map((s, i) => (
+              <article class="card" data-index={i}>
+                <span class="num">{s.num}</span>
+                <h3 class="name">{s.name}</h3>
+                <p class="desc">{s.desc}</p>
+              </article>
+            ))
+          }
+        </div>
       </div>
 
       <button class="nav next" aria-label="Next">→</button>
@@ -58,6 +60,7 @@ const slides = [
     const update = () => {
       const card = track.querySelector('.card') as HTMLElement;
       if (!card) return;
+      // Slide by full card width + the flex gap (32px) so one card is shown at a time.
       const offset = card.offsetWidth + 32;
       track.style.transform = `translateX(${-index * offset}px)`;
     };
@@ -160,8 +163,7 @@ const slides = [
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 32px;
-    overflow: hidden;
+    gap: 80px;
   }
 
   .nav {
@@ -175,21 +177,26 @@ const slides = [
     z-index: 5;
   }
 
+  /* The clip-window is exactly one card wide — neighbors slide in/out hidden. */
+  .track-clip {
+    width: 720px;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 8px 4px 20px;
+  }
+
   .track {
     display: flex;
     gap: 32px;
     transition: transform 400ms ease-out;
-    flex: 1;
-    min-width: 0;
-    padding: 8px 4px 20px;
   }
 
   .card {
     flex: 0 0 720px;
     background: var(--stand-white);
     border: 3px solid var(--stand-black);
-    box-shadow: 6px 8px 0 var(--stand-black);
-    padding: 56px 69px 63px 58px;
+    box-shadow: 5px 5px 0 var(--stand-black);
+    padding: 56px 58px 63px;
     text-align: center;
     height: 425px;
     display: flex;
@@ -229,7 +236,9 @@ const slides = [
   }
 
   @media (max-width: 1024px) {
-    .card { flex-basis: 540px; padding: 32px 36px; height: auto; }
+    .slider { gap: 32px; }
+    .track-clip { width: 540px; }
+    .card { flex-basis: 540px; padding: 40px 44px; height: auto; min-height: 360px; }
     .desc { font-size: 22px; }
   }
 
@@ -256,10 +265,14 @@ const slides = [
     }
     .prop.bulb { width: 20%; }
     .prop.box { width: 20%; }
+    .slider { gap: 12px; }
+    .track-clip { width: calc(100% - 96px); }
     .card {
-      flex-basis: 280px;
+      flex: 0 0 100%;
       padding: 28px 22px;
       gap: 6px;
+      height: auto;
+      min-height: 220px;
     }
     .num { font-size: 24px; line-height: 1.2; }
     .name { font-size: 28px; }
