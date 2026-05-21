@@ -4,15 +4,26 @@
 // swipe the whole panel as one unit. Illustrations use existing brand WebPs;
 // swap to Faye-composed frame PNGs by replacing the `prop` field below.
 
+// Each slide can either:
+//   - Use Faye's full composed PNG (preferred — set `frame`)
+//   - Or render an illustration + card dynamically from `prop` + num/name/desc
+// As Faye exports more frame PNGs we just swap `frame` in below.
+
 interface Slide {
   num: string;
   name: string;
   desc: string;
-  prop: string; // file basename in /brand/ (no extension)
+  frame?: string;       // basename in /brand/ for a full composed slide image
+  prop?: string;        // basename in /brand/ for an illustration-only image
   fmt?: 'webp' | 'svg';
 }
 
 const slides: Slide[] = [
+  {
+    num: '00', name: 'dashboard',
+    desc: 'Tktktktktktk.',
+    frame: 'frame-dashboard',
+  },
   {
     num: '01', name: 'find your business',
     desc: 'Pick what to make and who it’s for.',
@@ -57,19 +68,39 @@ const slides: Slide[] = [
       <div class="track-clip">
         <div class="track">
           {
-            slides.map((s, i) => (
-              <article class="slide" data-index={i}>
-                <div class="feature">
-                  <img class="prop" src={`/brand/${s.prop}.${s.fmt ?? 'webp'}`} alt="" aria-hidden="true" loading={i < 2 ? 'eager' : 'lazy'} />
-                  <div class="divider"></div>
-                </div>
-                <div class="card">
-                  <span class="num">{s.num}</span>
-                  <h3 class="name">{s.name}</h3>
-                  <p class="desc">{s.desc}</p>
-                </div>
-              </article>
-            ))
+            slides.map((s, i) =>
+              s.frame ? (
+                <article class="slide slide-frame" data-index={i}>
+                  <picture>
+                    <source srcset={`/brand/${s.frame}.webp`} type="image/webp" />
+                    <img
+                      class="frame-img"
+                      src={`/brand/${s.frame}.png`}
+                      alt={`${s.num} ${s.name} — ${s.desc}`}
+                      loading={i < 3 ? 'eager' : 'lazy'}
+                    />
+                  </picture>
+                </article>
+              ) : (
+                <article class="slide" data-index={i}>
+                  <div class="feature">
+                    <img
+                      class="prop"
+                      src={`/brand/${s.prop}.${s.fmt ?? 'webp'}`}
+                      alt=""
+                      aria-hidden="true"
+                      loading={i < 3 ? 'eager' : 'lazy'}
+                    />
+                    <div class="divider"></div>
+                  </div>
+                  <div class="card">
+                    <span class="num">{s.num}</span>
+                    <h3 class="name">{s.name}</h3>
+                    <p class="desc">{s.desc}</p>
+                  </div>
+                </article>
+              )
+            )
           }
         </div>
       </div>
@@ -85,7 +116,7 @@ const slides: Slide[] = [
     const track = slider.querySelector('.track') as HTMLElement;
     const prev = slider.querySelector('.nav.prev') as HTMLButtonElement;
     const next = slider.querySelector('.nav.next') as HTMLButtonElement;
-    let index = 1; // start on 02 / brand studio to match Figma
+    let index = 2; // start on 02 / brand studio to match Figma (00 dashboard is now first)
 
     const update = () => {
       const slide = track.querySelector('.slide') as HTMLElement;
@@ -180,6 +211,19 @@ const slides: Slide[] = [
     display: flex;
     flex-direction: column;
     gap: 40px;
+  }
+
+  /* Frame slides render Faye's composed PNG verbatim. */
+  .slide-frame {
+    gap: 0;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .frame-img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   .feature {
