@@ -1,0 +1,164 @@
+/* Stand brand tokens — v1.0 (from Visual Brand Guide + Figma variables) */
+
+@font-face {
+  font-family: 'Editorial New';
+  src: url('/fonts/EditorialNew-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pie Pie';
+  src: url('/fonts/PiePie-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Authentic Sans — the real brand body/header typeface.
+ * Weight numbers are Authentic Sans's own scale (60/90/130/150), not the standard
+ * 400/500/700. Mapped to CSS weights so we can use familiar font-weight values:
+ *   90  → 400  (regular)
+ *   130 → 700  (heavy — used for big headlines)
+ *   150 → 900  (heaviest)
+ */
+@font-face {
+  font-family: 'Authentic Sans';
+  src: url('/fonts/AUTHENTICSans-90.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Authentic Sans';
+  src: url('/fonts/AUTHENTICSans-130.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Authentic Sans';
+  src: url('/fonts/AUTHENTICSans-150.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Primary palette */
+  --stand-cream: #faf3d6;
+  --stand-red: #dc2026;
+  --stand-black: #000000;
+
+  /* Secondary palette */
+  --stand-mustard: #ffc712;
+  --stand-blue: #1c499e;
+  --stand-postit: #f2ee2f;
+  --stand-green: #1f472f;
+
+  /* Tertiary palette */
+  --stand-pink: #ff459c;
+  --stand-white: #ffffff;
+
+  /* Semantic */
+  --color-bg: var(--stand-cream);
+  --color-text: var(--stand-black);
+  --color-accent: var(--stand-red);
+  --color-cta: var(--stand-postit);
+
+  /* Spacing scale */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+
+  /* Type families — all three real and self-hosted.
+   * Body / headlines: Authentic Sans (weights 90/130/150).
+   * Subheaders / eyebrows / nav serifs: Editorial New Light.
+   * Display moments ("design a brand", "lock in."): Pie Pie.
+   */
+  --font-sans: 'Authentic Sans', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  --font-serif: 'Editorial New', 'Times New Roman', Georgia, serif;
+  --font-display: 'Pie Pie', 'Editorial New', cursive;
+
+  /* Type scale */
+  --text-eyebrow: 14px;
+  --text-body: 18px;
+  --text-h3: 28px;
+  --text-h2: 48px;
+  --text-h1: 88px;
+  --text-display: 140px;
+
+  /* Layout */
+  --container-max: 1437px;
+  --header-h: 98px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.4;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+p {
+  overflow-wrap: break-word;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}

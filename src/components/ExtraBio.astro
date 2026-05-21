@@ -1,0 +1,202 @@
+---
+// EXTRA BIO + TESTIMONIALS — Figma node 113:244
+// Two text blocks + ONE big static white testimonial card with stacked colored
+// rectangles offset behind it for depth. Cream bg.
+
+const quote = {
+  text: 'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
+  byline: '— Parent of Lily, age 9',
+};
+---
+
+<section class="extra-bio">
+  <div class="inner">
+    <p class="eyebrow">Kid &amp; Parent Approved</p>
+    <h2 class="headline">STAND is designed for kids to lead and parents to support.</h2>
+
+    <div class="copy">
+      <p>
+        Kids gain the independence and pride of building something of their own. Parents get the
+        structure, oversight, and safety needed to make the experience age-appropriate.
+      </p>
+      <p>
+        STAND&reg; is not just another app. It&rsquo;s a hands-on way for kids to build confidence,
+        creativity, communication skills, financial literacy, and real-world initiative.
+      </p>
+    </div>
+
+    <div class="testimonial">
+      <span class="layer layer-1"></span>
+      <span class="layer layer-2"></span>
+      <span class="layer layer-3"></span>
+      <article class="card">
+        <blockquote>&ldquo;{quote.text}&rdquo;</blockquote>
+        <p class="byline">{quote.byline}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .extra-bio {
+    background: var(--stand-cream);
+    padding: 174px 0 100px;
+    width: 100%;
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+    color: var(--stand-black);
+    margin: 0 0 32px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 78px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--stand-black);
+    margin: 0 0 60px;
+    max-width: 1250px;
+  }
+
+  .copy {
+    max-width: 1250px;
+    margin-bottom: 140px;
+  }
+
+  .copy p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+    color: var(--stand-black);
+    margin: 0 0 24px;
+  }
+
+  .testimonial {
+    position: relative;
+    max-width: 993px;
+    margin: 0 auto;
+    aspect-ratio: 993 / 762;
+  }
+
+  /* Decorative offset colored rectangles behind the main card */
+  .layer {
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--stand-black);
+  }
+
+  .layer-1 {
+    background: var(--stand-postit);
+    transform: translate(-40px, -50px) rotate(-3deg);
+  }
+
+  .layer-2 {
+    background: var(--stand-blue);
+    transform: translate(40px, 30px) rotate(2deg);
+  }
+
+  .layer-3 {
+    background: var(--stand-green);
+    transform: translate(-10px, 55px) rotate(-1deg);
+  }
+
+  .card {
+    position: relative;
+    background: var(--stand-pink);
+    border: 3px solid var(--stand-black);
+    box-shadow: 6px 8px 0 var(--stand-black);
+    padding: 80px 70px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  blockquote {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    color: var(--stand-black);
+    margin: 0 0 40px;
+    max-width: 750px;
+  }
+
+  .byline {
+    font-family: var(--font-serif);
+    font-size: 25px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .extra-bio { padding: 120px 0 80px; }
+    .headline { font-size: 52px; }
+    .copy p { font-size: 22px; }
+    blockquote { font-size: 32px; }
+    .copy { margin-bottom: 100px; }
+  }
+
+  @media (max-width: 768px) {
+    .extra-bio {
+      padding: 60px 0;
+    }
+    .inner {
+      padding: 0 20px;
+    }
+    .eyebrow {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .headline {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+    .copy {
+      margin-bottom: 60px;
+    }
+    .copy p {
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+    .testimonial {
+      aspect-ratio: 1 / 1.1;
+    }
+    .layer-1 { transform: translate(-12px, -16px) rotate(-2deg); }
+    .layer-2 { transform: translate(14px, 10px) rotate(2deg); }
+    .layer-3 { transform: translate(-4px, 18px) rotate(-1deg); }
+    .card {
+      padding: 36px 24px;
+    }
+    blockquote {
+      font-size: 22px;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .byline {
+      font-size: 14px;
+    }
+  }
+</style>

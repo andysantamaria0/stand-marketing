@@ -1,0 +1,258 @@
+---
+// WHY? — Figma node 200:2146 (1437×2511)
+// Cream bg with red top strip. Four numbered items zigzag down. Two real photos
+// (3 girls smiling + 2 girls with phone) absolutely positioned behind items 2 and 3
+// with rotated post-it / golden cards backing each photo.
+
+const HERO_W = 1437;
+const HERO_H = 2511;
+const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+
+const items = [
+  { num: '01', heading: 'No worksheets. No lectures. Just doing.', x: 215, y: 180, color: '#ffc712' },
+  { num: '02', heading: "Confidence you can't fake or manufacture.", x: 787, y: 690, color: '#ff459c' },
+  { num: '03', heading: "Money clicks differently when it's theirs.", x: 60, y: 1439, color: '#1c499e' },
+  { num: '04', heading: 'Reward the fails, not just the sales.', x: 269, y: 2074, color: '#1f472f' },
+];
+---
+
+<section class="why">
+  <div class="strip">
+    <span>Why STAND&reg;?</span>
+  </div>
+
+  <div class="canvas" style={{ aspectRatio: `${HERO_W} / ${HERO_H}` }}>
+    <div
+      class="photo-card photo-1"
+      style={{ left: pct(-103, HERO_W), top: pct(585, HERO_H), width: pct(852, HERO_W) }}
+    >
+      <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
+      <img class="photo" src="/brand/why-photo-1.webp" alt="Three teenage girls smiling together" loading="lazy" />
+    </div>
+
+    <div
+      class="photo-card photo-2"
+      style={{ left: pct(629, HERO_W), top: pct(1243, HERO_H), width: pct(906, HERO_W) }}
+    >
+      <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
+      <img class="photo" src="/brand/why-photo-2.webp" alt="Two teenage girls looking at a phone together" loading="lazy" />
+    </div>
+
+    {
+      items.map((item) => (
+        <div
+          class="item"
+          style={{ left: pct(item.x, HERO_W), top: pct(item.y, HERO_H) }}
+        >
+          <span class="badge-wrap">
+            <span class="badge-shape" style={{ background: item.color }}></span>
+            <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
+          </span>
+          <div class="text">
+            <span class="num">{item.num}</span>
+            <h3 class="heading">{item.heading}</h3>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .why {
+    background: var(--stand-cream);
+    width: 100%;
+  }
+
+  .strip {
+    background: var(--stand-red);
+    color: var(--stand-white);
+    padding: 38px 50px;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+  }
+
+  .canvas {
+    position: relative;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .photo-card {
+    position: absolute;
+    aspect-ratio: 822 / 544;
+  }
+
+  .photo-1 {
+    transform: rotate(-2.36deg);
+  }
+
+  .photo-2 {
+    transform: rotate(4.54deg);
+  }
+
+  .card-back {
+    position: absolute;
+    inset: -4% -5% -10% 5%;
+    transform: rotate(5deg);
+    z-index: 0;
+  }
+
+  .photo-2 .card-back {
+    transform: rotate(3deg);
+  }
+
+  .photo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .item {
+    position: absolute;
+    display: flex;
+    gap: 34px;
+    align-items: flex-start;
+    width: 50%;
+    max-width: 660px;
+    z-index: 5;
+  }
+
+  .badge-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 73px;
+    height: 89px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .badge-shape {
+    position: absolute;
+    inset: 0;
+    transform: rotate(27.94deg);
+    -webkit-mask-image: url('/brand/badge-mask.png');
+            mask-image: url('/brand/badge-mask.png');
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+  }
+
+  .badge-plus {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    z-index: 2;
+  }
+
+  .text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  .num {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--stand-black);
+  }
+
+  .heading {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .heading {
+      font-size: 48px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .strip {
+      padding: 20px 20px;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    /* Mobile: linearize — kill the absolute canvas, stack items + photos */
+    .canvas {
+      aspect-ratio: auto;
+      padding: 40px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .photo-card {
+      position: relative;
+      left: auto !important;
+      top: auto !important;
+      width: 100% !important;
+      transform: none;
+      aspect-ratio: 4 / 3;
+      order: 3;
+    }
+
+    .photo-card.photo-2 {
+      order: 6;
+    }
+
+    .card-back {
+      inset: -8px -10px -16px 8px;
+    }
+
+    .item {
+      position: relative;
+      left: auto !important;
+      top: auto !important;
+      width: 100%;
+      max-width: none;
+      gap: 16px;
+    }
+
+    .item:nth-child(3) { order: 1; }
+    .item:nth-child(4) { order: 2; }
+    .item:nth-child(5) { order: 4; }
+    .item:nth-child(6) { order: 5; }
+
+    .badge-wrap {
+      width: 40px;
+      height: 50px;
+    }
+
+    .badge-plus {
+      width: 22px;
+      height: 22px;
+    }
+
+    .num {
+      font-size: 24px;
+    }
+
+    .heading {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+    }
+  }
+</style>

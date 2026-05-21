@@ -1,0 +1,269 @@
+---
+// TOOLBOX — Figma node 112:175
+// Cream bg. Eyebrow + headline. Pink Paint hero illustration (609px) flanked by
+// Yellow Lightbulb (left) and Green Box (right). Dotted red line below.
+// One white card per slide with: number (40px Editorial New) + name (40px Pie Pie)
+// + body (30px Pangram). Carousel with prev/next.
+
+const slides = [
+  { num: '01', name: 'find your business', desc: 'Pick what to make and who it’s for.' },
+  { num: '02', name: 'brand studio', desc: 'Create your business name, logo, colors, and brand style.' },
+  { num: '03', name: 'product lab', desc: 'Design the things you sell — stickers, hats, hoodies, and more.' },
+  { num: '04', name: 'storefront', desc: 'Set up your shop online with one click.' },
+  { num: '05', name: 'money math', desc: 'Track every sale, expense, and dollar of profit.' },
+  { num: '06', name: 'megaphone', desc: 'Tell people about your business and bring in customers.' },
+];
+---
+
+<section class="toolbox">
+  <div class="inner">
+    <p class="eyebrow">The Stand Toolbox</p>
+    <h2 class="headline">STAND provides the tools behind every kid business.</h2>
+
+    <div class="feature">
+      <img class="prop bulb" src="/brand/STAND_SVG_YellowLightbulb_Silhouette.svg" alt="" aria-hidden="true" />
+      <img class="prop paint" src="/brand/STAND_PNG_PinkPaint.webp" alt="" loading="lazy" aria-hidden="true" />
+      <img class="prop box" src="/brand/STAND_SVG_GreenBox_Silhouette.svg" alt="" aria-hidden="true" />
+      <div class="divider"></div>
+    </div>
+
+    <div class="slider" id="toolbox-slider">
+      <button class="nav prev" aria-label="Previous">←</button>
+
+      <div class="track">
+        {
+          slides.map((s, i) => (
+            <article class="card" data-index={i}>
+              <span class="num">{s.num}</span>
+              <h3 class="name">{s.name}</h3>
+              <p class="desc">{s.desc}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <button class="nav next" aria-label="Next">→</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slider = document.getElementById('toolbox-slider');
+  if (slider) {
+    const track = slider.querySelector('.track') as HTMLElement;
+    const prev = slider.querySelector('.nav.prev') as HTMLButtonElement;
+    const next = slider.querySelector('.nav.next') as HTMLButtonElement;
+    let index = 1; // start on slide "02 / brand studio" to mirror Figma
+
+    const update = () => {
+      const card = track.querySelector('.card') as HTMLElement;
+      if (!card) return;
+      const offset = card.offsetWidth + 32;
+      track.style.transform = `translateX(${-index * offset}px)`;
+    };
+
+    prev?.addEventListener('click', () => {
+      index = Math.max(0, index - 1);
+      update();
+    });
+    next?.addEventListener('click', () => {
+      const max = track.querySelectorAll('.card').length - 1;
+      index = Math.min(max, index + 1);
+      update();
+    });
+
+    window.addEventListener('resize', update);
+    requestAnimationFrame(update);
+  }
+</script>
+
+<style>
+  .toolbox {
+    background: var(--stand-cream);
+    padding: 123px 0 100px;
+    width: 100%;
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+    color: var(--stand-black);
+    margin: 0 0 18px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 78px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--stand-black);
+    margin: 0 0 80px;
+    max-width: 1250px;
+  }
+
+  .feature {
+    position: relative;
+    height: 620px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .prop {
+    position: absolute;
+  }
+
+  .prop.paint {
+    height: 100%;
+    width: auto;
+    z-index: 2;
+  }
+
+  .prop.bulb {
+    left: 6%;
+    top: 50%;
+    width: 17%;
+    max-width: 243px;
+    z-index: 1;
+  }
+
+  .prop.box {
+    right: 7%;
+    top: 50%;
+    width: 17%;
+    max-width: 243px;
+    z-index: 1;
+  }
+
+  .divider {
+    position: absolute;
+    top: 65%;
+    left: 0;
+    right: 0;
+    border-top: 4px dotted var(--stand-red);
+    z-index: 0;
+  }
+
+  .slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    overflow: hidden;
+  }
+
+  .nav {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    color: var(--stand-black);
+    font-size: 32px;
+    line-height: 1;
+    z-index: 5;
+  }
+
+  .track {
+    display: flex;
+    gap: 32px;
+    transition: transform 400ms ease-out;
+    flex: 1;
+    min-width: 0;
+    padding: 8px 4px 20px;
+  }
+
+  .card {
+    flex: 0 0 720px;
+    background: var(--stand-white);
+    border: 3px solid var(--stand-black);
+    box-shadow: 6px 8px 0 var(--stand-black);
+    padding: 56px 69px 63px 58px;
+    text-align: center;
+    height: 425px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+  }
+
+  .num {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+    color: var(--stand-black);
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.2;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .desc {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+    color: var(--stand-black);
+    margin: 0;
+    max-width: 592px;
+  }
+
+  @media (max-width: 1024px) {
+    .card { flex-basis: 540px; padding: 32px 36px; height: auto; }
+    .desc { font-size: 22px; }
+  }
+
+  @media (max-width: 768px) {
+    .toolbox {
+      padding: 60px 0;
+    }
+    .inner {
+      padding: 0 20px;
+    }
+    .eyebrow {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .headline {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+      margin-bottom: 36px;
+    }
+    .feature {
+      height: 260px;
+      margin-bottom: 24px;
+    }
+    .prop.bulb { width: 20%; }
+    .prop.box { width: 20%; }
+    .card {
+      flex-basis: 280px;
+      padding: 28px 22px;
+      gap: 6px;
+    }
+    .num { font-size: 24px; line-height: 1.2; }
+    .name { font-size: 28px; }
+    .desc { font-size: 16px; }
+    .nav { width: 36px; height: 36px; font-size: 22px; }
+  }
+</style>

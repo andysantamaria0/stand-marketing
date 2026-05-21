@@ -1,0 +1,159 @@
+---
+// SAFETY AND TRUST — Figma node 118:330 (1437×1137)
+// Post-it yellow bg with two large skewed white cards (left at -2.59°, right at +2.13°).
+// Cream Mug rotated -9.09° at top-left of section. "For Real." script positioned in
+// the lower band as a vector group.
+---
+
+<section class="safety">
+  <img class="prop-mug" src="/brand/STAND_PNG_CreamMug.webp" alt="" loading="lazy" aria-hidden="true" />
+
+  <div class="cards">
+    <article class="note note-left">
+      <h3>safety &amp; trust</h3>
+      <p>
+        STAND is built with families in mind. Parent approval, age-appropriate tools, guided
+        business categories, and clear oversight are core to how the platform works. Kids get
+        to create and learn, while parents stay connected to the experience.
+      </p>
+    </article>
+
+    <article class="note note-right">
+      <h3>learn by doing</h3>
+      <p>
+        Kids do not just watch lessons about entrepreneurship. They make decisions, test ideas,
+        create products, price what they sell, talk to customers, and learn from what happens.
+      </p>
+      <p>That is how real-world skills stick.</p>
+    </article>
+  </div>
+
+  <img class="for-real" src="/brand/STAND_ForReal.svg" alt="For Real." />
+</section>
+
+<style>
+  .safety {
+    background: var(--stand-postit);
+    width: 100%;
+    padding: 60px 0 80px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .prop-mug {
+    position: absolute;
+    left: 30%;
+    top: -1px;
+    width: 19%;
+    max-width: 283px;
+    aspect-ratio: 1;
+    transform: rotate(-9.09deg);
+    z-index: 1;
+  }
+
+  .cards {
+    position: relative;
+    z-index: 2;
+    max-width: var(--container-max);
+    margin: 120px auto 0;
+    padding: 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .note {
+    background: var(--stand-white);
+    border: 3px solid var(--stand-black);
+    box-shadow: 5px 7px 0 var(--stand-black);
+    padding: 56px 43px;
+    width: 100%;
+    max-width: 606px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .note-left {
+    transform: rotate(-2.59deg);
+    justify-self: end;
+  }
+
+  .note-right {
+    transform: rotate(2.13deg);
+    margin-top: -80px;
+    justify-self: start;
+  }
+
+  .note h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.2;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .note p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.6px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .for-real {
+    display: block;
+    width: 75%;
+    max-width: 1100px;
+    margin: 60px auto 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1024px) {
+    .note p { font-size: 22px; }
+    .note h3 { font-size: 36px; }
+  }
+
+  @media (max-width: 768px) {
+    .safety {
+      padding: 40px 0 48px;
+    }
+    .prop-mug {
+      width: 26%;
+      left: 8%;
+      top: 8px;
+    }
+    .cards {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-top: 80px;
+      padding: 0 20px;
+    }
+    .note {
+      padding: 28px 22px;
+      gap: 18px;
+      max-width: none;
+    }
+    .note-right {
+      margin-top: 0;
+    }
+    .note h3 {
+      font-size: 26px;
+    }
+    .note p {
+      font-size: 16px;
+    }
+    .for-real {
+      width: 95%;
+      margin-top: 32px;
+    }
+  }
+</style>

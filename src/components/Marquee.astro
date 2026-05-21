@@ -1,0 +1,65 @@
+---
+// Carousel — Figma nodes 201:2483 (top, 123px) and 201:2545 (bottom, 58px)
+// Red bg, yellow serif text scrolling horizontally.
+interface Props {
+  items?: string[];
+  height?: number;
+}
+const { items = ['Dream. Build. Grow.', 'What will you build?'], height = 123 } = Astro.props;
+// Duplicate so the marquee can loop seamlessly.
+const loop = [...items, ...items, ...items, ...items];
+---
+
+<div class="marquee" style={{ height: `${height}px` }} aria-hidden="true">
+  <div class="track">
+    {loop.map((text) => <span class="item">{text} <span class="sep">→</span></span>)}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    background: var(--stand-red);
+    color: var(--stand-postit);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .track {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    white-space: nowrap;
+    animation: marquee 32s linear infinite;
+    font-family: var(--font-serif);
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -1px;
+  }
+
+  .item {
+    display: inline-flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .sep {
+    display: inline-block;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media (max-width: 768px) {
+    .track {
+      font-size: 28px;
+      gap: 32px;
+    }
+    .item {
+      gap: 32px;
+    }
+  }
+</style>

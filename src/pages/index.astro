@@ -1,0 +1,29 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import About from '@/components/About.astro';
+import FindYourBusiness from '@/components/FindYourBusiness.astro';
+import Marquee from '@/components/Marquee.astro';
+import Toolbox from '@/components/Toolbox.astro';
+import ExtraBio from '@/components/ExtraBio.astro';
+import SafetyTrust from '@/components/SafetyTrust.astro';
+import Why from '@/components/Why.astro';
+import StartNow from '@/components/StartNow.astro';
+import Footer from '@/components/Footer.astro';
+---
+
+<Layout>
+  <main>
+    <Hero />
+    <About />
+    <FindYourBusiness />
+    <Marquee items={['Dream. Build. Grow.', 'What will you build?']} height={123} />
+    <Toolbox />
+    <Marquee items={['lock in.', 'For Real.']} height={58} />
+    <ExtraBio />
+    <SafetyTrust />
+    <Why />
+    <StartNow />
+  </main>
+  <Footer />
+</Layout>

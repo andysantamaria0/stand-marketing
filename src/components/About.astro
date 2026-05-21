@@ -1,0 +1,149 @@
+---
+// ABOUT — Figma node 107:689
+// Post-it yellow background. Big black headline sans, white skewed "design a brand" sticker
+// with Pie Pie display type, then a second headline + red text links.
+---
+
+<section class="about">
+  <div class="inner">
+    <p class="eyebrow">About Us</p>
+
+    <h2 class="headline">
+      STAND is where kids create, launch, and grow real businesses.
+    </h2>
+
+    <div class="sticker">
+      <span>design a brand</span>
+    </div>
+
+    <h2 class="headline second">
+      STAND is a one of a kind destination, designed for kids.<br />
+      This is the modern lemonade stand for the next generation.
+    </h2>
+
+    <div class="links">
+      <a href="https://app.standkids.com">Start Building →</a>
+      <a href="#">Learn More →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--stand-postit);
+    width: 100%;
+    padding: 93px 0 100px;
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+    color: var(--stand-black);
+    margin: 0 0 60px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 78px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--stand-black);
+    margin: 0;
+    max-width: 1250px;
+  }
+
+  .headline.second {
+    margin-top: 100px;
+  }
+
+  .sticker {
+    position: relative;
+    margin: 60px auto;
+    width: 100%;
+    max-width: 1227px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110px;
+    background: var(--stand-white);
+    transform: skew(-3deg, -1.2deg);
+    box-shadow: 6px 10px 0 var(--stand-black);
+    border: 2px solid var(--stand-black);
+  }
+
+  .sticker span {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 1;
+    color: var(--stand-black);
+    transform: skew(3deg, 1.2deg);
+    text-transform: lowercase;
+    letter-spacing: -1px;
+  }
+
+  .links {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .links a {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
+    color: var(--stand-red);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    width: fit-content;
+  }
+
+  @media (max-width: 768px) {
+    .about {
+      padding: 60px 0 80px;
+    }
+    .inner {
+      padding: 0 20px;
+    }
+    .eyebrow {
+      font-size: 22px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .headline {
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+    }
+    .headline.second {
+      margin-top: 48px;
+    }
+    .sticker {
+      height: 60px;
+      margin: 32px auto;
+    }
+    .sticker span {
+      font-size: 26px;
+    }
+    .links {
+      margin-top: 36px;
+    }
+    .links a {
+      font-size: 18px;
+    }
+  }
+</style>

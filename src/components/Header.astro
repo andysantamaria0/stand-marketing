@@ -1,0 +1,101 @@
+---
+// Top navigation. Sits above the hero, transparent over the cream bg.
+---
+
+<header class="site-header">
+  <a href="#waitlist-form" data-scroll="waitlist" class="early-access">
+    <svg viewBox="0 0 247 38" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M2 8 L240 4 L245 30 L8 36 Z"
+        fill="white"
+        stroke="black"
+        stroke-width="1.5"
+      />
+    </svg>
+    <span>Early Access Here</span>
+  </a>
+
+  <a href="https://app.standkids.com" class="login">
+    Already have an account? <strong>LOG IN</strong>
+  </a>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 55px 0;
+    pointer-events: none;
+  }
+
+  .site-header > * {
+    pointer-events: auto;
+  }
+
+  .early-access {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 246px;
+    height: 38px;
+  }
+
+  .early-access svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .early-access span {
+    position: relative;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--stand-black);
+  }
+
+  .login {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--stand-red);
+  }
+
+  .login strong {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    font-weight: 900;
+    margin-left: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .site-header {
+      padding: 20px 24px 0;
+    }
+
+    .early-access {
+      width: 180px;
+      height: 32px;
+    }
+
+    .early-access span {
+      font-size: 15px;
+    }
+
+    .login {
+      font-size: 14px;
+    }
+  }
+</style>

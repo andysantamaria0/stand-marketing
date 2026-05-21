@@ -1,0 +1,324 @@
+---
+// FIND YOUR BUSINESS — Figma node 107:744 (1437×2277)
+// Cream bg. Eyebrow + headline + 6 colored organic silhouettes scattered with
+// black skewed numbered tags. Hover state (node 112:116) shows white callout cards.
+
+interface Business {
+  num: number;
+  name: string;
+  desc: string;
+  svg: string;
+  // Silhouette position + size, in raw Figma px relative to 1437×2277 frame
+  sx: number; sy: number; sw: number; sh: number;
+  // Number-tag absolute position, raw Figma px
+  nx: number; ny: number;
+  // Callout card offset relative to silhouette (for hover state)
+  calloutSide: 'left' | 'right';
+}
+
+const HERO_W = 1437;
+const HERO_H = 2277;
+const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+
+const items: Business[] = [
+  {
+    num: 1, name: 'hats',
+    desc: 'Small bio here about the hats you can design.',
+    svg: 'STAND_SVG_BlueHat_Silhouette',
+    sx: 320, sy: 290, sw: 700, sh: 450,
+    nx: 473, ny: 409,
+    calloutSide: 'right',
+  },
+  {
+    num: 2, name: 'baked goods',
+    desc: 'Cupcakes, cookies, and treats with your own brand.',
+    svg: 'STAND_SVG_RedCupcake_Silhouette',
+    sx: 1010, sy: 350, sw: 400, sh: 720,
+    nx: 1134, ny: 549,
+    calloutSide: 'left',
+  },
+  {
+    num: 3, name: 'stickers & art',
+    desc: 'Create sticker packs, cards, prints, and custom designs.',
+    svg: 'STAND_SVG_YellowLightbulb_Silhouette',
+    sx: 60, sy: 770, sw: 500, sh: 480,
+    nx: 292, ny: 877,
+    calloutSide: 'right',
+  },
+  {
+    num: 4, name: 'lifestyle',
+    desc: 'Make merch that fits your vibe.',
+    svg: 'STAND_SVG_YellowSticker_Silhouette',
+    sx: 400, sy: 1000, sw: 540, sh: 540,
+    nx: 514, ny: 1037,
+    calloutSide: 'right',
+  },
+  {
+    num: 5, name: 'clothes & apparel',
+    desc: 'Create hoodies, hats, tees, and other products with your own logo.',
+    svg: 'STAND_SVG_PinkHoodie_Silhouette',
+    sx: 760, sy: 1380, sw: 580, sh: 700,
+    nx: 779, ny: 1562,
+    calloutSide: 'left',
+  },
+  {
+    num: 6, name: 'jewelry',
+    desc: 'Bracelets, charms, and accessories.',
+    svg: 'STAND_SVG_GreenBracelet_Silhouette',
+    sx: 60, sy: 1750, sw: 700, sh: 480,
+    nx: 112, ny: 2012,
+    calloutSide: 'right',
+  },
+];
+---
+
+<section class="find-business">
+  <div class="header-inner">
+    <p class="eyebrow">Find Your Business</p>
+    <h2 class="headline">Explore business ideas kids can actually imagine building.</h2>
+  </div>
+
+  <div class="canvas" style={{ aspectRatio: `${HERO_W} / ${HERO_H}` }}>
+    {
+      items.map((item) => (
+        <div
+          class="biz"
+          style={{
+            left: pct(item.sx, HERO_W),
+            top: pct(item.sy, HERO_H),
+            width: pct(item.sw, HERO_W),
+            height: pct(item.sh, HERO_H),
+          }}
+        >
+          <img class="silhouette" src={`/brand/${item.svg}.svg`} alt={item.name} />
+
+          <div class={`callout ${item.calloutSide}`}>
+            <h3>{item.name}</h3>
+            <p>{item.desc}</p>
+          </div>
+        </div>
+      ))
+    }
+
+    {
+      items.map((item) => (
+        <span
+          class="badge"
+          style={{ left: pct(item.nx, HERO_W), top: pct(item.ny, HERO_H) }}
+        >
+          {item.num}
+        </span>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .find-business {
+    background: var(--stand-cream);
+    padding: 93px 0 100px;
+    width: 100%;
+  }
+
+  .header-inner {
+    max-width: var(--container-max);
+    margin: 0 auto 60px;
+    padding: 0 94px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 47px;
+    letter-spacing: -0.8px;
+    color: var(--stand-black);
+    margin: 0 0 32px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 78px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    color: var(--stand-black);
+    margin: 0;
+    max-width: 1250px;
+  }
+
+  .canvas {
+    position: relative;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .biz {
+    position: absolute;
+  }
+
+  .silhouette {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Black organic-blob number tag — uses the same Rectangle22 mask shape as Figma */
+  .badge {
+    position: absolute;
+    width: 137px;
+    height: 140px;
+    color: var(--stand-white);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+  }
+
+  .badge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--stand-black);
+    transform: rotate(27.94deg);
+    -webkit-mask-image: url('/brand/badge-mask.png');
+            mask-image: url('/brand/badge-mask.png');
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+    z-index: -1;
+  }
+
+  /* Callout: hidden by default, visible on hover of parent .biz */
+  .callout {
+    position: absolute;
+    top: 30%;
+    background: var(--stand-white);
+    border: 3px solid var(--stand-black);
+    box-shadow: 5px 7px 0 var(--stand-black);
+    padding: 24px 28px;
+    min-width: 280px;
+    max-width: 380px;
+    z-index: 8;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease-out;
+  }
+
+  .callout.right { left: 90%; }
+  .callout.left  { right: 90%; }
+
+  .biz:hover .callout { opacity: 1; }
+  .biz:hover .silhouette { transform: scale(1.02); transition: transform 200ms; }
+
+  .callout h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--stand-black);
+    margin: 0 0 12px;
+  }
+
+  .callout p {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .find-business {
+      padding: 60px 0;
+    }
+    .header-inner {
+      padding: 0 20px;
+      margin-bottom: 32px;
+    }
+    .eyebrow {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .headline {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+    }
+
+    /* Linearize: stack each silhouette + callout vertically */
+    .canvas {
+      aspect-ratio: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 0 20px;
+    }
+    .canvas > .badge {
+      display: none;
+    }
+    .biz {
+      position: relative;
+      left: auto !important;
+      top: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--stand-white);
+      border: 2px solid var(--stand-black);
+      box-shadow: 4px 5px 0 var(--stand-black);
+    }
+    .biz::before {
+      content: counter(biz);
+      counter-increment: biz;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      background: var(--stand-black);
+      color: var(--stand-white);
+      font-family: var(--font-serif);
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: skew(-8deg, 0) rotate(4deg);
+    }
+    .canvas { counter-reset: biz; }
+    .silhouette {
+      width: 80px;
+      flex-shrink: 0;
+      height: auto;
+    }
+    .callout {
+      position: static;
+      transform: none;
+      opacity: 1;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      padding: 0;
+      min-width: 0;
+      max-width: none;
+      flex: 1;
+    }
+    .callout h3 {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .callout p {
+      font-size: 14px;
+    }
+  }
+</style>

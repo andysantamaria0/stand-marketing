@@ -1,0 +1,111 @@
+---
+import Header from './Header.astro';
+
+// Hero canvas reproduces Figma node 245:5 — 1437×871.
+// Floating products positioned with percentages so they scale to viewport.
+//   x%  =  raw_x  / 1437,   y%  =  raw_y  / 871,   size%  =  raw_size / 1437
+const products = [
+  { name: 'Green Bracelet', file: 'STAND_PNG_GreenBracelet', x: 113, y: 106, size: 247, rot: 0 },
+  { name: 'Blue Hat',       file: 'STAND_PNG_BlueHat',       x: 711, y: 102, size: 307, rot: 16.8 },
+  { name: 'Yellow Sticker', file: 'STAND_PNG_YellowSticker', x: 1190, y: 128, size: 247, rot: 0 },
+  { name: 'Cream Mug',      file: 'STAND_PNG_CreamMug',      x: 254, y: 379, size: 299, rot: -14.1 },
+  { name: 'Pink Hoodie',    file: 'STAND_PNG_PinkHoodie',    x: 1001, y: 503, size: 247, rot: 0 },
+  { name: 'Yellow Plushie', file: 'STAND_PNG_YellowPlushie', x: 33, y: 578, size: 247, rot: 0 },
+  { name: 'Red Cupcake',    file: 'STAND_PNG_RedCupcake',    x: 563, y: 656, size: 247, rot: 0 },
+];
+
+const HERO_W = 1437;
+const HERO_H = 871;
+const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <Header />
+
+  <h1 id="hero-title" class="visually-hidden">Build your own thing. For Real.</h1>
+
+  <div class="hero-canvas">
+    {
+      products.map((p) => (
+        <div
+          class="product"
+          style={{
+            left: pct(p.x, HERO_W),
+            top: pct(p.y, HERO_H),
+            width: pct(p.size, HERO_W),
+            transform: p.rot ? `rotate(${p.rot}deg)` : undefined,
+          }}
+          aria-hidden="true"
+        >
+          <picture>
+            <source srcset={`/brand/${p.file}.webp`} type="image/webp" />
+            <img src={`/brand/${p.file}.webp`} alt="" loading="eager" />
+          </picture>
+        </div>
+      ))
+    }
+
+    <img class="lockup" src="/brand/hero-lockup.webp" alt="" aria-hidden="true" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--stand-cream);
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-canvas {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1437 / 871;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .product {
+    position: absolute;
+    pointer-events: none;
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+  }
+
+  .product img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Hero lockup ("Build your own thing. For Real.")
+     Original Figma frame: 826×720, positioned at left:397, top:98.
+     Centered horizontally with a slight rightward offset; sits in upper-middle. */
+  .lockup {
+    position: absolute;
+    left: 27.6%;
+    top: 11.25%;
+    width: 57.5%;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .hero-canvas {
+      aspect-ratio: 375 / 560;
+    }
+
+    .lockup {
+      left: 50%;
+      top: 18%;
+      width: 80%;
+      transform: translateX(-50%);
+    }
+
+    /* Mobile: shrink products and reposition manually */
+    .product {
+      width: 22% !important;
+    }
+  }
+</style>
