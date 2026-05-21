@@ -1,17 +1,48 @@
 ---
 // TOOLBOX — Figma node 112:175
-// Cream bg. Eyebrow + headline. Pink Paint hero illustration (609px) flanked by
-// Yellow Lightbulb (left) and Green Box (right). Dotted red line below.
-// One white card per slide with: number (40px Editorial New) + name (40px Pie Pie)
-// + body (30px Pangram). Carousel with prev/next.
+// Each slide is a full panel: illustration on top + card below. Arrow clicks
+// swipe the whole panel as one unit. Illustrations use existing brand WebPs;
+// swap to Faye-composed frame PNGs by replacing the `prop` field below.
 
-const slides = [
-  { num: '01', name: 'find your business', desc: 'Pick what to make and who it’s for.' },
-  { num: '02', name: 'brand studio', desc: 'Create your business name, logo, colors, and brand style.' },
-  { num: '03', name: 'product lab', desc: 'Design the things you sell — stickers, hats, hoodies, and more.' },
-  { num: '04', name: 'storefront', desc: 'Set up your shop online with one click.' },
-  { num: '05', name: 'money math', desc: 'Track every sale, expense, and dollar of profit.' },
-  { num: '06', name: 'megaphone', desc: 'Tell people about your business and bring in customers.' },
+interface Slide {
+  num: string;
+  name: string;
+  desc: string;
+  prop: string; // file basename in /brand/ (no extension)
+  fmt?: 'webp' | 'svg';
+}
+
+const slides: Slide[] = [
+  {
+    num: '01', name: 'find your business',
+    desc: 'Pick what to make and who it’s for.',
+    prop: 'STAND_PNG_YellowLightbulb', fmt: 'webp',
+  },
+  {
+    num: '02', name: 'brand studio',
+    desc: 'Create your business name, logo, colors, and brand style.',
+    prop: 'STAND_PNG_PinkPaint', fmt: 'webp',
+  },
+  {
+    num: '03', name: 'product lab',
+    desc: 'Design the things you sell — stickers, hats, hoodies, and more.',
+    prop: 'STAND_PNG_GreenBox', fmt: 'webp',
+  },
+  {
+    num: '04', name: 'storefront',
+    desc: 'Set up your shop online with one click.',
+    prop: 'STAND_PNG_RedOpenSign', fmt: 'webp',
+  },
+  {
+    num: '05', name: 'money math',
+    desc: 'Track every sale, expense, and dollar of profit.',
+    prop: 'STAND_PNG_BlueReceipt', fmt: 'webp',
+  },
+  {
+    num: '06', name: 'megaphone',
+    desc: 'Tell people about your business and bring in customers.',
+    prop: 'STAND_PNG_YellowMegaphone', fmt: 'webp',
+  },
 ];
 ---
 
@@ -20,31 +51,30 @@ const slides = [
     <p class="eyebrow">The Stand Toolbox</p>
     <h2 class="headline">STAND provides the tools behind every kid business.</h2>
 
-    <div class="feature">
-      <img class="prop bulb" src="/brand/STAND_SVG_YellowLightbulb_Silhouette.svg" alt="" aria-hidden="true" />
-      <img class="prop paint" src="/brand/STAND_PNG_PinkPaint.webp" alt="" loading="lazy" aria-hidden="true" />
-      <img class="prop box" src="/brand/STAND_SVG_GreenBox_Silhouette.svg" alt="" aria-hidden="true" />
-      <div class="divider"></div>
-    </div>
-
     <div class="slider" id="toolbox-slider">
-      <button class="nav prev" aria-label="Previous">←</button>
+      <button class="nav prev" aria-label="Previous slide">←</button>
 
       <div class="track-clip">
         <div class="track">
           {
             slides.map((s, i) => (
-              <article class="card" data-index={i}>
-                <span class="num">{s.num}</span>
-                <h3 class="name">{s.name}</h3>
-                <p class="desc">{s.desc}</p>
+              <article class="slide" data-index={i}>
+                <div class="feature">
+                  <img class="prop" src={`/brand/${s.prop}.${s.fmt ?? 'webp'}`} alt="" aria-hidden="true" loading={i < 2 ? 'eager' : 'lazy'} />
+                  <div class="divider"></div>
+                </div>
+                <div class="card">
+                  <span class="num">{s.num}</span>
+                  <h3 class="name">{s.name}</h3>
+                  <p class="desc">{s.desc}</p>
+                </div>
               </article>
             ))
           }
         </div>
       </div>
 
-      <button class="nav next" aria-label="Next">→</button>
+      <button class="nav next" aria-label="Next slide">→</button>
     </div>
   </div>
 </section>
@@ -55,13 +85,12 @@ const slides = [
     const track = slider.querySelector('.track') as HTMLElement;
     const prev = slider.querySelector('.nav.prev') as HTMLButtonElement;
     const next = slider.querySelector('.nav.next') as HTMLButtonElement;
-    let index = 1; // start on slide "02 / brand studio" to mirror Figma
+    let index = 1; // start on 02 / brand studio to match Figma
 
     const update = () => {
-      const card = track.querySelector('.card') as HTMLElement;
-      if (!card) return;
-      // Slide by full card width + the flex gap (32px) so one card is shown at a time.
-      const offset = card.offsetWidth + 32;
+      const slide = track.querySelector('.slide') as HTMLElement;
+      if (!slide) return;
+      const offset = slide.offsetWidth + 32;
       track.style.transform = `translateX(${-index * offset}px)`;
     };
 
@@ -70,7 +99,7 @@ const slides = [
       update();
     });
     next?.addEventListener('click', () => {
-      const max = track.querySelectorAll('.card').length - 1;
+      const max = track.querySelectorAll('.slide').length - 1;
       index = Math.min(max, index + 1);
       update();
     });
@@ -114,50 +143,6 @@ const slides = [
     max-width: 1250px;
   }
 
-  .feature {
-    position: relative;
-    height: 620px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 40px;
-  }
-
-  .prop {
-    position: absolute;
-  }
-
-  .prop.paint {
-    height: 100%;
-    width: auto;
-    z-index: 2;
-  }
-
-  .prop.bulb {
-    left: 6%;
-    top: 50%;
-    width: 17%;
-    max-width: 243px;
-    z-index: 1;
-  }
-
-  .prop.box {
-    right: 7%;
-    top: 50%;
-    width: 17%;
-    max-width: 243px;
-    z-index: 1;
-  }
-
-  .divider {
-    position: absolute;
-    top: 65%;
-    left: 0;
-    right: 0;
-    border-top: 4px dotted var(--stand-red);
-    z-index: 0;
-  }
-
   .slider {
     position: relative;
     display: flex;
@@ -177,7 +162,6 @@ const slides = [
     z-index: 5;
   }
 
-  /* The clip-window is exactly one card wide — neighbors slide in/out hidden. */
   .track-clip {
     width: 720px;
     max-width: 100%;
@@ -188,11 +172,42 @@ const slides = [
   .track {
     display: flex;
     gap: 32px;
-    transition: transform 400ms ease-out;
+    transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .slide {
+    flex: 0 0 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .feature {
+    position: relative;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .prop {
+    max-height: 100%;
+    width: auto;
+    max-width: 90%;
+    z-index: 2;
+    object-fit: contain;
+  }
+
+  .divider {
+    position: absolute;
+    top: 65%;
+    left: -120px;
+    right: -120px;
+    border-top: 4px dotted var(--stand-red);
+    z-index: 0;
   }
 
   .card {
-    flex: 0 0 720px;
     background: var(--stand-white);
     border: 3px solid var(--stand-black);
     box-shadow: 5px 5px 0 var(--stand-black);
@@ -238,7 +253,9 @@ const slides = [
   @media (max-width: 1024px) {
     .slider { gap: 32px; }
     .track-clip { width: 540px; }
-    .card { flex-basis: 540px; padding: 40px 44px; height: auto; min-height: 360px; }
+    .slide { flex-basis: 540px; gap: 28px; }
+    .feature { height: 340px; }
+    .card { padding: 36px 44px; height: auto; min-height: 360px; }
     .desc { font-size: 22px; }
   }
 
@@ -249,30 +266,23 @@ const slides = [
     .inner {
       padding: 0 20px;
     }
-    .eyebrow {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
+    .eyebrow { font-size: 22px; margin-bottom: 12px; }
     .headline {
       font-size: 28px;
       line-height: 1.05;
       letter-spacing: -0.3px;
       margin-bottom: 36px;
     }
-    .feature {
-      height: 260px;
-      margin-bottom: 24px;
-    }
-    .prop.bulb { width: 20%; }
-    .prop.box { width: 20%; }
     .slider { gap: 12px; }
     .track-clip { width: calc(100% - 96px); }
+    .slide { flex: 0 0 100%; gap: 20px; }
+    .feature { height: 220px; }
+    .divider { left: -40px; right: -40px; }
     .card {
-      flex: 0 0 100%;
       padding: 28px 22px;
-      gap: 6px;
       height: auto;
       min-height: 220px;
+      gap: 6px;
     }
     .num { font-size: 24px; line-height: 1.2; }
     .name { font-size: 28px; }

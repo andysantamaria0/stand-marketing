@@ -3,11 +3,15 @@
 // Cream bg. Eyebrow + headline + 6 colored organic silhouettes scattered with
 // black skewed numbered tags. Hover state (node 112:116) shows white callout cards.
 
+// On hover: silhouette stays, real product photo fades in over it,
+// and a white callout card slides in next to it.
+
 interface Business {
   num: number;
   name: string;
   desc: string;
-  svg: string;
+  svg: string;     // silhouette (default state)
+  photo: string;   // real product image (revealed on hover)
   // Silhouette position + size, in raw Figma px relative to 1437×2277 frame
   sx: number; sy: number; sw: number; sh: number;
   // Number-tag absolute position, raw Figma px
@@ -25,6 +29,7 @@ const items: Business[] = [
     num: 1, name: 'hats',
     desc: 'Small bio here about the hats you can design.',
     svg: 'STAND_SVG_BlueHat_Silhouette',
+    photo: 'STAND_PNG_BlueHat',
     sx: 320, sy: 290, sw: 700, sh: 450,
     nx: 473, ny: 409,
     calloutSide: 'right',
@@ -33,6 +38,7 @@ const items: Business[] = [
     num: 2, name: 'baked goods',
     desc: 'Cupcakes, cookies, and treats with your own brand.',
     svg: 'STAND_SVG_RedCupcake_Silhouette',
+    photo: 'STAND_PNG_RedCupcake',
     sx: 1010, sy: 350, sw: 400, sh: 720,
     nx: 1134, ny: 549,
     calloutSide: 'left',
@@ -41,6 +47,7 @@ const items: Business[] = [
     num: 3, name: 'stickers & art',
     desc: 'Create sticker packs, cards, prints, and custom designs.',
     svg: 'STAND_SVG_YellowLightbulb_Silhouette',
+    photo: 'STAND_PNG_YellowSticker',
     sx: 60, sy: 770, sw: 500, sh: 480,
     nx: 292, ny: 877,
     calloutSide: 'right',
@@ -49,6 +56,7 @@ const items: Business[] = [
     num: 4, name: 'lifestyle',
     desc: 'Make merch that fits your vibe.',
     svg: 'STAND_SVG_YellowSticker_Silhouette',
+    photo: 'STAND_PNG_YellowPlushie',
     sx: 400, sy: 1000, sw: 540, sh: 540,
     nx: 514, ny: 1037,
     calloutSide: 'right',
@@ -57,6 +65,7 @@ const items: Business[] = [
     num: 5, name: 'clothes & apparel',
     desc: 'Create hoodies, hats, tees, and other products with your own logo.',
     svg: 'STAND_SVG_PinkHoodie_Silhouette',
+    photo: 'STAND_PNG_PinkHoodie',
     sx: 760, sy: 1380, sw: 580, sh: 700,
     nx: 779, ny: 1562,
     calloutSide: 'left',
@@ -65,6 +74,7 @@ const items: Business[] = [
     num: 6, name: 'jewelry',
     desc: 'Bracelets, charms, and accessories.',
     svg: 'STAND_SVG_GreenBracelet_Silhouette',
+    photo: 'STAND_PNG_GreenBracelet',
     sx: 60, sy: 1750, sw: 700, sh: 480,
     nx: 112, ny: 2012,
     calloutSide: 'right',
@@ -91,6 +101,7 @@ const items: Business[] = [
           }}
         >
           <img class="silhouette" src={`/brand/${item.svg}.svg`} alt={item.name} />
+          <img class="photo" src={`/brand/${item.photo}.webp`} alt="" aria-hidden="true" loading="lazy" />
 
           <div class={`callout ${item.calloutSide}`}>
             <h3>{item.name}</h3>
@@ -156,12 +167,36 @@ const items: Business[] = [
 
   .biz {
     position: absolute;
+    cursor: pointer;
   }
 
-  .silhouette {
+  .silhouette,
+  .photo {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
+    transition: opacity 280ms ease-out, transform 280ms ease-out;
+  }
+
+  .silhouette {
+    opacity: 1;
+  }
+
+  .photo {
+    opacity: 0;
+    transform: scale(0.94);
+    pointer-events: none;
+  }
+
+  .biz:hover .silhouette {
+    opacity: 0;
+  }
+
+  .biz:hover .photo {
+    opacity: 1;
+    transform: scale(1);
   }
 
   /* Black organic-blob number tag — uses the same Rectangle22 mask shape as Figma */
@@ -198,10 +233,10 @@ const items: Business[] = [
     z-index: -1;
   }
 
-  /* Callout: hidden by default, visible on hover of parent .biz */
+  /* Callout: hidden by default, slides in on hover of parent .biz */
   .callout {
     position: absolute;
-    top: 30%;
+    top: 35%;
     background: var(--stand-white);
     border: 3px solid var(--stand-black);
     box-shadow: 5px 7px 0 var(--stand-black);
@@ -211,14 +246,22 @@ const items: Business[] = [
     z-index: 8;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 180ms ease-out;
+    transition: opacity 220ms ease-out 60ms, transform 220ms ease-out 60ms;
   }
 
-  .callout.right { left: 90%; }
-  .callout.left  { right: 90%; }
+  .callout.right {
+    left: 85%;
+    transform: translateX(-12px);
+  }
+  .callout.left {
+    right: 85%;
+    transform: translateX(12px);
+  }
 
-  .biz:hover .callout { opacity: 1; }
-  .biz:hover .silhouette { transform: scale(1.02); transition: transform 200ms; }
+  .biz:hover .callout {
+    opacity: 1;
+    transform: translateX(0);
+  }
 
   .callout h3 {
     font-family: var(--font-display);
