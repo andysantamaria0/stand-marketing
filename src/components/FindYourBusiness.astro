@@ -46,7 +46,7 @@ const items: Business[] = [
   {
     num: 3, name: 'stickers & art',
     desc: 'Create sticker packs, cards, prints, and custom designs.',
-    svg: 'STAND_SVG_YellowLightbulb_Silhouette',
+    svg: 'STAND_SVG_YellowSticker_Silhouette',
     photo: 'STAND_PNG_YellowSticker',
     sx: 60, sy: 770, sw: 500, sh: 480,
     nx: 292, ny: 877,
@@ -55,7 +55,7 @@ const items: Business[] = [
   {
     num: 4, name: 'lifestyle',
     desc: 'Make merch that fits your vibe.',
-    svg: 'STAND_SVG_YellowSticker_Silhouette',
+    svg: 'STAND_SVG_YellowPlushie_Silhouette',
     photo: 'STAND_PNG_YellowPlushie',
     sx: 400, sy: 1000, sw: 540, sh: 540,
     nx: 514, ny: 1037,
@@ -180,14 +180,18 @@ const items: Business[] = [
     transition: opacity 280ms ease-out, transform 280ms ease-out;
   }
 
-  .silhouette {
-    opacity: 1;
+  /* Product photos ship as square PNGs with whitespace around the product.
+     Silhouettes ship as tight-cropped SVGs. Scale photos up so they render
+     at the same visual size as their silhouette pair. */
+  .photo {
+    transform: scale(1.35);
+    opacity: 0;
+    pointer-events: none;
   }
 
-  .photo {
-    opacity: 0;
-    transform: scale(0.94);
-    pointer-events: none;
+  .biz {
+    /* Allow the scaled-up hover photo to spill past the silhouette bounds. */
+    overflow: visible;
   }
 
   .biz:hover .silhouette {
@@ -196,7 +200,6 @@ const items: Business[] = [
 
   .biz:hover .photo {
     opacity: 1;
-    transform: scale(1);
   }
 
   /* Black organic-blob number tag — uses the same Rectangle22 mask shape as Figma */
