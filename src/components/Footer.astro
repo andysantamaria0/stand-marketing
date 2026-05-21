@@ -33,6 +33,10 @@
         aria-label="Email signup"
         novalidate
       >
+        <picture class="signup-bg" aria-hidden="true">
+          <source srcset="/brand/sticker-card.webp" type="image/webp" />
+          <img src="/brand/sticker-card.png" alt="" />
+        </picture>
         <input
           type="email"
           name="email"
@@ -162,22 +166,35 @@
     color: var(--stand-black);
   }
 
+  /* Form sits on the same Rectangle 26 PNG used for the "design a brand" sticker.
+     The PNG provides the white card + skewed black shadow; we layer inputs on top. */
   .signup {
     position: relative;
     display: flex;
     align-items: center;
-    background: var(--stand-white);
-    border: 2px solid var(--stand-black);
-    box-shadow: 6px 8px 0 var(--stand-black);
-    padding: 18px 28px;
-    transform: skew(-3deg, -1deg);
-    max-width: 700px;
+    padding: 22px 52px 32px;
+    max-width: 849px;
     justify-self: end;
     width: 100%;
+    aspect-ratio: 849 / 85;
   }
 
-  .signup > * {
-    transform: skew(3deg, 1deg);
+  .signup-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .signup-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  .signup > input,
+  .signup > button {
+    position: relative;
+    z-index: 1;
   }
 
   .signup input {
@@ -185,10 +202,13 @@
     border: 0;
     background: transparent;
     font-family: var(--font-display);
-    font-size: 32px;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1;
     color: var(--stand-black);
     outline: none;
     min-width: 0;
+    text-align: center;
   }
 
   .signup input::placeholder {
@@ -198,8 +218,12 @@
 
   .signup button {
     font-family: var(--font-serif);
-    font-size: 24px;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
     text-decoration: underline;
+    text-decoration-thickness: 1.5px;
     color: var(--stand-black);
     flex-shrink: 0;
     margin-left: 16px;
