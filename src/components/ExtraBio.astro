@@ -1,12 +1,32 @@
 ---
 // EXTRA BIO + TESTIMONIALS — Figma node 113:244
-// Two text blocks + ONE big static white testimonial card with stacked colored
-// rectangles offset behind it for depth. Cream bg.
+// Two text blocks + a 3-card testimonial carousel. Each card uses Faye's exported
+// rectangle PNG (Frame 29 / 30 / 31) as the colored background with text overlaid.
+// Arrow click swipes to the next testimonial.
 
-const quote = {
-  text: 'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
-  byline: '— Parent of Lily, age 9',
-};
+interface Testimonial {
+  bg: string;          // basename in /brand/ for the colored rectangle PNG
+  quote: string;
+  byline: string;
+}
+
+const testimonials: Testimonial[] = [
+  {
+    bg: 'testimonial-pink',
+    quote: 'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
+    byline: '— Parent of Lily, age 9',
+  },
+  {
+    bg: 'testimonial-mustard',
+    quote: 'I didn’t know what to charge at first but Stand helped me figure it out. Now I actually understand profit.',
+    byline: '— Maya, age 11',
+  },
+  {
+    bg: 'testimonial-yellow',
+    quote: 'She had a slow month and instead of quitting she changed her prices and tried a new product. I didn’t tell her to do that. Stand did.',
+    byline: '— Parent of Olivia, age 10',
+  },
+];
 ---
 
 <section class="extra-bio">
@@ -25,17 +45,62 @@ const quote = {
       </p>
     </div>
 
-    <div class="testimonial">
-      <span class="layer layer-1"></span>
-      <span class="layer layer-2"></span>
-      <span class="layer layer-3"></span>
-      <article class="card">
-        <blockquote>&ldquo;{quote.text}&rdquo;</blockquote>
-        <p class="byline">{quote.byline}</p>
-      </article>
+    <div class="carousel" id="testimonial-carousel">
+      <button class="nav prev" aria-label="Previous testimonial">←</button>
+
+      <div class="track-clip">
+        <div class="track">
+          {
+            testimonials.map((t, i) => (
+              <article class="testimonial" data-index={i}>
+                <picture class="bg" aria-hidden="true">
+                  <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
+                  <img src={`/brand/${t.bg}.png`} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+                </picture>
+                <div class="content">
+                  <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
+                  <p class="byline">{t.byline}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <button class="nav next" aria-label="Next testimonial">→</button>
     </div>
   </div>
 </section>
+
+<script>
+  const carousel = document.getElementById('testimonial-carousel');
+  if (carousel) {
+    const track = carousel.querySelector('.track') as HTMLElement;
+    const prev = carousel.querySelector('.nav.prev') as HTMLButtonElement;
+    const next = carousel.querySelector('.nav.next') as HTMLButtonElement;
+    let index = 0;
+
+    const update = () => {
+      const card = track.querySelector('.testimonial') as HTMLElement;
+      if (!card) return;
+      const offset = card.offsetWidth + 32;
+      track.style.transform = `translateX(${-index * offset}px)`;
+    };
+
+    prev?.addEventListener('click', () => {
+      index = Math.max(0, index - 1);
+      update();
+    });
+    next?.addEventListener('click', () => {
+      const max = track.querySelectorAll('.testimonial').length - 1;
+      index = Math.min(max, index + 1);
+      update();
+    });
+
+    window.addEventListener('resize', update);
+    requestAnimationFrame(update);
+  }
+</script>
 
 <style>
   .extra-bio {
@@ -86,47 +151,64 @@ const quote = {
     margin: 0 0 24px;
   }
 
+  .carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+  }
+
+  .nav {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    color: var(--stand-black);
+    font-size: 32px;
+    line-height: 1;
+    z-index: 5;
+  }
+
+  .track-clip {
+    width: 993px;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 20px 4px 30px;
+  }
+
+  .track {
+    display: flex;
+    gap: 32px;
+    transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
   .testimonial {
     position: relative;
-    max-width: 993px;
-    margin: 0 auto;
+    flex: 0 0 993px;
     aspect-ratio: 993 / 762;
   }
 
-  /* Decorative offset colored rectangles behind the main card */
-  .layer {
+  .bg,
+  .bg img {
     position: absolute;
     inset: 0;
-    border: 3px solid var(--stand-black);
-  }
-
-  .layer-1 {
-    background: var(--stand-postit);
-    transform: translate(-40px, -50px) rotate(-3deg);
-  }
-
-  .layer-2 {
-    background: var(--stand-blue);
-    transform: translate(40px, 30px) rotate(2deg);
-  }
-
-  .layer-3 {
-    background: var(--stand-green);
-    transform: translate(-10px, 55px) rotate(-1deg);
-  }
-
-  .card {
-    position: relative;
-    background: var(--stand-pink);
-    border: 3px solid var(--stand-black);
-    box-shadow: 6px 8px 0 var(--stand-black);
-    padding: 80px 70px;
+    width: 100%;
     height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .content {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     text-align: center;
+    padding: 60px 100px;
+    z-index: 1;
   }
 
   blockquote {
@@ -153,7 +235,11 @@ const quote = {
     .extra-bio { padding: 120px 0 80px; }
     .headline { font-size: 52px; }
     .copy p { font-size: 22px; }
-    blockquote { font-size: 32px; }
+    .carousel { gap: 32px; }
+    .track-clip { width: 100%; max-width: 720px; }
+    .testimonial { flex-basis: 100%; }
+    .content { padding: 40px 60px; }
+    blockquote { font-size: 28px; }
     .copy { margin-bottom: 100px; }
   }
 
@@ -181,22 +267,17 @@ const quote = {
       font-size: 16px;
       margin-bottom: 16px;
     }
-    .testimonial {
-      aspect-ratio: 1 / 1.1;
-    }
-    .layer-1 { transform: translate(-12px, -16px) rotate(-2deg); }
-    .layer-2 { transform: translate(14px, 10px) rotate(2deg); }
-    .layer-3 { transform: translate(-4px, 18px) rotate(-1deg); }
-    .card {
-      padding: 36px 24px;
-    }
+    .carousel { gap: 12px; }
+    .track-clip { width: calc(100% - 96px); }
+    .content { padding: 28px 24px; }
     blockquote {
-      font-size: 22px;
+      font-size: 18px;
       line-height: 1.2;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
     .byline {
-      font-size: 14px;
+      font-size: 13px;
     }
+    .nav { width: 36px; height: 36px; font-size: 22px; }
   }
 </style>
