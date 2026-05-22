@@ -1,65 +1,82 @@
 ---
-// Carousel — Figma nodes 201:2483 (top, 123px) and 201:2545 (bottom, 58px)
-// Red bg, yellow serif text scrolling horizontally.
+// Tagline strip — Figma nodes 201:2483 (top) / 201:2545 (bottom)
+// Per Faye: "text on rotation. itll say one phrase, then the other, then
+// other on loop. no transition motion needed between them."
+// Single phrase visible at a time, swapped on a timer with no animation.
+
 interface Props {
   items?: string[];
   height?: number;
+  /** Seconds each phrase is visible before swapping to the next. */
+  interval?: number;
+  /** Unique id needed if more than one Marquee renders on the page. */
+  id?: string;
 }
-const { items = ['Dream. Build. Grow.', 'What will you build?'], height = 123 } = Astro.props;
-// Duplicate so the marquee can loop seamlessly.
-const loop = [...items, ...items, ...items, ...items];
+
+const {
+  items = ['Dream. Build. Grow.', 'What will you build?'],
+  height = 123,
+  interval = 2.5,
+  id = `marquee-${Math.random().toString(36).slice(2, 8)}`,
+} = Astro.props;
 ---
 
-<div class="marquee" style={{ height: `${height}px` }} aria-hidden="true">
-  <div class="track">
-    {loop.map((text) => <span class="item">{text} <span class="sep">→</span></span>)}
-  </div>
+<div class="marquee" style={{ height: `${height}px` }} id={id} aria-hidden="true">
+  {
+    items.map((text, i) => (
+      <span class="phrase" data-active={i === 0 ? 'true' : 'false'}>
+        {text}
+      </span>
+    ))
+  }
 </div>
+
+<script define:vars={{ id, interval }}>
+  const wrap = document.getElementById(id);
+  if (wrap) {
+    const phrases = wrap.querySelectorAll('.phrase');
+    if (phrases.length > 1) {
+      let i = 0;
+      setInterval(() => {
+        phrases[i].dataset.active = 'false';
+        i = (i + 1) % phrases.length;
+        phrases[i].dataset.active = 'true';
+      }, interval * 1000);
+    }
+  }
+</script>
 
 <style>
   .marquee {
     background: var(--stand-red);
     color: var(--stand-postit);
-    overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 100%;
-  }
-
-  .track {
-    display: flex;
-    gap: 60px;
-    align-items: center;
-    white-space: nowrap;
-    animation: marquee 32s linear infinite;
+    overflow: hidden;
     font-family: var(--font-serif);
-    font-size: 52px;
     font-weight: 300;
+    font-size: 52px;
+    line-height: 1;
     letter-spacing: -1px;
+    text-align: center;
+    position: relative;
   }
 
-  .item {
-    display: inline-flex;
-    align-items: center;
-    gap: 60px;
+  .phrase {
+    position: absolute;
+    display: none;
+    padding: 0 20px;
   }
 
-  .sep {
+  .phrase[data-active='true'] {
     display: inline-block;
   }
 
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
   @media (max-width: 768px) {
-    .track {
+    .marquee {
       font-size: 28px;
-      gap: 32px;
-    }
-    .item {
-      gap: 32px;
     }
   }
 </style>
