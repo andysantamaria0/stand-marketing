@@ -44,7 +44,11 @@ const items = [
   <div class="canvas" style={{ aspectRatio: `${HERO_W} / ${HERO_H}` }}>
     <div
       class="photo-card photo-1"
-      style={{ left: pct(-103, HERO_W), top: pct(585, HERO_H), width: pct(852, HERO_W) }}
+      style={{
+        '--pc-left': pct(-103, HERO_W),
+        '--pc-top': pct(585, HERO_H),
+        '--pc-width': pct(852, HERO_W),
+      }}
     >
       <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
       <img class="photo" src="/brand/why-photo-1.webp" alt="Three teenage girls smiling together" loading="lazy" />
@@ -52,7 +56,11 @@ const items = [
 
     <div
       class="photo-card photo-2"
-      style={{ left: pct(629, HERO_W), top: pct(1243, HERO_H), width: pct(906, HERO_W) }}
+      style={{
+        '--pc-left': pct(629, HERO_W),
+        '--pc-top': pct(1243, HERO_H),
+        '--pc-width': pct(906, HERO_W),
+      }}
     >
       <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
       <img class="photo" src="/brand/why-photo-2.webp" alt="Two teenage girls looking at a phone together" loading="lazy" />
@@ -63,7 +71,10 @@ const items = [
         <button
           type="button"
           class="item"
-          style={{ left: pct(item.x, HERO_W), top: pct(item.y, HERO_H) }}
+          style={{
+            '--item-left': pct(item.x, HERO_W),
+            '--item-top': pct(item.y, HERO_H),
+          }}
           aria-expanded="false"
         >
           <span class="badge-wrap">
@@ -109,6 +120,9 @@ const items = [
 
   .photo-card {
     position: absolute;
+    left: var(--pc-left);
+    top: var(--pc-top);
+    width: var(--pc-width);
     aspect-ratio: 822 / 544;
   }
 
@@ -142,6 +156,8 @@ const items = [
 
   .item {
     position: absolute;
+    left: var(--item-left);
+    top: var(--item-top);
     display: flex;
     gap: 34px;
     align-items: flex-start;
@@ -285,20 +301,21 @@ const items = [
       line-height: 1.1;
     }
 
-    /* Mobile: linearize — kill the absolute canvas, stack items + photos */
+    /* Mobile: linearize — flex column stack. CSS variables fall back to
+       overrides below, so no !important needed. */
     .canvas {
       aspect-ratio: auto;
-      padding: 40px 20px 60px;
+      padding: 36px 20px 60px;
       display: flex;
       flex-direction: column;
-      gap: 36px;
+      gap: 28px;
     }
 
     .photo-card {
       position: relative;
-      left: auto !important;
-      top: auto !important;
-      width: 100% !important;
+      left: auto;
+      top: auto;
+      width: 100%;
       transform: none;
       aspect-ratio: 4 / 3;
       order: 3;
@@ -314,8 +331,8 @@ const items = [
 
     .item {
       position: relative;
-      left: auto !important;
-      top: auto !important;
+      left: auto;
+      top: auto;
       width: 100%;
       max-width: none;
       gap: 16px;
