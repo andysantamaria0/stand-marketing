@@ -207,19 +207,21 @@ const testimonials: Testimonial[] = [
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 100px;
+    /* The PNG card is rotated/skewed, so its visible area is inset from the
+       bounding box. Extra horizontal padding keeps text inside the colored card. */
+    padding: 80px 160px;
     z-index: 1;
   }
 
   blockquote {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 50px;
+    font-size: 42px;
     line-height: 1.15;
-    letter-spacing: -1px;
+    letter-spacing: -0.8px;
     color: var(--stand-black);
-    margin: 0 0 40px;
-    max-width: 750px;
+    margin: 0 0 32px;
+    max-width: 600px;
   }
 
   .byline {
@@ -238,8 +240,8 @@ const testimonials: Testimonial[] = [
     .carousel { gap: 32px; }
     .track-clip { width: 100%; max-width: 720px; }
     .testimonial { flex-basis: 100%; }
-    .content { padding: 40px 60px; }
-    blockquote { font-size: 28px; }
+    .content { padding: 50px 100px; }
+    blockquote { font-size: 26px; max-width: 460px; }
     .copy { margin-bottom: 100px; }
   }
 
