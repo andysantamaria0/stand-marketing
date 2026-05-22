@@ -1,7 +1,17 @@
 ---
 // ABOUT — Figma node 107:689
-// Post-it yellow background. Big black headline sans, white skewed "design a brand" sticker
-// with Pie Pie display type, then a second headline + red text links.
+// Post-it yellow background. Big black headline sans, white skewed sticker with
+// Pie Pie display type that ROTATES through journey phrases (per Faye:
+// "text on rotation. itll say one phrase, then the other... no transition motion"),
+// then a second headline + red text links.
+
+const stickerPhrases = [
+  'design a brand',
+  'choose products',
+  'open a storefront',
+  'make sales',
+  'learn how money works',
+];
 ---
 
 <section class="about">
@@ -12,12 +22,18 @@
       STAND is where kids create, launch, and grow real businesses.
     </h2>
 
-    <div class="sticker">
+    <div class="sticker" id="about-sticker">
       <picture>
         <source srcset="/brand/sticker-card.webp" type="image/webp" />
         <img src="/brand/sticker-card.png" alt="" aria-hidden="true" />
       </picture>
-      <span>design a brand</span>
+      {
+        stickerPhrases.map((phrase, i) => (
+          <span class="phrase" data-active={i === 0 ? 'true' : 'false'}>
+            {phrase}
+          </span>
+        ))
+      }
     </div>
 
     <h2 class="headline second">
@@ -31,6 +47,23 @@
     </div>
   </div>
 </section>
+
+<script>
+  // Rotate the sticker text through the journey phrases every 2.5s.
+  // No transition between them — instant swap, per Faye's spec.
+  const sticker = document.getElementById('about-sticker');
+  if (sticker) {
+    const phrases = sticker.querySelectorAll<HTMLElement>('.phrase');
+    if (phrases.length > 1) {
+      let i = 0;
+      setInterval(() => {
+        phrases[i].dataset.active = 'false';
+        i = (i + 1) % phrases.length;
+        phrases[i].dataset.active = 'true';
+      }, 2500);
+    }
+  }
+</script>
 
 <style>
   .about {
@@ -87,12 +120,12 @@
     object-fit: contain;
   }
 
-  .sticker span {
+  .sticker .phrase {
     position: absolute;
     inset: 0;
     /* Card sits in roughly the top 85% of the PNG (black shadow under-right). */
     bottom: 18%;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     font-family: var(--font-display);
@@ -102,6 +135,10 @@
     color: var(--stand-black);
     text-transform: lowercase;
     letter-spacing: -1px;
+  }
+
+  .sticker .phrase[data-active='true'] {
+    display: flex;
   }
 
   .links {
@@ -146,7 +183,7 @@
     .sticker {
       margin: 32px auto;
     }
-    .sticker span {
+    .sticker .phrase {
       font-size: 26px;
     }
     .links {
