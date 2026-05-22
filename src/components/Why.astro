@@ -274,26 +274,6 @@ const items = [
     }
   }
 
-  /* Accordion: only enabled on touch / narrow viewports. */
-</style>
-
-<script>
-  // On mobile, items are an accordion. Tap toggles one open at a time.
-  const items = document.querySelectorAll<HTMLElement>('.why .item');
-  items.forEach((item) => {
-    item.addEventListener('click', (e) => {
-      if (window.matchMedia('(min-width: 769px)').matches) return; // desktop = hover behavior, no toggle
-      e.preventDefault();
-      const isOpen = item.getAttribute('aria-expanded') === 'true';
-      items.forEach((i) => i.setAttribute('aria-expanded', 'false'));
-      if (!isOpen) item.setAttribute('aria-expanded', 'true');
-    });
-  });
-</script>
-
-<style>
-  .why-accordion-marker { display: none; }
-
   @media (max-width: 768px) {
     .strip {
       padding: 20px 20px;
@@ -403,3 +383,17 @@ const items = [
     }
   }
 </style>
+
+<script>
+  // On mobile, items are an accordion. Tap toggles one open at a time.
+  const items = document.querySelectorAll<HTMLElement>('.why .item');
+  items.forEach((item) => {
+    item.addEventListener('click', (e) => {
+      if (window.matchMedia('(min-width: 769px)').matches) return;
+      e.preventDefault();
+      const isOpen = item.getAttribute('aria-expanded') === 'true';
+      items.forEach((i) => i.setAttribute('aria-expanded', 'false'));
+      if (!isOpen) item.setAttribute('aria-expanded', 'true');
+    });
+  });
+</script>
