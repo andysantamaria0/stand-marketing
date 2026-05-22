@@ -45,6 +45,11 @@ const stickerPhrases = [
       <a href="https://app.standkids.com">Start Building →</a>
       <a href="#">Learn More →</a>
     </div>
+
+    <picture class="mobile-photo" aria-hidden="true">
+      <source srcset="/brand/why-photo-2.webp" type="image/webp" />
+      <img src="/brand/why-photo-2.webp" alt="" loading="lazy" />
+    </picture>
   </div>
 </section>
 
@@ -160,37 +165,72 @@ const stickerPhrases = [
     width: fit-content;
   }
 
+  /* Hide the mobile photo on desktop. */
+  .mobile-photo,
+  .mobile-photo img {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .about {
-      padding: 60px 0 80px;
+      padding: 36px 0 0;
+      position: relative;
+      overflow: hidden;
     }
     .inner {
       padding: 0 20px;
     }
     .eyebrow {
-      font-size: 22px;
-      line-height: 1.1;
-      margin-bottom: 24px;
+      font-size: 9.44px;
+      line-height: 11.092px;
+      letter-spacing: -0.1888px;
+      margin: 0 0 12px;
+      padding-left: 18px;
     }
     .headline {
-      font-size: 30px;
+      font-size: 20px;
       line-height: 1.05;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
+      max-width: none;
+      overflow-wrap: break-word;
     }
     .headline.second {
-      margin-top: 48px;
+      margin-top: 24px;
     }
     .sticker {
-      margin: 32px auto;
+      margin: 22px auto;
+      max-width: 305px;
     }
     .sticker .phrase {
-      font-size: 26px;
+      font-size: 16px;
+      letter-spacing: -0.3px;
     }
     .links {
-      margin-top: 36px;
+      margin-top: 28px;
     }
     .links a {
-      font-size: 18px;
+      font-size: 15px;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+    }
+
+    /* happy-teenagers photo, mobile only — sits at the bottom of About with
+       a slight rotation, matching the Figma mobile frame. */
+    .mobile-photo {
+      display: block;
+      position: relative;
+      width: 322px;
+      max-width: 100%;
+      margin: 36px auto 0;
+      aspect-ratio: 322 / 246;
+      transform: rotate(4.54deg);
+      transform-origin: center;
+    }
+    .mobile-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 </style>

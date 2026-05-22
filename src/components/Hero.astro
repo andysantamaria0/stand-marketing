@@ -1,21 +1,39 @@
 ---
 import Header from './Header.astro';
 
-// Hero canvas reproduces Figma node 245:5 — 1437×871.
-// Floating products positioned with percentages so they scale to viewport.
-//   x%  =  raw_x  / 1437,   y%  =  raw_y  / 871,   size%  =  raw_size / 1437
+// Hero canvas reproduces Figma desktop 245:5 (1437×871) and mobile 412:69 (375×491).
+// Each floating product has separate desktop + mobile positions; CSS variables
+// swap them at the 768px breakpoint.
 const products = [
-  { name: 'Green Bracelet', file: 'STAND_PNG_GreenBracelet', x: 113, y: 106, size: 247, rot: 0 },
-  { name: 'Blue Hat',       file: 'STAND_PNG_BlueHat',       x: 711, y: 102, size: 307, rot: 16.8 },
-  { name: 'Yellow Sticker', file: 'STAND_PNG_YellowSticker', x: 1190, y: 128, size: 247, rot: 0 },
-  { name: 'Cream Mug',      file: 'STAND_PNG_CreamMug',      x: 254, y: 379, size: 299, rot: -14.1 },
-  { name: 'Pink Hoodie',    file: 'STAND_PNG_PinkHoodie',    x: 1001, y: 503, size: 247, rot: 0 },
-  { name: 'Yellow Plushie', file: 'STAND_PNG_YellowPlushie', x: 33, y: 578, size: 247, rot: 0 },
-  { name: 'Red Cupcake',    file: 'STAND_PNG_RedCupcake',    x: 563, y: 656, size: 247, rot: 0 },
+  // desktop:  x  y    size  rot
+  // mobile:  mx  my   msize mrot
+  { name: 'Green Bracelet', file: 'STAND_PNG_GreenBracelet',
+    x: 113, y: 106, size: 247, rot: 0,
+    mx: 0,  my: 9,   msize: 81, mrot: 0 },
+  { name: 'Blue Hat', file: 'STAND_PNG_BlueHat',
+    x: 711, y: 102, size: 307, rot: 16.8,
+    mx: 177, my: 52, msize: 81, mrot: 16.8 },
+  { name: 'Yellow Sticker', file: 'STAND_PNG_YellowSticker',
+    x: 1190, y: 128, size: 247, rot: 0,
+    mx: 279, my: 0, msize: 81, mrot: 0 },
+  { name: 'Cream Mug', file: 'STAND_PNG_CreamMug',
+    x: 254, y: 379, size: 299, rot: -14.1,
+    mx: 19, my: 162, msize: 81, mrot: -14.1 },
+  { name: 'Pink Hoodie', file: 'STAND_PNG_PinkHoodie',
+    x: 1001, y: 503, size: 247, rot: 0,
+    mx: 267, my: 255, msize: 81, mrot: 0 },
+  { name: 'Yellow Plushie', file: 'STAND_PNG_YellowPlushie',
+    x: 33, y: 578, size: 247, rot: 0,
+    mx: 13, my: 304, msize: 81, mrot: 0 },
+  { name: 'Red Cupcake', file: 'STAND_PNG_RedCupcake',
+    x: 563, y: 656, size: 247, rot: 0,
+    mx: 147, my: 306, msize: 81, mrot: 0 },
 ];
 
 const HERO_W = 1437;
 const HERO_H = 871;
+const MOBILE_W = 375;
+const MOBILE_H = 491;
 const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 ---
 
@@ -30,10 +48,14 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
         <div
           class="product"
           style={{
-            left: pct(p.x, HERO_W),
-            top: pct(p.y, HERO_H),
-            width: pct(p.size, HERO_W),
-            transform: p.rot ? `rotate(${p.rot}deg)` : undefined,
+            '--x': pct(p.x, HERO_W),
+            '--y': pct(p.y, HERO_H),
+            '--w': pct(p.size, HERO_W),
+            '--rot': `${p.rot}deg`,
+            '--mx': pct(p.mx, MOBILE_W),
+            '--my': pct(p.my, MOBILE_H),
+            '--mw': pct(p.msize, MOBILE_W),
+            '--mrot': `${p.mrot}deg`,
           }}
           aria-hidden="true"
         >
@@ -70,6 +92,10 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     pointer-events: none;
     aspect-ratio: 1 / 1;
     z-index: 2;
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+    transform: rotate(var(--rot));
   }
 
   .product img {
@@ -93,19 +119,23 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
   @media (max-width: 768px) {
     .hero-canvas {
-      aspect-ratio: 375 / 560;
+      aspect-ratio: 375 / 491;
     }
 
+    .product {
+      left: var(--mx);
+      top: var(--my);
+      width: var(--mw);
+      transform: rotate(var(--mrot));
+    }
+
+    /* On mobile the lockup is centered, fits to 82% of width to avoid clipping
+       at the right edge from the "For Real." script's italic flourish. */
     .lockup {
       left: 50%;
-      top: 18%;
-      width: 80%;
+      top: 9.7%;
+      width: 82%;
       transform: translateX(-50%);
-    }
-
-    /* Mobile: shrink products and reposition manually */
-    .product {
-      width: 22% !important;
     }
   }
 </style>

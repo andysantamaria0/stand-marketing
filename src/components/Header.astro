@@ -1,5 +1,7 @@
 ---
-// Top navigation. Sits above the hero, transparent over the cream bg.
+// Top navigation overlay on the hero. On desktop it sits at the top (Early Access
+// tag at left, LOG IN at right). On mobile it moves to the bottom of the hero,
+// stacked vertically (tag above LOG IN), centered.
 ---
 
 <header class="site-header">
@@ -60,8 +62,6 @@
     line-height: 1.2;
     letter-spacing: -0.4px;
     color: var(--stand-black);
-    /* Nudge above the visible center to sit on the tag's flat top edge,
-       matching the Figma type position. */
     transform: translateY(-2px);
   }
 
@@ -82,21 +82,28 @@
   }
 
   @media (max-width: 768px) {
+    /* Mobile: move both CTAs to the bottom of the hero, stacked + centered. */
     .site-header {
-      padding: 20px 24px 0;
+      top: auto;
+      bottom: 8.5%;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0 20px;
     }
 
     .early-access {
-      width: 180px;
-      height: 32px;
+      width: 160px;
     }
 
     .early-access span {
-      font-size: 15px;
+      font-size: 12px;
+      letter-spacing: -0.24px;
     }
 
     .login {
-      font-size: 14px;
+      font-size: 12px;
+      letter-spacing: -0.24px;
     }
   }
 </style>
