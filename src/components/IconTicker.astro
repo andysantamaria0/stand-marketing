@@ -2,9 +2,7 @@
 // Product-silhouette ticker — Figma node 201:2545 (CAROUSEL), 1437x123.
 // Green strip with a continuously scrolling row of recolored product
 // silhouettes. Each icon reuses the existing /brand silhouette SVG as a CSS
-// mask, filled with the Figma carousel palette. Those hexes are more saturated
-// than tokens.css (e.g. pink #ff2d9b vs --stand-pink #ff459c) and are kept
-// local on purpose until the global palette sync is decided.
+// mask, filled with a brand token (tokens.css now matches the Figma palette).
 
 interface Icon {
   svg: string;
@@ -13,15 +11,15 @@ interface Icon {
 }
 
 const icons: Icon[] = [
-  { svg: 'STAND_SVG_PinkHoodie_Silhouette', color: '#ff2d9b', rotate: 12.79 },
-  { svg: 'STAND_SVG_RedCupcake_Silhouette', color: '#db1f26' },
-  { svg: 'STAND_SVG_GreenBracelet_Silhouette', color: '#faf3d6' },
+  { svg: 'STAND_SVG_PinkHoodie_Silhouette', color: 'var(--stand-pink)', rotate: 12.79 },
+  { svg: 'STAND_SVG_RedCupcake_Silhouette', color: 'var(--stand-red)' },
+  { svg: 'STAND_SVG_GreenBracelet_Silhouette', color: 'var(--stand-cream)' },
   // Asset names are counterintuitive: _YellowPlushie_ is the star shape and
   // _YellowSticker_ is the rounded shape (verified by render). Mapped to match
-  // the Figma carousel: star at #f9f06c, rounded at #ffc400.
-  { svg: 'STAND_SVG_YellowPlushie_Silhouette', color: '#f9f06c' },
-  { svg: 'STAND_SVG_BlueHat_Silhouette', color: '#014794', rotate: -5.36 },
-  { svg: 'STAND_SVG_YellowSticker_Silhouette', color: '#ffc400' },
+  // the Figma carousel: star at post-it yellow, rounded at golden/mustard.
+  { svg: 'STAND_SVG_YellowPlushie_Silhouette', color: 'var(--stand-postit)' },
+  { svg: 'STAND_SVG_BlueHat_Silhouette', color: 'var(--stand-blue)', rotate: -5.36 },
+  { svg: 'STAND_SVG_YellowSticker_Silhouette', color: 'var(--stand-mustard)' },
 ];
 
 const duration = 32;
@@ -51,8 +49,7 @@ const groups = [0, 1, 2];
 
 <style>
   .icon-ticker {
-    /* Figma carousel green (#00623b) — distinct from --stand-green (#1f472f). */
-    background: #00623b;
+    background: var(--stand-green);
     height: 123px;
     width: 100%;
     overflow: hidden;
