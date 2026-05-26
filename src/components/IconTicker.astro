@@ -1,0 +1,108 @@
+---
+// Product-silhouette ticker — Figma node 201:2545 (CAROUSEL), 1437x123.
+// Green strip with a continuously scrolling row of recolored product
+// silhouettes. Each icon reuses the existing /brand silhouette SVG as a CSS
+// mask, filled with the Figma carousel palette. Those hexes are more saturated
+// than tokens.css (e.g. pink #ff2d9b vs --stand-pink #ff459c) and are kept
+// local on purpose until the global palette sync is decided.
+
+interface Icon {
+  svg: string;
+  color: string;
+  rotate?: number;
+}
+
+const icons: Icon[] = [
+  { svg: 'STAND_SVG_PinkHoodie_Silhouette', color: '#ff2d9b', rotate: 12.79 },
+  { svg: 'STAND_SVG_RedCupcake_Silhouette', color: '#db1f26' },
+  { svg: 'STAND_SVG_GreenBracelet_Silhouette', color: '#faf3d6' },
+  // Asset names are counterintuitive: _YellowPlushie_ is the star shape and
+  // _YellowSticker_ is the rounded shape (verified by render). Mapped to match
+  // the Figma carousel: star at #f9f06c, rounded at #ffc400.
+  { svg: 'STAND_SVG_YellowPlushie_Silhouette', color: '#f9f06c' },
+  { svg: 'STAND_SVG_BlueHat_Silhouette', color: '#014794', rotate: -5.36 },
+  { svg: 'STAND_SVG_YellowSticker_Silhouette', color: '#ffc400' },
+];
+
+const duration = 32;
+const groups = [0, 1, 2];
+---
+
+<div class="icon-ticker" aria-hidden="true">
+  <div class="track" style={{ animationDuration: `${duration}s` }}>
+    {
+      groups.map(() => (
+        <div class="group">
+          {icons.map((ic) => (
+            <span
+              class="icon"
+              style={{
+                '--icon-color': ic.color,
+                '--icon-mask': `url('/brand/${ic.svg}.svg')`,
+                '--icon-rot': `${ic.rotate ?? 0}deg`,
+              }}
+            />
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .icon-ticker {
+    /* Figma carousel green (#00623b) — distinct from --stand-green (#1f472f). */
+    background: #00623b;
+    height: 123px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .track {
+    display: flex;
+    flex-shrink: 0;
+    animation: icon-scroll linear infinite;
+  }
+
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-right: 28px;
+    flex-shrink: 0;
+  }
+
+  .icon {
+    width: 76px;
+    height: 76px;
+    flex-shrink: 0;
+    background-color: var(--icon-color);
+    transform: rotate(var(--icon-rot));
+    mask-image: var(--icon-mask);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    -webkit-mask-image: var(--icon-mask);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+  /* Track is 3 identical groups; shifting by one group-width loops seamlessly. */
+  @keyframes icon-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-33.333%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; }
+  }
+
+  @media (max-width: 768px) {
+    .icon-ticker { height: 84px; }
+    .icon { width: 52px; height: 52px; }
+    .group { gap: 18px; padding-right: 18px; }
+  }
+</style>
