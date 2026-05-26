@@ -46,7 +46,7 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     {
       products.map((p) => (
         <div
-          class="product"
+          class={`product${p.file === 'STAND_PNG_CreamMug' ? ' top' : ''}`}
           style={{
             '--x': pct(p.x, HERO_W),
             '--y': pct(p.y, HERO_H),
@@ -89,19 +89,33 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
   .product {
     position: absolute;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
     aspect-ratio: 1 / 1;
     z-index: 2;
     left: var(--x);
     top: var(--y);
     width: var(--w);
-    transform: rotate(var(--rot));
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--rot));
+  }
+
+  .product.dragging {
+    cursor: grabbing;
+  }
+
+  /* Cream Mug ("World's Best Boss") sits above the other products by default. */
+  .product.top {
+    z-index: 3;
   }
 
   .product img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
   }
 
   /* Hero lockup ("Build your own thing. For Real.")
@@ -126,7 +140,7 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
       left: var(--mx);
       top: var(--my);
       width: var(--mw);
-      transform: rotate(var(--mrot));
+      transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--mrot));
     }
 
     /* On mobile the lockup is centered, fits to 82% of width to avoid clipping
@@ -139,3 +153,48 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     }
   }
 </style>
+
+<script>
+  // Make the floating hero products draggable (mouse + touch/iPad), drag-only,
+  // free-drop — they stay wherever you release them. Each product keeps its
+  // CSS left/top anchor + rotation; we only update a translate offset (--dx/--dy),
+  // so desktop/mobile layouts and rotations are preserved.
+  const products = document.querySelectorAll('.hero .product');
+  let topZ = 10;
+
+  products.forEach((el) => {
+    let startX = 0;
+    let startY = 0;
+    let baseDx = 0;
+    let baseDy = 0;
+    let dragging = false;
+
+    el.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('dragging');
+      el.style.zIndex = String(++topZ); // grabbed item jumps to the front
+      startX = e.clientX;
+      startY = e.clientY;
+      baseDx = parseFloat(el.style.getPropertyValue('--dx')) || 0;
+      baseDy = parseFloat(el.style.getPropertyValue('--dy')) || 0;
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      el.style.setProperty('--dx', `${baseDx + (e.clientX - startX)}px`);
+      el.style.setProperty('--dy', `${baseDy + (e.clientY - startY)}px`);
+    });
+
+    const end = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+      try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  });
+</script>
