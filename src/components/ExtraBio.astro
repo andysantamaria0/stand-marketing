@@ -27,6 +27,10 @@ const testimonials: Testimonial[] = [
     byline: '— Parent of Olivia, age 10',
   },
 ];
+
+// Rendered three times so the track can loop infinitely: we start on the middle
+// copy and snap back to it (without animation) whenever a slide crosses an edge.
+const loop = [...testimonials, ...testimonials, ...testimonials];
 ---
 
 <section class="extra-bio">
@@ -51,11 +55,11 @@ const testimonials: Testimonial[] = [
       <div class="track-clip">
         <div class="track">
           {
-            testimonials.map((t, i) => (
+            loop.map((t, i) => (
               <article class="testimonial" data-index={i}>
                 <picture class="bg" aria-hidden="true">
                   <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
-                  <img src={`/brand/${t.bg}.png`} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+                  <img src={`/brand/${t.bg}.png`} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
                 </picture>
                 <div class="content">
                   <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
@@ -78,27 +82,41 @@ const testimonials: Testimonial[] = [
     const track = carousel.querySelector('.track') as HTMLElement;
     const prev = carousel.querySelector('.nav.prev') as HTMLButtonElement;
     const next = carousel.querySelector('.nav.next') as HTMLButtonElement;
-    let index = 0;
+    const len = 3; // original testimonial count (rendered x3 for a seamless loop)
+    let index = len; // start on the first card of the middle copy
+    let animating = false;
 
-    const update = () => {
-      const card = track.querySelector('.testimonial') as HTMLElement;
-      if (!card) return;
-      const offset = card.offsetWidth + 32;
-      track.style.transform = `translateX(${-index * offset}px)`;
+    const step = () => {
+      const card = track.querySelector('.testimonial') as HTMLElement | null;
+      return card ? card.offsetWidth + 32 : 0;
     };
 
-    prev?.addEventListener('click', () => {
-      index = Math.max(0, index - 1);
-      update();
-    });
-    next?.addEventListener('click', () => {
-      const max = track.querySelectorAll('.testimonial').length - 1;
-      index = Math.min(max, index + 1);
-      update();
+    const place = (animate: boolean) => {
+      track.style.transition = animate ? '' : 'none';
+      track.style.transform = `translateX(${-index * step()}px)`;
+      if (!animate) void track.offsetHeight; // force reflow so the snap is instant
+    };
+
+    const move = (delta: number) => {
+      if (animating) return;
+      animating = true;
+      index += delta;
+      place(true);
+    };
+
+    // When a slide crosses into a clone copy, snap back to the middle copy with
+    // no animation so the carousel loops forever in both directions.
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      animating = false;
+      if (index >= 2 * len) { index -= len; place(false); }
+      else if (index < len) { index += len; place(false); }
     });
 
-    window.addEventListener('resize', update);
-    requestAnimationFrame(update);
+    prev?.addEventListener('click', () => move(-1));
+    next?.addEventListener('click', () => move(1));
+    window.addEventListener('resize', () => place(false));
+    requestAnimationFrame(() => place(false));
   }
 </script>
 
@@ -157,6 +175,10 @@ const testimonials: Testimonial[] = [
     align-items: center;
     justify-content: center;
     gap: 80px;
+    /* One card == the visible clip, sized to fit between the nav arrows + inner
+       padding so it never overflows and clips the quote when the window shrinks.
+       444 = inner padding (188) + nav arrows (96) + carousel gaps (160). */
+    --card-w: min(993px, calc(100vw - 444px));
   }
 
   .nav {
@@ -171,8 +193,7 @@ const testimonials: Testimonial[] = [
   }
 
   .track-clip {
-    width: 993px;
-    max-width: 100%;
+    width: var(--card-w);
     overflow: hidden;
     padding: 20px 4px 30px;
   }
@@ -185,7 +206,7 @@ const testimonials: Testimonial[] = [
 
   .testimonial {
     position: relative;
-    flex: 0 0 993px;
+    flex: 0 0 var(--card-w);
     aspect-ratio: 993 / 762;
   }
 
@@ -208,8 +229,9 @@ const testimonials: Testimonial[] = [
     justify-content: center;
     text-align: center;
     /* The PNG card is rotated/skewed, so its visible area is inset from the
-       bounding box. Extra horizontal padding keeps text inside the colored card. */
-    padding: 80px 160px;
+       bounding box. Percentage padding keeps text inside the colored card at
+       every card width (the box scales with --card-w). */
+    padding: 8% 14%;
     z-index: 1;
   }
 
@@ -235,13 +257,9 @@ const testimonials: Testimonial[] = [
 
   @media (max-width: 1024px) {
     .extra-bio { padding: 120px 0 80px; }
-    .headline { font-size: 52px; }
     .copy p { font-size: 22px; }
-    .carousel { gap: 32px; }
-    .track-clip { width: 100%; max-width: 720px; }
-    .testimonial { flex-basis: 100%; }
-    .content { padding: 50px 100px; }
-    blockquote { font-size: 26px; max-width: 460px; }
+    /* Smaller gap on tablet -> recompute the fit: pad 188 + nav 96 + gaps 64. */
+    .carousel { gap: 32px; --card-w: min(720px, calc(100vw - 348px)); }
     .copy { margin-bottom: 100px; }
   }
 
