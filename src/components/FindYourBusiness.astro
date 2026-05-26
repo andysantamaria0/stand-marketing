@@ -1,98 +1,66 @@
 ---
-// FIND YOUR BUSINESS — Figma node 107:744 (1437×2277)
-// Cream bg. Eyebrow + headline + 6 colored organic silhouettes scattered with
-// black skewed numbered tags. Hover state (node 112:116) shows white callout cards.
-
-// On hover: silhouette stays, real product photo fades in over it,
-// and a white callout card slides in next to it.
+// FIND YOUR BUSINESS — Figma node 107:744 (1437×1083, redesign 2026-05-26).
+// Cream frame with a white panel across the bottom. Eyebrow + headline, a
+// horizontal row of 6 product silhouettes, and a shared prompt that defaults to
+// "hover over an item / to learn more about our Product Lab." and swaps to the
+// hovered item's name + bio. On hover the silhouette becomes the real photo.
+// Type scales with the frame (cqw) so it stays proportional below 1437px.
 
 interface Business {
-  num: number;
   name: string;
   desc: string;
-  svg: string;     // silhouette (default state)
-  photo: string;   // real product image (revealed on hover)
-  // Silhouette position + size, in raw Figma px relative to 1437×2277 frame
+  svg: string;   // silhouette (default)
+  photo: string; // real product image (revealed on hover)
+  // bounding box in raw Figma px, relative to the 1437×1083 frame
   sx: number; sy: number; sw: number; sh: number;
-  // Number-tag absolute position, raw Figma px
-  nx: number; ny: number;
-  // Callout card offset relative to silhouette (for hover state)
-  calloutSide: 'left' | 'right';
 }
 
 const HERO_W = 1437;
-const HERO_H = 2277;
+const HERO_H = 1083;
 const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
+const DEFAULT_TITLE = 'hover over an item';
+const DEFAULT_DESC = 'to learn more about our Product Lab.';
+
 const items: Business[] = [
-  {
-    num: 1, name: 'hats',
-    desc: 'Small bio here about the hats you can design.',
-    svg: 'STAND_SVG_BlueHat_Silhouette',
-    photo: 'STAND_PNG_BlueHat',
-    sx: 320, sy: 290, sw: 700, sh: 450,
-    nx: 473, ny: 409,
-    calloutSide: 'right',
-  },
-  {
-    num: 2, name: 'baked goods',
-    desc: 'Cupcakes, cookies, and treats with your own brand.',
-    svg: 'STAND_SVG_RedCupcake_Silhouette',
-    photo: 'STAND_PNG_RedCupcake',
-    sx: 1010, sy: 350, sw: 400, sh: 720,
-    nx: 1134, ny: 549,
-    calloutSide: 'left',
-  },
-  {
-    num: 3, name: 'stickers & art',
-    desc: 'Create sticker packs, cards, prints, and custom designs.',
-    svg: 'STAND_SVG_YellowSticker_Silhouette',
-    photo: 'STAND_PNG_YellowSticker',
-    sx: 60, sy: 770, sw: 500, sh: 480,
-    nx: 292, ny: 877,
-    calloutSide: 'right',
-  },
-  {
-    num: 4, name: 'lifestyle',
-    desc: 'Make merch that fits your vibe.',
-    svg: 'STAND_SVG_YellowPlushie_Silhouette',
-    photo: 'STAND_PNG_YellowPlushie',
-    sx: 400, sy: 1000, sw: 540, sh: 540,
-    nx: 514, ny: 1037,
-    calloutSide: 'right',
-  },
-  {
-    num: 5, name: 'clothes & apparel',
-    desc: 'Create hoodies, hats, tees, and other products with your own logo.',
-    svg: 'STAND_SVG_PinkHoodie_Silhouette',
-    photo: 'STAND_PNG_PinkHoodie',
-    sx: 760, sy: 1380, sw: 580, sh: 700,
-    nx: 779, ny: 1562,
-    calloutSide: 'left',
-  },
-  {
-    num: 6, name: 'jewelry',
-    desc: 'Bracelets, charms, and accessories.',
-    svg: 'STAND_SVG_GreenBracelet_Silhouette',
-    photo: 'STAND_PNG_GreenBracelet',
-    sx: 60, sy: 1750, sw: 700, sh: 480,
-    nx: 112, ny: 2012,
-    calloutSide: 'right',
-  },
+  { name: 'hats', desc: 'Small bio here about the hats you can design.',
+    svg: 'STAND_SVG_BlueHat_Silhouette', photo: 'STAND_PNG_BlueHat',
+    sx: 83, sy: 203, sw: 439, sh: 439 },
+  { name: 'stickers & art', desc: 'Create sticker packs, cards, prints, and custom designs.',
+    svg: 'STAND_SVG_YellowSticker_Silhouette', photo: 'STAND_PNG_YellowSticker',
+    sx: 228, sy: 397, sw: 367, sh: 367 },
+  { name: 'jewelry', desc: 'Bracelets, charms, and accessories.',
+    svg: 'STAND_SVG_GreenBracelet_Silhouette', photo: 'STAND_PNG_GreenBracelet',
+    sx: 452, sy: 289, sw: 305, sh: 305 },
+  { name: 'baked goods', desc: 'Cupcakes, cookies, and treats with your own brand.',
+    svg: 'STAND_SVG_RedCupcake_Silhouette', photo: 'STAND_PNG_RedCupcake',
+    sx: 596, sy: 340, sw: 379, sh: 379 },
+  { name: 'lifestyle', desc: 'Make merch that fits your vibe.',
+    svg: 'STAND_SVG_YellowPlushie_Silhouette', photo: 'STAND_PNG_YellowPlushie',
+    sx: 813, sy: 252, sw: 384, sh: 384 },
+  { name: 'clothes & apparel', desc: 'Create hoodies, hats, tees, and other products with your own logo.',
+    svg: 'STAND_SVG_PinkHoodie_Silhouette', photo: 'STAND_PNG_PinkHoodie',
+    sx: 1005, sy: 305, sw: 393, sh: 393 },
 ];
 ---
 
 <section class="find-business">
-  <div class="header-inner">
-    <p class="eyebrow">Find Your Business</p>
-    <h2 class="headline">Explore business ideas kids can actually imagine building.</h2>
-  </div>
+  <div class="frame">
+    <div class="panel" aria-hidden="true"></div>
 
-  <div class="canvas" style={{ aspectRatio: `${HERO_W} / ${HERO_H}` }}>
+    <div class="header-inner">
+      <p class="eyebrow">Find Your Business</p>
+      <h2 class="headline">Explore business ideas kids can actually imagine building.</h2>
+    </div>
+
     {
       items.map((item) => (
-        <div
+        <button
           class="biz"
+          type="button"
+          data-name={item.name}
+          data-desc={item.desc}
+          aria-label={item.name}
           style={{
             left: pct(item.sx, HERO_W),
             top: pct(item.sy, HERO_H),
@@ -102,100 +70,116 @@ const items: Business[] = [
         >
           <img class="silhouette" src={`/brand/${item.svg}.svg`} alt={item.name} />
           <img class="photo" src={`/brand/${item.photo}.webp`} alt="" aria-hidden="true" loading="lazy" />
-
-          <div class={`callout ${item.calloutSide}`}>
-            <h3>{item.name}</h3>
-            <p>{item.desc}</p>
-          </div>
-        </div>
+          <span class="biz-label"><strong>{item.name}</strong><em>{item.desc}</em></span>
+        </button>
       ))
     }
 
-    {
-      items.map((item) => (
-        <span
-          class="badge"
-          style={{ left: pct(item.nx, HERO_W), top: pct(item.ny, HERO_H) }}
-        >
-          {item.num}
-        </span>
-      ))
-    }
+    <div class="prompt" data-default-title={DEFAULT_TITLE} data-default-desc={DEFAULT_DESC}>
+      <h3 class="prompt-title">{DEFAULT_TITLE}</h3>
+      <p class="prompt-desc">{DEFAULT_DESC}</p>
+    </div>
   </div>
 </section>
 
 <script>
-  // On mobile, tap a biz card to swap silhouette → real product photo.
-  // Desktop uses hover (no JS needed).
-  const cards = document.querySelectorAll<HTMLElement>('.find-business .biz');
-  cards.forEach((card) => {
-    card.addEventListener('click', () => {
-      if (window.matchMedia('(min-width: 769px)').matches) return;
-      const wasOpen = card.classList.contains('is-open');
-      cards.forEach((c) => c.classList.remove('is-open'));
-      if (!wasOpen) card.classList.add('is-open');
-    });
-  });
-</script>
+  const section = document.querySelector('.find-business');
+  if (section) {
+    const prompt = section.querySelector('.prompt');
+    const titleEl = prompt?.querySelector('.prompt-title');
+    const descEl = prompt?.querySelector('.prompt-desc');
+    const defTitle = prompt?.getAttribute('data-default-title') ?? '';
+    const defDesc = prompt?.getAttribute('data-default-desc') ?? '';
+    const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
+    const cards = section.querySelectorAll('.biz');
 
-<script>
-  // Mobile: tap a card to swap silhouette → real product photo. One open at a time.
-  // Desktop uses the existing hover CSS — JS is a no-op there.
-  const cards = document.querySelectorAll<HTMLElement>('.find-business .biz');
-  cards.forEach((card) => {
-    card.addEventListener('click', () => {
-      if (window.matchMedia('(min-width: 769px)').matches) return;
-      const wasOpen = card.classList.contains('is-open');
-      cards.forEach((c) => c.classList.remove('is-open'));
-      if (!wasOpen) card.classList.add('is-open');
+    cards.forEach((card) => {
+      card.addEventListener('pointerenter', () => {
+        if (!isDesktop() || !titleEl || !descEl) return;
+        card.classList.add('active');
+        titleEl.textContent = card.getAttribute('data-name');
+        descEl.textContent = card.getAttribute('data-desc');
+      });
+      card.addEventListener('pointerleave', () => {
+        if (!isDesktop() || !titleEl || !descEl) return;
+        card.classList.remove('active');
+        titleEl.textContent = defTitle;
+        descEl.textContent = defDesc;
+      });
+      // Mobile: tap a card to reveal the product photo (one open at a time).
+      card.addEventListener('click', () => {
+        if (isDesktop()) return;
+        const open = card.classList.contains('is-open');
+        cards.forEach((c) => c.classList.remove('is-open'));
+        if (!open) card.classList.add('is-open');
+      });
     });
-  });
+  }
 </script>
 
 <style>
   .find-business {
     background: var(--stand-cream);
-    padding: 93px 0 100px;
     width: 100%;
   }
 
-  .header-inner {
+  .frame {
+    position: relative;
+    width: 100%;
     max-width: var(--container-max);
-    margin: 0 auto 60px;
-    padding: 0 94px;
+    margin: 0 auto;
+    aspect-ratio: 1437 / 1083;
+    container-type: inline-size;
+  }
+
+  /* White panel across the bottom third (Figma rect 453:137). */
+  .panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 70%;
+    bottom: 0;
+    background: var(--stand-white);
+    z-index: 0;
+  }
+
+  .header-inner {
+    position: absolute;
+    top: 7%;
+    left: 6.5%;
+    right: 6.5%;
+    z-index: 3;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: 40px;
-    line-height: 47px;
-    letter-spacing: -0.8px;
+    font-size: 2.09cqw; /* 30px @1437 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
     color: var(--stand-black);
-    margin: 0 0 32px;
+    margin: 0 0 1.4cqw;
   }
 
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 78px;
+    font-size: 4.52cqw; /* 65px @1437 */
     line-height: 1;
-    letter-spacing: -1.5px;
+    letter-spacing: -0.022em;
     color: var(--stand-black);
     margin: 0;
-    max-width: 1250px;
-  }
-
-  .canvas {
-    position: relative;
-    width: 100%;
-    max-width: var(--container-max);
-    margin: 0 auto;
+    max-width: none;
   }
 
   .biz {
     position: absolute;
+    z-index: 2;
+    padding: 0;
+    border: 0;
+    background: transparent;
     cursor: pointer;
+    appearance: none;
   }
 
   .silhouette,
@@ -205,225 +189,153 @@ const items: Business[] = [
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transition: opacity 280ms ease-out, transform 280ms ease-out;
+    transition: opacity 260ms ease-out;
   }
 
-  /* Product photos ship as square PNGs with whitespace around the product.
-     Silhouettes ship as tight-cropped SVGs. Scale photos up so they render
-     at the same visual size as their silhouette pair. */
+  /* Photos are square PNGs with padding; scale up to match the tight silhouette. */
   .photo {
     transform: scale(1.35);
     opacity: 0;
     pointer-events: none;
   }
 
-  .biz {
-    /* Allow the scaled-up hover photo to spill past the silhouette bounds. */
-    overflow: visible;
-  }
-
-  .biz:hover .silhouette {
+  .biz:hover .silhouette,
+  .biz.active .silhouette {
     opacity: 0;
   }
-
-  .biz:hover .photo {
+  .biz:hover .photo,
+  .biz.active .photo {
     opacity: 1;
   }
 
-  /* Black organic-blob number tag — uses the same Rectangle22 mask shape as Figma */
-  .badge {
+  /* Per-item label is desktop-hidden (shown only in the mobile list). */
+  .biz-label {
+    display: none;
+  }
+
+  /* Shared prompt on the white panel. */
+  .prompt {
     position: absolute;
-    width: 137px;
-    height: 140px;
-    color: var(--stand-white);
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: 50px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    transform: translate(-50%, -50%);
+    left: 6%;
+    right: 6%;
+    top: 80%;
+    text-align: center;
+    z-index: 2;
   }
 
-  .badge::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--stand-black);
-    transform: rotate(27.94deg);
-    -webkit-mask-image: url('/brand/badge-mask.png');
-            mask-image: url('/brand/badge-mask.png');
-    -webkit-mask-size: contain;
-            mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-            mask-position: center;
-    z-index: -1;
-  }
-
-  /* Callout: hidden by default, slides in on hover of parent .biz */
-  .callout {
-    position: absolute;
-    top: 35%;
-    background: var(--stand-white);
-    border: 3px solid var(--stand-black);
-    box-shadow: 5px 7px 0 var(--stand-black);
-    padding: 24px 28px;
-    min-width: 280px;
-    max-width: 380px;
-    z-index: 8;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms ease-out 60ms, transform 220ms ease-out 60ms;
-  }
-
-  .callout.right {
-    left: 85%;
-    transform: translateX(-12px);
-  }
-  .callout.left {
-    right: 85%;
-    transform: translateX(12px);
-  }
-
-  .biz:hover .callout {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .callout h3 {
+  .prompt-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 40px;
-    line-height: 1;
+    font-size: 2.78cqw; /* 40px @1437 */
+    line-height: 1.1;
     color: var(--stand-black);
-    margin: 0 0 12px;
+    margin: 0 0 0.8cqw;
   }
 
-  .callout p {
+  .prompt-desc {
     font-family: var(--font-sans);
-    font-size: 18px;
+    font-weight: 400;
+    font-size: 1.53cqw; /* 22px @1437 */
     line-height: 1.3;
+    letter-spacing: -0.02em;
     color: var(--stand-black);
     margin: 0;
   }
 
   @media (max-width: 768px) {
     .find-business {
-      padding: 36px 0 60px;
-    }
-    .header-inner {
-      padding: 0 20px;
-      margin-bottom: 28px;
-    }
-    .eyebrow {
-      font-size: 9.44px;
-      line-height: 11.092px;
-      letter-spacing: -0.1888px;
-      margin: 0 0 10px;
-    }
-    .headline {
-      font-size: 20px;
-      line-height: 1;
-      letter-spacing: -0.3px;
+      padding: 36px 0 56px;
     }
 
-    /* Mobile = vertical card list. Each card: skewed number tag on the left edge,
-       silhouette overlapping the card's left side, name + description in the body.
-       Tap a card → silhouette swaps to the real product photo. */
-    .canvas {
+    /* Mobile = vertical card list: number, silhouette, name + bio. */
+    .frame {
       aspect-ratio: auto;
+      max-width: none;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
       padding: 0 20px;
+      counter-reset: biz;
     }
-    .canvas > .badge {
-      display: none;
+    .panel { display: none; }
+
+    .header-inner {
+      position: static;
+      left: auto;
+      right: auto;
+      top: auto;
+      margin-bottom: 8px;
     }
+    .eyebrow { font-size: 13px; margin: 0 0 8px; }
+    .headline { font-size: 24px; max-width: none; }
+
     .biz {
       position: relative;
       left: auto !important;
       top: auto !important;
       width: 100% !important;
       height: auto !important;
-      min-height: 110px;
-      padding: 18px 20px 18px 110px;
+      min-height: 104px;
+      padding: 16px 18px 16px 104px;
       background: var(--stand-white);
       border: 2.5px solid var(--stand-black);
       box-shadow: 4px 5px 0 var(--stand-black);
-      cursor: pointer;
+      text-align: left;
       display: block;
-      overflow: visible;
     }
     .biz::before {
       content: counter(biz);
       counter-increment: biz;
       position: absolute;
       left: -10px;
-      top: 14px;
-      width: 38px;
-      height: 38px;
+      top: 12px;
+      width: 36px;
+      height: 36px;
       background: var(--stand-black);
       color: var(--stand-white);
       font-family: var(--font-serif);
-      font-size: 22px;
+      font-size: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       transform: rotate(8deg);
       z-index: 4;
     }
-    .canvas { counter-reset: biz; }
 
     .silhouette,
     .photo {
       position: absolute;
-      left: 8px;
+      left: 6px;
       top: 50%;
       transform: translateY(-50%);
-      width: 96px;
-      height: 96px;
-      object-fit: contain;
+      width: 90px;
+      height: 90px;
+      inset: auto;
       z-index: 3;
-      transition: opacity 220ms ease-out;
     }
+    .photo { transform: translateY(-50%) scale(1.05); }
+    .biz.is-open .silhouette { opacity: 0; }
+    .biz.is-open .photo { opacity: 1; }
 
-    .photo {
-      opacity: 0;
-      transform: translateY(-50%) scale(1.05);
+    .biz-label {
+      display: block;
     }
-
-    .biz.is-open .silhouette {
-      opacity: 0;
-    }
-    .biz.is-open .photo {
-      opacity: 1;
-    }
-
-    .callout {
-      position: static;
-      transform: none;
-      opacity: 1;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      padding: 0;
-      min-width: 0;
-      max-width: none;
-      pointer-events: none;
-    }
-    .callout h3 {
+    .biz-label strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
       font-size: 22px;
       line-height: 1;
-      margin: 0 0 6px;
+      margin-bottom: 6px;
     }
-    .callout p {
+    .biz-label em {
+      font-family: var(--font-sans);
+      font-style: normal;
       font-size: 13px;
       line-height: 1.3;
+      color: var(--stand-black);
     }
+
+    .prompt { display: none; }
   }
 </style>
