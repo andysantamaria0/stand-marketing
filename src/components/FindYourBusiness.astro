@@ -13,6 +13,7 @@ interface Business {
   photo: string; // real product image (revealed on hover)
   // bounding box in raw Figma px, relative to the 1437×1083 frame
   sx: number; sy: number; sw: number; sh: number;
+  z: number; // stacking order (higher = front)
 }
 
 const HERO_W = 1437;
@@ -25,22 +26,22 @@ const DEFAULT_DESC = 'to learn more about our Product Lab.';
 const items: Business[] = [
   { name: 'hats', desc: 'Small bio here about the hats you can design.',
     svg: 'STAND_SVG_BlueHat_Silhouette', photo: 'STAND_PNG_BlueHat',
-    sx: 83, sy: 203, sw: 439, sh: 439 },
+    sx: 83, sy: 203, sw: 439, sh: 439, z: 4 },
   { name: 'stickers & art', desc: 'Create sticker packs, cards, prints, and custom designs.',
     svg: 'STAND_SVG_YellowSticker_Silhouette', photo: 'STAND_PNG_YellowSticker',
-    sx: 228, sy: 397, sw: 367, sh: 367 },
+    sx: 228, sy: 397, sw: 367, sh: 367, z: 2 },
   { name: 'jewelry', desc: 'Bracelets, charms, and accessories.',
     svg: 'STAND_SVG_GreenBracelet_Silhouette', photo: 'STAND_PNG_GreenBracelet',
-    sx: 452, sy: 289, sw: 305, sh: 305 },
+    sx: 452, sy: 289, sw: 305, sh: 305, z: 6 },
   { name: 'baked goods', desc: 'Cupcakes, cookies, and treats with your own brand.',
     svg: 'STAND_SVG_RedCupcake_Silhouette', photo: 'STAND_PNG_RedCupcake',
-    sx: 596, sy: 340, sw: 379, sh: 379 },
+    sx: 596, sy: 340, sw: 379, sh: 379, z: 5 },
   { name: 'lifestyle', desc: 'Make merch that fits your vibe.',
     svg: 'STAND_SVG_YellowPlushie_Silhouette', photo: 'STAND_PNG_YellowPlushie',
-    sx: 813, sy: 252, sw: 384, sh: 384 },
+    sx: 813, sy: 252, sw: 384, sh: 384, z: 1 },
   { name: 'clothes & apparel', desc: 'Create hoodies, hats, tees, and other products with your own logo.',
     svg: 'STAND_SVG_PinkHoodie_Silhouette', photo: 'STAND_PNG_PinkHoodie',
-    sx: 1005, sy: 305, sw: 393, sh: 393 },
+    sx: 1005, sy: 305, sw: 393, sh: 393, z: 3 },
 ];
 ---
 
@@ -66,6 +67,7 @@ const items: Business[] = [
             top: pct(item.sy, HERO_H),
             width: pct(item.sw, HERO_W),
             height: pct(item.sh, HERO_H),
+            zIndex: item.z,
           }}
         >
           <img class="silhouette" src={`/brand/${item.svg}.svg`} alt={item.name} />
