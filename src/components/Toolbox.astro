@@ -47,6 +47,7 @@ const slides: Slide[] = [
     <h2 class="headline">STAND provides the tools behind every kid business.</h2>
 
     <div class="slider" id="toolbox-slider">
+      <span class="dotted-line" aria-hidden="true"></span>
       <button class="nav prev" aria-label="Previous tool">←</button>
 
       <div class="stage">
@@ -187,6 +188,24 @@ const slides: Slide[] = [
     z-index: 10;
   }
 
+  /* Full-bleed red dotted connector threaded through the silhouette icons,
+     sitting behind every slide (icons + active frame paint over it). Anchored
+     to the vertical centre of the square silhouette boxes (slide height / 2). */
+  .dotted-line {
+    position: absolute;
+    top: 384px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 8px;
+    background-image: radial-gradient(circle, var(--stand-red) 0 3.5px, transparent 4px);
+    background-size: 22px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+  }
+
   /* Stage holds all slides absolutely-positioned, centered around the middle. */
   .stage {
     position: relative;
@@ -311,6 +330,7 @@ const slides: Slide[] = [
     .slider { gap: 16px; }
     .stage { height: 880px; }
     .slide { width: 540px; }
+    .dotted-line { top: 288px; } /* scaled to match the desktop icon centreline */
     .slide[data-pos='prev']   { transform: translateX(calc(-50% - 320px)) scale(0.22); }
     .slide[data-pos='next']   { transform: translateX(calc(-50% + 320px)) scale(0.22); }
     .slide[data-pos='prev-2'] { transform: translateX(calc(-50% - 470px)) scale(0.16); }
@@ -331,6 +351,7 @@ const slides: Slide[] = [
     /* Mobile = horizontal scroll-snap (per Faye: "hold and drag to next module").
        Drop the coverflow, no arrows. All slides full-width, scroll snaps to next. */
     .nav { display: none; }
+    .dotted-line { display: none; }
     .slider { gap: 0; }
     .stage {
       height: auto;
