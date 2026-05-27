@@ -6,9 +6,10 @@
 ---
 
 <section class="safety">
-  <img class="prop-mug" src="/brand/STAND_PNG_CreamMug.webp" alt="" loading="lazy" aria-hidden="true" />
+  <div class="cards-stack">
+    <img class="prop-mug" src="/brand/STAND_PNG_CreamMug.webp" alt="" loading="lazy" aria-hidden="true" />
 
-  <div class="cards">
+    <div class="cards">
     <article class="note note-left">
       <h3>safety &amp; trust</h3>
       <p>
@@ -26,6 +27,7 @@
       </p>
       <p>That is how real-world skills stick.</p>
     </article>
+    </div>
   </div>
 
   <img class="for-real" src="/brand/STAND_ForReal.svg" alt="For Real." />
@@ -35,15 +37,30 @@
   .safety {
     background: var(--stand-postit);
     width: 100%;
-    padding: 60px 0 80px;
     overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(16px, 2.5vh, 40px);
+    padding: clamp(20px, 3vh, 48px) 0;
+  }
+
+  /* Holds the mug + cards; the top padding reserves the mug's peek above the
+     cards so the section can be vertically centered without the mug clipping. */
+  .cards-stack {
     position: relative;
+    width: 100%;
+    max-width: var(--container-max);
+    padding-top: clamp(110px, 15vh, 160px);
   }
 
   .prop-mug {
     position: absolute;
     left: 30%;
-    top: -1px;
+    top: 0;
     width: 16.15%;
     max-width: 240px;
     aspect-ratio: 1;
@@ -55,7 +72,7 @@
     position: relative;
     z-index: 2;
     max-width: var(--container-max);
-    margin: 120px auto 0;
+    margin: 0 auto;
     padding: 0 60px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -110,9 +127,10 @@
 
   .for-real {
     display: block;
-    width: 75%;
-    max-width: 1100px;
-    margin: 60px auto 0;
+    width: auto;
+    max-width: 80%;
+    max-height: clamp(120px, 22vh, 280px);
+    margin: 0 auto;
     position: relative;
     z-index: 1;
   }
@@ -125,6 +143,11 @@
   @media (max-width: 768px) {
     .safety {
       padding: 40px 0 48px;
+      min-height: 0;
+      display: block;
+    }
+    .cards-stack {
+      padding-top: 0;
     }
     .prop-mug {
       width: 26%;
@@ -153,6 +176,8 @@
     }
     .for-real {
       width: 95%;
+      max-width: 95%;
+      max-height: none;
       margin-top: 32px;
     }
   }

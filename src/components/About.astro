@@ -37,8 +37,8 @@ const stickerPhrases = [
     </div>
 
     <h2 class="headline second">
-      STAND is a one of a kind destination, designed for kids.<br />
-      This is the modern lemonade stand for the next generation.
+      STAND is a one of a kind destination, designed for kids. This is the
+      modern lemonade stand for the next generation.
     </h2>
 
     <div class="links">
@@ -74,7 +74,12 @@ const stickerPhrases = [
   .about {
     background: var(--stand-postit);
     width: 100%;
-    padding: 93px 0 100px;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(24px, 4vh, 60px) 0;
   }
 
   .inner {
@@ -91,7 +96,7 @@ const stickerPhrases = [
     line-height: 1.18;
     letter-spacing: -0.8px;
     color: var(--stand-black);
-    margin: 0 0 60px;
+    margin: 0 0 clamp(16px, 3vh, 60px);
   }
 
   .headline {
@@ -106,12 +111,12 @@ const stickerPhrases = [
   }
 
   .headline.second {
-    margin-top: 100px;
+    margin-top: clamp(24px, 5vh, 100px);
   }
 
   .sticker {
     position: relative;
-    margin: 60px auto;
+    margin: clamp(20px, 4vh, 60px) auto;
     width: 100%;
     max-width: 1237px;
     aspect-ratio: 1237 / 120;
@@ -147,7 +152,7 @@ const stickerPhrases = [
   }
 
   .links {
-    margin-top: 80px;
+    margin-top: clamp(20px, 4vh, 80px);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -176,6 +181,8 @@ const stickerPhrases = [
       padding: 36px 0 0;
       position: relative;
       overflow: hidden;
+      min-height: 0;
+      display: block;
     }
     .inner {
       padding: 0 20px;
