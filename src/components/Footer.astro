@@ -81,6 +81,12 @@
   const status = document.getElementById('signup-status');
   const input = document.getElementById('waitlist-email') as HTMLInputElement | null;
 
+  // The placeholder is styled like real text, so it reads as a pre-filled value.
+  // Clear it on focus (incl. when the Sign Up button focuses an empty field) so
+  // people see an empty, editable field; restore it on blur if still empty.
+  input?.addEventListener('focus', () => { if (input) input.placeholder = ''; });
+  input?.addEventListener('blur', () => { if (input && !input.value) input.placeholder = 'hello@email.com'; });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!input || !status) return;
@@ -100,7 +106,7 @@
       const res = await fetch('https://app.standkids.com/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: form.dataset.source || 'footer' }),
+        body: JSON.stringify({ email, source: form.dataset.source || 'footer', marketingOptIn: true }),
       });
       if (!res.ok) throw new Error('Bad status ' + res.status);
       status.textContent = "You're in. We'll be in touch.";

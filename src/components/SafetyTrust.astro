@@ -54,7 +54,9 @@
     position: relative;
     width: 100%;
     max-width: var(--container-max);
-    padding-top: clamp(110px, 15vh, 160px);
+    /* Top offset lifts the mug clear of the card title (it overlaps the card's
+       white top edge, not the "safety & trust" text). */
+    padding-top: clamp(155px, 22vh, 210px);
   }
 
   .prop-mug {
@@ -129,7 +131,7 @@
     display: block;
     width: auto;
     max-width: 80%;
-    max-height: clamp(120px, 22vh, 280px);
+    max-height: clamp(110px, 18vh, 240px);
     margin: 0 auto;
     position: relative;
     z-index: 1;

@@ -19,14 +19,14 @@ const panel1: WhyItem[] = [
     heading: 'No worksheets. No lectures. Just doing.',
     body: 'Pricing, marketing, planning. Every skill gets learned because they actually have to use it. The work is the lesson.',
     color: 'var(--stand-mustard)',
-    left: 12, top: 8,
+    left: 5, top: 6,
   },
   {
     num: '02',
     heading: "Confidence you can't fake or manufacture.",
     body: 'Kids learn to talk about what they built, explain why it’s good, and pitch to real people. That kind of confidence only comes from doing something real.',
     color: 'var(--stand-pink)',
-    left: 49, top: 50,
+    left: 5, top: 55,
   },
 ];
 
@@ -36,14 +36,14 @@ const panel2: WhyItem[] = [
     heading: "Money clicks differently when it's theirs.",
     body: 'Pricing, profit, saving versus spending. These things actually land when your kid earned the money themselves.',
     color: 'var(--stand-blue)',
-    left: 4, top: 10,
+    left: 53, top: 6,
   },
   {
     num: '04',
     heading: 'Reward the fails, not just the sales.',
     body: 'Stand is built for when things don’t go perfectly. Because that’s actually where kids grow the most. We don’t paper over the hard stuff.',
     color: 'var(--stand-green)',
-    left: 4, top: 56,
+    left: 53, top: 55,
   },
 ];
 ---
@@ -55,7 +55,7 @@ const panel2: WhyItem[] = [
     <div class="panel-stage">
       <div
         class="photo-card photo-1"
-        style={{ '--pc-left': '-6%', '--pc-top': '34%', '--pc-width': '46%' }}
+        style={{ '--pc-left': '54%', '--pc-top': '14%', '--pc-width': '42%' }}
       >
         <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
         <img class="photo" src="/brand/why-photo-1.webp" alt="Three teenage girls smiling together" loading="lazy" />
@@ -88,7 +88,7 @@ const panel2: WhyItem[] = [
     <div class="panel-stage">
       <div
         class="photo-card photo-2"
-        style={{ '--pc-left': '53%', '--pc-top': '16%', '--pc-width': '44%' }}
+        style={{ '--pc-left': '4%', '--pc-top': '14%', '--pc-width': '42%' }}
       >
         <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
         <img class="photo" src="/brand/why-photo-2.webp" alt="Two teenage girls looking at a phone together" loading="lazy" />
@@ -196,8 +196,8 @@ const panel2: WhyItem[] = [
     display: flex;
     gap: 34px;
     align-items: flex-start;
-    width: 50%;
-    max-width: 660px;
+    width: 46%;
+    max-width: 620px;
     z-index: 5;
     cursor: pointer;
     background: transparent;
