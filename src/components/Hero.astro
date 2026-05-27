@@ -77,6 +77,12 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     background: var(--stand-cream);
     width: 100%;
     overflow: hidden;
+    /* Fill the viewport and center the canvas so the next (yellow) section
+       doesn't peek in and the cupcake at the canvas bottom gets cream room. */
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .hero-canvas {
@@ -132,6 +138,10 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
   }
 
   @media (max-width: 768px) {
+    .hero {
+      min-height: 0;
+      display: block;
+    }
     .hero-canvas {
       aspect-ratio: 375 / 491;
     }
