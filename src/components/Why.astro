@@ -1,96 +1,120 @@
 ---
-// WHY? — Figma node 200:2146 (1437×2511)
-// Cream bg with red top strip. Four numbered items zigzag down. Two real photos
-// (3 girls smiling + 2 girls with phone) absolutely positioned behind items 2 and 3
-// with rotated post-it / golden cards backing each photo.
+// WHY? — Figma node 200:2146, split into two full-viewport panels:
+// panel 1 = red strip + items 01/02 (+ photo), panel 2 = items 03/04 (+ photo).
+// Each item/photo is positioned as a percentage of its panel's stage so the
+// zigzag scales to fit one screen on a 13" laptop. Mobile linearizes to a stack.
 
-const HERO_W = 1437;
-const HERO_H = 2511;
-const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+interface WhyItem {
+  num: string;
+  heading: string;
+  body: string;
+  color: string;
+  left: number; // % of panel stage
+  top: number; // % of panel stage
+}
 
-const items = [
+const panel1: WhyItem[] = [
   {
     num: '01',
     heading: 'No worksheets. No lectures. Just doing.',
     body: 'Pricing, marketing, planning. Every skill gets learned because they actually have to use it. The work is the lesson.',
-    x: 215, y: 180, color: 'var(--stand-mustard)',
+    color: 'var(--stand-mustard)',
+    left: 12, top: 8,
   },
   {
     num: '02',
     heading: "Confidence you can't fake or manufacture.",
     body: 'Kids learn to talk about what they built, explain why it’s good, and pitch to real people. That kind of confidence only comes from doing something real.',
-    x: 787, y: 690, color: 'var(--stand-pink)',
+    color: 'var(--stand-pink)',
+    left: 49, top: 50,
   },
+];
+
+const panel2: WhyItem[] = [
   {
     num: '03',
     heading: "Money clicks differently when it's theirs.",
     body: 'Pricing, profit, saving versus spending. These things actually land when your kid earned the money themselves.',
-    x: 60, y: 1439, color: 'var(--stand-blue)',
+    color: 'var(--stand-blue)',
+    left: 4, top: 10,
   },
   {
     num: '04',
     heading: 'Reward the fails, not just the sales.',
     body: 'Stand is built for when things don’t go perfectly. Because that’s actually where kids grow the most. We don’t paper over the hard stuff.',
-    x: 269, y: 2074, color: 'var(--stand-green)',
+    color: 'var(--stand-green)',
+    left: 4, top: 56,
   },
 ];
 ---
 
 <section class="why">
-  <div class="strip">
-    <span>Why STAND&reg;?</span>
+  <div class="why-panel panel-first">
+    <div class="strip"><span>Why STAND&reg;?</span></div>
+
+    <div class="panel-stage">
+      <div
+        class="photo-card photo-1"
+        style={{ '--pc-left': '-6%', '--pc-top': '34%', '--pc-width': '46%' }}
+      >
+        <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
+        <img class="photo" src="/brand/why-photo-1.webp" alt="Three teenage girls smiling together" loading="lazy" />
+      </div>
+
+      {
+        panel1.map((item) => (
+          <button
+            type="button"
+            class="item"
+            style={{ '--item-left': `${item.left}%`, '--item-top': `${item.top}%` }}
+            aria-expanded="false"
+          >
+            <span class="badge-wrap">
+              <span class="badge-shape" style={{ background: item.color }}></span>
+              <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
+            </span>
+            <div class="text">
+              <span class="num">{item.num}</span>
+              <h3 class="heading">{item.heading}</h3>
+              <div class="callout"><p>{item.body}</p></div>
+            </div>
+          </button>
+        ))
+      }
+    </div>
   </div>
 
-  <div class="canvas" style={{ aspectRatio: `${HERO_W} / ${HERO_H}` }}>
-    <div
-      class="photo-card photo-1"
-      style={{
-        '--pc-left': pct(-103, HERO_W),
-        '--pc-top': pct(585, HERO_H),
-        '--pc-width': pct(852, HERO_W),
-      }}
-    >
-      <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
-      <img class="photo" src="/brand/why-photo-1.webp" alt="Three teenage girls smiling together" loading="lazy" />
-    </div>
+  <div class="why-panel">
+    <div class="panel-stage">
+      <div
+        class="photo-card photo-2"
+        style={{ '--pc-left': '53%', '--pc-top': '16%', '--pc-width': '44%' }}
+      >
+        <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
+        <img class="photo" src="/brand/why-photo-2.webp" alt="Two teenage girls looking at a phone together" loading="lazy" />
+      </div>
 
-    <div
-      class="photo-card photo-2"
-      style={{
-        '--pc-left': pct(629, HERO_W),
-        '--pc-top': pct(1243, HERO_H),
-        '--pc-width': pct(906, HERO_W),
-      }}
-    >
-      <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
-      <img class="photo" src="/brand/why-photo-2.webp" alt="Two teenage girls looking at a phone together" loading="lazy" />
-    </div>
-
-    {
-      items.map((item) => (
-        <button
-          type="button"
-          class="item"
-          style={{
-            '--item-left': pct(item.x, HERO_W),
-            '--item-top': pct(item.y, HERO_H),
-          }}
-          aria-expanded="false"
-        >
-          <span class="badge-wrap">
-            <span class="badge-shape" style={{ background: item.color }}></span>
-            <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
-          </span>
-          <div class="text">
-            <span class="num">{item.num}</span>
-            <h3 class="heading">{item.heading}</h3>
-            <div class="callout">
-              <p>{item.body}</p>
+      {
+        panel2.map((item) => (
+          <button
+            type="button"
+            class="item"
+            style={{ '--item-left': `${item.left}%`, '--item-top': `${item.top}%` }}
+            aria-expanded="false"
+          >
+            <span class="badge-wrap">
+              <span class="badge-shape" style={{ background: item.color }}></span>
+              <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
+            </span>
+            <div class="text">
+              <span class="num">{item.num}</span>
+              <h3 class="heading">{item.heading}</h3>
+              <div class="callout"><p>{item.body}</p></div>
             </div>
-          </div>
-        </button>
-      ))
-    }
+          </button>
+        ))
+      }
+    </div>
   </div>
 </section>
 
@@ -98,6 +122,14 @@ const items = [
   .why {
     background: var(--stand-cream);
     width: 100%;
+  }
+
+  .why-panel {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
   }
 
   .strip {
@@ -109,10 +141,13 @@ const items = [
     font-size: clamp(16px, 2.088vw, 30px);
     line-height: 1.18;
     letter-spacing: -0.6px;
+    flex-shrink: 0;
   }
 
-  .canvas {
+  /* Relative area the items + photo are positioned within (one viewport each). */
+  .panel-stage {
     position: relative;
+    flex: 1;
     width: 100%;
     max-width: var(--container-max);
     margin: 0 auto;
@@ -165,7 +200,6 @@ const items = [
     max-width: 660px;
     z-index: 5;
     cursor: pointer;
-    /* button reset */
     background: transparent;
     border: 0;
     padding: 0;
@@ -235,7 +269,7 @@ const items = [
   /* Hover callout: appears in place of the heading, white card with body copy. */
   .callout {
     position: absolute;
-    top: 60px; /* sits below the num */
+    top: 60px;
     left: 0;
     width: 100%;
     max-width: 480px;
@@ -268,12 +302,6 @@ const items = [
     transform: translateY(0);
   }
 
-  @media (max-width: 1024px) {
-    .heading {
-      font-size: 48px;
-    }
-  }
-
   @media (max-width: 768px) {
     .strip {
       padding: 20px 20px;
@@ -281,14 +309,17 @@ const items = [
       line-height: 1.1;
     }
 
-    /* Mobile: linearize — flex column stack. CSS variables fall back to
-       overrides below, so no !important needed. */
-    .canvas {
-      aspect-ratio: auto;
-      padding: 36px 20px 60px;
+    /* Mobile: each panel linearizes into a stacked column (photo after items). */
+    .why-panel {
+      min-height: 0;
+      display: block;
+    }
+    .panel-stage {
+      position: static;
       display: flex;
       flex-direction: column;
       gap: 28px;
+      padding: 36px 20px 60px;
     }
 
     .photo-card {
@@ -298,11 +329,7 @@ const items = [
       width: 100%;
       transform: none;
       aspect-ratio: 4 / 3;
-      order: 3;
-    }
-
-    .photo-card.photo-2 {
-      order: 6;
+      order: 9;
     }
 
     .card-back {
@@ -317,11 +344,6 @@ const items = [
       max-width: none;
       gap: 16px;
     }
-
-    .item:nth-child(3) { order: 1; }
-    .item:nth-child(4) { order: 2; }
-    .item:nth-child(5) { order: 4; }
-    .item:nth-child(6) { order: 5; }
 
     .badge-wrap {
       width: 40px;
@@ -343,8 +365,7 @@ const items = [
       letter-spacing: -0.3px;
     }
 
-    /* On mobile, the items become an accordion: callout is hidden by default,
-       tapping an item opens its callout. One open at a time (JS enforces). */
+    /* On mobile the items become an accordion: callout hidden until tapped. */
     .callout {
       position: static;
       transform: none;
