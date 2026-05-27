@@ -137,9 +137,18 @@ const slides: Slide[] = [
 <style>
   .toolbox {
     background: var(--stand-cream);
-    padding: 123px 0 100px;
     width: 100%;
     overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(24px, 5vh, 60px) 0;
+    /* Slide width derived from viewport HEIGHT so the whole module (headline +
+       paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
+       (724x1142); ~290px reserves room for the headline + vertical padding. */
+    --slide-w: min(720px, calc((100vh - 320px) / 1.58));
   }
 
   .inner {
@@ -165,7 +174,7 @@ const slides: Slide[] = [
     line-height: 1;
     letter-spacing: -1.5px;
     color: var(--stand-black);
-    margin: 0 0 80px;
+    margin: 0 0 clamp(16px, 4vh, 48px);
     max-width: 1250px;
   }
 
@@ -193,7 +202,7 @@ const slides: Slide[] = [
      to the vertical centre of the square silhouette boxes (slide height / 2). */
   .dotted-line {
     position: absolute;
-    top: 384px;
+    top: calc(var(--slide-w) / 2 + 24px);
     left: 50%;
     transform: translateX(-50%);
     width: 100vw;
@@ -210,7 +219,7 @@ const slides: Slide[] = [
   .stage {
     position: relative;
     flex: 1;
-    height: 1100px;
+    height: calc(var(--slide-w) * 1.58);
     max-width: 1300px;
   }
 
@@ -218,7 +227,7 @@ const slides: Slide[] = [
     position: absolute;
     top: 0;
     left: 50%;
-    width: 720px;
+    width: var(--slide-w);
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -283,7 +292,7 @@ const slides: Slide[] = [
   }
 
   .slide[data-pos='prev'] {
-    transform: translateX(calc(-50% - 480px)) scale(0.22);
+    transform: translateX(calc(-50% - var(--slide-w) * 0.667)) scale(0.22);
     z-index: 2;
   }
 
@@ -303,18 +312,18 @@ const slides: Slide[] = [
   }
 
   .slide[data-pos='next'] {
-    transform: translateX(calc(-50% + 480px)) scale(0.22);
+    transform: translateX(calc(-50% + var(--slide-w) * 0.667)) scale(0.22);
     z-index: 2;
   }
 
   .slide[data-pos='prev-2'] {
-    transform: translateX(calc(-50% - 700px)) scale(0.16);
+    transform: translateX(calc(-50% - var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
     opacity: 0.7;
   }
 
   .slide[data-pos='next-2'] {
-    transform: translateX(calc(-50% + 700px)) scale(0.16);
+    transform: translateX(calc(-50% + var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
     opacity: 0.7;
   }
@@ -327,18 +336,14 @@ const slides: Slide[] = [
   }
 
   @media (max-width: 1024px) {
+    /* Stage/slide/offsets all derive from --slide-w (viewport height), so they
+       scale here automatically; only the arrow gap needs tightening. */
     .slider { gap: 16px; }
-    .stage { height: 880px; }
-    .slide { width: 540px; }
-    .dotted-line { top: 288px; } /* scaled to match the desktop icon centreline */
-    .slide[data-pos='prev']   { transform: translateX(calc(-50% - 320px)) scale(0.22); }
-    .slide[data-pos='next']   { transform: translateX(calc(-50% + 320px)) scale(0.22); }
-    .slide[data-pos='prev-2'] { transform: translateX(calc(-50% - 470px)) scale(0.16); }
-    .slide[data-pos='next-2'] { transform: translateX(calc(-50% + 470px)) scale(0.16); }
   }
 
   @media (max-width: 768px) {
-    .toolbox { padding: 36px 0 60px; }
+    /* Mobile: revert to normal flow (horizontal scroll-snap carousel below). */
+    .toolbox { padding: 36px 0 60px; min-height: 0; display: block; }
     .inner { padding: 0 20px; }
     .eyebrow { font-size: 9.44px; line-height: 11.092px; margin-bottom: 8px; }
     .headline {
