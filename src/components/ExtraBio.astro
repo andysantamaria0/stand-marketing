@@ -86,14 +86,15 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     let index = len; // start on the first card of the middle copy
     let animating = false;
 
-    const step = () => {
-      const card = track.querySelector('.testimonial') as HTMLElement | null;
-      return card ? card.offsetWidth + 32 : 0;
-    };
+    const clip = carousel.querySelector('.track-clip') as HTMLElement;
+    const firstCard = track.querySelector('.testimonial') as HTMLElement | null;
+    const GAP = 32;
 
     const place = (animate: boolean) => {
+      // Cards are sized to the clip via 100cqw (CSS); translate one card+gap each.
+      const w = firstCard?.offsetWidth || clip.clientWidth;
       track.style.transition = animate ? '' : 'none';
-      track.style.transform = `translateX(${-index * step()}px)`;
+      track.style.transform = `translateX(${-index * (w + GAP)}px)`;
       if (!animate) void track.offsetHeight; // force reflow so the snap is instant
     };
 
@@ -175,10 +176,6 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     align-items: center;
     justify-content: center;
     gap: 80px;
-    /* One card == the visible clip, sized to fit between the nav arrows + inner
-       padding so it never overflows and clips the quote when the window shrinks.
-       444 = inner padding (188) + nav arrows (96) + carousel gaps (160). */
-    --card-w: min(993px, calc(100vw - 444px));
   }
 
   .nav {
@@ -193,9 +190,15 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
   }
 
   .track-clip {
-    width: var(--card-w);
+    /* Fills the space between the nav arrows, capped at the design width.
+       container-type makes its width independent of the (wide) track inside,
+       so cards can size to it with 100cqw and exactly one shows. */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 993px;
     overflow: hidden;
-    padding: 20px 4px 30px;
+    padding: 20px 0 30px;
+    container-type: inline-size;
   }
 
   .track {
@@ -206,7 +209,8 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
 
   .testimonial {
     position: relative;
-    flex: 0 0 var(--card-w);
+    flex: 0 0 auto;
+    width: 100cqw;
     aspect-ratio: 993 / 762;
   }
 
@@ -258,8 +262,7 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
   @media (max-width: 1024px) {
     .extra-bio { padding: 120px 0 80px; }
     .copy p { font-size: 22px; }
-    /* Smaller gap on tablet -> recompute the fit: pad 188 + nav 96 + gaps 64. */
-    .carousel { gap: 32px; --card-w: min(720px, calc(100vw - 348px)); }
+    .carousel { gap: 32px; }
     .copy { margin-bottom: 100px; }
   }
 
@@ -288,7 +291,6 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
       margin-bottom: 16px;
     }
     .carousel { gap: 12px; }
-    .track-clip { width: calc(100% - 96px); }
     .content { padding: 28px 24px; }
     blockquote {
       font-size: 18px;

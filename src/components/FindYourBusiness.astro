@@ -55,12 +55,13 @@ const items: Business[] = [
     </div>
 
     {
-      items.map((item) => (
+      items.map((item, i) => (
         <button
           class="biz"
           type="button"
           data-name={item.name}
           data-desc={item.desc}
+          data-num={String(i + 1)}
           aria-label={item.name}
           style={{
             left: pct(item.sx, HERO_W),
@@ -257,7 +258,6 @@ const items: Business[] = [
       flex-direction: column;
       gap: 20px;
       padding: 0 20px;
-      counter-reset: biz;
     }
     .panel { display: none; }
 
@@ -286,8 +286,7 @@ const items: Business[] = [
       display: block;
     }
     .biz::before {
-      content: counter(biz);
-      counter-increment: biz;
+      content: attr(data-num);
       position: absolute;
       left: -10px;
       top: 12px;
@@ -307,12 +306,12 @@ const items: Business[] = [
     .silhouette,
     .photo {
       position: absolute;
+      inset: auto;
       left: 6px;
       top: 50%;
       transform: translateY(-50%);
       width: 90px;
       height: 90px;
-      inset: auto;
       z-index: 3;
     }
     .photo { transform: translateY(-50%) scale(1.05); }
