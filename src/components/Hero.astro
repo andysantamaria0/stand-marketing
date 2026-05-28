@@ -110,6 +110,28 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     cursor: grabbing;
   }
 
+  /* Affordance: a quick wiggle (staggered on load, and again on hover) hints
+     that the floating products can be grabbed and dragged. Uses the `rotate`
+     property so it never clobbers the product's drag `transform`. */
+  @keyframes hero-wiggle {
+    0%, 100% { rotate: 0deg; }
+    25% { rotate: -6deg; }
+    55% { rotate: 5deg; }
+    80% { rotate: -2.5deg; }
+  }
+
+  .product.is-wiggling img,
+  .product:hover img {
+    animation: hero-wiggle 0.55s ease-in-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product.is-wiggling img,
+    .product:hover img {
+      animation: none;
+    }
+  }
+
   /* Cream Mug ("World's Best Boss") sits above the other products by default. */
   .product.top {
     z-index: 3;
@@ -207,4 +229,15 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   });
+
+  // Affordance: a quick staggered wiggle shortly after load hints the icons are
+  // draggable (the CSS also wiggles each one on hover). Skipped for reduced motion.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    products.forEach((el, i) => {
+      window.setTimeout(() => {
+        el.classList.add('is-wiggling');
+        window.setTimeout(() => el.classList.remove('is-wiggling'), 650);
+      }, 450 + i * 90);
+    });
+  }
 </script>

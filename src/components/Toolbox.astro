@@ -5,39 +5,34 @@
 // which is active; previous active animates back to silhouette.
 
 interface Slide {
-  num: string;
   name: string;
   desc: string;
-  frame: string;       // full composed PNG (active state)
-  silhouette: string;  // colored SVG silhouette (inactive state)
+  icon: string;       // bare 3D icon render (active state)
+  silhouette: string; // colored SVG silhouette (inactive state)
 }
 
 const slides: Slide[] = [
-  {
-    num: '00', name: 'dashboard', desc: 'Tktktktktktk.',
-    frame: 'frame-dashboard',
-    silhouette: 'STAND_SVG_CreamDesk_Silhouette',
-  },
-  {
-    num: '01', name: 'ideas tent', desc: 'Tktktktktktk.',
-    frame: 'frame-ideas-tent',
-    silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
-  },
-  {
-    num: '02', name: 'brand studio', desc: 'Create your business name, logo, colors, and brand style.',
-    frame: 'frame-brand-studio',
-    silhouette: 'STAND_SVG_PinkPaint_Silhouette',
-  },
-  {
-    num: '03', name: 'product lab', desc: 'Tktktktktktk.',
-    frame: 'frame-product-lab',
-    silhouette: 'STAND_SVG_GreenBox_Silhouette',
-  },
-  {
-    num: '04', name: 'marketing', desc: 'Tktktktktktk.',
-    frame: 'frame-marketing',
-    silhouette: 'STAND_SVG_YellowMegaphone_Silhouette',
-  },
+  { name: 'ideas tent',
+    desc: 'choose your business to build with Stand.',
+    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette' },
+  { name: 'brand studio',
+    desc: 'name it, create your logo and build your brand identity.',
+    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette' },
+  { name: 'product lab',
+    desc: 'design your products and create what you need to make your vision a reality.',
+    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette' },
+  { name: 'money',
+    desc: 'price your product, set your goals and start thinking like an owner.',
+    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette' },
+  { name: 'marketing',
+    desc: 'learn how to get the word out, launch your business and get customers.',
+    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette' },
+  { name: 'storefront',
+    desc: 'launch your shop and start taking orders.',
+    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette' },
+  { name: 'dashboard',
+    desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
+    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette' },
 ];
 ---
 
@@ -62,20 +57,16 @@ const slides: Slide[] = [
                 />
               </div>
               <div class="frame-wrap">
-                <picture>
-                  <source srcset={`/brand/${s.frame}.webp`} type="image/webp" />
-                  <img
-                    class="frame-img"
-                    src={`/brand/${s.frame}.png`}
-                    alt={`${s.num} ${s.name}`}
-                    loading={i < 3 ? 'eager' : 'lazy'}
-                  />
-                </picture>
-              </div>
-              <div class="card">
-                <span class="num">{s.num}</span>
-                <h3 class="name">{s.name}</h3>
-                <p class="desc">{s.desc}</p>
+                <img
+                  class="tool-icon"
+                  src={`/brand/${s.icon}.png`}
+                  alt={s.name}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+                <div class="card">
+                  <h3 class="name">{s.name}</h3>
+                  <p class="desc">{s.desc}</p>
+                </div>
               </div>
             </article>
           ))
@@ -96,7 +87,7 @@ const slides: Slide[] = [
     const slides = Array.from(stage.querySelectorAll('.slide')) as HTMLElement[];
 
     const count = slides.length;
-    let active = 2; // start on '02 / brand studio'
+    let active = 1; // start on 'brand studio' (now index 1 in the new order)
 
     const update = () => {
       slides.forEach((slide, i) => {
@@ -232,6 +223,7 @@ const slides: Slide[] = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    container-type: inline-size;
     transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1),
                 opacity 300ms ease-out;
   }
@@ -257,23 +249,58 @@ const slides: Slide[] = [
     object-fit: contain;
   }
 
+  /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
+     724/1088 footprint so the coverflow scaling matches the silhouette frame. */
   .frame-wrap {
     position: absolute;
-    inset: 0;
+    inset: auto;
+    top: 0;
+    left: 0;
     width: 100%;
+    aspect-ratio: 724 / 1088;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .frame-img {
-    width: 100%;
-    height: auto;
-    display: block;
+  .tool-icon {
+    width: 92%;
+    height: 52%;
+    object-fit: contain;
   }
 
   .card {
-    /* Faye's frame PNGs already include the card visually; this overlay holds
-       accessible text in case the PNG card text needs supplementing. Hidden
-       by default since the frame contains its own card. */
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex: 1;
+    margin-top: 4cqw;
+    background: var(--stand-white);
+    border: 0.42cqw solid var(--stand-black);
+    box-shadow: 0.6cqw 0.7cqw 0 var(--stand-black);
+    padding: 4cqw 6cqw;
+    gap: 1.6cqw;
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 6.6cqw;
+    line-height: 1;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .desc {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 3.7cqw;
+    line-height: 1.25;
+    color: var(--stand-black);
+    margin: 0;
   }
 
   /* Position states */
