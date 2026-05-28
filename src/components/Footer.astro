@@ -47,6 +47,16 @@
           autocomplete="email"
         />
         <button type="submit">Sign Up →</button>
+
+        <div class="signup-confirmed" aria-live="polite">
+          <svg class="check" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="5 12 10 17 19 7" />
+          </svg>
+          <span class="confirmed-text">
+            <strong>You&rsquo;re on the waitlist.</strong>
+            <em>We&rsquo;ll be in touch soon.</em>
+          </span>
+        </div>
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
@@ -58,17 +68,8 @@
         <a href="/privacy">Privacy Policy</a>
       </div>
       <div class="col">
-        <a href="#">Policy</a>
-        <a href="#">Accessibility</a>
-        <a href="#">Privacy Choices</a>
-      </div>
-      <div class="col">
         <a href="#">About</a>
-        <a href="#">Parent Controls</a>
-        <a href="#">Use of AI</a>
-      </div>
-      <div class="col">
-        <a href="#">Subscribe</a>
+        <a href="#waitlist-form" data-scroll="waitlist">Subscribe</a>
         <a href="https://app.standkids.com">Log In</a>
       </div>
     </nav>
@@ -80,6 +81,13 @@
   const form = document.getElementById('waitlist-form') as HTMLFormElement | null;
   const status = document.getElementById('signup-status');
   const input = document.getElementById('waitlist-email') as HTMLInputElement | null;
+  const CONFIRMED_KEY = 'stand_waitlist_signed_up';
+
+  // On mount, if the user has already signed up, render the confirmed state so
+  // the form reads as "you're on the waitlist" instead of an empty field.
+  if (form && localStorage.getItem(CONFIRMED_KEY) === '1') {
+    form.classList.add('is-confirmed');
+  }
 
   // The placeholder is styled like real text, so it reads as a pre-filled value.
   // Clear it on focus (incl. when the Sign Up button focuses an empty field) so
@@ -109,9 +117,10 @@
         body: JSON.stringify({ email, source: form.dataset.source || 'footer', marketingOptIn: true }),
       });
       if (!res.ok) throw new Error('Bad status ' + res.status);
-      status.textContent = "You're in. We'll be in touch.";
+      status.textContent = '';
       input.value = '';
-      button.textContent = 'You are in';
+      form.classList.add('is-confirmed');
+      try { localStorage.setItem(CONFIRMED_KEY, '1'); } catch (_) {}
     } catch (err) {
       status.textContent = "Couldn't sign up just now. Try again in a sec.";
       button.disabled = false;
@@ -234,11 +243,63 @@
     margin-left: 16px;
   }
 
+  /* "You're on the waitlist" confirmation overlay — replaces the input + button
+     after a successful submit (and on subsequent visits via localStorage). */
+  .signup-confirmed {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 0 32px;
+    text-align: center;
+    color: var(--stand-black);
+  }
+
+  .signup-confirmed .check {
+    flex-shrink: 0;
+    color: var(--stand-red);
+  }
+
+  .signup-confirmed .confirmed-text {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+  }
+
+  .signup-confirmed strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(18px, 2.088vw, 30px);
+    letter-spacing: -0.4px;
+  }
+
+  .signup-confirmed em {
+    font-family: var(--font-serif);
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(12px, 1.113vw, 16px);
+    margin-top: 2px;
+  }
+
+  .signup.is-confirmed input,
+  .signup.is-confirmed > button {
+    visibility: hidden;
+  }
+
+  .signup.is-confirmed .signup-confirmed {
+    display: flex;
+  }
+
   .links {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 40px;
     padding-top: 0;
+    max-width: 520px;
   }
 
   .col {
