@@ -296,9 +296,17 @@ const slides: Slide[] = [
 
   .desc {
     font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 2.22cqw; /* 16px @720 slide */
-    line-height: 1.25;
+    /* Match the canonical STAND Body Text pattern (About.astro,
+       ExtraBio.astro): viewport-clamped size + 300 weight + 1.18
+       line-height. The old `2.22cqw` was slide-width-relative, which
+       crushed to ~7px on the mobile 320px slide and held to 16px on
+       the desktop 720px slide — neither matched the rest of the site
+       (Faye's note, 2026-05-28). The frame-wrap is opacity-0 on
+       inactive coverflow slides, so this is only visible on the
+       active full-size slide. */
+    font-weight: 300;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
     color: var(--stand-black);
     margin: 0;
   }
