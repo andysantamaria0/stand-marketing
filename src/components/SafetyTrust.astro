@@ -154,7 +154,11 @@
     .prop-mug {
       width: 26%;
       left: 8%;
-      top: 8px;
+      /* Lift the mug so it still overlaps the top of the safety-and-trust
+         card but doesn't cover the "safety & trust" heading text. Was 8px;
+         the negative offset slides it ~40px upward so only the bottom edge
+         of the mug rests on the card. */
+      top: -32px;
     }
     .cards {
       grid-template-columns: 1fr;
