@@ -1,0 +1,243 @@
+---
+import Header from './Header.astro';
+
+// Hero canvas reproduces Figma desktop 245:5 (1437×871) and mobile 412:69 (375×491).
+// Each floating product has separate desktop + mobile positions; CSS variables
+// swap them at the 768px breakpoint.
+const products = [
+  // desktop:  x  y    size  rot
+  // mobile:  mx  my   msize mrot
+  { name: 'Green Bracelet', file: 'STAND_PNG_GreenBracelet',
+    x: 113, y: 106, size: 247, rot: 0,
+    mx: 0,  my: 9,   msize: 81, mrot: 0 },
+  { name: 'Blue Hat', file: 'STAND_PNG_BlueHat',
+    x: 711, y: 102, size: 307, rot: 16.8,
+    mx: 177, my: 52, msize: 81, mrot: 16.8 },
+  { name: 'Yellow Sticker', file: 'STAND_PNG_YellowSticker',
+    x: 1190, y: 128, size: 247, rot: 0,
+    mx: 279, my: 0, msize: 81, mrot: 0 },
+  { name: 'Cream Mug', file: 'STAND_PNG_CreamMug',
+    x: 254, y: 379, size: 299, rot: -14.1,
+    mx: 19, my: 162, msize: 81, mrot: -14.1 },
+  { name: 'Pink Hoodie', file: 'STAND_PNG_PinkHoodie',
+    x: 1001, y: 503, size: 247, rot: 0,
+    mx: 267, my: 255, msize: 81, mrot: 0 },
+  { name: 'Yellow Plushie', file: 'STAND_PNG_YellowPlushie',
+    x: 33, y: 578, size: 247, rot: 0,
+    mx: 13, my: 304, msize: 81, mrot: 0 },
+  { name: 'Red Cupcake', file: 'STAND_PNG_RedCupcake',
+    x: 563, y: 656, size: 247, rot: 0,
+    mx: 147, my: 306, msize: 81, mrot: 0 },
+];
+
+const HERO_W = 1437;
+const HERO_H = 871;
+const MOBILE_W = 375;
+const MOBILE_H = 491;
+const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <Header />
+
+  <h1 id="hero-title" class="visually-hidden">Build your own thing. For Real.</h1>
+
+  <div class="hero-canvas">
+    {
+      products.map((p) => (
+        <div
+          class={`product${p.file === 'STAND_PNG_CreamMug' ? ' top' : ''}`}
+          style={{
+            '--x': pct(p.x, HERO_W),
+            '--y': pct(p.y, HERO_H),
+            '--w': pct(p.size, HERO_W),
+            '--rot': `${p.rot}deg`,
+            '--mx': pct(p.mx, MOBILE_W),
+            '--my': pct(p.my, MOBILE_H),
+            '--mw': pct(p.msize, MOBILE_W),
+            '--mrot': `${p.mrot}deg`,
+          }}
+          aria-hidden="true"
+        >
+          <picture>
+            <source srcset={`/brand/${p.file}.webp`} type="image/webp" />
+            <img src={`/brand/${p.file}.webp`} alt="" loading="eager" />
+          </picture>
+        </div>
+      ))
+    }
+
+    <img class="lockup" src="/brand/hero-lockup.webp" alt="" aria-hidden="true" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--stand-cream);
+    width: 100%;
+    overflow: hidden;
+    /* Fill the viewport and center the canvas so the next (yellow) section
+       doesn't peek in and the cupcake at the canvas bottom gets cream room. */
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-canvas {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1437 / 871;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .product {
+    position: absolute;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+    aspect-ratio: 1 / 1;
+    z-index: 2;
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+    transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--rot));
+  }
+
+  .product.dragging {
+    cursor: grabbing;
+  }
+
+  /* Affordance: a quick wiggle (staggered on load, and again on hover) hints
+     that the floating products can be grabbed and dragged. Uses the `rotate`
+     property so it never clobbers the product's drag `transform`. */
+  @keyframes hero-wiggle {
+    0%, 100% { rotate: 0deg; }
+    25% { rotate: -6deg; }
+    55% { rotate: 5deg; }
+    80% { rotate: -2.5deg; }
+  }
+
+  .product.is-wiggling img,
+  .product:hover img {
+    animation: hero-wiggle 0.55s ease-in-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product.is-wiggling img,
+    .product:hover img {
+      animation: none;
+    }
+  }
+
+  /* Cream Mug ("World's Best Boss") sits above the other products by default. */
+  .product.top {
+    z-index: 3;
+  }
+
+  .product img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Hero lockup ("Build your own thing. For Real.")
+     Original Figma frame: 826×720, positioned at left:397, top:98.
+     Centered horizontally with a slight rightward offset; sits in upper-middle. */
+  .lockup {
+    position: absolute;
+    left: 27.6%;
+    top: 11.25%;
+    width: 57.5%;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 0;
+      display: block;
+    }
+    .hero-canvas {
+      aspect-ratio: 375 / 491;
+    }
+
+    .product {
+      left: var(--mx);
+      top: var(--my);
+      width: var(--mw);
+      transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--mrot));
+    }
+
+    /* On mobile the lockup is centered, fits to 82% of width to avoid clipping
+       at the right edge from the "For Real." script's italic flourish. */
+    .lockup {
+      left: 50%;
+      top: 9.7%;
+      width: 82%;
+      transform: translateX(-50%);
+    }
+  }
+</style>
+
+<script>
+  // Make the floating hero products draggable (mouse + touch/iPad), drag-only,
+  // free-drop — they stay wherever you release them. Each product keeps its
+  // CSS left/top anchor + rotation; we only update a translate offset (--dx/--dy),
+  // so desktop/mobile layouts and rotations are preserved.
+  const products = document.querySelectorAll('.hero .product');
+  let topZ = 10;
+
+  products.forEach((el) => {
+    let startX = 0;
+    let startY = 0;
+    let baseDx = 0;
+    let baseDy = 0;
+    let dragging = false;
+
+    el.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('dragging');
+      el.style.zIndex = String(++topZ); // grabbed item jumps to the front
+      startX = e.clientX;
+      startY = e.clientY;
+      baseDx = parseFloat(el.style.getPropertyValue('--dx')) || 0;
+      baseDy = parseFloat(el.style.getPropertyValue('--dy')) || 0;
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      el.style.setProperty('--dx', `${baseDx + (e.clientX - startX)}px`);
+      el.style.setProperty('--dy', `${baseDy + (e.clientY - startY)}px`);
+    });
+
+    const end = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+      try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  });
+
+  // Affordance: a quick staggered wiggle shortly after load hints the icons are
+  // draggable (the CSS also wiggles each one on hover). Skipped for reduced motion.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    products.forEach((el, i) => {
+      window.setTimeout(() => {
+        el.classList.add('is-wiggling');
+        window.setTimeout(() => el.classList.remove('is-wiggling'), 650);
+      }, 450 + i * 90);
+    });
+  }
+</script>

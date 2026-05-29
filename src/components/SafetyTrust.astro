@@ -1,0 +1,190 @@
+---
+// SAFETY AND TRUST — Figma node 118:330 (1437×1137)
+// Post-it yellow bg with two large skewed white cards (left at -2.59°, right at +2.13°).
+// Cream Mug rotated -9.09° at top-left of section. "For Real." script positioned in
+// the lower band as a vector group.
+---
+
+<section class="safety">
+  <div class="cards-stack">
+    <img class="prop-mug" src="/brand/STAND_PNG_CreamMug.webp" alt="" loading="lazy" aria-hidden="true" />
+
+    <div class="cards">
+    <article class="note note-left">
+      <h3>safety &amp; trust</h3>
+      <p>
+        STAND is built with families in mind. Parent approval, age-appropriate tools, guided
+        business categories, and clear oversight are core to how the platform works. Kids get
+        to create and learn, while parents stay connected to the experience.
+      </p>
+    </article>
+
+    <article class="note note-right">
+      <h3>learn by doing</h3>
+      <p>
+        Kids do not just watch lessons about entrepreneurship. They make decisions, test ideas,
+        create products, price what they sell, talk to customers, and learn from what happens.
+      </p>
+      <p>That is how real-world skills stick.</p>
+    </article>
+    </div>
+  </div>
+
+  <img class="for-real" src="/brand/STAND_ForReal.svg" alt="For Real." />
+</section>
+
+<style>
+  .safety {
+    background: var(--stand-postit);
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(16px, 2.5vh, 40px);
+    padding: clamp(20px, 3vh, 48px) 0;
+  }
+
+  /* Holds the mug + cards; the top padding reserves the mug's peek above the
+     cards so the section can be vertically centered without the mug clipping. */
+  .cards-stack {
+    position: relative;
+    width: 100%;
+    max-width: var(--container-max);
+    /* Top offset lifts the mug clear of the card title (it overlaps the card's
+       white top edge, not the "safety & trust" text). */
+    padding-top: clamp(155px, 22vh, 210px);
+  }
+
+  .prop-mug {
+    position: absolute;
+    left: 30%;
+    top: 0;
+    width: 16.15%;
+    max-width: 240px;
+    aspect-ratio: 1;
+    transform: rotate(-9.09deg);
+    z-index: 3;
+  }
+
+  .cards {
+    position: relative;
+    z-index: 2;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .note {
+    background: var(--stand-white);
+    border: 3px solid var(--stand-black);
+    box-shadow: 5px 7px 0 var(--stand-black);
+    padding: 56px 43px;
+    width: 100%;
+    max-width: 606px;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .note-left {
+    transform: rotate(-2.59deg);
+    justify-self: end;
+  }
+
+  .note-right {
+    transform: rotate(2.13deg);
+    margin-top: -80px;
+    justify-self: start;
+  }
+
+  .note h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(22px, 2.296vw, 33px);
+    line-height: 1.2;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .note p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(12px, 1.113vw, 16px);
+    line-height: 1.2;
+    letter-spacing: -0.32px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .for-real {
+    display: block;
+    width: auto;
+    max-width: 80%;
+    max-height: clamp(110px, 18vh, 240px);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1024px) {
+    .note p { font-size: 16px; }
+    .note h3 { font-size: 30px; }
+  }
+
+  @media (max-width: 768px) {
+    .safety {
+      padding: 40px 0 48px;
+      min-height: 0;
+      display: block;
+    }
+    .cards-stack {
+      padding-top: 0;
+    }
+    .prop-mug {
+      width: 26%;
+      left: 8%;
+      /* Lift the mug so it still overlaps the top of the safety-and-trust
+         card but doesn't cover the "safety & trust" heading text. Was 8px;
+         the negative offset slides it ~40px upward so only the bottom edge
+         of the mug rests on the card. */
+      top: -32px;
+    }
+    .cards {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-top: 80px;
+      padding: 0 20px;
+    }
+    .note {
+      padding: 28px 22px;
+      gap: 18px;
+      max-width: none;
+    }
+    .note-right {
+      margin-top: 0;
+    }
+    .note h3 {
+      font-size: 26px;
+    }
+    .note p {
+      font-size: 16px;
+    }
+    .for-real {
+      width: 95%;
+      max-width: 95%;
+      max-height: none;
+      margin-top: 32px;
+    }
+  }
+</style>

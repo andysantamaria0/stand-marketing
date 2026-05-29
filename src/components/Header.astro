@@ -1,0 +1,109 @@
+---
+// Top navigation overlay on the hero. On desktop it sits at the top (Early Access
+// tag at left, LOG IN at right). On mobile it moves to the bottom of the hero,
+// stacked vertically (tag above LOG IN), centered.
+---
+
+<header class="site-header">
+  <a href="#waitlist-form" data-scroll="waitlist" class="early-access">
+    <picture aria-hidden="true">
+      <source srcset="/brand/early-access-tag.webp" type="image/webp" />
+      <img src="/brand/early-access-tag.png" alt="" />
+    </picture>
+    <span>Early Access Here</span>
+  </a>
+
+  <a href="https://app.standkids.com" class="login">
+    Already have an account? <strong>LOG IN</strong>
+  </a>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 55px 0;
+    pointer-events: none;
+  }
+
+  .site-header > * {
+    pointer-events: auto;
+  }
+
+  .early-access {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    aspect-ratio: 250 / 41;
+  }
+
+  .early-access picture,
+  .early-access picture img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .early-access span {
+    position: relative;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--stand-black);
+    transform: translateY(-2px);
+  }
+
+  .login {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--stand-red);
+  }
+
+  .login strong {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    font-weight: 900;
+    margin-left: 4px;
+  }
+
+  @media (max-width: 768px) {
+    /* Mobile: move both CTAs to the bottom of the hero, stacked + centered. */
+    .site-header {
+      top: auto;
+      bottom: 8.5%;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0 20px;
+    }
+
+    .early-access {
+      width: 160px;
+    }
+
+    .early-access span {
+      font-size: 12px;
+      letter-spacing: -0.24px;
+    }
+
+    .login {
+      font-size: 12px;
+      letter-spacing: -0.24px;
+    }
+  }
+</style>
