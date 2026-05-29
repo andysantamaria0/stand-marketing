@@ -5,39 +5,34 @@
 // which is active; previous active animates back to silhouette.
 
 interface Slide {
-  num: string;
   name: string;
   desc: string;
-  frame: string;       // full composed PNG (active state)
-  silhouette: string;  // colored SVG silhouette (inactive state)
+  icon: string;       // bare 3D icon render (active state)
+  silhouette: string; // colored SVG silhouette (inactive state)
 }
 
 const slides: Slide[] = [
-  {
-    num: '00', name: 'dashboard', desc: 'Tktktktktktk.',
-    frame: 'frame-dashboard',
-    silhouette: 'STAND_SVG_CreamDesk_Silhouette',
-  },
-  {
-    num: '01', name: 'ideas tent', desc: 'Tktktktktktk.',
-    frame: 'frame-ideas-tent',
-    silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
-  },
-  {
-    num: '02', name: 'brand studio', desc: 'Create your business name, logo, colors, and brand style.',
-    frame: 'frame-brand-studio',
-    silhouette: 'STAND_SVG_PinkPaint_Silhouette',
-  },
-  {
-    num: '03', name: 'product lab', desc: 'Tktktktktktk.',
-    frame: 'frame-product-lab',
-    silhouette: 'STAND_SVG_GreenBox_Silhouette',
-  },
-  {
-    num: '04', name: 'marketing', desc: 'Tktktktktktk.',
-    frame: 'frame-marketing',
-    silhouette: 'STAND_SVG_YellowMegaphone_Silhouette',
-  },
+  { name: 'ideas tent',
+    desc: 'choose your business to build with Stand.',
+    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette' },
+  { name: 'brand studio',
+    desc: 'name it, create your logo and build your brand identity.',
+    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette' },
+  { name: 'product lab',
+    desc: 'design your products and create what you need to make your vision a reality.',
+    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette' },
+  { name: 'money',
+    desc: 'price your product, set your goals and start thinking like an owner.',
+    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette' },
+  { name: 'marketing',
+    desc: 'learn how to get the word out, launch your business and get customers.',
+    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette' },
+  { name: 'storefront',
+    desc: 'launch your shop and start taking orders.',
+    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette' },
+  { name: 'dashboard',
+    desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
+    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette' },
 ];
 ---
 
@@ -47,6 +42,7 @@ const slides: Slide[] = [
     <h2 class="headline">STAND provides the tools behind every kid business.</h2>
 
     <div class="slider" id="toolbox-slider">
+      <span class="dotted-line" aria-hidden="true"></span>
       <button class="nav prev" aria-label="Previous tool">←</button>
 
       <div class="stage">
@@ -61,20 +57,16 @@ const slides: Slide[] = [
                 />
               </div>
               <div class="frame-wrap">
-                <picture>
-                  <source srcset={`/brand/${s.frame}.webp`} type="image/webp" />
-                  <img
-                    class="frame-img"
-                    src={`/brand/${s.frame}.png`}
-                    alt={`${s.num} ${s.name}`}
-                    loading={i < 3 ? 'eager' : 'lazy'}
-                  />
-                </picture>
-              </div>
-              <div class="card">
-                <span class="num">{s.num}</span>
-                <h3 class="name">{s.name}</h3>
-                <p class="desc">{s.desc}</p>
+                <img
+                  class="tool-icon"
+                  src={`/brand/${s.icon}.png`}
+                  alt={s.name}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+                <div class="card">
+                  <h3 class="name">{s.name}</h3>
+                  <p class="desc">{s.desc}</p>
+                </div>
               </div>
             </article>
           ))
@@ -94,11 +86,16 @@ const slides: Slide[] = [
     const next = slider.querySelector('.nav.next') as HTMLButtonElement;
     const slides = Array.from(stage.querySelectorAll('.slide')) as HTMLElement[];
 
-    let active = 2; // start on '02 / brand studio'
+    const count = slides.length;
+    let active = 1; // start on 'brand studio' (now index 1 in the new order)
 
     const update = () => {
       slides.forEach((slide, i) => {
-        const distance = i - active;
+        // Circular distance so the coverflow neighbours wrap around the ends
+        // (infinite loop): the slide before index 0 is the last slide, etc.
+        let distance = i - active;
+        if (distance > count / 2) distance -= count;
+        if (distance < -count / 2) distance += count;
         if (distance === 0) {
           slide.dataset.pos = 'active';
         } else if (distance === -1) {
@@ -116,11 +113,11 @@ const slides: Slide[] = [
     };
 
     prev?.addEventListener('click', () => {
-      active = Math.max(0, active - 1);
+      active = (active - 1 + count) % count;
       update();
     });
     next?.addEventListener('click', () => {
-      active = Math.min(slides.length - 1, active + 1);
+      active = (active + 1) % count;
       update();
     });
 
@@ -131,9 +128,18 @@ const slides: Slide[] = [
 <style>
   .toolbox {
     background: var(--stand-cream);
-    padding: 123px 0 100px;
     width: 100%;
     overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(24px, 5vh, 60px) 0;
+    /* Slide width derived from viewport HEIGHT so the whole module (headline +
+       paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
+       (724x1142); ~290px reserves room for the headline + vertical padding. */
+    --slide-w: min(720px, calc((100vh - 320px) / 1.58));
   }
 
   .inner {
@@ -145,9 +151,9 @@ const slides: Slide[] = [
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: 40px;
-    line-height: 47px;
-    letter-spacing: -0.8px;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
+    letter-spacing: -0.44px;
     color: var(--stand-black);
     margin: 0 0 18px;
   }
@@ -155,11 +161,11 @@ const slides: Slide[] = [
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 78px;
+    font-size: clamp(28px, 3.341vw, 48px);
     line-height: 1;
-    letter-spacing: -1.5px;
+    letter-spacing: -1px;
     color: var(--stand-black);
-    margin: 0 0 80px;
+    margin: 0 0 clamp(16px, 4vh, 48px);
     max-width: 1250px;
   }
 
@@ -182,11 +188,29 @@ const slides: Slide[] = [
     z-index: 10;
   }
 
+  /* Full-bleed red dotted connector threaded through the silhouette icons,
+     sitting behind every slide (icons + active frame paint over it). Anchored
+     to the vertical centre of the square silhouette boxes (slide height / 2). */
+  .dotted-line {
+    position: absolute;
+    top: calc(var(--slide-w) / 2 + 24px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 8px;
+    background-image: radial-gradient(circle, var(--stand-red) 0 3.5px, transparent 4px);
+    background-size: 22px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+  }
+
   /* Stage holds all slides absolutely-positioned, centered around the middle. */
   .stage {
     position: relative;
     flex: 1;
-    height: 1100px;
+    height: calc(var(--slide-w) * 1.58);
     max-width: 1300px;
   }
 
@@ -194,11 +218,12 @@ const slides: Slide[] = [
     position: absolute;
     top: 0;
     left: 50%;
-    width: 720px;
+    width: var(--slide-w);
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    container-type: inline-size;
     transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1),
                 opacity 300ms ease-out;
   }
@@ -224,23 +249,58 @@ const slides: Slide[] = [
     object-fit: contain;
   }
 
+  /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
+     724/1088 footprint so the coverflow scaling matches the silhouette frame. */
   .frame-wrap {
     position: absolute;
-    inset: 0;
+    inset: auto;
+    top: 0;
+    left: 0;
     width: 100%;
+    aspect-ratio: 724 / 1088;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .frame-img {
-    width: 100%;
-    height: auto;
-    display: block;
+  .tool-icon {
+    width: 92%;
+    height: 52%;
+    object-fit: contain;
   }
 
   .card {
-    /* Faye's frame PNGs already include the card visually; this overlay holds
-       accessible text in case the PNG card text needs supplementing. Hidden
-       by default since the frame contains its own card. */
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex: 1;
+    margin-top: 4cqw;
+    background: var(--stand-white);
+    border: 0.42cqw solid var(--stand-black);
+    box-shadow: 0.6cqw 0.7cqw 0 var(--stand-black);
+    padding: 4cqw 6cqw;
+    gap: 1.6cqw;
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 4.58cqw; /* 33px @720 slide */
+    line-height: 1;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .desc {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 2.22cqw; /* 16px @720 slide */
+    line-height: 1.25;
+    color: var(--stand-black);
+    margin: 0;
   }
 
   /* Position states */
@@ -259,7 +319,7 @@ const slides: Slide[] = [
   }
 
   .slide[data-pos='prev'] {
-    transform: translateX(calc(-50% - 480px)) scale(0.22);
+    transform: translateX(calc(-50% - var(--slide-w) * 0.667)) scale(0.22);
     z-index: 2;
   }
 
@@ -279,18 +339,18 @@ const slides: Slide[] = [
   }
 
   .slide[data-pos='next'] {
-    transform: translateX(calc(-50% + 480px)) scale(0.22);
+    transform: translateX(calc(-50% + var(--slide-w) * 0.667)) scale(0.22);
     z-index: 2;
   }
 
   .slide[data-pos='prev-2'] {
-    transform: translateX(calc(-50% - 700px)) scale(0.16);
+    transform: translateX(calc(-50% - var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
     opacity: 0.7;
   }
 
   .slide[data-pos='next-2'] {
-    transform: translateX(calc(-50% + 700px)) scale(0.16);
+    transform: translateX(calc(-50% + var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
     opacity: 0.7;
   }
@@ -303,17 +363,14 @@ const slides: Slide[] = [
   }
 
   @media (max-width: 1024px) {
+    /* Stage/slide/offsets all derive from --slide-w (viewport height), so they
+       scale here automatically; only the arrow gap needs tightening. */
     .slider { gap: 16px; }
-    .stage { height: 880px; }
-    .slide { width: 540px; }
-    .slide[data-pos='prev']   { transform: translateX(calc(-50% - 320px)) scale(0.22); }
-    .slide[data-pos='next']   { transform: translateX(calc(-50% + 320px)) scale(0.22); }
-    .slide[data-pos='prev-2'] { transform: translateX(calc(-50% - 470px)) scale(0.16); }
-    .slide[data-pos='next-2'] { transform: translateX(calc(-50% + 470px)) scale(0.16); }
   }
 
   @media (max-width: 768px) {
-    .toolbox { padding: 36px 0 60px; }
+    /* Mobile: revert to normal flow (horizontal scroll-snap carousel below). */
+    .toolbox { padding: 36px 0 60px; min-height: 0; display: block; }
     .inner { padding: 0 20px; }
     .eyebrow { font-size: 9.44px; line-height: 11.092px; margin-bottom: 8px; }
     .headline {
@@ -326,6 +383,7 @@ const slides: Slide[] = [
     /* Mobile = horizontal scroll-snap (per Faye: "hold and drag to next module").
        Drop the coverflow, no arrows. All slides full-width, scroll snaps to next. */
     .nav { display: none; }
+    .dotted-line { display: none; }
     .slider { gap: 0; }
     .stage {
       height: auto;

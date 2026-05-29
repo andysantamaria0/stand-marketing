@@ -1,50 +1,35 @@
 ---
-// Tagline strip — Figma nodes 201:2483 (top) / 201:2545 (bottom)
-// Per Faye: "text on rotation. itll say one phrase, then the other, then
-// other on loop. no transition motion needed between them."
-// Single phrase visible at a time, swapped on a timer with no animation.
+// Tagline strip — Figma nodes 201:2483 (top) / 201:2545 (bottom).
+// Continuous horizontal scroll ticker (redesign: scroll, don't flash). The
+// phrases are joined into one line and rendered in 3 identical copies; the
+// track translates by exactly one copy-width (-33.333%) so the loop is seamless.
 
 interface Props {
   items?: string[];
   height?: number;
-  /** Seconds each phrase is visible before swapping to the next. */
-  interval?: number;
-  /** Unique id needed if more than one Marquee renders on the page. */
-  id?: string;
+  /** Seconds for one full loop of the ticker. */
+  duration?: number;
 }
 
 const {
-  items = ['Dream. Build. Grow.', 'What will you build?'],
+  items = ['What will you build?'],
   height = 123,
-  interval = 2.5,
-  id = `marquee-${Math.random().toString(36).slice(2, 8)}`,
+  duration = 30,
 } = Astro.props;
+
+// Phrases separated by an en-space + middot + en-space, with a trailing
+// separator so the seam between repeated copies reads the same as the gaps.
+const SEP = ' · ';
+const copy = items.join(SEP) + SEP;
 ---
 
-<div class="marquee" style={{ height: `${height}px` }} id={id} aria-hidden="true">
-  {
-    items.map((text, i) => (
-      <span class="phrase" data-active={i === 0 ? 'true' : 'false'}>
-        {text}
-      </span>
-    ))
-  }
+<div class="marquee" style={{ height: `${height}px` }} aria-hidden="true">
+  <div class="track" style={{ animationDuration: `${duration}s` }}>
+    <span>{copy}</span>
+    <span>{copy}</span>
+    <span>{copy}</span>
+  </div>
 </div>
-
-<script define:vars={{ id, interval }}>
-  const wrap = document.getElementById(id);
-  if (wrap) {
-    const phrases = wrap.querySelectorAll('.phrase');
-    if (phrases.length > 1) {
-      let i = 0;
-      setInterval(() => {
-        phrases[i].dataset.active = 'false';
-        i = (i + 1) % phrases.length;
-        phrases[i].dataset.active = 'true';
-      }, interval * 1000);
-    }
-  }
-</script>
 
 <style>
   .marquee {
@@ -52,7 +37,6 @@ const {
     color: var(--stand-postit);
     display: flex;
     align-items: center;
-    justify-content: center;
     width: 100%;
     overflow: hidden;
     font-family: var(--font-serif);
@@ -60,23 +44,25 @@ const {
     font-size: 52px;
     line-height: 1;
     letter-spacing: -1px;
-    text-align: center;
-    position: relative;
   }
 
-  .phrase {
-    position: absolute;
-    display: none;
-    padding: 0 20px;
+  .track {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    animation: marquee-scroll linear infinite;
   }
 
-  .phrase[data-active='true'] {
-    display: inline-block;
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-33.333%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; }
   }
 
   @media (max-width: 768px) {
-    .marquee {
-      font-size: 28px;
-    }
+    .marquee { font-size: 28px; }
   }
 </style>

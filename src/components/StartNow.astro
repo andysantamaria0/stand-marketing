@@ -19,7 +19,6 @@
   <div class="inner">
     <div class="links">
       <a href="https://app.standkids.com">Start Building →</a>
-      <a href="#">Learn More →</a>
     </div>
   </div>
 </section>
@@ -41,9 +40,9 @@
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 78px;
+    font-size: clamp(28px, 3.341vw, 48px);
     line-height: 1;
-    letter-spacing: -1.5px;
+    letter-spacing: -1px;
     color: var(--stand-white);
     margin: 0 0 90px;
     max-width: 1250px;
@@ -64,7 +63,7 @@
     animation: scroll 38s linear infinite;
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: 40px;
+    font-size: clamp(14px, 1.531vw, 22px);
     line-height: 1;
     color: var(--stand-black);
   }
@@ -82,9 +81,9 @@
 
   .links a {
     font-family: var(--font-serif);
-    font-size: 25px;
+    font-size: clamp(14px, 1.392vw, 20px);
     line-height: 1.4;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.4px;
     color: var(--stand-postit);
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
@@ -109,10 +108,10 @@
       margin-bottom: 40px;
     }
     .strip-track {
-      font-size: 22px;
+      font-size: 16px;
     }
     .links a {
-      font-size: 18px;
+      font-size: 16px;
     }
   }
 </style>

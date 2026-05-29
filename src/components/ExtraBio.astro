@@ -14,19 +14,23 @@ const testimonials: Testimonial[] = [
   {
     bg: 'testimonial-pink',
     quote: 'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
-    byline: '— Parent of Lily, age 9',
+    byline: '— Parent of Lily, age 12',
   },
   {
     bg: 'testimonial-mustard',
-    quote: 'I didn’t know what to charge at first but Stand helped me figure it out. Now I actually understand profit.',
-    byline: '— Maya, age 11',
+    quote: 'I thought starting a business would be easy. Then I had to make decisions, set prices, and keep going when it got hard. STAND helped me figure it out.',
+    byline: '— Ryan, age 10',
   },
   {
     bg: 'testimonial-yellow',
-    quote: 'She had a slow month and instead of quitting she changed her prices and tried a new product. I didn’t tell her to do that. Stand did.',
-    byline: '— Parent of Olivia, age 10',
+    quote: 'He cared about every detail - the name, the logo, the product, the packaging. STAND turned his creativity into something structured.',
+    byline: '— Parent of Leo, 13',
   },
 ];
+
+// Rendered three times so the track can loop infinitely: we start on the middle
+// copy and snap back to it (without animation) whenever a slide crosses an edge.
+const loop = [...testimonials, ...testimonials, ...testimonials];
 ---
 
 <section class="extra-bio">
@@ -40,7 +44,7 @@ const testimonials: Testimonial[] = [
         structure, oversight, and safety needed to make the experience age-appropriate.
       </p>
       <p>
-        STAND&reg; is not just another app. It&rsquo;s a hands-on way for kids to build confidence,
+        STAND is not just another app. It&rsquo;s a hands-on way for kids to build confidence,
         creativity, communication skills, financial literacy, and real-world initiative.
       </p>
     </div>
@@ -51,11 +55,11 @@ const testimonials: Testimonial[] = [
       <div class="track-clip">
         <div class="track">
           {
-            testimonials.map((t, i) => (
+            loop.map((t, i) => (
               <article class="testimonial" data-index={i}>
                 <picture class="bg" aria-hidden="true">
                   <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
-                  <img src={`/brand/${t.bg}.png`} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+                  <img src={`/brand/${t.bg}.png`} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
                 </picture>
                 <div class="content">
                   <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
@@ -78,27 +82,42 @@ const testimonials: Testimonial[] = [
     const track = carousel.querySelector('.track') as HTMLElement;
     const prev = carousel.querySelector('.nav.prev') as HTMLButtonElement;
     const next = carousel.querySelector('.nav.next') as HTMLButtonElement;
-    let index = 0;
+    const len = 3; // original testimonial count (rendered x3 for a seamless loop)
+    let index = len; // start on the first card of the middle copy
+    let animating = false;
 
-    const update = () => {
-      const card = track.querySelector('.testimonial') as HTMLElement;
-      if (!card) return;
-      const offset = card.offsetWidth + 32;
-      track.style.transform = `translateX(${-index * offset}px)`;
+    const clip = carousel.querySelector('.track-clip') as HTMLElement;
+    const firstCard = track.querySelector('.testimonial') as HTMLElement | null;
+    const GAP = 32;
+
+    const place = (animate: boolean) => {
+      // Cards are sized to the clip via 100cqw (CSS); translate one card+gap each.
+      const w = firstCard?.offsetWidth || clip.clientWidth;
+      track.style.transition = animate ? '' : 'none';
+      track.style.transform = `translateX(${-index * (w + GAP)}px)`;
+      if (!animate) void track.offsetHeight; // force reflow so the snap is instant
     };
 
-    prev?.addEventListener('click', () => {
-      index = Math.max(0, index - 1);
-      update();
-    });
-    next?.addEventListener('click', () => {
-      const max = track.querySelectorAll('.testimonial').length - 1;
-      index = Math.min(max, index + 1);
-      update();
+    const move = (delta: number) => {
+      if (animating) return;
+      animating = true;
+      index += delta;
+      place(true);
+    };
+
+    // When a slide crosses into a clone copy, snap back to the middle copy with
+    // no animation so the carousel loops forever in both directions.
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      animating = false;
+      if (index >= 2 * len) { index -= len; place(false); }
+      else if (index < len) { index += len; place(false); }
     });
 
-    window.addEventListener('resize', update);
-    requestAnimationFrame(update);
+    prev?.addEventListener('click', () => move(-1));
+    next?.addEventListener('click', () => move(1));
+    window.addEventListener('resize', () => place(false));
+    requestAnimationFrame(() => place(false));
   }
 </script>
 
@@ -118,9 +137,9 @@ const testimonials: Testimonial[] = [
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: 40px;
-    line-height: 47px;
-    letter-spacing: -0.8px;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
+    letter-spacing: -0.44px;
     color: var(--stand-black);
     margin: 0 0 32px;
   }
@@ -128,9 +147,9 @@ const testimonials: Testimonial[] = [
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 78px;
+    font-size: clamp(28px, 3.341vw, 48px);
     line-height: 1;
-    letter-spacing: -1.5px;
+    letter-spacing: -1px;
     color: var(--stand-black);
     margin: 0 0 60px;
     max-width: 1250px;
@@ -144,9 +163,9 @@ const testimonials: Testimonial[] = [
   .copy p {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 30px;
+    font-size: clamp(12px, 1.113vw, 16px);
     line-height: 1.2;
-    letter-spacing: -0.6px;
+    letter-spacing: -0.32px;
     color: var(--stand-black);
     margin: 0 0 24px;
   }
@@ -171,10 +190,15 @@ const testimonials: Testimonial[] = [
   }
 
   .track-clip {
-    width: 993px;
-    max-width: 100%;
+    /* Fills the space between the nav arrows, capped at the design width.
+       container-type makes its width independent of the (wide) track inside,
+       so cards can size to it with 100cqw and exactly one shows. */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 993px;
     overflow: hidden;
-    padding: 20px 4px 30px;
+    padding: 20px 0 30px;
+    container-type: inline-size;
   }
 
   .track {
@@ -185,7 +209,8 @@ const testimonials: Testimonial[] = [
 
   .testimonial {
     position: relative;
-    flex: 0 0 993px;
+    flex: 0 0 auto;
+    width: 100cqw;
     aspect-ratio: 993 / 762;
   }
 
@@ -208,17 +233,18 @@ const testimonials: Testimonial[] = [
     justify-content: center;
     text-align: center;
     /* The PNG card is rotated/skewed, so its visible area is inset from the
-       bounding box. Extra horizontal padding keeps text inside the colored card. */
-    padding: 80px 160px;
+       bounding box. Percentage padding keeps text inside the colored card at
+       every card width (the box scales with --card-w). */
+    padding: 8% 14%;
     z-index: 1;
   }
 
   blockquote {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: 42px;
+    font-size: clamp(18px, 2.088vw, 30px);
     line-height: 1.15;
-    letter-spacing: -0.8px;
+    letter-spacing: -0.6px;
     color: var(--stand-black);
     margin: 0 0 32px;
     max-width: 600px;
@@ -226,22 +252,17 @@ const testimonials: Testimonial[] = [
 
   .byline {
     font-family: var(--font-serif);
-    font-size: 25px;
+    font-size: clamp(14px, 1.253vw, 18px);
     line-height: 1.2;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.36px;
     color: var(--stand-black);
     margin: 0;
   }
 
   @media (max-width: 1024px) {
     .extra-bio { padding: 120px 0 80px; }
-    .headline { font-size: 52px; }
-    .copy p { font-size: 22px; }
+    .copy p { font-size: 16px; }
     .carousel { gap: 32px; }
-    .track-clip { width: 100%; max-width: 720px; }
-    .testimonial { flex-basis: 100%; }
-    .content { padding: 50px 100px; }
-    blockquote { font-size: 26px; max-width: 460px; }
     .copy { margin-bottom: 100px; }
   }
 
@@ -270,12 +291,14 @@ const testimonials: Testimonial[] = [
       margin-bottom: 16px;
     }
     .carousel { gap: 12px; }
-    .track-clip { width: calc(100% - 96px); }
     .content { padding: 28px 24px; }
     blockquote {
-      font-size: 18px;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      /* Shrink the quote so the body copy fits inside the pink testimonial
+         card on narrow phones (the card is fixed-width via the PNG aspect
+         ratio, so the only knob is font size). Was 18px / 1.2. */
+      font-size: 15px;
+      line-height: 1.25;
+      margin-bottom: 14px;
     }
     .byline {
       font-size: 13px;

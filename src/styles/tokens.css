@@ -50,17 +50,17 @@
 :root {
   /* Primary palette */
   --stand-cream: #faf3d6;
-  --stand-red: #dc2026;
+  --stand-red: #db1f26;
   --stand-black: #000000;
 
   /* Secondary palette */
-  --stand-mustard: #ffc712;
-  --stand-blue: #1c499e;
-  --stand-postit: #f2ee2f;
-  --stand-green: #1f472f;
+  --stand-mustard: #ffc400;
+  --stand-blue: #014794;
+  --stand-postit: #f9f06c;
+  --stand-green: #00623b;
 
   /* Tertiary palette */
-  --stand-pink: #ff459c;
+  --stand-pink: #ff2d9b;
   --stand-white: #ffffff;
 
   /* Semantic */
