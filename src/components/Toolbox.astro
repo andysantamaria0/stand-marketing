@@ -1,0 +1,428 @@
+---
+// TOOLBOX — Figma node 112:175
+// Coverflow-style carousel: active slide centered with full frame PNG + card,
+// neighboring slides shrunk and shown as silhouette icons only. Arrows shift
+// which is active; previous active animates back to silhouette.
+
+interface Slide {
+  name: string;
+  desc: string;
+  icon: string;       // bare 3D icon render (active state)
+  silhouette: string; // colored SVG silhouette (inactive state)
+}
+
+const slides: Slide[] = [
+  { name: 'ideas tent',
+    desc: 'choose your business to build with Stand.',
+    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette' },
+  { name: 'brand studio',
+    desc: 'name it, create your logo and build your brand identity.',
+    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette' },
+  { name: 'product lab',
+    desc: 'design your products and create what you need to make your vision a reality.',
+    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette' },
+  { name: 'money',
+    desc: 'price your product, set your goals and start thinking like an owner.',
+    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette' },
+  { name: 'marketing',
+    desc: 'learn how to get the word out, launch your business and get customers.',
+    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette' },
+  { name: 'storefront',
+    desc: 'launch your shop and start taking orders.',
+    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette' },
+  { name: 'dashboard',
+    desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
+    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette' },
+];
+---
+
+<section class="toolbox">
+  <div class="inner">
+    <p class="eyebrow">The Stand Toolbox</p>
+    <h2 class="headline">STAND provides the tools behind every kid business.</h2>
+
+    <div class="slider" id="toolbox-slider">
+      <span class="dotted-line" aria-hidden="true"></span>
+      <button class="nav prev" aria-label="Previous tool">←</button>
+
+      <div class="stage">
+        {
+          slides.map((s, i) => (
+            <article class="slide" data-index={i}>
+              <div class="silhouette-wrap">
+                <img
+                  class="silhouette-img"
+                  src={`/brand/${s.silhouette}.svg`}
+                  alt={s.name}
+                />
+              </div>
+              <div class="frame-wrap">
+                <img
+                  class="tool-icon"
+                  src={`/brand/${s.icon}.png`}
+                  alt={s.name}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+                <div class="card">
+                  <h3 class="name">{s.name}</h3>
+                  <p class="desc">{s.desc}</p>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <button class="nav next" aria-label="Next tool">→</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slider = document.getElementById('toolbox-slider');
+  if (slider) {
+    const stage = slider.querySelector('.stage') as HTMLElement;
+    const prev = slider.querySelector('.nav.prev') as HTMLButtonElement;
+    const next = slider.querySelector('.nav.next') as HTMLButtonElement;
+    const slides = Array.from(stage.querySelectorAll('.slide')) as HTMLElement[];
+
+    const count = slides.length;
+    let active = 1; // start on 'brand studio' (now index 1 in the new order)
+
+    const update = () => {
+      slides.forEach((slide, i) => {
+        // Circular distance so the coverflow neighbours wrap around the ends
+        // (infinite loop): the slide before index 0 is the last slide, etc.
+        let distance = i - active;
+        if (distance > count / 2) distance -= count;
+        if (distance < -count / 2) distance += count;
+        if (distance === 0) {
+          slide.dataset.pos = 'active';
+        } else if (distance === -1) {
+          slide.dataset.pos = 'prev';
+        } else if (distance === 1) {
+          slide.dataset.pos = 'next';
+        } else if (distance === -2) {
+          slide.dataset.pos = 'prev-2';
+        } else if (distance === 2) {
+          slide.dataset.pos = 'next-2';
+        } else {
+          slide.dataset.pos = 'hidden';
+        }
+      });
+    };
+
+    prev?.addEventListener('click', () => {
+      active = (active - 1 + count) % count;
+      update();
+    });
+    next?.addEventListener('click', () => {
+      active = (active + 1) % count;
+      update();
+    });
+
+    update();
+  }
+</script>
+
+<style>
+  .toolbox {
+    background: var(--stand-cream);
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(24px, 5vh, 60px) 0;
+    /* Slide width derived from viewport HEIGHT so the whole module (headline +
+       paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
+       (724x1142); ~290px reserves room for the headline + vertical padding. */
+    --slide-w: min(720px, calc((100vh - 320px) / 1.58));
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
+    letter-spacing: -0.44px;
+    color: var(--stand-black);
+    margin: 0 0 18px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(28px, 3.341vw, 48px);
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--stand-black);
+    margin: 0 0 clamp(16px, 4vh, 48px);
+    max-width: 1250px;
+  }
+
+  .slider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .nav {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    color: var(--stand-black);
+    font-size: 32px;
+    line-height: 1;
+    z-index: 10;
+  }
+
+  /* Full-bleed red dotted connector threaded through the silhouette icons,
+     sitting behind every slide (icons + active frame paint over it). Anchored
+     to the vertical centre of the square silhouette boxes (slide height / 2). */
+  .dotted-line {
+    position: absolute;
+    top: calc(var(--slide-w) / 2 + 24px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 8px;
+    background-image: radial-gradient(circle, var(--stand-red) 0 3.5px, transparent 4px);
+    background-size: 22px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Stage holds all slides absolutely-positioned, centered around the middle. */
+  .stage {
+    position: relative;
+    flex: 1;
+    height: calc(var(--slide-w) * 1.58);
+    max-width: 1300px;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--slide-w);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    container-type: inline-size;
+    transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                opacity 300ms ease-out;
+  }
+
+  /* Frame + card visible only when active; silhouette hides on active. */
+  .silhouette-wrap,
+  .frame-wrap,
+  .card {
+    transition: opacity 300ms ease-out;
+  }
+
+  .silhouette-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .silhouette-img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+  }
+
+  /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
+     724/1088 footprint so the coverflow scaling matches the silhouette frame. */
+  .frame-wrap {
+    position: absolute;
+    inset: auto;
+    top: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 724 / 1088;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tool-icon {
+    width: 92%;
+    height: 52%;
+    object-fit: contain;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex: 1;
+    margin-top: 4cqw;
+    background: var(--stand-white);
+    border: 0.42cqw solid var(--stand-black);
+    box-shadow: 0.6cqw 0.7cqw 0 var(--stand-black);
+    padding: 4cqw 6cqw;
+    gap: 1.6cqw;
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 4.58cqw; /* 33px @720 slide */
+    line-height: 1;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .desc {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 2.22cqw; /* 16px @720 slide */
+    line-height: 1.25;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  /* Position states */
+  .slide[data-pos='active'] {
+    transform: translateX(-50%) scale(1);
+    z-index: 5;
+  }
+
+  .slide[data-pos='active'] .silhouette-wrap {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .slide[data-pos='active'] .frame-wrap {
+    opacity: 1;
+  }
+
+  .slide[data-pos='prev'] {
+    transform: translateX(calc(-50% - var(--slide-w) * 0.667)) scale(0.22);
+    z-index: 2;
+  }
+
+  .slide[data-pos='prev'] .silhouette-wrap,
+  .slide[data-pos='next'] .silhouette-wrap,
+  .slide[data-pos='prev-2'] .silhouette-wrap,
+  .slide[data-pos='next-2'] .silhouette-wrap {
+    opacity: 1;
+  }
+
+  .slide[data-pos='prev'] .frame-wrap,
+  .slide[data-pos='next'] .frame-wrap,
+  .slide[data-pos='prev-2'] .frame-wrap,
+  .slide[data-pos='next-2'] .frame-wrap {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .slide[data-pos='next'] {
+    transform: translateX(calc(-50% + var(--slide-w) * 0.667)) scale(0.22);
+    z-index: 2;
+  }
+
+  .slide[data-pos='prev-2'] {
+    transform: translateX(calc(-50% - var(--slide-w) * 0.972)) scale(0.16);
+    z-index: 1;
+    opacity: 0.7;
+  }
+
+  .slide[data-pos='next-2'] {
+    transform: translateX(calc(-50% + var(--slide-w) * 0.972)) scale(0.16);
+    z-index: 1;
+    opacity: 0.7;
+  }
+
+  .slide[data-pos='hidden'] {
+    transform: translateX(-50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @media (max-width: 1024px) {
+    /* Stage/slide/offsets all derive from --slide-w (viewport height), so they
+       scale here automatically; only the arrow gap needs tightening. */
+    .slider { gap: 16px; }
+  }
+
+  @media (max-width: 768px) {
+    /* Mobile: revert to normal flow (horizontal scroll-snap carousel below). */
+    .toolbox { padding: 36px 0 60px; min-height: 0; display: block; }
+    .inner { padding: 0 20px; }
+    .eyebrow { font-size: 9.44px; line-height: 11.092px; margin-bottom: 8px; }
+    .headline {
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+
+    /* Mobile = horizontal scroll-snap (per Faye: "hold and drag to next module").
+       Drop the coverflow, no arrows. All slides full-width, scroll snaps to next. */
+    .nav { display: none; }
+    .dotted-line { display: none; }
+    .slider { gap: 0; }
+    .stage {
+      height: auto;
+      width: 100%;
+      max-width: 100%;
+      display: flex;
+      gap: 16px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 20px 20px;
+      /* Hide scrollbar visually but keep scrollable */
+      scrollbar-width: none;
+    }
+    .stage::-webkit-scrollbar { display: none; }
+
+    .slide {
+      position: relative;
+      flex: 0 0 calc(100% - 40px);
+      width: calc(100% - 40px);
+      max-width: 320px;
+      transform: none !important;
+      opacity: 1 !important;
+      scroll-snap-align: center;
+      scroll-snap-stop: always;
+    }
+
+    /* Show frame on every slide, hide silhouettes/coverflow positioning. */
+    .slide .silhouette-wrap { display: none; }
+    .slide .frame-wrap {
+      position: relative;
+      opacity: 1 !important;
+      inset: auto;
+    }
+    .slide .frame-img {
+      width: 100%;
+      height: auto;
+    }
+  }
+</style>

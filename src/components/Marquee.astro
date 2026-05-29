@@ -1,0 +1,68 @@
+---
+// Tagline strip — Figma nodes 201:2483 (top) / 201:2545 (bottom).
+// Continuous horizontal scroll ticker (redesign: scroll, don't flash). The
+// phrases are joined into one line and rendered in 3 identical copies; the
+// track translates by exactly one copy-width (-33.333%) so the loop is seamless.
+
+interface Props {
+  items?: string[];
+  height?: number;
+  /** Seconds for one full loop of the ticker. */
+  duration?: number;
+}
+
+const {
+  items = ['What will you build?'],
+  height = 123,
+  duration = 30,
+} = Astro.props;
+
+// Phrases separated by an en-space + middot + en-space, with a trailing
+// separator so the seam between repeated copies reads the same as the gaps.
+const SEP = ' · ';
+const copy = items.join(SEP) + SEP;
+---
+
+<div class="marquee" style={{ height: `${height}px` }} aria-hidden="true">
+  <div class="track" style={{ animationDuration: `${duration}s` }}>
+    <span>{copy}</span>
+    <span>{copy}</span>
+    <span>{copy}</span>
+  </div>
+</div>
+
+<style>
+  .marquee {
+    background: var(--stand-red);
+    color: var(--stand-postit);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .track {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    animation: marquee-scroll linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-33.333%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; }
+  }
+
+  @media (max-width: 768px) {
+    .marquee { font-size: 28px; }
+  }
+</style>

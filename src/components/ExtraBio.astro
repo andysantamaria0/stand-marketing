@@ -1,0 +1,308 @@
+---
+// EXTRA BIO + TESTIMONIALS — Figma node 113:244
+// Two text blocks + a 3-card testimonial carousel. Each card uses Faye's exported
+// rectangle PNG (Frame 29 / 30 / 31) as the colored background with text overlaid.
+// Arrow click swipes to the next testimonial.
+
+interface Testimonial {
+  bg: string;          // basename in /brand/ for the colored rectangle PNG
+  quote: string;
+  byline: string;
+}
+
+const testimonials: Testimonial[] = [
+  {
+    bg: 'testimonial-pink',
+    quote: 'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
+    byline: '— Parent of Lily, age 12',
+  },
+  {
+    bg: 'testimonial-mustard',
+    quote: 'I thought starting a business would be easy. Then I had to make decisions, set prices, and keep going when it got hard. STAND helped me figure it out.',
+    byline: '— Ryan, age 10',
+  },
+  {
+    bg: 'testimonial-yellow',
+    quote: 'He cared about every detail - the name, the logo, the product, the packaging. STAND turned his creativity into something structured.',
+    byline: '— Parent of Leo, 13',
+  },
+];
+
+// Rendered three times so the track can loop infinitely: we start on the middle
+// copy and snap back to it (without animation) whenever a slide crosses an edge.
+const loop = [...testimonials, ...testimonials, ...testimonials];
+---
+
+<section class="extra-bio">
+  <div class="inner">
+    <p class="eyebrow">Kid &amp; Parent Approved</p>
+    <h2 class="headline">STAND is designed for kids to lead and parents to support.</h2>
+
+    <div class="copy">
+      <p>
+        Kids gain the independence and pride of building something of their own. Parents get the
+        structure, oversight, and safety needed to make the experience age-appropriate.
+      </p>
+      <p>
+        STAND is not just another app. It&rsquo;s a hands-on way for kids to build confidence,
+        creativity, communication skills, financial literacy, and real-world initiative.
+      </p>
+    </div>
+
+    <div class="carousel" id="testimonial-carousel">
+      <button class="nav prev" aria-label="Previous testimonial">←</button>
+
+      <div class="track-clip">
+        <div class="track">
+          {
+            loop.map((t, i) => (
+              <article class="testimonial" data-index={i}>
+                <picture class="bg" aria-hidden="true">
+                  <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
+                  <img src={`/brand/${t.bg}.png`} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
+                </picture>
+                <div class="content">
+                  <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
+                  <p class="byline">{t.byline}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <button class="nav next" aria-label="Next testimonial">→</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const carousel = document.getElementById('testimonial-carousel');
+  if (carousel) {
+    const track = carousel.querySelector('.track') as HTMLElement;
+    const prev = carousel.querySelector('.nav.prev') as HTMLButtonElement;
+    const next = carousel.querySelector('.nav.next') as HTMLButtonElement;
+    const len = 3; // original testimonial count (rendered x3 for a seamless loop)
+    let index = len; // start on the first card of the middle copy
+    let animating = false;
+
+    const clip = carousel.querySelector('.track-clip') as HTMLElement;
+    const firstCard = track.querySelector('.testimonial') as HTMLElement | null;
+    const GAP = 32;
+
+    const place = (animate: boolean) => {
+      // Cards are sized to the clip via 100cqw (CSS); translate one card+gap each.
+      const w = firstCard?.offsetWidth || clip.clientWidth;
+      track.style.transition = animate ? '' : 'none';
+      track.style.transform = `translateX(${-index * (w + GAP)}px)`;
+      if (!animate) void track.offsetHeight; // force reflow so the snap is instant
+    };
+
+    const move = (delta: number) => {
+      if (animating) return;
+      animating = true;
+      index += delta;
+      place(true);
+    };
+
+    // When a slide crosses into a clone copy, snap back to the middle copy with
+    // no animation so the carousel loops forever in both directions.
+    track.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      animating = false;
+      if (index >= 2 * len) { index -= len; place(false); }
+      else if (index < len) { index += len; place(false); }
+    });
+
+    prev?.addEventListener('click', () => move(-1));
+    next?.addEventListener('click', () => move(1));
+    window.addEventListener('resize', () => place(false));
+    requestAnimationFrame(() => place(false));
+  }
+</script>
+
+<style>
+  .extra-bio {
+    background: var(--stand-cream);
+    padding: 174px 0 100px;
+    width: 100%;
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
+    letter-spacing: -0.44px;
+    color: var(--stand-black);
+    margin: 0 0 32px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(28px, 3.341vw, 48px);
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--stand-black);
+    margin: 0 0 60px;
+    max-width: 1250px;
+  }
+
+  .copy {
+    max-width: 1250px;
+    margin-bottom: 140px;
+  }
+
+  .copy p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(12px, 1.113vw, 16px);
+    line-height: 1.2;
+    letter-spacing: -0.32px;
+    color: var(--stand-black);
+    margin: 0 0 24px;
+  }
+
+  .carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+  }
+
+  .nav {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    color: var(--stand-black);
+    font-size: 32px;
+    line-height: 1;
+    z-index: 5;
+  }
+
+  .track-clip {
+    /* Fills the space between the nav arrows, capped at the design width.
+       container-type makes its width independent of the (wide) track inside,
+       so cards can size to it with 100cqw and exactly one shows. */
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 993px;
+    overflow: hidden;
+    padding: 20px 0 30px;
+    container-type: inline-size;
+  }
+
+  .track {
+    display: flex;
+    gap: 32px;
+    transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .testimonial {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100cqw;
+    aspect-ratio: 993 / 762;
+  }
+
+  .bg,
+  .bg img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* The PNG card is rotated/skewed, so its visible area is inset from the
+       bounding box. Percentage padding keeps text inside the colored card at
+       every card width (the box scales with --card-w). */
+    padding: 8% 14%;
+    z-index: 1;
+  }
+
+  blockquote {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(18px, 2.088vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.6px;
+    color: var(--stand-black);
+    margin: 0 0 32px;
+    max-width: 600px;
+  }
+
+  .byline {
+    font-family: var(--font-serif);
+    font-size: clamp(14px, 1.253vw, 18px);
+    line-height: 1.2;
+    letter-spacing: -0.36px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .extra-bio { padding: 120px 0 80px; }
+    .copy p { font-size: 16px; }
+    .carousel { gap: 32px; }
+    .copy { margin-bottom: 100px; }
+  }
+
+  @media (max-width: 768px) {
+    .extra-bio {
+      padding: 60px 0;
+    }
+    .inner {
+      padding: 0 20px;
+    }
+    .eyebrow {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .headline {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+    .copy {
+      margin-bottom: 60px;
+    }
+    .copy p {
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+    .carousel { gap: 12px; }
+    .content { padding: 28px 24px; }
+    blockquote {
+      /* Shrink the quote so the body copy fits inside the pink testimonial
+         card on narrow phones (the card is fixed-width via the PNG aspect
+         ratio, so the only knob is font size). Was 18px / 1.2. */
+      font-size: 15px;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .byline {
+      font-size: 13px;
+    }
+    .nav { width: 36px; height: 36px; font-size: 22px; }
+  }
+</style>

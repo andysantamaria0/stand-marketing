@@ -1,0 +1,117 @@
+---
+// START NOW — Figma node 202:2962 (1437×586)
+// Red bg. Headline + post-it yellow marquee strip (84px tall) + yellow CTA links.
+---
+
+<section class="start-now">
+  <div class="inner">
+    <h2 class="headline">Start your first business with STAND.</h2>
+  </div>
+
+  <div class="strip">
+    <div class="strip-track">
+      <span>Create your brand. Launch your storefront. Make your first sale. Learn by doing.&nbsp;</span>
+      <span>Create your brand. Launch your storefront. Make your first sale. Learn by doing.&nbsp;</span>
+      <span>Create your brand. Launch your storefront. Make your first sale. Learn by doing.&nbsp;</span>
+    </div>
+  </div>
+
+  <div class="inner">
+    <div class="links">
+      <a href="https://app.standkids.com">Start Building →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .start-now {
+    background: var(--stand-red);
+    padding: 90px 0 80px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 94px;
+  }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(28px, 3.341vw, 48px);
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--stand-white);
+    margin: 0 0 90px;
+    max-width: 1250px;
+  }
+
+  .strip {
+    background: var(--stand-postit);
+    height: 84px;
+    margin-bottom: 70px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .strip-track {
+    display: flex;
+    white-space: nowrap;
+    animation: scroll 38s linear infinite;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1;
+    color: var(--stand-black);
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.33%); }
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .links a {
+    font-family: var(--font-serif);
+    font-size: clamp(14px, 1.392vw, 20px);
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+    color: var(--stand-postit);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    width: fit-content;
+  }
+
+  @media (max-width: 768px) {
+    .start-now {
+      padding: 60px 0;
+    }
+    .inner {
+      padding: 0 20px;
+    }
+    .headline {
+      font-size: 32px;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+      margin-bottom: 40px;
+    }
+    .strip {
+      height: 56px;
+      margin-bottom: 40px;
+    }
+    .strip-track {
+      font-size: 16px;
+    }
+    .links a {
+      font-size: 16px;
+    }
+  }
+</style>

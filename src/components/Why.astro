@@ -1,0 +1,418 @@
+---
+// WHY? — Figma node 200:2146, split into two full-viewport panels:
+// panel 1 = red strip + items 01/02 (+ photo), panel 2 = items 03/04 (+ photo).
+// Each item/photo is positioned as a percentage of its panel's stage so the
+// zigzag scales to fit one screen on a 13" laptop. Mobile linearizes to a stack.
+
+interface WhyItem {
+  num: string;
+  heading: string;
+  body: string;
+  color: string;
+  left: number; // % of panel stage
+  top: number; // % of panel stage
+}
+
+const panel1: WhyItem[] = [
+  {
+    num: '01',
+    heading: 'No worksheets. No lectures. Just doing.',
+    body: 'Pricing, marketing, planning. Every skill gets learned because they actually have to use it.',
+    color: 'var(--stand-mustard)',
+    left: 5, top: 6,
+  },
+  {
+    num: '02',
+    heading: "Confidence you can't fake or manufacture.",
+    body: 'Kids learn to talk about what they built, explain why it’s good, and pitch to real people. That kind of confidence only comes from doing something real.',
+    color: 'var(--stand-pink)',
+    left: 5, top: 55,
+  },
+];
+
+const panel2: WhyItem[] = [
+  {
+    num: '03',
+    heading: "Money clicks differently when it's theirs.",
+    body: 'Pricing, profit, saving versus spending. These things actually land when your kid earned the money themselves.',
+    color: 'var(--stand-blue)',
+    left: 53, top: 6,
+  },
+  {
+    num: '04',
+    heading: 'Reward the fails, not just the sales.',
+    body: 'Stand is built for when things don’t go perfectly. Because that’s actually where kids grow the most. We don’t paper over the hard stuff.',
+    color: 'var(--stand-green)',
+    left: 53, top: 55,
+  },
+];
+---
+
+<section class="why">
+  <div class="why-panel panel-first">
+    <div class="strip"><span>Why STAND?</span></div>
+
+    <div class="panel-stage">
+      <div
+        class="photo-card photo-1"
+        style={{ '--pc-left': '54%', '--pc-top': '14%', '--pc-width': '42%' }}
+      >
+        <div class="card-back" style={{ background: 'var(--stand-postit)' }}></div>
+        <img class="photo" src="/brand/why-photo-1.webp" alt="Stand kid drawing a Cookies $5 sign at a kitchen table" loading="lazy" />
+      </div>
+
+      {
+        panel1.map((item) => (
+          <button
+            type="button"
+            class="item"
+            style={{ '--item-left': `${item.left}%`, '--item-top': `${item.top}%` }}
+            aria-expanded="false"
+          >
+            <span class="badge-wrap">
+              <span class="badge-shape" style={{ background: item.color }}></span>
+              <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
+            </span>
+            <div class="text">
+              <h3 class="heading">{item.heading}</h3>
+              <div class="callout"><p>{item.body}</p></div>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="why-panel">
+    <div class="panel-stage">
+      <div
+        class="photo-card photo-2"
+        style={{ '--pc-left': '4%', '--pc-top': '14%', '--pc-width': '42%' }}
+      >
+        <div class="card-back" style={{ background: 'var(--stand-mustard)' }}></div>
+        <img class="photo" src="/brand/why-photo-2.webp" alt="Stand kid in a red Stand cap on a sidewalk" loading="lazy" />
+      </div>
+
+      {
+        panel2.map((item) => (
+          <button
+            type="button"
+            class="item"
+            style={{ '--item-left': `${item.left}%`, '--item-top': `${item.top}%` }}
+            aria-expanded="false"
+          >
+            <span class="badge-wrap">
+              <span class="badge-shape" style={{ background: item.color }}></span>
+              <img class="badge-plus" src="/brand/why-plus.svg" alt="" aria-hidden="true" />
+            </span>
+            <div class="text">
+              <h3 class="heading">{item.heading}</h3>
+              <div class="callout"><p>{item.body}</p></div>
+            </div>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    background: var(--stand-cream);
+    width: 100%;
+  }
+
+  .why-panel {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .strip {
+    background: var(--stand-red);
+    color: var(--stand-white);
+    padding: 38px 50px;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(14px, 1.531vw, 22px);
+    line-height: 1.18;
+    letter-spacing: -0.44px;
+    flex-shrink: 0;
+  }
+
+  /* Relative area the items + photo are positioned within (one viewport each). */
+  .panel-stage {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .photo-card {
+    position: absolute;
+    left: var(--pc-left);
+    top: var(--pc-top);
+    width: var(--pc-width);
+    aspect-ratio: 822 / 544;
+  }
+
+  .photo-1 {
+    transform: rotate(-2.36deg);
+  }
+
+  .photo-2 {
+    transform: rotate(4.54deg);
+  }
+
+  .card-back {
+    position: absolute;
+    inset: -4% -5% -10% 5%;
+    transform: rotate(5deg);
+    z-index: 0;
+  }
+
+  .photo-2 .card-back {
+    transform: rotate(3deg);
+  }
+
+  .photo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .item {
+    position: absolute;
+    left: var(--item-left);
+    top: var(--item-top);
+    display: flex;
+    gap: 34px;
+    align-items: flex-start;
+    width: 46%;
+    max-width: 620px;
+    z-index: 5;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+
+  .badge-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 73px;
+    height: 89px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .badge-shape {
+    position: absolute;
+    inset: 0;
+    transform: rotate(27.94deg);
+    -webkit-mask-image: url('/brand/badge-mask.png');
+            mask-image: url('/brand/badge-mask.png');
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+  }
+
+  .badge-plus {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    z-index: 2;
+  }
+
+  .text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    position: relative;
+  }
+
+  .num {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(22px, 2.784vw, 40px);
+    line-height: 1;
+    color: var(--stand-black);
+  }
+
+  .heading {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(28px, 3.341vw, 48px);
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--stand-black);
+    margin: 0;
+    transition: opacity 200ms ease-out;
+  }
+
+  /* Hover callout: appears in place of the heading, white card with body copy. */
+  .callout {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    max-width: 480px;
+    background: var(--stand-white);
+    border: 3px solid var(--stand-black);
+    box-shadow: 5px 6px 0 var(--stand-black);
+    padding: 20px 24px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 220ms ease-out 80ms, transform 220ms ease-out 80ms;
+  }
+
+  .callout p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -0.2px;
+    color: var(--stand-black);
+    margin: 0;
+  }
+
+  .item:hover .heading {
+    opacity: 0;
+  }
+
+  .item:hover .callout {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .strip {
+      padding: 20px 20px;
+      font-size: 18px;
+      line-height: 1.1;
+    }
+
+    /* Mobile: each panel linearizes into a stacked column (photo after items). */
+    .why-panel {
+      min-height: 0;
+      display: block;
+    }
+    .panel-stage {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding: 36px 20px 60px;
+    }
+
+    .photo-card {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      transform: none;
+      aspect-ratio: 4 / 3;
+      order: 9;
+    }
+
+    .card-back {
+      inset: -8px -10px -16px 8px;
+    }
+
+    .item {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      max-width: none;
+      gap: 16px;
+    }
+
+    .badge-wrap {
+      width: 40px;
+      height: 50px;
+    }
+
+    .badge-plus {
+      width: 22px;
+      height: 22px;
+    }
+
+    .num {
+      font-size: 24px;
+    }
+
+    .heading {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.3px;
+    }
+
+    /* On mobile the items become an accordion: callout hidden until tapped. */
+    .callout {
+      position: static;
+      transform: none;
+      pointer-events: auto;
+      padding: 14px 16px;
+      box-shadow: 4px 5px 0 var(--stand-black);
+      max-width: none;
+      width: 100%;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-width: 0;
+      transition: opacity 220ms ease-out, max-height 280ms ease-out,
+                  margin-top 280ms ease-out, padding 280ms ease-out,
+                  border-width 280ms ease-out;
+    }
+
+    .item[aria-expanded='true'] .callout {
+      opacity: 1;
+      max-height: 400px;
+      margin-top: 16px;
+      padding-top: 14px;
+      padding-bottom: 14px;
+      border-width: 3px;
+    }
+
+    .callout p {
+      font-size: 14px;
+    }
+
+    .item:hover .heading {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // On mobile, items are an accordion. Tap toggles one open at a time.
+  const items = document.querySelectorAll<HTMLElement>('.why .item');
+  items.forEach((item) => {
+    item.addEventListener('click', (e) => {
+      if (window.matchMedia('(min-width: 769px)').matches) return;
+      e.preventDefault();
+      const isOpen = item.getAttribute('aria-expanded') === 'true';
+      items.forEach((i) => i.setAttribute('aria-expanded', 'false'));
+      if (!isOpen) item.setAttribute('aria-expanded', 'true');
+    });
+  });
+</script>
