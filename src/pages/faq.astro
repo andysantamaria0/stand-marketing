@@ -1,0 +1,210 @@
+---
+// FAQ — placeholder copy 2026-05-29. Andy / Lauren to review before launch.
+// Footer's "FAQ" link points here; it 404'd previously because this file
+// didn't exist on any branch.
+import Layout from '@/layouts/Layout.astro';
+import Footer from '@/components/Footer.astro';
+
+const faqs = [
+  {
+    q: 'Who is Stand for?',
+    a: 'Stand is built for kids ages 6 to 16 who want to start their own real business. Younger kids work with more parent help; older kids run most of it on their own.',
+  },
+  {
+    q: 'What does it cost?',
+    a: 'Founding Member pricing is $99/year (Best Value, ~30% off) or $36 every 3 months. If you got the summer launch email and signed up with the STANDSUMMER link, your membership is free until September 1 — then it billed at the price you picked.',
+  },
+  {
+    q: 'Do I need to put in a credit card to sign up?',
+    a: 'Yes. We collect a card at signup so we can save your spot, but we will not charge you until your trial ends. You will see the first-charge date on the Stripe checkout page before you submit.',
+  },
+  {
+    q: 'Is Stand replacing school?',
+    a: 'No. Stand is an after-school and weekend builder for kids who want to learn business by actually building a business. It is not a replacement for school, homework, or anything else your kid is already doing.',
+  },
+  {
+    q: 'What does my kid actually make?',
+    a: 'Stickers, hats, apparel, and jewelry to start, with more coming. Kids design the product inside Stand, set the price, and we handle the manufacturing and shipping when their friends and family order from their storefront.',
+  },
+  {
+    q: 'How do you keep kids safe?',
+    a: 'Parent approval at signup is required. Age-appropriate tools and content. No chat with strangers. Parents stay connected through the parent dashboard at any time. See our Privacy Policy for the full picture.',
+  },
+  {
+    q: 'Can I cancel? Can I get a refund?',
+    a: 'You can cancel anytime in the parent dashboard — no friction, no questions. For refund questions, email hello@standkids.com and we will work it out.',
+  },
+  {
+    q: 'How does the Summer Cohort work?',
+    a: 'Sign up by the launch email link and your card is captured now but you are not charged. Your kid gets full access to Stand all summer. The first charge is on September 1 at the rate you picked.',
+  },
+  {
+    q: 'Where can I learn more?',
+    a: 'Email <a href="mailto:hello@standkids.com">hello@standkids.com</a> with any question — we read everything. You can also follow <a href="https://www.instagram.com/buildwithstand" target="_blank" rel="noopener">@buildwithstand</a> on Instagram and TikTok.',
+  },
+];
+---
+
+<Layout
+  title="Stand — FAQ"
+  description="Answers to the questions parents ask most about Stand: pricing, age range, safety, refunds, and the Summer Cohort."
+>
+  <main class="faq-page">
+    <nav class="faq-nav">
+      <a href="/" class="back-link">
+        <img src="/brand/logo.svg" alt="Stand" width="100" />
+      </a>
+      <a href="https://app.standkids.com" class="login">
+        Already have an account? <strong>LOG IN</strong>
+      </a>
+    </nav>
+
+    <section class="faq-content">
+      <h1 class="title">FAQ</h1>
+      <p class="lede">The stuff parents ask us most.</p>
+
+      <ul class="qa-list">
+        {
+          faqs.map((item) => (
+            <li class="qa-item">
+              <h2 class="q">{item.q}</h2>
+              <p class="a" set:html={item.a} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="cta">
+        <p class="cta-copy">Still have a question? Email <a href="mailto:hello@standkids.com">hello@standkids.com</a>.</p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .faq-page {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    min-height: 100svh;
+    font-family: var(--font-sans);
+  }
+
+  .faq-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 48px;
+    gap: 24px;
+  }
+
+  .faq-nav .back-link {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .faq-nav .login {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--stand-black);
+    text-decoration: none;
+  }
+
+  .faq-nav .login strong {
+    text-decoration: underline;
+    margin-left: 4px;
+  }
+
+  .faq-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 32px 96px;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0 0 16px;
+  }
+
+  .lede {
+    font-family: var(--font-serif);
+    font-size: clamp(18px, 1.8vw, 22px);
+    line-height: 1.3;
+    color: rgba(26, 26, 26, 0.7);
+    margin: 0 0 56px;
+  }
+
+  .qa-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .qa-item {
+    border-top: 2px solid var(--stand-black);
+    padding-top: 24px;
+  }
+
+  .q {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.2;
+    margin: 0 0 12px;
+  }
+
+  .a {
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.4vw, 18px);
+    line-height: 1.55;
+    color: rgba(26, 26, 26, 0.85);
+    margin: 0;
+  }
+
+  .a a {
+    color: var(--stand-red);
+    text-decoration: underline;
+  }
+
+  .cta {
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 2px solid var(--stand-black);
+    text-align: center;
+  }
+
+  .cta-copy {
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.5vw, 20px);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .cta-copy a {
+    color: var(--stand-red);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .faq-nav {
+      padding: 16px 20px;
+    }
+    .faq-content {
+      padding: 16px 20px 64px;
+    }
+    .qa-list {
+      gap: 28px;
+    }
+    .qa-item {
+      padding-top: 18px;
+    }
+  }
+</style>

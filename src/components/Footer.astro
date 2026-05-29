@@ -78,16 +78,23 @@
 
 <script>
   // POSTs to the existing stand-app waitlist endpoint (CORS allows standkids.com).
+  //
+  // The previous version auto-rendered the "you're on the waitlist" confirmation
+  // any time a `stand_waitlist_signed_up = '1'` localStorage flag was set. That
+  // produced a critical false-positive: anyone who'd ever submitted any email
+  // on this device saw the confirmation card forever, and re-submissions with
+  // a different email were swallowed because the input was hidden behind the
+  // confirmation. Andy hit this on 2026-05-29 — typed a new test email, saw
+  // the success message, but nothing landed in Supabase or Klaviyo because the
+  // form never actually fired.
+  //
+  // Fix: the confirmation card only renders after a real POST returns 200.
+  // No persistent flag — returning visitors see an empty input again, which is
+  // a minor UX downgrade in exchange for guaranteed truthful state. Supabase
+  // de-dupes by unique email, so re-submissions are idempotent no-ops.
   const form = document.getElementById('waitlist-form') as HTMLFormElement | null;
   const status = document.getElementById('signup-status');
   const input = document.getElementById('waitlist-email') as HTMLInputElement | null;
-  const CONFIRMED_KEY = 'stand_waitlist_signed_up';
-
-  // On mount, if the user has already signed up, render the confirmed state so
-  // the form reads as "you're on the waitlist" instead of an empty field.
-  if (form && localStorage.getItem(CONFIRMED_KEY) === '1') {
-    form.classList.add('is-confirmed');
-  }
 
   // The placeholder is styled like real text, so it reads as a pre-filled value.
   // Clear it on focus (incl. when the Sign Up button focuses an empty field) so
@@ -120,8 +127,7 @@
       status.textContent = '';
       input.value = '';
       form.classList.add('is-confirmed');
-      try { localStorage.setItem(CONFIRMED_KEY, '1'); } catch (_) {}
-    } catch (err) {
+    } catch {
       status.textContent = "Couldn't sign up just now. Try again in a sec.";
       button.disabled = false;
     }
