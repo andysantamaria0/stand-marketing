@@ -293,9 +293,12 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     .carousel { gap: 12px; }
     .content { padding: 28px 24px; }
     blockquote {
-      font-size: 18px;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      /* Shrink the quote so the body copy fits inside the pink testimonial
+         card on narrow phones (the card is fixed-width via the PNG aspect
+         ratio, so the only knob is font size). Was 18px / 1.2. */
+      font-size: 15px;
+      line-height: 1.25;
+      margin-bottom: 14px;
     }
     .byline {
       font-size: 13px;
