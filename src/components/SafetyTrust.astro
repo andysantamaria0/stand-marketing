@@ -152,18 +152,27 @@
       padding-top: 0;
     }
     .prop-mug {
-      width: 26%;
-      left: 8%;
-      /* Lift the mug so it still overlaps the top of the safety-and-trust
-         card but doesn't cover the "safety & trust" heading text. Was 8px;
-         the negative offset slides it ~40px upward so only the bottom edge
-         of the mug rests on the card. */
-      top: -32px;
+      /* On mobile, take the mug OUT of absolute positioning and let it
+         flow above the first card. Absolute-positioning it into the
+         heading's band (top: -32px, etc.) was fragile — clearance depended
+         on exact viewport width + the webp's internal transparent padding,
+         so it covered the "safety & trust" heading on some phones. In flow
+         with a small negative margin-bottom, the mug rests on the card's
+         top-left corner (white border region) and the heading — which sits
+         a full card-padding (28px) below the card's top edge — is always
+         clear, at any phone width. */
+      position: relative;
+      z-index: 3;
+      width: 30%;
+      max-width: 150px;
+      margin: 0 0 -52px 6%;
+      left: auto;
+      top: auto;
     }
     .cards {
       grid-template-columns: 1fr;
       gap: 28px;
-      margin-top: 80px;
+      margin-top: 0;
       padding: 0 20px;
     }
     .note {
