@@ -61,18 +61,6 @@
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
 
-    <nav class="links">
-      <div class="col">
-        <a href="/faq">FAQ</a>
-        <a href="/terms">Terms</a>
-        <a href="/privacy">Privacy Policy</a>
-      </div>
-      <div class="col">
-        <a href="#">About</a>
-        <a href="#waitlist-form" data-scroll="waitlist">Subscribe</a>
-        <a href="https://app.standkids.com">Log In</a>
-      </div>
-    </nav>
   </div>
 </footer>
 
@@ -300,30 +288,6 @@
     display: flex;
   }
 
-  .links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    padding-top: 0;
-    max-width: 520px;
-  }
-
-  .col {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .col a {
-    font-family: var(--font-serif);
-    font-size: clamp(14px, 1.392vw, 20px);
-    line-height: 1.2;
-    color: var(--stand-black);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    width: fit-content;
-  }
-
   .signup-status {
     grid-column: 2;
     margin: 12px 0 0;
@@ -369,13 +333,6 @@
     }
     .signup-bg img {
       object-fit: fill;
-    }
-    .links {
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-    }
-    .col a {
-      font-size: 18px;
     }
   }
 </style>
