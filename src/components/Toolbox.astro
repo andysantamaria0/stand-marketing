@@ -131,11 +131,7 @@ const slides: Slide[] = [
     width: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(24px, 5vh, 60px) 0;
+    padding: clamp(18px, 3vh, 45px) 0;
     /* Slide width derived from viewport HEIGHT so the whole module (headline +
        paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
        (724x1142); ~290px reserves room for the headline + vertical padding. */
@@ -143,27 +139,27 @@ const slides: Slide[] = [
   }
 
   .inner {
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
-    padding: 0 94px;
+    padding: 0 70px;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(14px, 1.531vw, 22px);
+    font-size: clamp(11px, 1.148vw, 16px);
     line-height: 1.18;
-    letter-spacing: -0.44px;
+    letter-spacing: -0.33px;
     color: var(--stand-black);
-    margin: 0 0 18px;
+    margin: 0 0 clamp(12px, 2.25vh, 45px);
   }
 
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(28px, 3.341vw, 48px);
+    font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
-    letter-spacing: -1px;
+    letter-spacing: -0.75px;
     color: var(--stand-black);
     margin: 0 0 clamp(16px, 4vh, 48px);
     max-width: 1250px;

@@ -39,13 +39,11 @@
     width: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    min-height: 100svh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: clamp(16px, 2.5vh, 40px);
-    padding: clamp(20px, 3vh, 48px) 0;
+    gap: clamp(8px, 1.5vh, 20px);
+    padding: clamp(60px, 8vh, 100px) 0 0;
   }
 
   /* Holds the mug + cards; the top padding reserves the mug's peek above the
@@ -53,10 +51,10 @@
   .cards-stack {
     position: relative;
     width: 100%;
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     /* Top offset lifts the mug clear of the card title (it overlaps the card's
        white top edge, not the "safety & trust" text). */
-    padding-top: clamp(155px, 22vh, 210px);
+    padding-top: clamp(110px, 16vh, 160px);
   }
 
   .prop-mug {
@@ -73,12 +71,12 @@
   .cards {
     position: relative;
     z-index: 2;
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
-    padding: 0 60px;
+    padding: 0 45px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 18px;
     align-items: start;
   }
 
@@ -86,12 +84,12 @@
     background: var(--stand-white);
     border: 3px solid var(--stand-black);
     box-shadow: 5px 7px 0 var(--stand-black);
-    padding: 56px 43px;
+    padding: 42px 32px;
     width: 100%;
-    max-width: 606px;
+    max-width: 455px;
     display: flex;
     flex-direction: column;
-    gap: 35px;
+    gap: 26px;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -111,7 +109,7 @@
   .note h3 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(22px, 2.296vw, 33px);
+    font-size: clamp(17px, 1.722vw, 25px);
     line-height: 1.2;
     color: var(--stand-black);
     margin: 0;
@@ -120,19 +118,19 @@
   .note p {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(12px, 1.113vw, 16px);
+    font-size: clamp(11px, 0.835vw, 12px);
     line-height: 1.2;
-    letter-spacing: -0.32px;
+    letter-spacing: -0.24px;
     color: var(--stand-black);
     margin: 0;
   }
 
   .for-real {
     display: block;
-    width: auto;
-    max-width: 80%;
-    max-height: clamp(110px, 18vh, 240px);
-    margin: 0 auto;
+    width: 70%;
+    max-width: 800px;
+    height: auto;
+    margin: 0 4% 0 auto;
     position: relative;
     z-index: 1;
   }

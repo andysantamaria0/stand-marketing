@@ -1,8 +1,8 @@
 ---
 // EXTRA BIO + TESTIMONIALS — Figma node 113:244
-// Two text blocks + a 3-card testimonial carousel. Each card uses Faye's exported
-// rectangle PNG (Frame 29 / 30 / 31) as the colored background with text overlaid.
-// Arrow click swipes to the next testimonial.
+// Two text blocks + a stacked testimonial deck. Each card uses Faye's exported
+// rectangle PNG as the colored background with text overlaid. Arrow click rotates
+// the deck so the next card moves to the front.
 
 interface Testimonial {
   bg: string;          // basename in /brand/ for the colored rectangle PNG
@@ -27,10 +27,6 @@ const testimonials: Testimonial[] = [
     byline: '— Parent of Leo, 13',
   },
 ];
-
-// Rendered three times so the track can loop infinitely: we start on the middle
-// copy and snap back to it (without animation) whenever a slide crosses an edge.
-const loop = [...testimonials, ...testimonials, ...testimonials];
 ---
 
 <section class="extra-bio">
@@ -49,26 +45,24 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
       </p>
     </div>
 
-    <div class="carousel" id="testimonial-carousel">
+    <div class="deck" id="testimonial-deck">
       <button class="nav prev" aria-label="Previous testimonial">←</button>
 
-      <div class="track-clip">
-        <div class="track">
-          {
-            loop.map((t, i) => (
-              <article class="testimonial" data-index={i}>
-                <picture class="bg" aria-hidden="true">
-                  <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
-                  <img src={`/brand/${t.bg}.png`} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
-                </picture>
-                <div class="content">
-                  <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
-                  <p class="byline">{t.byline}</p>
-                </div>
-              </article>
-            ))
-          }
-        </div>
+      <div class="stack">
+        {
+          testimonials.map((t, i) => (
+            <article class="card" data-index={i} data-pos={i}>
+              <picture class="bg" aria-hidden="true">
+                <source srcset={`/brand/${t.bg}.webp`} type="image/webp" />
+                <img src={`/brand/${t.bg}.png`} alt="" loading="eager" />
+              </picture>
+              <div class="content">
+                <blockquote>&ldquo;{t.quote}&rdquo;</blockquote>
+                <p class="byline">{t.byline}</p>
+              </div>
+            </article>
+          ))
+        }
       </div>
 
       <button class="nav next" aria-label="Next testimonial">→</button>
@@ -77,142 +71,113 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
 </section>
 
 <script>
-  const carousel = document.getElementById('testimonial-carousel');
-  if (carousel) {
-    const track = carousel.querySelector('.track') as HTMLElement;
-    const prev = carousel.querySelector('.nav.prev') as HTMLButtonElement;
-    const next = carousel.querySelector('.nav.next') as HTMLButtonElement;
-    const len = 3; // original testimonial count (rendered x3 for a seamless loop)
-    let index = len; // start on the first card of the middle copy
-    let animating = false;
+  const deck = document.getElementById('testimonial-deck');
+  if (deck) {
+    const cards = Array.from(deck.querySelectorAll<HTMLElement>('.card'));
+    const prev = deck.querySelector('.nav.prev') as HTMLButtonElement;
+    const next = deck.querySelector('.nav.next') as HTMLButtonElement;
+    const n = cards.length;
+    let front = 0;
 
-    const clip = carousel.querySelector('.track-clip') as HTMLElement;
-    const firstCard = track.querySelector('.testimonial') as HTMLElement | null;
-    const GAP = 32;
-
-    const place = (animate: boolean) => {
-      // Cards are sized to the clip via 100cqw (CSS); translate one card+gap each.
-      const w = firstCard?.offsetWidth || clip.clientWidth;
-      track.style.transition = animate ? '' : 'none';
-      track.style.transform = `translateX(${-index * (w + GAP)}px)`;
-      if (!animate) void track.offsetHeight; // force reflow so the snap is instant
+    const sync = () => {
+      cards.forEach((card, i) => {
+        card.dataset.pos = String((i - front + n) % n);
+      });
     };
 
-    const move = (delta: number) => {
-      if (animating) return;
-      animating = true;
-      index += delta;
-      place(true);
-    };
-
-    // When a slide crosses into a clone copy, snap back to the middle copy with
-    // no animation so the carousel loops forever in both directions.
-    track.addEventListener('transitionend', (e) => {
-      if (e.propertyName !== 'transform') return;
-      animating = false;
-      if (index >= 2 * len) { index -= len; place(false); }
-      else if (index < len) { index += len; place(false); }
-    });
-
-    prev?.addEventListener('click', () => move(-1));
-    next?.addEventListener('click', () => move(1));
-    window.addEventListener('resize', () => place(false));
-    requestAnimationFrame(() => place(false));
+    prev?.addEventListener('click', () => { front = (front - 1 + n) % n; sync(); });
+    next?.addEventListener('click', () => { front = (front + 1) % n; sync(); });
   }
 </script>
 
 <style>
   .extra-bio {
     background: var(--stand-cream);
-    padding: 174px 0 100px;
+    padding: 130px 0 75px;
     width: 100%;
   }
 
   .inner {
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
-    padding: 0 94px;
+    padding: 0 70px;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(14px, 1.531vw, 22px);
+    font-size: clamp(11px, 1.148vw, 16px);
     line-height: 1.18;
-    letter-spacing: -0.44px;
+    letter-spacing: -0.33px;
     color: var(--stand-black);
-    margin: 0 0 32px;
+    margin: 0 0 24px;
   }
 
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(28px, 3.341vw, 48px);
+    font-size: clamp(21px, 2.506vw, 36px);
     line-height: 1;
-    letter-spacing: -1px;
+    letter-spacing: -0.75px;
     color: var(--stand-black);
-    margin: 0 0 60px;
-    max-width: 1250px;
+    margin: 0 0 45px;
+    max-width: 938px;
   }
 
   .copy {
-    max-width: 1250px;
-    margin-bottom: 140px;
+    max-width: 938px;
+    margin-bottom: 90px;
   }
 
   .copy p {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(12px, 1.113vw, 16px);
+    font-size: clamp(11px, 0.835vw, 12px);
     line-height: 1.2;
-    letter-spacing: -0.32px;
+    letter-spacing: -0.24px;
     color: var(--stand-black);
-    margin: 0 0 24px;
+    margin: 0 0 18px;
   }
 
-  .carousel {
+  .deck {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 80px;
+    gap: 40px;
   }
 
   .nav {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     background: transparent;
     color: var(--stand-black);
-    font-size: 32px;
+    font-size: 24px;
     line-height: 1;
+    cursor: pointer;
     z-index: 5;
   }
 
-  .track-clip {
-    /* Fills the space between the nav arrows, capped at the design width.
-       container-type makes its width independent of the (wide) track inside,
-       so cards can size to it with 100cqw and exactly one shows. */
+  .stack {
+    position: relative;
     flex: 1 1 auto;
     min-width: 0;
-    max-width: 993px;
-    overflow: hidden;
-    padding: 20px 0 30px;
+    max-width: 540px;
+    aspect-ratio: 993 / 762;
     container-type: inline-size;
   }
 
-  .track {
-    display: flex;
-    gap: 32px;
-    transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  .card {
+    position: absolute;
+    inset: 0;
+    transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1), opacity 400ms ease;
+    transform-origin: center;
   }
 
-  .testimonial {
-    position: relative;
-    flex: 0 0 auto;
-    width: 100cqw;
-    aspect-ratio: 993 / 762;
-  }
+  .card[data-pos='0'] { transform: rotate(-3deg); z-index: 3; }
+  .card[data-pos='1'] { transform: rotate(6deg) translate(4%, 3%); z-index: 2; }
+  .card[data-pos='2'] { transform: rotate(-9deg) translate(-4%, 4%); z-index: 1; }
 
   .bg,
   .bg img {
@@ -232,38 +197,40 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* The PNG card is rotated/skewed, so its visible area is inset from the
-       bounding box. Percentage padding keeps text inside the colored card at
-       every card width (the box scales with --card-w). */
     padding: 8% 14%;
     z-index: 1;
+  }
+
+  /* Only the front card shows its text; back cards just show their color. */
+  .card:not([data-pos='0']) .content {
+    opacity: 0;
   }
 
   blockquote {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(18px, 2.088vw, 30px);
+    font-size: clamp(14px, 1.566vw, 22px);
     line-height: 1.15;
-    letter-spacing: -0.6px;
+    letter-spacing: -0.45px;
     color: var(--stand-black);
-    margin: 0 0 32px;
-    max-width: 600px;
+    margin: 0 0 24px;
+    max-width: 450px;
   }
 
   .byline {
     font-family: var(--font-serif);
-    font-size: clamp(14px, 1.253vw, 18px);
+    font-size: clamp(11px, 0.94vw, 13px);
     line-height: 1.2;
-    letter-spacing: -0.36px;
+    letter-spacing: -0.27px;
     color: var(--stand-black);
     margin: 0;
   }
 
   @media (max-width: 1024px) {
-    .extra-bio { padding: 120px 0 80px; }
-    .copy p { font-size: 16px; }
-    .carousel { gap: 32px; }
-    .copy { margin-bottom: 100px; }
+    .extra-bio { padding: 90px 0 60px; }
+    .copy p { font-size: 14px; }
+    .deck { gap: 24px; }
+    .copy { margin-bottom: 75px; }
   }
 
   @media (max-width: 768px) {
@@ -272,6 +239,7 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     }
     .inner {
       padding: 0 20px;
+      max-width: var(--container-max);
     }
     .eyebrow {
       font-size: 22px;
@@ -290,12 +258,9 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
       font-size: 16px;
       margin-bottom: 16px;
     }
-    .carousel { gap: 12px; }
+    .deck { gap: 12px; }
     .content { padding: 28px 24px; }
     blockquote {
-      /* Shrink the quote so the body copy fits inside the pink testimonial
-         card on narrow phones (the card is fixed-width via the PNG aspect
-         ratio, so the only knob is font size). Was 18px / 1.2. */
       font-size: 15px;
       line-height: 1.25;
       margin-bottom: 14px;
@@ -303,6 +268,6 @@ const loop = [...testimonials, ...testimonials, ...testimonials];
     .byline {
       font-size: 13px;
     }
-    .nav { width: 36px; height: 36px; font-size: 22px; }
+    .nav { width: 32px; height: 32px; font-size: 20px; }
   }
 </style>
