@@ -373,60 +373,24 @@ const slides: Slide[] = [
   }
 
   @media (max-width: 768px) {
-    /* Mobile: revert to normal flow (horizontal scroll-snap carousel below). */
-    .toolbox { padding: 36px 0 60px; min-height: 0; display: block; }
+    /* Mobile: keep the same coverflow layout as desktop, just smaller slides
+       and tighter nav gap so the lightbulb + box silhouettes peek on either
+       side of the active icon (matching the mobile comp). */
+    .toolbox {
+      padding: 36px 0 48px;
+      --slide-w: min(220px, 60vw);
+    }
     .inner { padding: 0 20px; }
-    .eyebrow { font-size: 9.44px; line-height: 11.092px; margin-bottom: 8px; }
+    .eyebrow { font-size: 11px; margin-bottom: 8px; }
     .headline {
       font-size: 20px;
-      line-height: 1;
+      line-height: 1.05;
       letter-spacing: -0.3px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
-
-    /* Mobile = horizontal scroll-snap (per Faye: "hold and drag to next module").
-       Drop the coverflow, no arrows. All slides full-width, scroll snaps to next. */
-    .nav { display: none; }
-    .dotted-line { display: none; }
-    .slider { gap: 0; }
-    .stage {
-      height: auto;
-      width: 100%;
-      max-width: 100%;
-      display: flex;
-      gap: 16px;
-      overflow-x: scroll;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      padding: 0 20px 20px;
-      /* Hide scrollbar visually but keep scrollable */
-      scrollbar-width: none;
-    }
-    .stage::-webkit-scrollbar { display: none; }
-
-    .slide {
-      position: relative;
-      flex: 0 0 calc(100% - 40px);
-      width: calc(100% - 40px);
-      max-width: 320px;
-      transform: none !important;
-      opacity: 1 !important;
-      scroll-snap-align: center;
-      scroll-snap-stop: always;
-    }
-
-    /* Show frame on every slide, hide silhouettes/coverflow positioning. */
-    .slide .silhouette-wrap { display: none; }
-    .slide .frame-wrap {
-      position: relative;
-      opacity: 1 !important;
-      inset: auto;
-    }
-    .slide .frame-img {
-      width: 100%;
-      height: auto;
-    }
+    .slider { gap: 4px; }
+    .nav { width: 32px; height: 32px; font-size: 22px; }
+    .name { font-size: 22px; }
+    .desc { font-size: 13px; line-height: 1.25; }
   }
 </style>
