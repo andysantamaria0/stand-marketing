@@ -87,9 +87,9 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
   .hero-canvas {
     position: relative;
-    width: 100%;
+    width: 75%;
     aspect-ratio: 1437 / 871;
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
   }
 
@@ -165,6 +165,8 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
       display: block;
     }
     .hero-canvas {
+      width: 100%;
+      max-width: var(--container-max);
       aspect-ratio: 375 / 491;
     }
 
