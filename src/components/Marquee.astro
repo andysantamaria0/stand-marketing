@@ -4,30 +4,51 @@
 // phrases are joined into one line and rendered in 3 identical copies; the
 // track translates by exactly one copy-width (-33.333%) so the loop is seamless.
 
+interface MarqueeItem {
+  text: string;
+  font?: 'sans' | 'serif';
+}
+
 interface Props {
-  items?: string[];
+  items?: (string | MarqueeItem)[];
   height?: number;
   /** Seconds for one full loop of the ticker. */
   duration?: number;
 }
 
 const {
-  items = ['Dream. Build. Grow.', 'What will you build?'],
+  items = [
+    { text: 'Dream. Build. Grow.', font: 'sans' },
+    { text: 'What will you build?', font: 'serif' },
+  ],
   height = 56,
   duration = 30,
 } = Astro.props;
 
-// Phrases separated by an em-space + arrow + em-space, with a trailing
-// separator so the seam between repeated copies reads the same as the gaps.
+// Normalize: strings default to sans.
+const phrases: MarqueeItem[] = items.map((it) =>
+  typeof it === 'string' ? { text: it, font: 'sans' } : { font: 'sans', ...it }
+);
+
+// Separator: em-space + arrow + em-space. Rendered as its own neutral span
+// between phrases (and trailing, so the seam matches the inner gaps).
 const SEP = '\u2003\u2192\u2003';
-const copy = items.join(SEP) + SEP;
+
+const copies = [0, 1, 2];
 ---
 
 <div class="marquee" style={{ height: `${height}px` }} aria-hidden="true">
   <div class="track" style={{ animationDuration: `${duration}s` }}>
-    <span>{copy}</span>
-    <span>{copy}</span>
-    <span>{copy}</span>
+    {copies.map(() => (
+      <span class="copy">
+        {phrases.map((p) => (
+          <>
+            <span class={`phrase phrase--${p.font}`}>{p.text}</span>
+            <span class="sep">{SEP}</span>
+          </>
+        ))}
+      </span>
+    ))}
   </div>
 </div>
 
@@ -39,8 +60,7 @@ const copy = items.join(SEP) + SEP;
     align-items: center;
     width: 100%;
     overflow: hidden;
-    font-family: var(--font-serif);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
     letter-spacing: -0.75px;
@@ -54,9 +74,13 @@ const copy = items.join(SEP) + SEP;
     will-change: transform;
   }
 
-  .track > span {
+  .copy {
     flex: 0 0 auto;
   }
+
+  .phrase--sans { font-family: var(--font-sans); }
+  .phrase--serif { font-family: var(--font-serif); font-weight: 300; }
+  .sep { font-family: var(--font-sans); }
 
   @keyframes marquee-scroll {
     from { transform: translate3d(0, 0, 0); }

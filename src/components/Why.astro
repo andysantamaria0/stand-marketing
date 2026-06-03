@@ -56,7 +56,7 @@ const items: WhyItem[] = [
               </span>
               <span class="text">
                 <span class="num">{item.num}</span>
-                <span class="heading">{item.heading}</span>
+                <span class="headline">{item.heading}</span>
                 <span class="callout"><span class="callout-body">{item.body}</span></span>
               </span>
             </button>
@@ -198,10 +198,9 @@ const items: WhyItem[] = [
     color: var(--stand-black);
   }
 
-  .heading {
+  .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(14px, 1.392vw, 20px);
     line-height: 1.1;
     letter-spacing: -0.4px;
     color: var(--stand-black);
@@ -222,7 +221,7 @@ const items: WhyItem[] = [
 
   .callout-body {
     display: block;
-    font-family: var(--font-sans);
+    font-family: var(--font-serif);
     font-weight: 400;
     font-size: 12px;
     line-height: 1.3;
@@ -281,8 +280,7 @@ const items: WhyItem[] = [
 
     .num { font-size: 11px; }
 
-    .heading {
-      font-size: 18px;
+    .headline {
       line-height: 1.1;
       letter-spacing: -0.3px;
     }
