@@ -118,7 +118,9 @@
   .note p {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(11px, 0.835vw, 12px);
+    /* Anchored to the ExtraBio .copy p paragraph (14px) so both body
+       paragraphs read at one size across the site. */
+    font-size: 14px;
     line-height: 1.2;
     letter-spacing: -0.24px;
     color: var(--stand-black);

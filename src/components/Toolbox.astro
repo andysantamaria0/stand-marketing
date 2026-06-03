@@ -21,7 +21,7 @@ const slides: Slide[] = [
   { name: 'ideas tent',
     desc: 'choose your business to build with Stand.',
     icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
-    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
+    iconScale: 0.7, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'brand studio',
     desc: 'name it, create your logo and build your brand identity.',
     icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette',
@@ -45,7 +45,7 @@ const slides: Slide[] = [
   { name: 'dashboard',
     desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
     icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette',
-    iconScale: 1, iconOffsetX: 0, iconOffsetY: -30 },
+    iconScale: 1.2, iconOffsetX: 0, iconOffsetY: 0 },
 ];
 ---
 
@@ -86,7 +86,7 @@ const slides: Slide[] = [
                   loading={i < 3 ? 'eager' : 'lazy'}
                 />
                 <div class="card">
-                  <h3 class="name">{s.name}</h3>
+                  <h3 class="lede">{s.name}</h3>
                   <p class="desc">{s.desc}</p>
                 </div>
               </div>
@@ -158,7 +158,7 @@ const slides: Slide[] = [
     width: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    padding: clamp(48px, 7vh, 100px) 0 clamp(80px, 10vh, 140px);
+    padding: clamp(48px, 7vh, 100px) 0 clamp(140px, 16vh, 220px);
     /* Slide width derived from viewport HEIGHT so the whole module (headline +
        paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
        (724x1142); reserves room for the headline + top/bottom padding so the
@@ -200,8 +200,12 @@ const slides: Slide[] = [
     gap: 40px;
   }
 
+  /* Arrows are pulled out of the slider's flex row and absolute-positioned
+     below the silhouette line, sitting between the dotted connector and the
+     active card. Vertical offset (top) is anchored to --slide-w so they keep
+     their relative position as the slide scales with viewport height. */
   .nav {
-    flex-shrink: 0;
+    position: absolute;
     width: 96px;
     height: 48px;
     padding: 0;
@@ -210,7 +214,12 @@ const slides: Slide[] = [
     color: var(--stand-black);
     z-index: 10;
     cursor: pointer;
+    top: calc(var(--slide-w) * 0.65);
+    transform: translate(-50%, -50%);
   }
+
+  .nav.prev { left: calc(50% - var(--slide-w) * 1.0); }
+  .nav.next { left: calc(50% + var(--slide-w) * 1.0); }
 
   .nav svg {
     display: block;
@@ -282,8 +291,15 @@ const slides: Slide[] = [
     /* Shift each silhouette up by half its own height so the bottom edge
        lands on the dotted line (which sits at the wrap's vertical center)
        instead of cutting through the middle of the icon. Per-slide nudges
-       compose on top of that baseline shift. */
-    transform: translate(var(--icon-offset-x, 0px), calc(-50% + var(--icon-offset-y, 0px))) scale(var(--icon-scale, 1));
+       compose on top of that baseline shift.
+       Using separate translate functions (instead of a single calc with mixed
+       % + px) so the percentage and the per-slide pixel nudge can't fight each
+       other in the calc parser when --icon-offset-y is a negative px value. */
+    transform:
+      translateX(var(--icon-offset-x, 0px))
+      translateY(var(--icon-offset-y, 0px))
+      translateY(-50%)
+      scale(var(--icon-scale, 1));
   }
 
   /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
@@ -315,18 +331,20 @@ const slides: Slide[] = [
     align-items: center;
     justify-content: center;
     text-align: center;
-    width: 100%;
+    /* Card is 35% wider than the slide so the .name (global canon = 32px on
+       desktop) fits on one line. Auto-sizes vertically to its content so the
+       previous fixed aspect-ratio (724 / 247) can't clip long descriptions. */
+    width: 135%;
     flex: 0 0 auto;
-    aspect-ratio: 724 / 247; /* halved from the original ~724/494 card box */
     margin-top: 4cqw;
     background: var(--stand-white);
     border: 0.42cqw solid var(--stand-black);
     box-shadow: 0.6cqw 0.7cqw 0 var(--stand-black);
-    padding: 4cqw 6cqw;
-    gap: 1.6cqw;
+    padding: 10cqw 16cqw 14cqw;
+    gap: 3cqw;
   }
 
-  .name {
+  .lede {
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1;
@@ -357,8 +375,12 @@ const slides: Slide[] = [
     opacity: 1;
   }
 
+  /* All neighbor silhouettes share one scale and sit at evenly-spaced offsets
+     from center so they read as a single horizontal row of equal-sized icons
+     along the dotted connector — not the previous coverflow ladder. Scale
+     bumped up so the silhouettes carry visual weight along the line. */
   .slide[data-pos='prev'] {
-    transform: translateX(calc(-50% - var(--slide-w) * 0.667)) scale(0.22);
+    transform: translateX(calc(-50% - var(--slide-w) * 0.95)) scale(0.40);
     z-index: 2;
   }
 
@@ -378,17 +400,17 @@ const slides: Slide[] = [
   }
 
   .slide[data-pos='next'] {
-    transform: translateX(calc(-50% + var(--slide-w) * 0.667)) scale(0.22);
+    transform: translateX(calc(-50% + var(--slide-w) * 0.95)) scale(0.40);
     z-index: 2;
   }
 
   .slide[data-pos='prev-2'] {
-    transform: translateX(calc(-50% - var(--slide-w) * 0.972)) scale(0.16);
+    transform: translateX(calc(-50% - var(--slide-w) * 1.55)) scale(0.40);
     z-index: 1;
   }
 
   .slide[data-pos='next-2'] {
-    transform: translateX(calc(-50% + var(--slide-w) * 0.972)) scale(0.16);
+    transform: translateX(calc(-50% + var(--slide-w) * 1.55)) scale(0.40);
     z-index: 1;
   }
 
@@ -423,8 +445,8 @@ const slides: Slide[] = [
     .slider { gap: 4px; }
     .nav { width: 64px; height: 32px; }
     .desc { line-height: 1.25; }
-    /* Mobile keeps the full-height card; halving is desktop-only. */
-    .card { aspect-ratio: auto; flex: 1; }
+    /* Mobile keeps the full-width card (no break-out beyond the slide). */
+    .card { aspect-ratio: auto; flex: 1; width: 100%; }
     .stage { height: calc(var(--slide-w) * 1.58); }
   }
 </style>

@@ -171,12 +171,14 @@ button {
 .eyebrow  { font-size: 22px; }
 .headline { font-size: 32px; }
 .name     { font-size: 32px; }
+.lede     { font-size: 26px; }
 .desc     { font-size: 20px; }
 
 @media (max-width: 1024px) {
   .eyebrow  { font-size: 18px; }
   .headline { font-size: 26px; }
   .name     { font-size: 26px; }
+  .lede     { font-size: 22px; }
   .desc     { font-size: 16px; }
 }
 
@@ -184,5 +186,6 @@ button {
   .eyebrow  { font-size: 16px; }
   .headline { font-size: 28px; }
   .name     { font-size: 22px; }
+  .lede     { font-size: 18px; }
   .desc     { font-size: 13px; }
 }
