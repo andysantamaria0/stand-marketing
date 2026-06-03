@@ -53,6 +53,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
     <slot />
 
     <script>
+      // Marketing-site analytics — see src/scripts/analytics.ts.
+      import "@/scripts/analytics";
+    </script>
+
+    <script>
       // Cross-domain attribution hand-off. The marketing site (standkids.com)
       // and the app (app.standkids.com) are separate origins, so the app's
       // first-party attribution cookie can't be read here — the URL is the only
