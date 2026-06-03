@@ -142,12 +142,12 @@ const slides: Slide[] = [
     max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
     padding: 0 70px;
+    container-type: inline-size;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(11px, 1.148vw, 16px);
     line-height: 1.18;
     letter-spacing: -0.33px;
     color: var(--stand-black);
@@ -157,7 +157,6 @@ const slides: Slide[] = [
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
     letter-spacing: -0.75px;
     color: var(--stand-black);
@@ -189,9 +188,9 @@ const slides: Slide[] = [
      to the vertical centre of the square silhouette boxes (slide height / 2). */
   .dotted-line {
     position: absolute;
-    top: calc(var(--slide-w) / 2 + 24px);
+    top: calc(var(--slide-w) / 2);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     width: 100vw;
     height: 8px;
     background-image: radial-gradient(circle, var(--stand-red) 0 3.5px, transparent 4px);
@@ -202,11 +201,13 @@ const slides: Slide[] = [
     pointer-events: none;
   }
 
-  /* Stage holds all slides absolutely-positioned, centered around the middle. */
+  /* Stage holds all slides absolutely-positioned, centered around the middle.
+     Height fits icon (52% of frame) + margin (4cqw) + halved card (~0.34 slide-w)
+     + a touch of shadow room, so we don't leave dead space below the card. */
   .stage {
     position: relative;
     flex: 1;
-    height: calc(var(--slide-w) * 1.58);
+    height: calc(var(--slide-w) * 1.18);
     max-width: 1300px;
   }
 
@@ -243,6 +244,10 @@ const slides: Slide[] = [
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
+    /* Shift each silhouette up by half its own height so the bottom edge
+       lands on the dotted line (which sits at the wrap's vertical center)
+       instead of cutting through the middle of the icon. */
+    transform: translateY(-50%);
   }
 
   /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
@@ -272,7 +277,8 @@ const slides: Slide[] = [
     justify-content: center;
     text-align: center;
     width: 100%;
-    flex: 1;
+    flex: 0 0 auto;
+    aspect-ratio: 724 / 247; /* halved from the original ~724/494 card box */
     margin-top: 4cqw;
     background: var(--stand-white);
     border: 0.42cqw solid var(--stand-black);
@@ -284,7 +290,6 @@ const slides: Slide[] = [
   .name {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 4.58cqw; /* 33px @720 slide */
     line-height: 1;
     color: var(--stand-black);
     margin: 0;
@@ -292,16 +297,7 @@ const slides: Slide[] = [
 
   .desc {
     font-family: var(--font-sans);
-    /* Match the canonical STAND Body Text pattern (About.astro,
-       ExtraBio.astro): viewport-clamped size + 300 weight + 1.18
-       line-height. The old `2.22cqw` was slide-width-relative, which
-       crushed to ~7px on the mobile 320px slide and held to 16px on
-       the desktop 720px slide — neither matched the rest of the site
-       (Faye's note, 2026-05-28). The frame-wrap is opacity-0 on
-       inactive coverflow slides, so this is only visible on the
-       active full-size slide. */
     font-weight: 300;
-    font-size: clamp(14px, 1.531vw, 22px);
     line-height: 1.18;
     color: var(--stand-black);
     margin: 0;
@@ -350,13 +346,11 @@ const slides: Slide[] = [
   .slide[data-pos='prev-2'] {
     transform: translateX(calc(-50% - var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
-    opacity: 0.7;
   }
 
   .slide[data-pos='next-2'] {
     transform: translateX(calc(-50% + var(--slide-w) * 0.972)) scale(0.16);
     z-index: 1;
-    opacity: 0.7;
   }
 
   .slide[data-pos='hidden'] {
@@ -381,16 +375,17 @@ const slides: Slide[] = [
       --slide-w: min(220px, 60vw);
     }
     .inner { padding: 0 20px; }
-    .eyebrow { font-size: 22px; margin-bottom: 20px; }
+    .eyebrow { margin-bottom: 20px; }
     .headline {
-      font-size: 28px;
       line-height: 1.05;
       letter-spacing: -0.3px;
       margin-bottom: 24px;
     }
     .slider { gap: 4px; }
     .nav { width: 32px; height: 32px; font-size: 22px; }
-    .name { font-size: 22px; }
-    .desc { font-size: 13px; line-height: 1.25; }
+    .desc { line-height: 1.25; }
+    /* Mobile keeps the full-height card; halving is desktop-only. */
+    .card { aspect-ratio: auto; flex: 1; }
+    .stage { height: calc(var(--slide-w) * 1.58); }
   }
 </style>

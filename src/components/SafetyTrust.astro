@@ -130,7 +130,10 @@
     width: 70%;
     max-width: 800px;
     height: auto;
-    margin: 0 4% 0 auto;
+    /* Pull the script up into the cards' lower band — the right card's bottom
+       edge sits well above the section's bottom, so without a negative pull
+       there's a big empty yellow band before "For Real." starts. */
+    margin: -8vh 4% 0 auto;
     position: relative;
     z-index: 1;
   }

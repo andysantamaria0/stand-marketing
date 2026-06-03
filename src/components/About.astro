@@ -82,12 +82,12 @@ const stickerPhrases = [
     margin: 0 auto;
     padding: 0 70px;
     position: relative;
+    container-type: inline-size;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(11px, 1.148vw, 16px);
     line-height: 1.18;
     letter-spacing: -0.33px;
     color: var(--stand-black);
@@ -97,7 +97,6 @@ const stickerPhrases = [
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
     letter-spacing: -0.75px;
     color: var(--stand-black);
@@ -156,7 +155,7 @@ const stickerPhrases = [
   .links a {
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(11px, 1.044vw, 15px);
+    font-size: 1.485cqw; /* half of headline (2.97cqw) — 16px max */
     line-height: 1.4;
     letter-spacing: -0.3px;
     color: var(--stand-red);
@@ -186,14 +185,12 @@ const stickerPhrases = [
       padding: 0 20px;
     }
     .eyebrow {
-      font-size: 22px;
       line-height: 1.18;
       letter-spacing: -0.4px;
       margin: 0 0 20px;
       padding-left: 0;
     }
     .headline {
-      font-size: 28px;
       line-height: 1.05;
       letter-spacing: -0.3px;
       max-width: none;
@@ -215,7 +212,7 @@ const stickerPhrases = [
       gap: 6px;
     }
     .links a {
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.4;
       letter-spacing: -0.3px;
     }
