@@ -35,6 +35,10 @@ const HERO_H = 871;
 const MOBILE_W = 375;
 const MOBILE_H = 491;
 const pct = (n: number, base: number) => `${(n / base) * 100}%`;
+// Canvas was widened (75% → 95%) to spread the icons further from the lockup.
+// Scaling icon sizes down by 75/95 keeps their on-screen size unchanged so the
+// composition spreads outward without growing.
+const ICON_SCALE = 75 / 95;
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -50,7 +54,7 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
           style={{
             '--x': pct(p.x, HERO_W),
             '--y': pct(p.y, HERO_H),
-            '--w': pct(p.size, HERO_W),
+            '--w': pct(p.size * ICON_SCALE, HERO_W),
             '--rot': `${p.rot}deg`,
             '--mx': pct(p.mx, MOBILE_W),
             '--my': pct(p.my, MOBILE_H),
@@ -87,9 +91,9 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
   .hero-canvas {
     position: relative;
-    width: 75%;
+    width: 95%;
     aspect-ratio: 1437 / 871;
-    max-width: calc(var(--container-max) * 0.75);
+    max-width: calc(var(--container-max) * 0.95);
     margin: 0 auto;
   }
 
@@ -151,9 +155,9 @@ const pct = (n: number, base: number) => `${(n / base) * 100}%`;
      Centered horizontally with a slight rightward offset; sits in upper-middle. */
   .lockup {
     position: absolute;
-    left: 27.6%;
+    left: 32.3%;
     top: 11.25%;
-    width: 57.5%;
+    width: 45.4%;
     height: auto;
     pointer-events: none;
     z-index: 1;
