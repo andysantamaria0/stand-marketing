@@ -61,25 +61,6 @@
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
-
-    <div class="link-cols">
-      <ul>
-        <li><a href="/faq">FAQ</a></li>
-        <li><a href="/terms">Terms</a></li>
-        <li><a href="/privacy">Privacy Policy</a></li>
-        <li><a href="/policy">Policy</a></li>
-        <li><a href="/accessibility">Accessibility</a></li>
-        <li><a href="/privacy-choices">Privacy Choices</a></li>
-      </ul>
-      <ul>
-        <li><a href="/about">About</a></li>
-        <li><a href="/parent-controls">Parent Controls</a></li>
-        <li><a href="/use-of-ai">Use of AI</a></li>
-        <li><a href="https://app.standkids.com/dashboard">Dashboard</a></li>
-        <li><a href="#waitlist-form">Subscribe</a></li>
-        <li><a href="https://app.standkids.com/login">Log In</a></li>
-      </ul>
-    </div>
   </div>
 </footer>
 
@@ -329,11 +310,6 @@
     margin: 0;
   }
 
-  /* Stacked link columns — mobile only (per the mobile comp). */
-  .link-cols {
-    display: none;
-  }
-
   @media (max-width: 768px) {
     .footer {
       padding: 36px 0 40px;
@@ -376,33 +352,6 @@
     }
     .signup-bg img {
       object-fit: fill;
-    }
-
-    .link-cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0 32px;
-      margin-top: 8px;
-    }
-
-    .link-cols ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .link-cols a {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      font-size: 15px;
-      line-height: 1.2;
-      letter-spacing: -0.3px;
-      color: var(--stand-black);
-      text-decoration: underline;
-      text-decoration-thickness: 1.5px;
     }
   }
 </style>
