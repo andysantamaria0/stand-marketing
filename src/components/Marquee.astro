@@ -12,14 +12,14 @@ interface Props {
 }
 
 const {
-  items = ['What will you build?'],
-  height = 123,
+  items = ['Dream. Build. Grow.', 'What will you build?'],
+  height = 56,
   duration = 30,
 } = Astro.props;
 
-// Phrases separated by an en-space + middot + en-space, with a trailing
+// Phrases separated by an em-space + arrow + em-space, with a trailing
 // separator so the seam between repeated copies reads the same as the gaps.
-const SEP = ' · ';
+const SEP = '\u2003\u2192\u2003';
 const copy = items.join(SEP) + SEP;
 ---
 
@@ -41,9 +41,9 @@ const copy = items.join(SEP) + SEP;
     overflow: hidden;
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: 52px;
+    font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
-    letter-spacing: -1px;
+    letter-spacing: -0.75px;
   }
 
   .track {
@@ -51,11 +51,16 @@ const copy = items.join(SEP) + SEP;
     flex-shrink: 0;
     white-space: nowrap;
     animation: marquee-scroll linear infinite;
+    will-change: transform;
+  }
+
+  .track > span {
+    flex: 0 0 auto;
   }
 
   @keyframes marquee-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-33.333%); }
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-33.3333%, 0, 0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -63,6 +68,6 @@ const copy = items.join(SEP) + SEP;
   }
 
   @media (max-width: 768px) {
-    .marquee { font-size: 28px; }
+    .marquee { font-size: 18px; }
   }
 </style>

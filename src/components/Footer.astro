@@ -9,7 +9,7 @@
     <div class="top">
       <div class="brand">
         <img src="/brand/logo.svg" alt="Stand" width="120" />
-        <p>STAND is where kids create, launch, and grow real businesses.</p>
+        <p>STAND&reg; is where kids create, launch, and grow real businesses.</p>
         <div class="social">
           <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
             <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
@@ -33,34 +33,34 @@
         aria-label="Email signup"
         novalidate
       >
-        <picture class="signup-bg" aria-hidden="true">
-          <source srcset="/brand/sticker-card.webp" type="image/webp" />
-          <img src="/brand/sticker-card.png" alt="" />
-        </picture>
-        <input
-          type="email"
-          name="email"
-          id="waitlist-email"
-          placeholder="hello@standkids.com"
-          aria-label="Email address"
-          required
-          autocomplete="email"
-        />
-        <button type="submit">Sign Up →</button>
-
-        <div class="signup-confirmed" aria-live="polite">
-          <svg class="check" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="5 12 10 17 19 7" />
-          </svg>
-          <span class="confirmed-text">
-            <strong>You&rsquo;re on the waitlist.</strong>
-            <em>We&rsquo;ll be in touch soon.</em>
-          </span>
+        <div class="signup-card">
+          <picture class="signup-bg" aria-hidden="true">
+            <source srcset="/brand/sticker-card.webp" type="image/webp" />
+            <img src="/brand/sticker-card.png" alt="" />
+          </picture>
+          <input
+            type="email"
+            name="email"
+            id="waitlist-email"
+            placeholder="hello@standkids.com"
+            aria-label="Email address"
+            required
+            autocomplete="email"
+          />
+          <div class="signup-confirmed" aria-live="polite">
+            <svg class="check" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="5 12 10 17 19 7" />
+            </svg>
+            <span class="confirmed-text">
+              <strong>You&rsquo;re on the waitlist.</strong>
+              <em>We&rsquo;ll be in touch soon.</em>
+            </span>
+          </div>
         </div>
+        <button type="submit">Sign Up &rarr;</button>
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
-
   </div>
 </footer>
 
@@ -137,7 +137,7 @@
 <style>
   .footer {
     background: var(--stand-postit);
-    padding: 60px 0 80px;
+    padding: 40px 0 24px;
     width: 100%;
   }
 
@@ -151,7 +151,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
-    margin-bottom: 60px;
+    margin-bottom: 0;
     align-items: start;
   }
 
@@ -174,17 +174,24 @@
     color: var(--stand-black);
   }
 
-  /* Form sits on the same Rectangle 26 PNG used for the "design a brand" sticker.
-     The PNG provides the white card + skewed black shadow; we layer inputs on top. */
+  /* Form has two pieces: a sticker-card "card" holding the email input, and a
+     "Sign Up →" submit button. Desktop puts the button inside the card on the
+     right; mobile drops the button below the card as a separate link. */
   .signup {
     position: relative;
+    max-width: 849px;
+    width: 100%;
+    justify-self: end;
+  }
+
+  .signup-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 849 / 130;
+    padding: 32px 60px 42px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
-    padding: 22px 52px 32px;
-    max-width: 849px;
-    justify-self: end;
-    width: 100%;
-    aspect-ratio: 849 / 85;
   }
 
   .signup-bg {
@@ -199,19 +206,15 @@
     object-fit: fill;
   }
 
-  .signup > input,
-  .signup > button {
+  .signup input {
     position: relative;
     z-index: 1;
-  }
-
-  .signup input {
     flex: 1;
     border: 0;
     background: transparent;
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(18px, 2.088vw, 30px);
+    font-size: clamp(22px, 2.644vw, 38px);
     line-height: 1;
     color: var(--stand-black);
     outline: none;
@@ -225,6 +228,11 @@
   }
 
   .signup button {
+    position: absolute;
+    z-index: 2;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
     font-family: var(--font-serif);
     font-weight: 400;
     font-size: clamp(14px, 1.392vw, 20px);
@@ -233,8 +241,9 @@
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     color: var(--stand-black);
-    flex-shrink: 0;
-    margin-left: 16px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
   }
 
   /* "You're on the waitlist" confirmation overlay — replaces the input + button
@@ -303,24 +312,31 @@
 
   @media (max-width: 768px) {
     .footer {
-      padding: 48px 0 60px;
+      padding: 36px 0 40px;
     }
     .inner {
-      padding: 0 24px;
+      padding: 0 28px;
     }
     .top {
       grid-template-columns: 1fr;
-      gap: 32px;
-      margin-bottom: 40px;
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    .brand img {
+      width: 160px;
+      height: auto;
+    }
+    .brand p {
+      font-size: 16px;
+      max-width: none;
     }
     .signup {
       justify-self: stretch;
-      width: 100%;
       max-width: 100%;
-      box-sizing: border-box;
-      aspect-ratio: auto;
-      padding: 14px 18px 22px;
-      min-height: 60px;
+    }
+    .signup-card {
+      aspect-ratio: 849 / 130;
+      padding: 16px 22px 26px;
     }
     .signup input {
       font-size: 18px;
@@ -328,8 +344,11 @@
       width: 100%;
     }
     .signup button {
-      font-size: 15px;
-      margin-left: 8px;
+      position: static;
+      transform: none;
+      display: block;
+      margin: 14px auto 0;
+      font-size: 16px;
     }
     .signup-bg img {
       object-fit: fill;

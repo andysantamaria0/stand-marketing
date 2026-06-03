@@ -43,6 +43,11 @@ const stickerPhrases = [
 
     <div class="links">
       <a href="https://app.standkids.com">Start Building →</a>
+      <a href="/faq" class="learn-more">Learn More →</a>
+    </div>
+
+    <div class="mobile-photo" aria-hidden="true">
+      <img src="/brand/happy-teenagers.png" alt="" loading="lazy" />
     </div>
   </div>
 </section>
@@ -69,50 +74,46 @@ const stickerPhrases = [
     background: var(--stand-postit);
     width: 100%;
     box-sizing: border-box;
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(24px, 4vh, 60px) 0;
+    padding: clamp(48px, 7vh, 100px) 0;
   }
 
   .inner {
-    max-width: var(--container-max);
+    max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
-    padding: 0 94px;
+    padding: 0 70px;
     position: relative;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(14px, 1.531vw, 22px);
+    font-size: clamp(11px, 1.148vw, 16px);
     line-height: 1.18;
-    letter-spacing: -0.44px;
+    letter-spacing: -0.33px;
     color: var(--stand-black);
-    margin: 0 0 clamp(16px, 3vh, 60px);
+    margin: 0 0 clamp(12px, 2.25vh, 45px);
   }
 
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(28px, 3.341vw, 48px);
+    font-size: clamp(18px, 2.226vw, 32px);
     line-height: 1;
-    letter-spacing: -1px;
+    letter-spacing: -0.75px;
     color: var(--stand-black);
     margin: 0;
-    max-width: 1250px;
+    max-width: 938px;
   }
 
   .headline.second {
-    margin-top: clamp(24px, 5vh, 100px);
+    margin-top: clamp(18px, 3.75vh, 75px);
   }
 
   .sticker {
     position: relative;
-    margin: clamp(20px, 4vh, 60px) auto;
+    margin: clamp(15px, 3vh, 45px) auto;
     width: 100%;
-    max-width: 1237px;
+    max-width: 928px;
     aspect-ratio: 1237 / 120;
   }
 
@@ -134,11 +135,11 @@ const stickerPhrases = [
     justify-content: center;
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(24px, 3.479vw, 50px);
+    font-size: clamp(18px, 2.609vw, 38px);
     line-height: 1;
     color: var(--stand-black);
     text-transform: lowercase;
-    letter-spacing: -1px;
+    letter-spacing: -0.75px;
   }
 
   .sticker .phrase[data-active='true'] {
@@ -146,7 +147,7 @@ const stickerPhrases = [
   }
 
   .links {
-    margin-top: clamp(20px, 4vh, 80px);
+    margin-top: clamp(15px, 3vh, 60px);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -155,18 +156,27 @@ const stickerPhrases = [
   .links a {
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(14px, 1.392vw, 20px);
+    font-size: clamp(11px, 1.044vw, 15px);
     line-height: 1.4;
-    letter-spacing: -0.4px;
+    letter-spacing: -0.3px;
     color: var(--stand-red);
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     width: fit-content;
   }
 
+  /* Mobile-only: tilted photo card sits below the links. */
+  .links a.learn-more {
+    display: none;
+  }
+
+  .mobile-photo {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .about {
-      padding: 36px 0 0;
+      padding: 36px 0 40px;
       position: relative;
       overflow: hidden;
       min-height: 0;
@@ -176,14 +186,14 @@ const stickerPhrases = [
       padding: 0 20px;
     }
     .eyebrow {
-      font-size: 9.44px;
-      line-height: 11.092px;
-      letter-spacing: -0.1888px;
-      margin: 0 0 12px;
-      padding-left: 18px;
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: -0.4px;
+      margin: 0 0 20px;
+      padding-left: 0;
     }
     .headline {
-      font-size: 20px;
+      font-size: 28px;
       line-height: 1.05;
       letter-spacing: -0.3px;
       max-width: none;
@@ -202,14 +212,28 @@ const stickerPhrases = [
     }
     .links {
       margin-top: 28px;
+      gap: 6px;
     }
     .links a {
       font-size: 15px;
       line-height: 1.4;
       letter-spacing: -0.3px;
     }
+    .links a.learn-more {
+      display: inline-block;
+    }
 
-    /* happy-teenagers photo, mobile only — sits at the bottom of About with
-       a slight rotation, matching the Figma mobile frame. */
+    /* happy-teenagers photo, mobile only — sits at the bottom of About. The
+       PNG already has the tilted white frame + drop shadow baked in. */
+    .mobile-photo {
+      display: block;
+      margin: 36px auto 0;
+      max-width: 280px;
+    }
+    .mobile-photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
   }
 </style>
