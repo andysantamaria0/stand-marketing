@@ -9,30 +9,43 @@ interface Slide {
   desc: string;
   icon: string;       // bare 3D icon render (active state)
   silhouette: string; // colored SVG silhouette (inactive state)
+  // Per-slide tweaks for the active tool icon (PNG). PNGs have varying internal
+  // padding so each one may need its own scale + X/Y nudge to sit cleanly above
+  // the card. Defaults: scale 1, offset 0,0.
+  iconScale?: number;
+  iconOffsetX?: number; // px, positive = right
+  iconOffsetY?: number; // px, positive = down
 }
 
 const slides: Slide[] = [
   { name: 'ideas tent',
     desc: 'choose your business to build with Stand.',
-    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette' },
+    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'brand studio',
     desc: 'name it, create your logo and build your brand identity.',
-    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette' },
+    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'product lab',
     desc: 'design your products and create what you need to make your vision a reality.',
-    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette' },
+    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'money',
     desc: 'price your product, set your goals and start thinking like an owner.',
-    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette' },
+    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'marketing',
     desc: 'learn how to get the word out, launch your business and get customers.',
-    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette' },
+    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'storefront',
     desc: 'launch your shop and start taking orders.',
-    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette' },
+    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'dashboard',
     desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
-    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette' },
+    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: -30 },
 ];
 ---
 
@@ -43,12 +56,21 @@ const slides: Slide[] = [
 
     <div class="slider" id="toolbox-slider">
       <span class="dotted-line" aria-hidden="true"></span>
-      <button class="nav prev" aria-label="Previous tool">←</button>
+      <button class="nav prev" aria-label="Previous tool">
+        <svg viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="52" y1="8" x2="12" y2="8" />
+          <polyline points="20,3 12,8 20,13" />
+        </svg>
+      </button>
 
       <div class="stage">
         {
           slides.map((s, i) => (
-            <article class="slide" data-index={i}>
+            <article
+              class="slide"
+              data-index={i}
+              style={`--icon-scale:${s.iconScale ?? 1};--icon-offset-x:${s.iconOffsetX ?? 0}px;--icon-offset-y:${s.iconOffsetY ?? 0}px;`}
+            >
               <div class="silhouette-wrap">
                 <img
                   class="silhouette-img"
@@ -73,7 +95,12 @@ const slides: Slide[] = [
         }
       </div>
 
-      <button class="nav next" aria-label="Next tool">→</button>
+      <button class="nav next" aria-label="Next tool">
+        <svg viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="8" x2="52" y2="8" />
+          <polyline points="44,3 52,8 44,13" />
+        </svg>
+      </button>
     </div>
   </div>
 </section>
@@ -131,11 +158,12 @@ const slides: Slide[] = [
     width: 100%;
     overflow: hidden;
     box-sizing: border-box;
-    padding: clamp(48px, 7vh, 100px) 0;
+    padding: clamp(48px, 7vh, 100px) 0 clamp(80px, 10vh, 140px);
     /* Slide width derived from viewport HEIGHT so the whole module (headline +
        paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
-       (724x1142); ~290px reserves room for the headline + vertical padding. */
-    --slide-w: min(720px, calc((100vh - 320px) / 1.58));
+       (724x1142); reserves room for the headline + top/bottom padding so the
+       active card always has cream breathing room above the next section. */
+    --slide-w: min(720px, calc((100vh - 380px) / 1.58));
   }
 
   .inner {
@@ -174,13 +202,20 @@ const slides: Slide[] = [
 
   .nav {
     flex-shrink: 0;
-    width: 48px;
+    width: 96px;
     height: 48px;
+    padding: 0;
+    border: 0;
     background: transparent;
     color: var(--stand-black);
-    font-size: 32px;
-    line-height: 1;
     z-index: 10;
+    cursor: pointer;
+  }
+
+  .nav svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   /* Full-bleed red dotted connector threaded through the silhouette icons,
@@ -246,8 +281,9 @@ const slides: Slide[] = [
     object-fit: contain;
     /* Shift each silhouette up by half its own height so the bottom edge
        lands on the dotted line (which sits at the wrap's vertical center)
-       instead of cutting through the middle of the icon. */
-    transform: translateY(-50%);
+       instead of cutting through the middle of the icon. Per-slide nudges
+       compose on top of that baseline shift. */
+    transform: translate(var(--icon-offset-x, 0px), calc(-50% + var(--icon-offset-y, 0px))) scale(var(--icon-scale, 1));
   }
 
   /* Every slide is a bare icon + a live-text card. frame-wrap holds them in a
@@ -268,6 +304,9 @@ const slides: Slide[] = [
     width: 92%;
     height: 52%;
     object-fit: contain;
+    /* Per-slide tuning: each PNG has its own padding, so we shift and scale
+       independently. Defaults are no-op. */
+    transform: translate(var(--icon-offset-x, 0px), var(--icon-offset-y, 0px)) scale(var(--icon-scale, 1));
   }
 
   .card {
@@ -382,7 +421,7 @@ const slides: Slide[] = [
       margin-bottom: 24px;
     }
     .slider { gap: 4px; }
-    .nav { width: 32px; height: 32px; font-size: 22px; }
+    .nav { width: 64px; height: 32px; }
     .desc { line-height: 1.25; }
     /* Mobile keeps the full-height card; halving is desktop-only. */
     .card { aspect-ratio: auto; flex: 1; }

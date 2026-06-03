@@ -66,7 +66,7 @@ const items: WhyItem[] = [
     </ul>
 
     <div class="photo-card">
-      <img class="photo" src="/brand/why-photo-2.webp" alt="Stand kid in a red Stand cap on a sidewalk" loading="lazy" />
+      <img class="photo" src="/brand/why-photo-portrait.png" alt="Stand kid in a red Stand cap on a sidewalk" loading="lazy" />
     </div>
   </div>
 </section>
@@ -89,6 +89,7 @@ const items: WhyItem[] = [
   }
 
   .content {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
@@ -100,7 +101,7 @@ const items: WhyItem[] = [
   .items {
     list-style: none;
     margin: 0 auto;
-    padding: 48px 0;
+    padding: clamp(120px, 14vh, 200px) 0;
     max-width: 380px;
     width: 100%;
     display: flex;
@@ -238,10 +239,17 @@ const items: WhyItem[] = [
   }
 
   .photo-card {
-    width: 100%;
-    height: 100%;
+    /* Break out of the capped .content so the photo's right edge always hits
+       the viewport's right edge and its width scales with screen width.
+       Anchored to the .content (position: relative): left starts at .content's
+       horizontal center plus half-gap; right is pushed past .content's right
+       edge by (50vw − 50%) so it lands on the viewport edge. */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% + 20px);
+    right: calc(50% - 50vw);
     overflow: hidden;
-    align-self: stretch;
   }
 
   .photo {
@@ -268,6 +276,8 @@ const items: WhyItem[] = [
     .items { gap: 20px; }
 
     .photo-card {
+      position: static;
+      width: 100%;
       aspect-ratio: 4 / 3;
       order: -1;
     }

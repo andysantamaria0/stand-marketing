@@ -44,7 +44,12 @@ const testimonials: Testimonial[] = [
     </div>
 
     <div class="deck" id="testimonial-deck">
-      <button class="nav prev" aria-label="Previous testimonial">←</button>
+      <button class="nav prev" aria-label="Previous testimonial">
+        <svg viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="52" y1="8" x2="12" y2="8" />
+          <polyline points="20,3 12,8 20,13" />
+        </svg>
+      </button>
 
       <div class="stack">
         {
@@ -63,7 +68,12 @@ const testimonials: Testimonial[] = [
         }
       </div>
 
-      <button class="nav next" aria-label="Next testimonial">→</button>
+      <button class="nav next" aria-label="Next testimonial">
+        <svg viewBox="0 0 64 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="8" x2="52" y2="8" />
+          <polyline points="44,3 52,8 44,13" />
+        </svg>
+      </button>
     </div>
   </div>
 </section>
@@ -145,14 +155,20 @@ const testimonials: Testimonial[] = [
 
   .nav {
     flex-shrink: 0;
-    width: 36px;
+    width: 72px;
     height: 36px;
+    padding: 0;
+    border: 0;
     background: transparent;
     color: var(--stand-black);
-    font-size: 24px;
-    line-height: 1;
     cursor: pointer;
     z-index: 5;
+  }
+
+  .nav svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .stack {
