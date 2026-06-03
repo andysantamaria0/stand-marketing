@@ -201,6 +201,10 @@ const items: WhyItem[] = [
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
+    /* Why's numbered items are list headings, not a section headline, so
+       they opt out of the global .headline canon (32px) and keep their
+       compact menu-list size. Scoped styles outrank the global rule. */
+    font-size: clamp(14px, 1.392vw, 20px);
     line-height: 1.1;
     letter-spacing: -0.4px;
     color: var(--stand-black);
@@ -281,6 +285,7 @@ const items: WhyItem[] = [
     .num { font-size: 11px; }
 
     .headline {
+      font-size: 18px;
       line-height: 1.1;
       letter-spacing: -0.3px;
     }
