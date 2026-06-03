@@ -181,7 +181,7 @@ button {
 }
 
 @media (max-width: 768px) {
-  .eyebrow  { font-size: 22px; }
+  .eyebrow  { font-size: 16px; }
   .headline { font-size: 28px; }
   .name     { font-size: 22px; }
   .desc     { font-size: 13px; }
