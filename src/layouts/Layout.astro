@@ -51,5 +51,59 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
   </head>
   <body>
     <slot />
+
+    <script>
+      // Cross-domain attribution hand-off. The marketing site (standkids.com)
+      // and the app (app.standkids.com) are separate origins, so the app's
+      // first-party attribution cookie can't be read here — the URL is the only
+      // carrier across the hop. Forward any incoming UTM / promo params onto
+      // every app CTA so the app's AttributionCapture picks them up. When a
+      // visitor arrived with no UTMs, tag the link as marketing-site-originated
+      // so direct standkids.com -> app conversions are still attributable
+      // instead of looking like direct traffic.
+      (() => {
+        const FORWARD_KEYS = [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_content",
+          "utm_term",
+          "promotion_code",
+          "code",
+        ];
+        const incoming = new URLSearchParams(window.location.search);
+        const carried = new URLSearchParams();
+        for (const key of FORWARD_KEYS) {
+          const v = incoming.get(key);
+          if (v) carried.set(key, v);
+        }
+
+        // First-touch default: an un-tagged marketing-site visit still gets
+        // attributed to the site (never overrides a real campaign's UTMs).
+        const hasUtm = [...carried.keys()].some((k) => k.startsWith("utm_"));
+        if (!hasUtm) {
+          carried.set("utm_source", "standkids-site");
+          carried.set("utm_medium", "referral");
+        }
+        if ([...carried].length === 0) return;
+
+        for (const a of document.querySelectorAll('a[href*="app.standkids.com"]')) {
+          const href = a.getAttribute("href");
+          // Never rewrite API/form endpoints (e.g. /api/waitlist) — only nav CTAs.
+          if (!href || href.includes("/api/")) continue;
+          let url;
+          try {
+            url = new URL(href, window.location.origin);
+          } catch {
+            continue;
+          }
+          // Incoming params win, but don't clobber a value the link already pins.
+          for (const [k, v] of carried) {
+            if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+          }
+          a.setAttribute("href", url.toString());
+        }
+      })();
+    </script>
   </body>
 </html>
