@@ -36,7 +36,7 @@ const DEFAULT_TITLE = 'hover over an item';
 const DEFAULT_DESC = 'to learn more about our Product Lab.';
 
 const items: Business[] = [
-  { name: 'hats', desc: 'Small bio here about the hats you can design.',
+  { name: 'hats', desc: 'Design custom hats of your own creation.',
     svg: 'STAND_SVG_BlueHat_Silhouette', photo: 'STAND_PNG_BlueHat',
     sx: 90, sy: 291, sw: 263, sh: 263, z: 4,
     mx: 91, my: 117, mw: 163, mh: 100,
@@ -165,6 +165,7 @@ const items: Business[] = [
     position: relative;
     background: var(--stand-cream);
     width: 100%;
+    overflow-x: hidden;
   }
 
   .frame {
@@ -335,7 +336,9 @@ const items: Business[] = [
     }
 
     .biz:focus-visible {
-      outline: none;
+      outline: 2px solid var(--stand-black);
+      outline-offset: 5px;
+      filter: drop-shadow(0 0 0.45rem var(--stand-white));
     }
 
     .biz.active .photo {

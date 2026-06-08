@@ -23,7 +23,7 @@ const slides: Slide[] = [
     icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
     iconScale: 0.7, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'brand studio',
-    desc: 'Create your business name, logo, colors, and brand style.',
+    desc: 'create your business name, logo, colors, and brand style.',
     icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'product lab',
@@ -154,9 +154,11 @@ const slides: Slide[] = [
     slider.addEventListener('pointerdown', (e) => {
       swipeStartX = e.clientX;
       swipeStartY = e.clientY;
+      slider.setPointerCapture?.(e.pointerId);
     });
 
     slider.addEventListener('pointerup', (e) => {
+      slider.releasePointerCapture?.(e.pointerId);
       const dx = e.clientX - swipeStartX;
       const dy = e.clientY - swipeStartY;
       if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
@@ -165,6 +167,10 @@ const slides: Slide[] = [
         ? (active + 1) % count
         : (active - 1 + count) % count;
       update();
+    }, { passive: true });
+
+    slider.addEventListener('pointercancel', (e) => {
+      slider.releasePointerCapture?.(e.pointerId);
     }, { passive: true });
 
     update();
