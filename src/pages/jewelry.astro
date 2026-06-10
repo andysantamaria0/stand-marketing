@@ -1,0 +1,430 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+import "@/styles/lp.css";
+
+// JEWELRY — highest gift-intent vertical. Parent-facing landing page.
+// Twin of stickers.astro: same structure, classes, and voice with jewelry content.
+// Numbers verified against docs/vertical-marketing-feature-blocks.md §4 + the
+// PFL/PFY unit-economics sheet: pendant $30 default, production $9.89, ship $4.99,
+// card 2.9%+30c, Stand 5% -> keeps ~$12.45 (42%). Bracelet $25, production $9.00
+// is a PLACEHOLDER pending a real Printify quote -> keeps ~$9.23 (37%).
+// Jewelry app screenshots in /public/app-screens captured from the live workshop.
+const APP = "https://app.standkids.com";
+
+const journey = [
+  { step: "01 — Name it", tool: "ideas-tent", name: "ideas tent",
+    do: "Brainstorm and pick their jewelry brand's name with the coach.",
+    learn: "What makes a name memorable — and how real brands choose theirs.",
+    proof: "“Nike is the goddess of victory. Apple is simple and friendly. What feeling should your name give?”" },
+  { step: "02 — Brand it", tool: "brand-studio", name: "brand studio",
+    do: "Pick a vibe, a color story, and refine a logo until it's theirs.",
+    learn: "A brand is a deliberate system — and good designers ask for changes.",
+    proof: "“Want changes? Tell us what to tweak.”" },
+  { step: "03 — Design it", tool: "product-lab", name: "product lab",
+    do: "Design a real pendant or stone bracelet — your text, your icon, your stone.",
+    learn: "Real manufacturing has rules — what engraves cleanly, what's too small to read.",
+    proof: "The app checks your design against the real laser before it ships — bold and simple reads best." },
+  { step: "04 — Price it", tool: "money", name: "money",
+    do: "Set a price and watch the real margin update live.",
+    learn: "Margin, costs, and fees — and that a price has to clear cost.",
+    proof: "Subtracts the real Stripe 2.9% + 30¢ and Stand's 5% fee. Underprice, and the screen shows a loss." },
+  { step: "05 — Promote it", tool: "marketing", name: "marketing",
+    do: "Write a tagline, pick who to tell, and make a clear ask.",
+    learn: "A product needs an audience — and a message that sounds like them.",
+    proof: "Taught with the greats: “Just Do It.” “Think Different.”" },
+  { step: "06 — Sell it", tool: "storefront", name: "storefront",
+    do: "Open a real shop, share the link, and ship a real order.",
+    learn: "The loop closes: someone they love is wearing the thing they made.",
+    proof: "A parent gives consent before the shop can go live." },
+];
+
+const useCases = [
+  { wide: true, h: "Matching sets with the best friends", p: "She designs a charm bracelet on the same blue stone for her three closest friends, engraves their group's name, and their parents order the set. Four kids, one bracelet she designed.", who: "Who buys: the friends' parents" },
+  { h: "A name necklace for Mom or Grandma", p: "“Mom” in a handwritten style with a tiny heart, then a second one that says “Nana.” Real plated jewelry the family actually keeps.", who: "Who buys: aunts, uncles, grandparents" },
+  { h: "Birthday party favors", p: "One rose-stone bracelet design, pre-ordered by every guest's family through her shop link. Every kid leaves the party wearing the favor she made.", who: "Who buys: party guests' parents" },
+  { h: "Team & school-spirit charms", p: "A pendant in the team's color stone with a soccer icon and the team name — and the whole roster's families order one.", who: "Who buys: teammates' families & coaches" },
+  { h: "A class-trip fundraiser", p: "An initials pendant the whole grade can order, with part of every sale earmarked for the trip. The money lesson literally ends on reinvest, save, spend, or donate.", who: "Who buys: classmates' families & teachers" },
+  { h: "Initials & symbols for friends' birthdays", p: "A set of single-initial pendants means every friend's birthday is a new order — her shop becomes the go-to for a thoughtful custom gift.", who: "Who buys: friends' parents, gift by gift" },
+];
+
+const faqs = [
+  { q: "Is this real money, or play money?", a: "It's real. Your kid's shop takes real Stripe payments and the jewelry really gets made and shipped to the buyer. And nothing goes live until a parent gives consent — a built-in gate before the shop opens. The Money step also teaches honest math: it subtracts real costs and fees and will even show a loss if the price is too low." },
+  { q: "Is it safe for my kid? Are there strangers or ads?", a: "Stand is built for ages 6 to 16 and is COPPA-compliant by design. There are no ads and no data selling — Stand earns from subscriptions, not your child's attention. The AI coach is disclosed as an AI, all generated art is filtered for age-appropriate content and moderated, and no personal data is shared or sold. A parent consents before the shop goes live, and there's a full parent dashboard for oversight." },
+  { q: "What does the STANDSUMMER code actually get me?", a: "Full access to Stand, free, for the whole summer — through September 1. Your kid can run the entire journey, open a real shop, and make real sales. You pay nothing unless you choose to continue after September 1." },
+  { q: "Will my kid actually make money?", a: "We never guarantee sales — that wouldn't be honest, and you won't see income hype anywhere in Stand. What we can promise is the learning: how to design a real piece, price it honestly, brand it, and run a real shop — plus built-in audiences your kid already has: friends, family, teammates, and clubs. Any sales are a real opportunity, not a promise." },
+  { q: "How much of my time does this take?", a: "Not much. The coach narrates every step and answers your kid's questions, so they can largely self-drive. You step in at the moment that matters — giving consent at the gate before the shop goes live — and can watch progress from the parent dashboard." },
+  { q: "My kid is only 7 (or already 15) — is this the right fit?", a: "Stand is built for ages 6 to 16. Younger kids lean on the point-pick-drag design tools and the always-on coach; older kids dig into pricing, branding, and marketing. There's no code to write and nothing to assemble." },
+  { q: "Couldn't I just help them make jewelry at the kitchen table?", a: "You could. But Stand gives your kid structure, real design tools, an AI coach, honest money math, and an actual storefront that keeps them going long after day one — plus we handle making and shipping real engraved jewelry. The goal isn't a perfect business at age eleven. It's the habit of building." },
+  { q: "Do I have to buy beads or hold inventory?", a: "No. Pieces are made to order only when someone buys — no inventory, no upfront product cost, no bin of unsold supplies in the closet. You're not financing a business; you're backing a kid." },
+];
+
+const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#00623b"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#faf3d6" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+---
+
+<Layout
+  title="Stand — Start a real jewelry business. For Real."
+  description="Your kid designs a real engraved pendant or a natural-stone charm bracelet, opens a real online shop, and we make and ship every order. Real. Supervised. And theirs. Guided by an AI coach, with a parent consent gate before it goes live."
+>
+  <div class="lp">
+    <div class="lp-promo">Summer on us — code <span class="code">STANDSUMMER</span> gets free access through September 1</div>
+
+    <!-- HEADER -->
+    <header class="lp-head">
+      <a href="https://standkids.com" aria-label="Stand"><img src="/brand/logo.svg" alt="Stand" height="30" /></a>
+      <div class="lp-head-right">
+        <a href={APP} class="lp-login">Already have an account? <strong>LOG IN</strong></a>
+        <a href={APP} class="lp-btn lp-head-cta">Start Building <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="lp-hero">
+      <div class="lp-wrap">
+        <div>
+          <p class="lp-eyebrow">A real jewelry business — ages 6 to 16</p>
+          <h1>They design the jewelry. We ship the real thing. <img class="lp-forreal-img" src="/brand/STAND_ForReal.svg" alt="For Real." /></h1>
+          <p class="sub">Your kid designs a real engraved pendant or a natural-stone charm bracelet, builds a real online shop, and we make and mail every order. A real first business — guided by an AI coach, and nothing goes live until a parent says yes.</p>
+          <div class="cta-row">
+            <a href={APP} class="lp-btn">Start your kid's jewelry business <span aria-hidden="true">&rarr;</span></a>
+            <a href="#journey" class="lp-btn lp-btn--ghost">See how it works</a>
+          </div>
+          <p class="lp-cta-note">Free all summer with code STANDSUMMER — pay nothing until September 1.</p>
+        </div>
+        <div class="lp-hero-stage" aria-hidden="true">
+          <div class="hero-blob"></div>
+          <img class="hero-sticker" src="/brand/STAND_PNG_GreenBracelet.webp" alt="" />
+          <div class="hero-kicker">Designed entirely by a kid. Really.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="lp-marquee" aria-hidden="true">
+      <div class="lp-marquee-inner">
+        <span>Dream. Build. Grow. <em>&rarr;</em> Create your brand. <em>&rarr;</em> Design the jewelry. <em>&rarr;</em> Set an honest price. <em>&rarr;</em> Open a real shop. <em>&rarr;</em> Make your first sale. <em>&rarr;</em></span>
+        <span>Dream. Build. Grow. <em>&rarr;</em> Create your brand. <em>&rarr;</em> Design the jewelry. <em>&rarr;</em> Set an honest price. <em>&rarr;</em> Open a real shop. <em>&rarr;</em> Make your first sale. <em>&rarr;</em></span>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <section class="lp-how lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Kid-built, parent-cleared</p>
+          <h2>They build it. You say yes. It ships.</h2>
+        </div>
+        <div class="lp-grid-3">
+          <div class="lp-how-card"><div class="lp-how-num">1</div><h3>Your kid builds</h3><p>They name the brand, design the logo, create a real pendant or bracelet, set the price, and write the pitch — guided step by step by a patient AI coach.</p></div>
+          <div class="lp-how-card is-approve"><div class="lp-how-num">2</div><h3>A parent says yes</h3><p>Before the shop can go live, a parent has to give consent — a built-in gate. No ads, no data selling, and the AI coach is always disclosed as an AI.</p></div>
+          <div class="lp-how-card"><div class="lp-how-num">3</div><h3>The real thing ships</h3><p>When a grandparent or a friend's family orders, the piece is actually made — real stones, real metal, real engraving — and mailed to their door.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GIFT / FRIENDS ANCHOR BAND -->
+    <section class="lp-section lp-anchor">
+      <div class="lp-wrap">
+        <p class="lp-eyebrow">The wedge</p>
+        <h2>The buyers are built in.</h2>
+        <p class="lp-anchor-sub">Friendship sets, a name necklace for Grandma, party favors — jewelry is the highest gift-intent category there is. Your kid isn't cold-selling; they're making the thing the people already in their life want to give.</p>
+      </div>
+    </section>
+
+    <!-- INSIDE STAND — real app screenshots -->
+    <section class="lp-section lp-inside">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Inside Stand</p>
+          <h2>This is the actual software your kid uses.</h2>
+          <p>Not a slideshow. A real, guided workspace — with an AI coach narrating every step, the whole business on one screen, and honest money math built in.</p>
+        </div>
+        <div class="lp-grid-3">
+          <div>
+            <div class="lp-shot"><img src="/app-screens/jewelry-pendant.png" alt="Stand's business chooser — Jewelry &amp; Accessories is a real option kids can pick" loading="lazy" /></div>
+            <p class="lp-shot-cap">Pick your business — Jewelry &amp; Accessories</p>
+          </div>
+          <div>
+            <div class="lp-shot"><img src="/app-screens/sticker-money.png" alt="Stand's Money Math module — costs, price, and profit" loading="lazy" /></div>
+            <p class="lp-shot-cap">Real money math, built in</p>
+          </div>
+          <div>
+            <div class="lp-shot"><img src="/app-screens/sticker-workshop.png" alt="Stand's Product Lab — design it, price it, make it" loading="lazy" /></div>
+            <p class="lp-shot-cap">A real product lab, guided by AI</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEARNING JOURNEY -->
+    <section id="journey" class="lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);border-bottom:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">The Stand Toolbox</p>
+          <h2>Six real skills, learned by doing each one.</h2>
+          <p>Every tool in Stand teaches a skill by making your kid actually use it. No worksheets. No lectures. Just doing.</p>
+        </div>
+        <div class="lp-carousel" data-lp-carousel>
+          <button class="lp-carousel-nav prev" type="button" aria-label="Previous tool">&#8249;</button>
+          <button class="lp-carousel-nav next" type="button" aria-label="Next tool">&#8250;</button>
+          <div class="lp-carousel-track">
+            {journey.map((j) => (
+              <article class="lp-jcard">
+                <img class="tool" src={`/brand/icon-${j.tool}.png`} alt="" loading="lazy" />
+                <div class="step">{j.step}</div>
+                <h3>{j.name}</h3>
+                <p class="row"><b>They do</b>{j.do}</p>
+                <p class="row"><b>They learn</b>{j.learn}</p>
+                <div class="proof">{j.proof}</div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p class="lp-journey-close">From sketch to <span class="lp-forreal">sold.</span></p>
+      </div>
+    </section>
+
+    <!-- WHAT THEY MAKE -->
+    <section class="lp-products lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Find your business — jewelry</p>
+          <h2>Two real pieces. What they design is what ships.</h2>
+          <p>No mockups pretending to be products. The piece your kid finishes in the Product Lab is the piece a real manufacturer makes when someone orders.</p>
+        </div>
+        <div class="lp-grid-2">
+          <div class="lp-prod">
+            <div class="lp-prod-visual contain" style="background:var(--stand-blue);"><img src="/brand/STAND_PNG_GreenBracelet.webp" alt="A real Stand engraved pendant" /></div>
+            <h3>The Oval Pendant</h3>
+            <ul>
+              <li>A real 1" dye-sublimated silver oval</li>
+              <li>Custom text in 6 lettering styles — Clean, Playful, Athletic, Whimsical, Handwritten, Classic</li>
+              <li>Dozens of kid-safe icons (animals, nature, music, symbols) — or let the app design it with you with "Let Stand Design It"</li>
+            </ul>
+            <div class="lp-ships">Made to order &middot; Really ships</div>
+          </div>
+          <div class="lp-prod">
+            <div class="lp-photo-ph"><span>Real photo — a designed stone bracelet, in hand (PRD &sect;10)</span></div>
+            <h3>The Charm Bracelet</h3>
+            <ul>
+              <li>A natural-stone bracelet with a laser-engraved name plate</li>
+              <li>Seven real stone colors — Teal, White, Black, Rust, Rose, Blue, Turquoise</li>
+              <li>Gold or silver finish — 14 real variants in all</li>
+            </ul>
+            <div class="lp-ships">Made to order &middot; Really ships</div>
+          </div>
+        </div>
+        <div class="lp-prod-note">
+          <h3>The design is checked so it will physically engrave.</h3>
+          <p>The app validates every design against the real laser's limits — minimum stroke width, minimum text height, edge margins — and teaches the real lesson: <b>bold and simple reads; tiny detail gets lost.</b> A genuine production constraint kids never get from a craft kit — so what arrives looks like what they made.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Picture your kid</p>
+          <h2>Six ways a kid's jewelry shop actually sells.</h2>
+          <p>Jewelry is the highest gift-intent thing a kid can make — the buyers are already in their life.</p>
+        </div>
+        <div class="lp-grid-3">
+          {useCases.map((u) => (
+            <div class={`lp-uc${u.wide ? " is-wide" : ""}`}><h3>{u.h}</h3><p>{u.p}</p><div class="who">{u.who}</div></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- MONEY -->
+    <section class="lp-money lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);border-bottom:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div>
+          <p class="lp-eyebrow">Money — the lesson parents love</p>
+          <h2 style="font-size:40px;margin-top:14px;">Real numbers. A real lesson. No pretend profit.</h2>
+          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs, the real card-processing fee, our small platform fee. If they price too low, the screen shows a loss — and they learn why.</p>
+          <p class="lp-lesson">It teaches money. It never promises money. The lesson ends the way real money decisions do: reinvest, save, spend, or donate.</p>
+        </div>
+        <div class="lp-receipts">
+          <div class="lp-receipt" aria-label="Example pendant margin receipt">
+            <div class="r-title">One pendant, sold — the live math</div>
+            <div class="row"><span>Pendant</span><span>$30.00</span></div>
+            <div class="row"><span>Making the real thing</span><span>&minus;$9.89</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$4.99</span></div>
+            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.17</span></div>
+            <div class="row"><span>Stand fee (5%)</span><span>&minus;$1.50</span></div>
+            <div class="row total"><span>Your kid keeps</span><span>&asymp; $12.45</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (42% margin).</p>
+          </div>
+          <div class="lp-receipt" aria-label="Example bracelet margin receipt">
+            <div class="r-title">One bracelet, sold — the live math</div>
+            <div class="row"><span>Bracelet</span><span>$25.00</span></div>
+            <div class="row"><span>Making the real thing</span><span>&minus;$9.00</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$4.49</span></div>
+            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.03</span></div>
+            <div class="row"><span>Stand fee (5%)</span><span>&minus;$1.25</span></div>
+            <div class="row total"><span>Your kid keeps</span><span>&asymp; $9.23</span></div>
+            <p class="note">37% margin — the app's default price and live fee math.</p>
+            <p class="ph-note">Bracelet production cost is a placeholder pending a real Printify quote (PRD &sect;10)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOUNDER LETTER -->
+    <section class="lp-section">
+      <div class="lp-wrap">
+        <div class="lp-letter-wrap lp-letter">
+          <div class="lp-letter-photo lp-photo-ph"><span>Real photo — the founder (PRD &sect;10)</span></div>
+          <div>
+            <p class="lp-eyebrow">Why we built Stand</p>
+            <h2>A real business — because pretend wasn't enough.</h2>
+            <p class="lp-sample-tag" style="margin-bottom:14px;">Placeholder — replace with a real, signed founder letter</p>
+            <p>[Founder letter — 4 to 6 sentences, first person. The origin: why a real shop that really ships beats a worksheet or an app that's secretly a game. The thing every kid should walk away with: the proof they can make a real thing and put it into the world.]</p>
+            <p>[Close on the parent: you don't have to be an entrepreneur to raise one. Stand does the heavy lifting — the tools, the coach, the printing, the shipping. You just say yes.]</p>
+            <p class="sig">— [Founder name]</p>
+            <p class="sig-name">[Title], Stand Kids Inc</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCIAL PROOF -->
+    <section class="lp-proof lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Real families</p>
+          <h2>What parents say.</h2>
+        </div>
+        <div class="lp-grid-3">
+          <div class="lp-tcard pink"><p>"Watching her take orders, handle her own money, and stay proud of something she built herself. That's the stuff you can't teach in a classroom."</p><div class="name">— Parent of Lily, age 12</div></div>
+          <div class="lp-tcard mustard"><p>"I thought starting a business would be easy. Then I had to make decisions, set prices, and keep going when it got hard. STAND helped me figure it out."</p><div class="name">— Ryan, age 10</div></div>
+          <div class="lp-tcard postit"><p>"He cared about every detail — the name, the logo, the product, the packaging. STAND turned his creativity into something structured."</p><div class="name">— Parent of Leo, 13</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section class="lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Safety &amp; trust</p>
+          <h2>You don't have to be an entrepreneur to raise one.</h2>
+          <p>Kids lead. You stay in control of what matters — and you never have to teach a thing you don't already know.</p>
+        </div>
+        <div class="lp-trust-grid is-single">
+          <div>
+            <div class="lp-check" set:html={Check + "<span>Nothing goes live until a parent gives consent — a built-in gate before the shop opens.</span>"}></div>
+            <div class="lp-check" set:html={Check + "<span>COPPA compliant — no personal data shared or sold, and no ads, ever.</span>"}></div>
+            <div class="lp-check" set:html={Check + "<span>Every image — generated or uploaded — is AI-moderated before it's used. If the check can't run, it's blocked.</span>"}></div>
+            <div class="lp-check" set:html={Check + "<span>The AI coach is always disclosed as an AI — age-appropriate and moderated.</span>"}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="lp-faq lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Questions parents actually ask</p>
+          <h2>The honest answers.</h2>
+        </div>
+        {faqs.map((f) => (
+          <details><summary>{f.q}</summary><p>{f.a}</p></details>
+        ))}
+      </div>
+    </section>
+
+    <!-- BECOMING A BUILDER -->
+    <section class="lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div class="lp-manifesto">
+          <p class="lp-eyebrow">The long game</p>
+          <h2>It's not a jewelry business. It's a <span class="lp-forreal">builder.</span></h2>
+          <p>The goal was never a perfect shop at age nine. It's a kid who learns, for real, that they can make something and put it into the world — and the quiet confidence to do it again. Built for them. And for you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING + CLOSE -->
+    <section class="lp-close lp-section" id="pricing">
+      <div class="lp-wrap">
+        <div class="lp-price">
+          <div class="flag">Summer on us — code STANDSUMMER</div>
+          <p class="lp-eyebrow" style="color:var(--lp-ink-55);">This summer, the whole thing is free</p>
+          <div class="amount"><span class="strike">$99/yr</span>$0<small> until Sept 1</small></div>
+          <p class="reframe">$99/yr after the summer — less than $2 a week.</p>
+          <p style="color:var(--lp-ink-70);margin-top:6px;">Use code STANDSUMMER for full access all summer — the journey, the coach, the real shop, real orders. Pay only if you continue after September 1.</p>
+          <ul>
+            <li set:html={Check + "<span>The full six-step journey with the AI coach</span>"}></li>
+            <li set:html={Check + "<span>A real, shareable shop — opened only after a parent consents</span>"}></li>
+            <li set:html={Check + "<span>Making and shipping, handled per order</span>"}></li>
+            <li set:html={Check + "<span>The full parent dashboard</span>"}></li>
+          </ul>
+          <a href={APP} class="lp-btn" style="width:100%;justify-content:center;">Start your kid's jewelry business <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <h2>Stand by your kid — and turn their idea into something <span class="lp-forreal">real.</span></h2>
+        <p class="sub">This summer, trying it costs nothing. After September 1, it's $99/yr — less than $2 a week.</p>
+        <a href={APP} class="lp-btn">Start your kid's jewelry business <span aria-hidden="true">&rarr;</span></a>
+        <p class="lp-cta-note">Free all summer with code STANDSUMMER. A parent consents before anything goes live.</p>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  // Click-through carousel for the learning-journey cards.
+  document.querySelectorAll<HTMLElement>("[data-lp-carousel]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>(".lp-carousel-track");
+    if (!track) return;
+    const stepBy = () => {
+      const card = track.querySelector<HTMLElement>(".lp-jcard");
+      return card ? card.getBoundingClientRect().width + 22 : 360;
+    };
+    root.querySelector(".lp-carousel-nav.prev")?.addEventListener("click", () =>
+      track.scrollBy({ left: -stepBy(), behavior: "smooth" })
+    );
+    root.querySelector(".lp-carousel-nav.next")?.addEventListener("click", () =>
+      track.scrollBy({ left: stepBy(), behavior: "smooth" })
+    );
+  });
+</script>
+
+<style>
+  .lp-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; max-width: var(--lp-maxw); margin: 0 auto; gap: 16px; }
+  .lp-head-right { display: flex; align-items: center; gap: 18px; }
+  .lp-login { font-family: var(--font-sans); font-size: 14px; color: var(--lp-ink); }
+  .lp-login strong { color: var(--stand-red); text-decoration: underline; text-underline-offset: 3px; margin-left: 3px; }
+  .lp-head-cta { font-size: 14px; padding: 10px 18px; box-shadow: var(--lp-shadow-chip); }
+
+  .hero-blob { position: absolute; inset: 6% 8%; background: var(--stand-green); border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; border: 2px solid var(--lp-ink); }
+  .hero-sticker { position: relative; width: 72%; filter: drop-shadow(0 18px 22px rgba(35,33,32,0.25)); transform: rotate(-5deg); }
+  .hero-kicker { position: absolute; bottom: 2%; left: 0; background: var(--stand-postit); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-card); padding: 9px 16px; font-size: 14px; box-shadow: var(--lp-shadow-chip); transform: rotate(-3deg); }
+  .lp-hero-stage { min-height: 380px; }
+
+  /* Gift/friends anchor band — the built-in-audience wedge */
+  .lp-anchor { background: var(--stand-postit); border-top: 2px solid var(--lp-ink); border-bottom: 2px solid var(--lp-ink); text-align: center; }
+  .lp-anchor h2 { font-size: 44px; margin-top: 14px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  .lp-anchor-sub { margin: 18px auto 0; max-width: 620px; color: var(--lp-ink-70); font-size: 19px; }
+
+  /* Extra engraving-emphasis card inside the dark products band */
+  .lp-prod-note { margin-top: 26px; background: var(--stand-cream); color: var(--lp-ink); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-overlay); padding: 30px; box-shadow: var(--lp-shadow-card); }
+  .lp-prod-note h3 { font-size: 24px; margin-bottom: 10px; }
+  .lp-prod-note p { font-size: 16px; color: var(--lp-ink-70); }
+  .lp-prod-note b { color: var(--lp-ink); }
+
+  /* Two stacked receipts in the money band */
+  .lp-receipts { display: flex; flex-direction: column; gap: 22px; }
+  .lp-receipts .lp-receipt { max-width: 100%; }
+  .lp-receipt .ph-note { font-family: var(--font-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stand-mustard); margin-top: 10px; text-align: center; }
+
+  @media (max-width: 900px) {
+    .lp-head-cta { display: none; }
+    .lp-hero-stage { min-height: 300px; margin-top: 20px; }
+    .lp-anchor h2 { font-size: 30px; }
+  }
+</style>
