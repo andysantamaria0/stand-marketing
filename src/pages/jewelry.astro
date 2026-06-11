@@ -6,9 +6,10 @@ import "@/styles/lp.css";
 // JEWELRY — highest gift-intent vertical. Parent-facing landing page.
 // Twin of stickers.astro: same structure, classes, and voice with jewelry content.
 // Numbers verified against docs/vertical-marketing-feature-blocks.md §4 + the
-// PFL/PFY unit-economics sheet: pendant $30 default, production $9.89, ship $4.99,
-// card 2.9%+30c, Stand 5% -> keeps ~$12.45 (42%). Bracelet $25, production $9.00
-// is a PLACEHOLDER pending a real Printify quote -> keeps ~$9.23 (37%).
+// Receipts captured live from the app's Money Math lesson (2026-06-11):
+// pendant $30 default, production $9.89, ship $4.99, card $1.17 -> keeps $13.95 (46%).
+// Bracelet $36 default, production $12.89 (real Printify rate, app #707), ship $4.99,
+// card $1.34 -> keeps $16.78 (47%). No Stand fee — removed app-wide in STA-774.
 // Jewelry app screenshots in /public/app-screens captured from the live workshop.
 const APP = "https://app.standkids.com";
 
@@ -28,7 +29,7 @@ const journey = [
   { step: "04 — Price it", tool: "money", name: "money",
     do: "Set a price and watch the real margin update live.",
     learn: "Margin, costs, and fees — and that a price has to clear cost.",
-    proof: "Subtracts the real Stripe 2.9% + 30¢ and Stand's 5% fee. Underprice, and the screen shows a loss." },
+    proof: "Subtracts real production, shipping, and the real card fee — Stand takes no cut. Underprice, and the screen shows a loss." },
   { step: "05 — Promote it", tool: "marketing", name: "marketing",
     do: "Write a tagline, pick who to tell, and make a clear ask.",
     learn: "A product needs an audience — and a message that sounds like them.",
@@ -141,16 +142,16 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         </div>
         <div class="lp-grid-3">
           <div>
-            <div class="lp-shot"><img src="/app-screens/jewelry-pendant.png" alt="Stand's business chooser — Jewelry &amp; Accessories is a real option kids can pick" loading="lazy" /></div>
-            <p class="lp-shot-cap">Pick your business — Jewelry &amp; Accessories</p>
+            <div class="lp-shot"><img src="/app-screens/pendant-lab.png" alt="Stand's Pendant Design Lab — a kid's text and icon design on the real one-inch silver oval" loading="lazy" /></div>
+            <p class="lp-shot-cap">The Pendant Design Lab — what they design is what prints</p>
           </div>
           <div>
-            <div class="lp-shot"><img src="/app-screens/sticker-money.png" alt="Stand's Money Math module — costs, price, and profit" loading="lazy" /></div>
+            <div class="lp-shot"><img src="/app-screens/bracelet-lab.png" alt="Stand's Bracelet Design Lab — real stone-pair choices and a name engraved on the metal bar" loading="lazy" /></div>
+            <p class="lp-shot-cap">Real stones, a real engraved name</p>
+          </div>
+          <div>
+            <div class="lp-shot"><img src="/app-screens/pendant-receipt.png" alt="Stand's Money Math lesson — the live pendant receipt: price, cost, shipping, card fee, and what the kid keeps" loading="lazy" /></div>
             <p class="lp-shot-cap">Real money math, built in</p>
-          </div>
-          <div>
-            <div class="lp-shot"><img src="/app-screens/sticker-workshop.png" alt="Stand's Product Lab — design it, price it, make it" loading="lazy" /></div>
-            <p class="lp-shot-cap">A real product lab, guided by AI</p>
           </div>
         </div>
       </div>
@@ -243,7 +244,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         <div>
           <p class="lp-eyebrow">Money — the lesson parents love</p>
           <h2 style="font-size:40px;margin-top:14px;">Real numbers. A real lesson. No pretend profit.</h2>
-          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs, the real card-processing fee, our small platform fee. If they price too low, the screen shows a loss — and they learn why.</p>
+          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs and the real card-processing fee. Stand takes no cut of your kid's sales. If they price too low, the screen shows a loss — and they learn why.</p>
           <p class="lp-lesson">It teaches money. It never promises money. The lesson ends the way real money decisions do: reinvest, save, spend, or donate.</p>
         </div>
         <div class="lp-receipts">
@@ -253,20 +254,17 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
             <div class="row"><span>Making the real thing</span><span>&minus;$9.89</span></div>
             <div class="row"><span>Shipping</span><span>&minus;$4.99</span></div>
             <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.17</span></div>
-            <div class="row"><span>Stand fee (5%)</span><span>&minus;$1.50</span></div>
-            <div class="row total"><span>Your kid keeps</span><span>&asymp; $12.45</span></div>
-            <p class="note">Real numbers — the app's default price and true costs (42% margin).</p>
+            <div class="row total"><span>Your kid keeps</span><span>$13.95</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (46% margin). Stand takes no cut.</p>
           </div>
           <div class="lp-receipt" aria-label="Example bracelet margin receipt">
             <div class="r-title">One bracelet, sold — the live math</div>
-            <div class="row"><span>Bracelet</span><span>$25.00</span></div>
-            <div class="row"><span>Making the real thing</span><span>&minus;$9.00</span></div>
-            <div class="row"><span>Shipping</span><span>&minus;$4.49</span></div>
-            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.03</span></div>
-            <div class="row"><span>Stand fee (5%)</span><span>&minus;$1.25</span></div>
-            <div class="row total"><span>Your kid keeps</span><span>&asymp; $9.23</span></div>
-            <p class="note">37% margin — the app's default price and live fee math.</p>
-            <p class="ph-note">Bracelet production cost is a placeholder pending a real Printify quote (PRD &sect;10)</p>
+            <div class="row"><span>Bracelet</span><span>$36.00</span></div>
+            <div class="row"><span>Making the real thing</span><span>&minus;$12.89</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$4.99</span></div>
+            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.34</span></div>
+            <div class="row total"><span>Your kid keeps</span><span>$16.78</span></div>
+            <p class="note">47% margin — the app's default price and live fee math. Stand takes no cut.</p>
           </div>
         </div>
       </div>

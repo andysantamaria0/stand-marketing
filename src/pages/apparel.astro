@@ -7,7 +7,10 @@ import "@/styles/lp.css";
 // The apparel twin of stickers.astro: same structure, classes, and voice.
 // Numbers verified against docs/vertical-marketing-feature-blocks.md §6 + the
 // PFL/PFY unit-economics sheet. Crewneck $45 -> keeps ~$22.58 (50% margin);
-// hoodie $49 -> keeps ~$20.28 (41% margin). Fee stack: Stripe 2.9%+30c, Stand 5%.
+// Receipts captured live from the app's Money Math lesson (2026-06-11):
+// sweatshirt $45 -> keeps $23.33 (52%); hoodie $49 -> keeps $24.73 (50%). The app
+// teaches a flat $5.99 shipping estimate for apparel. Fee stack: card 2.9%+30c
+// only — no Stand fee (removed app-wide in STA-774).
 // App screenshots in /public/app-screens captured from the live workshop.
 // Parent model: a parental CONSENT gate (ParentGate) before the store publishes.
 // There is NO per-sale/per-transaction approval in the app — copy reflects that.
@@ -29,7 +32,7 @@ const journey = [
   { step: "04 — Price it", tool: "money", name: "money",
     do: "Set a price and watch the real margin update live.",
     learn: "Margin, costs, and fees — and that a price has to clear cost.",
-    proof: "Subtracts the real Stripe 2.9% + 30¢ and Stand's 5% fee. Underprice, and the screen shows a loss." },
+    proof: "Subtracts real production, shipping, and the real card fee — Stand takes no cut. Underprice, and the screen shows a loss." },
   { step: "05 — Promote it", tool: "marketing", name: "marketing",
     do: "Write a tagline, pick who to tell, and make a clear ask.",
     learn: "A product needs an audience — and a message that sounds like them.",
@@ -152,7 +155,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
             <p class="lp-shot-cap">A real product lab, guided by AI</p>
           </div>
           <div>
-            <div class="lp-shot"><img src="/app-screens/hat-money.png" alt="Stand's Money Math module — costs, price, and profit" loading="lazy" /></div>
+            <div class="lp-shot"><img src="/app-screens/hoodie-receipt.png" alt="Stand's Money Math lesson — the live hoodie receipt: price, cost, shipping, card fee, and what the kid keeps" loading="lazy" /></div>
             <p class="lp-shot-cap">Real money math, built in</p>
           </div>
           <div>
@@ -246,7 +249,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         <div>
           <p class="lp-eyebrow">Money — the lesson parents love</p>
           <h2 style="font-size:40px;margin-top:14px;">Real numbers. A real lesson. No pretend profit.</h2>
-          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs, the real card-processing fee, our small platform fee. If they price too low, the screen shows a loss — and they learn why.</p>
+          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs and the real card-processing fee. Stand takes no cut of your kid's sales. If they price too low, the screen shows a loss — and they learn why.</p>
           <p class="lp-lesson">It teaches money. It never promises money. The lesson ends the way real money decisions do: reinvest, save, spend, or donate.</p>
         </div>
         <div class="lp-receipts">
@@ -254,21 +257,19 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
             <div class="r-title">One crewneck, sold — the live math</div>
             <div class="row"><span>Sweatshirt</span><span>$45.00</span></div>
             <div class="row"><span>Making the real thing</span><span>&minus;$14.07</span></div>
-            <div class="row"><span>Shipping</span><span>&minus;$4.49</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$5.99</span></div>
             <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.61</span></div>
-            <div class="row"><span>Stand fee (5%)</span><span>&minus;$2.25</span></div>
-            <div class="row total"><span>Your kid keeps</span><span>&asymp; $22.58</span></div>
-            <p class="note">Real numbers — the app's default price and true costs (50% margin).</p>
+            <div class="row total"><span>Your kid keeps</span><span>$23.33</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (52% margin). Stand takes no cut.</p>
           </div>
           <div class="lp-receipt" aria-label="Example margin receipt — youth hoodie">
             <div class="r-title">One hoodie, sold — the live math</div>
             <div class="row"><span>Hoodie</span><span>$49.00</span></div>
             <div class="row"><span>Making the real thing</span><span>&minus;$16.56</span></div>
-            <div class="row"><span>Shipping</span><span>&minus;$7.99</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$5.99</span></div>
             <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.72</span></div>
-            <div class="row"><span>Stand fee (5%)</span><span>&minus;$2.45</span></div>
-            <div class="row total"><span>Your kid keeps</span><span>&asymp; $20.28</span></div>
-            <p class="note">Real numbers — the app's default price and true costs (41% margin).</p>
+            <div class="row total"><span>Your kid keeps</span><span>$24.73</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (50% margin). Stand takes no cut.</p>
           </div>
         </div>
       </div>
