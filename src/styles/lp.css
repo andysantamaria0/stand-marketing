@@ -133,6 +133,7 @@
 .lp-jcard .step { font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--stand-green); }
 .lp-jcard h3 { font-size: 23px; text-transform: lowercase; }
 .lp-jcard .row b { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--lp-ink-55); margin-bottom: 2px; font-family: var(--font-sans); }
+.lp-jcard .skill { align-self: flex-start; background: var(--stand-postit); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-pill); padding: 4px 13px; font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
 .lp-jcard .row { font-size: 15px; color: var(--lp-ink); }
 .lp-jcard .proof { margin-top: auto; background: var(--stand-cream); border: 1px solid rgba(35,33,32,0.18); border-radius: 12px; padding: 12px 15px; font-size: 13px; font-style: italic; color: var(--lp-ink-70); }
 .lp-journey-close { text-align: center; margin-top: 46px; font-family: var(--font-serif); font-weight: 300; font-size: 30px; }
@@ -156,6 +157,7 @@
 .lp-prod ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
 .lp-prod li { font-size: 15px; display: flex; gap: 10px; }
 .lp-prod li::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--stand-green); margin-top: 8px; }
+.lp-prod-line { font-size: 15px; color: var(--lp-ink-70); margin: 0; }
 .lp-ships { font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--stand-green); }
 
 /* App-screenshot frame — a bordered "real software" device-ish card */

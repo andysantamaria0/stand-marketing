@@ -5,6 +5,14 @@ import "@/styles/lp.css";
 
 // APPAREL — the group / roster wedge. Parent-facing landing page.
 // The apparel twin of stickers.astro: same structure, classes, and voice.
+// 2026-06-11 consult (Andy + designer): convert-first restructure. Cut FAQ
+// (link to /faq instead), cut the trust section (one line folded into
+// how-it-works step 2), cut sample testimonials (real quotes may return with
+// photo-shoot content), condensed "what they make". Kept + emphasized: app
+// screenshots, learning journey (skill pills — "they level up"), use cases,
+// money math, STANDSUMMER close. Ages are 8-16 in marketing copy, not 6-16.
+// The order-a-sample beat is real: STA-809 CEO-Desk publish checklist with an
+// optional sample -> parent request (app PRs #771/#773/#774/#787).
 // Numbers verified against docs/vertical-marketing-feature-blocks.md §6 + the
 // PFL/PFY unit-economics sheet. Crewneck $45 -> keeps ~$22.58 (50% margin);
 // Receipts captured live from the app's Money Math lesson (2026-06-11):
@@ -17,27 +25,27 @@ import "@/styles/lp.css";
 const APP = "https://app.standkids.com";
 
 const journey = [
-  { step: "01 — Name it", tool: "ideas-tent", name: "ideas tent",
+  { step: "01 — Name it", tool: "ideas-tent", name: "ideas tent", skill: "Brand naming",
     do: "Brainstorm and pick their apparel brand's name with the coach.",
     learn: "What makes a name memorable — and how real brands choose theirs.",
     proof: "“Nike is the goddess of victory. Apple is simple and friendly. What feeling should your name give?”" },
-  { step: "02 — Brand it", tool: "brand-studio", name: "brand studio",
+  { step: "02 — Brand it", tool: "brand-studio", name: "brand studio", skill: "Design judgment",
     do: "Pick a vibe, a color story, and refine a logo until it's theirs.",
     learn: "A brand is a deliberate system — and good designers ask for changes.",
     proof: "“Want changes? Tell us what to tweak.”" },
-  { step: "03 — Design it", tool: "product-lab", name: "product lab",
+  { step: "03 — Design it", tool: "product-lab", name: "product lab", skill: "Production literacy",
     do: "Design the actual hoodie or cap — colors, art, and placement.",
     learn: "A real production constraint: embroidery isn't a print.",
     proof: "“Embroidery is different from a regular print. Bold shapes and fewer colors look the best. Tiny details can get lost in the stitching.”" },
-  { step: "04 — Price it", tool: "money", name: "money",
+  { step: "04 — Price it", tool: "money", name: "money", skill: "Unit economics",
     do: "Set a price and watch the real margin update live.",
     learn: "Margin, costs, and fees — and that a price has to clear cost.",
     proof: "Subtracts real production, shipping, and the real card fee — Stand takes no cut. Underprice, and the screen shows a loss." },
-  { step: "05 — Promote it", tool: "marketing", name: "marketing",
+  { step: "05 — Promote it", tool: "marketing", name: "marketing", skill: "Positioning & pitch",
     do: "Write a tagline, pick who to tell, and make a clear ask.",
     learn: "A product needs an audience — and a message that sounds like them.",
     proof: "Taught with the greats: “Just Do It.” “Think Different.”" },
-  { step: "06 — Sell it", tool: "storefront", name: "storefront",
+  { step: "06 — Sell it", tool: "storefront", name: "storefront", skill: "Follow-through",
     do: "Open a real shop, share the link, and ship a real order.",
     learn: "The loop closes: their hoodie is on a teammate's back.",
     proof: "A parent gives consent before the shop can go live." },
@@ -50,16 +58,6 @@ const useCases = [
   { h: "The family reunion", p: "A matching family-name crewneck, ordered by aunts and cousins across the country and shipped to each household. No suitcase of shirts.", who: "Who buys: the whole extended family" },
   { h: "The neighborhood crew", p: "A block-party or backyard-club hoodie for the kids who are always together. One design, every household orders its own.", who: "Who buys: neighbor families" },
   { h: "The birthday-party squad", p: "The birthday kid designs a matching cap for the friend group as the party uniform and favor. Guests' parents order ahead from the link.", who: "Who buys: invited guests' parents" },
-];
-
-const faqs = [
-  { q: "Is this real money, or play money?", a: "It's real. Your kid's store takes real Stripe payments and the apparel really prints, embroiders, and ships to the buyer. And nothing goes live until a parent gives consent — a built-in gate before the store opens. The Money step also teaches honest math: it subtracts real costs and fees and will even show a loss if the price is too low." },
-  { q: "Is it safe for my kid?", a: "Stand is built for ages 6 to 16 and is COPPA-compliant by design. The AI coach is disclosed as an AI, all generated art is filtered for age-appropriate content and moderated, no personal data is shared or sold, and there are no ads. A parent consents before the store goes live, and there's a full parent dashboard for oversight." },
-  { q: "Will I end up financing inventory?", a: "No. It's print-on-demand — a hoodie or cap is made only when someone buys it. No upfront product cost, no garage full of unsold gear, no leftover boxes. You're not financing a business; you're backing a kid." },
-  { q: "What does the STANDSUMMER code actually get me?", a: "Full access to Stand, free, for the whole summer — through September 1. Perfect timing for the rec-league season, camp, or the reunion: your kid can design the gear, open the store, and outfit the whole group. You pay nothing unless you choose to continue after September 1." },
-  { q: "How much of my time does this take?", a: "Not much. The coach narrates every step and answers your kid's questions, so they can largely self-drive. You step in at the moment that matters — giving consent at the gate before the store goes live — and watch progress from the parent dashboard." },
-  { q: "Couldn't I just order team shirts myself?", a: "You could — and you'd be collecting sizes, fronting the bulk order, and chasing families for cash. Stand hands that whole project to your kid: they design it, everyone orders their own size from one link, and each piece is made per order. You just give consent at the gate before the store goes live." },
-  { q: "Why apparel for a first business?", a: "Because every team, club, camp, and crew is a built-in customer list of families who all want the same thing — and apparel is the biggest billboard you can wear. Your kid becomes the group's merch person, learns the full build, and the audience is already there. We never promise sales — we give them a real, shareable store and a real reason for people to say yes." },
 ];
 
 const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#00623b"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#faf3d6" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
@@ -85,14 +83,14 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
     <section class="lp-hero">
       <div class="lp-wrap">
         <div>
-          <p class="lp-eyebrow">A real apparel business — ages 6 to 16</p>
+          <p class="lp-eyebrow">A real apparel business — ages 8 to 16</p>
           <h1>Your kid designs the hoodie. We ship the real thing. <img class="lp-forreal-img" src="/brand/STAND_ForReal.svg" alt="For Real." /></h1>
           <p class="sub">From a blank hoodie to a real online store the whole team can order from — Stand walks your kid through designing real apparel, branding it, pricing it, and opening a real, shareable store. The garments ship printed and embroidered, and nothing goes live until a parent says yes.</p>
           <div class="cta-row">
             <a href={APP} class="lp-btn">Start your kid's apparel business <span aria-hidden="true">&rarr;</span></a>
             <a href="#journey" class="lp-btn lp-btn--ghost">See how it works</a>
           </div>
-          <p class="lp-cta-note">Free all summer with code STANDSUMMER — pay nothing until September 1.</p>
+          <p class="lp-cta-note">Free all summer with code STANDSUMMER, then $99/yr — less than $2 a week.</p>
         </div>
         <div class="lp-hero-stage" aria-hidden="true">
           <div class="hero-blob"></div>
@@ -119,8 +117,8 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         </div>
         <div class="lp-grid-3">
           <div class="lp-how-card"><div class="lp-how-num">1</div><h3>Your kid builds</h3><p>They name the brand, design the logo, create the hoodie or cap, set the price, and write the pitch — guided step by step by a patient AI coach.</p></div>
-          <div class="lp-how-card is-approve"><div class="lp-how-num">2</div><h3>A parent says yes</h3><p>Before the shop can go live, a parent has to give consent — a built-in gate. No ads, no data selling, and the AI coach is always disclosed as an AI.</p></div>
-          <div class="lp-how-card"><div class="lp-how-num">3</div><h3>The real thing ships</h3><p>When a teammate's family orders, the garment is actually printed or embroidered and mailed to their door — one order at a time, made to size.</p></div>
+          <div class="lp-how-card is-approve"><div class="lp-how-num">2</div><h3>A parent says yes</h3><p>Before the shop can go live, a parent has to give consent — a built-in gate. COPPA-compliant: no ads, no data selling, every image moderated, and the AI coach is always disclosed as an AI.</p></div>
+          <div class="lp-how-card"><div class="lp-how-num">3</div><h3>The real thing ships</h3><p>When a teammate's family orders, the garment is actually printed or embroidered and mailed to their door — one order at a time, made to size. The app even nudges them to order a sample first, so you inspect the real thing together.</p></div>
         </div>
       </div>
     </section>
@@ -172,7 +170,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         <div class="lp-sec-head">
           <p class="lp-eyebrow">The Stand Toolbox</p>
           <h2>Six real skills, learned by doing each one.</h2>
-          <p>Every tool in Stand teaches a skill by making your kid actually use it. No worksheets. No lectures. Just doing.</p>
+          <p>Every tool in Stand levels up a real skill by making your kid actually use it. No worksheets. No lectures. Just doing.</p>
         </div>
         <div class="lp-carousel" data-lp-carousel>
           <button class="lp-carousel-nav prev" type="button" aria-label="Previous tool">&#8249;</button>
@@ -183,6 +181,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
                 <img class="tool" src={`/brand/icon-${j.tool}.png`} alt="" loading="lazy" />
                 <div class="step">{j.step}</div>
                 <h3>{j.name}</h3>
+                <div class="skill">{j.skill}</div>
                 <p class="row"><b>They do</b>{j.do}</p>
                 <p class="row"><b>They learn</b>{j.learn}</p>
                 <div class="proof">{j.proof}</div>
@@ -198,7 +197,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
     <section class="lp-products lp-section">
       <div class="lp-wrap">
         <div class="lp-sec-head">
-          <p class="lp-eyebrow">Find your business — clothes &amp; apparel</p>
+          <p class="lp-eyebrow">What they make</p>
           <h2>Real gear. What they design is what ships.</h2>
           <p>No pretend previews. The design your kid finishes in the Product Lab is the file a real fulfillment partner runs when someone orders — printed or stitched, one order at a time.</p>
         </div>
@@ -206,21 +205,13 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
           <div class="lp-prod">
             <div class="lp-prod-visual contain" style="background:var(--stand-pink);"><img src="/brand/STAND_PNG_PinkHoodie.webp" alt="A Stand youth hoodie" /></div>
             <h3>Youth Hoodie</h3>
-            <ul>
-              <li>Their own design, printed direct-to-garment or embroidered</li>
-              <li>Real apparel kids wear to school and on weekends</li>
-              <li>Print-on-demand — made only when a teammate or cousin orders</li>
-            </ul>
+            <p class="lp-prod-line">Their design, printed direct-to-garment or embroidered — made only when a teammate or cousin orders.</p>
             <div class="lp-ships">Printed per order &middot; Really ships</div>
           </div>
           <div class="lp-prod">
             <div class="lp-photo-ph"><span>Real photo — a designed crewneck on a kid (PRD &sect;10)</span></div>
             <h3>Youth Crewneck Sweatshirt</h3>
-            <ul>
-              <li>Clean and soft — the everyday layer people actually reach for</li>
-              <li>Pick the colorway that fits the team, the club, or the crew</li>
-              <li>Drop your design on the front and that's the real sweatshirt that ships</li>
-            </ul>
+            <p class="lp-prod-line">The everyday layer — same design, ordered to size by every family on the roster.</p>
             <div class="lp-ships">Printed per order &middot; Really ships</div>
           </div>
         </div>
@@ -293,53 +284,6 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
       </div>
     </section>
 
-    <!-- SOCIAL PROOF -->
-    <section class="lp-proof lp-section">
-      <div class="lp-wrap">
-        <div class="lp-sec-head">
-          <p class="lp-eyebrow">Real families</p>
-          <h2>What parents say.</h2>
-        </div>
-        <div class="lp-grid-3">
-          <div class="lp-tcard pink"><p>"Watching her take orders, handle her own money, and stay proud of something she built herself. That's the stuff you can't teach in a classroom."</p><div class="name">— Parent of Lily, age 12</div></div>
-          <div class="lp-tcard mustard"><p>"I thought starting a business would be easy. Then I had to make decisions, set prices, and keep going when it got hard. STAND helped me figure it out."</p><div class="name">— Ryan, age 10</div></div>
-          <div class="lp-tcard postit"><p>"He cared about every detail — the name, the logo, the product, the packaging. STAND turned his creativity into something structured."</p><div class="name">— Parent of Leo, 13</div></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TRUST -->
-    <section class="lp-section">
-      <div class="lp-wrap">
-        <div class="lp-sec-head">
-          <p class="lp-eyebrow">Safety &amp; trust</p>
-          <h2>You don't have to be an entrepreneur to raise one.</h2>
-          <p>Kids lead. You stay in control of what matters — and you never have to teach a thing you don't already know.</p>
-        </div>
-        <div class="lp-trust-grid is-single">
-          <div>
-            <div class="lp-check" set:html={Check + "<span>Nothing goes live until a parent gives consent — a built-in gate before the shop opens.</span>"}></div>
-            <div class="lp-check" set:html={Check + "<span>COPPA compliant — no personal data shared or sold, and no ads, ever.</span>"}></div>
-            <div class="lp-check" set:html={Check + "<span>Every image — generated or uploaded — is AI-moderated before it's used. If the check can't run, it's blocked.</span>"}></div>
-            <div class="lp-check" set:html={Check + "<span>The AI coach is always disclosed as an AI — age-appropriate and moderated.</span>"}></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="lp-faq lp-section">
-      <div class="lp-wrap">
-        <div class="lp-sec-head">
-          <p class="lp-eyebrow">Questions parents actually ask</p>
-          <h2>The honest answers.</h2>
-        </div>
-        {faqs.map((f) => (
-          <details><summary>{f.q}</summary><p>{f.a}</p></details>
-        ))}
-      </div>
-    </section>
-
     <!-- BECOMING A BUILDER -->
     <section class="lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);">
       <div class="lp-wrap">
@@ -355,7 +299,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
     <section class="lp-close lp-section" id="pricing">
       <div class="lp-wrap">
         <div class="lp-price">
-          <div class="flag">Summer on us — code STANDSUMMER</div>
+          <div class="flag">Limited time — summer on us with code STANDSUMMER</div>
           <p class="lp-eyebrow" style="color:var(--lp-ink-55);">This summer, the whole thing is free</p>
           <div class="amount"><span class="strike">$99/yr</span>$0<small> until Sept 1</small></div>
           <p class="reframe">$99/yr after the summer — less than $2 a week.</p>
@@ -371,7 +315,7 @@ const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true
         <h2>Stand by your kid — and turn their team's idea into something <span class="lp-forreal">real.</span></h2>
         <p class="sub">This summer, trying it costs nothing. After September 1, it's $99/yr — less than $2 a week.</p>
         <a href={APP} class="lp-btn">Start your kid's apparel business <span aria-hidden="true">&rarr;</span></a>
-        <p class="lp-cta-note">Free all summer with code STANDSUMMER. A parent consents before anything goes live.</p>
+        <p class="lp-cta-note">Free all summer with code STANDSUMMER. A parent consents before anything goes live. Questions? <a href="/faq">Read the FAQ</a>.</p>
       </div>
     </section>
 
