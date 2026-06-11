@@ -268,18 +268,21 @@ const items: WhyItem[] = [
 
     .content {
       grid-template-columns: 1fr;
-      gap: 28px;
-      padding: 28px 20px 48px;
+      gap: 0;
+      padding: 24px 20px 0;
       max-width: none;
     }
 
-    .items { gap: 20px; }
+    .items {
+      gap: 20px;
+      padding: 0 0 28px;
+    }
 
     .photo-card {
       position: static;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      order: -1;
+      width: calc(100% + 40px);
+      margin-inline: -20px;
+      aspect-ratio: 375 / 309;
     }
 
     .badge-wrap {

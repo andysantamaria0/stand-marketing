@@ -1,0 +1,372 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+import "@/styles/lp.css";
+
+// APPAREL — the group / roster wedge. Parent-facing landing page.
+// The apparel twin of stickers.astro: same structure, classes, and voice.
+// 2026-06-11 consult (Andy + designer): convert-first restructure. Cut FAQ
+// (link to /faq instead), cut the trust section (one line folded into
+// how-it-works step 2), cut sample testimonials (real quotes may return with
+// photo-shoot content), condensed "what they make". Kept + emphasized: app
+// screenshots, learning journey (skill pills — "they level up"), use cases,
+// money math, STANDSUMMER close. Ages are 8-16 in marketing copy, not 6-16.
+// The order-a-sample beat is real: STA-809 CEO-Desk publish checklist with an
+// optional sample -> parent request (app PRs #771/#773/#774/#787).
+// Numbers verified against docs/vertical-marketing-feature-blocks.md §6 + the
+// PFL/PFY unit-economics sheet. Crewneck $45 -> keeps ~$22.58 (50% margin);
+// Receipts captured live from the app's Money Math lesson (2026-06-11):
+// sweatshirt $45 -> keeps $23.33 (52%); hoodie $49 -> keeps $24.73 (50%). The app
+// teaches a flat $5.99 shipping estimate for apparel. Fee stack: card 2.9%+30c
+// only — no Stand fee (removed app-wide in STA-774).
+// App screenshots in /public/app-screens captured from the live workshop.
+// Parent model: a parental CONSENT gate (ParentGate) before the store publishes.
+// There is NO per-sale/per-transaction approval in the app — copy reflects that.
+const APP = "https://app.standkids.com";
+
+const journey = [
+  { step: "01 — Name it", tool: "ideas-tent", name: "ideas tent", skill: "Brand naming",
+    do: "Brainstorm and pick their apparel brand's name with the coach.",
+    learn: "What makes a name memorable — and how real brands choose theirs.",
+    proof: "“Nike is the goddess of victory. Apple is simple and friendly. What feeling should your name give?”" },
+  { step: "02 — Brand it", tool: "brand-studio", name: "brand studio", skill: "Design judgment",
+    do: "Pick a vibe, a color story, and refine a logo until it's theirs.",
+    learn: "A brand is a deliberate system — and good designers ask for changes.",
+    proof: "“Want changes? Tell us what to tweak.”" },
+  { step: "03 — Design it", tool: "product-lab", name: "product lab", skill: "Production literacy",
+    do: "Design the actual hoodie or cap — colors, art, and placement.",
+    learn: "A real production constraint: embroidery isn't a print.",
+    proof: "“Embroidery is different from a regular print. Bold shapes and fewer colors look the best. Tiny details can get lost in the stitching.”" },
+  { step: "04 — Price it", tool: "money", name: "money", skill: "Unit economics",
+    do: "Set a price and watch the real margin update live.",
+    learn: "Margin, costs, and fees — and that a price has to clear cost.",
+    proof: "Subtracts real production, shipping, and the real card fee — Stand takes no cut. Underprice, and the screen shows a loss." },
+  { step: "05 — Promote it", tool: "marketing", name: "marketing", skill: "Positioning & pitch",
+    do: "Write a tagline, pick who to tell, and make a clear ask.",
+    learn: "A product needs an audience — and a message that sounds like them.",
+    proof: "Taught with the greats: “Just Do It.” “Think Different.”" },
+  { step: "06 — Sell it", tool: "storefront", name: "storefront", skill: "Follow-through",
+    do: "Open a real shop, share the link, and ship a real order.",
+    learn: "The loop closes: their hoodie is on a teammate's back.",
+    proof: "A parent gives consent before the shop can go live." },
+];
+
+const useCases = [
+  { wide: true, h: "The summer rec-league team", p: "A 10-year-old on the roster designs the cap and hoodie in team colors, opens the store, and the link goes in the group chat. Twelve families order their own sizes — nobody collects cash, nobody fronts a bulk order.", who: "Who buys: teammates' parents, grandparents, the coach" },
+  { h: "The summer camp crew", p: "A “Camp 2026” crewneck and cap as the unofficial group merch. Bunkmates order keepsakes they'll actually wear home.", who: "Who buys: camp families wanting a memento" },
+  { h: "The school club or spirit squad", p: "Robotics club, drama crew, student section — spirit hoodies designed by the kid who becomes the group's de facto merch person.", who: "Who buys: club members & their families" },
+  { h: "The family reunion", p: "A matching family-name crewneck, ordered by aunts and cousins across the country and shipped to each household. No suitcase of shirts.", who: "Who buys: the whole extended family" },
+  { h: "The neighborhood crew", p: "A block-party or backyard-club hoodie for the kids who are always together. One design, every household orders its own.", who: "Who buys: neighbor families" },
+  { h: "The birthday-party squad", p: "The birthday kid designs a matching cap for the friend group as the party uniform and favor. Guests' parents order ahead from the link.", who: "Who buys: invited guests' parents" },
+];
+
+const Check = `<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#00623b"/><path d="M6 10.5l2.5 2.5L14 7.5" stroke="#faf3d6" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+---
+
+<Layout
+  title="Stand — Start a real apparel business. For Real."
+  description="Your kid designs a real hoodie or crewneck, opens a real online store the whole team can order from, and we print and ship every order. Real. Supervised. And theirs. Guided by an AI coach, with a parent consent gate before it goes live."
+>
+  <div class="lp">
+    <div class="lp-promo">Summer on us — code <span class="code">STANDSUMMER</span> gets free access through September 1</div>
+
+    <!-- HEADER -->
+    <header class="lp-head">
+      <a href="https://standkids.com" aria-label="Stand"><img src="/brand/logo.svg" alt="Stand" height="30" /></a>
+      <div class="lp-head-right">
+        <a href={APP} class="lp-login">Already have an account? <strong>LOG IN</strong></a>
+        <a href={APP} class="lp-btn lp-head-cta">Start Building <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="lp-hero">
+      <div class="lp-wrap">
+        <div>
+          <p class="lp-eyebrow">A real apparel business — ages 8 to 16</p>
+          <h1>Your kid designs the hoodie. We ship the real thing. <img class="lp-forreal-img" src="/brand/STAND_ForReal.svg" alt="For Real." /></h1>
+          <p class="sub">From a blank hoodie to a real online store the whole team can order from — Stand walks your kid through designing real apparel, branding it, pricing it, and opening a real, shareable store. The garments ship printed and embroidered, and nothing goes live until a parent says yes.</p>
+          <div class="cta-row">
+            <a href={APP} class="lp-btn">Start your kid's apparel business <span aria-hidden="true">&rarr;</span></a>
+            <a href="#journey" class="lp-btn lp-btn--ghost">See how it works</a>
+          </div>
+          <p class="lp-cta-note">Free all summer with code STANDSUMMER, then $99/yr — less than $2 a week.</p>
+        </div>
+        <div class="lp-hero-stage" aria-hidden="true">
+          <div class="hero-blob"></div>
+          <img class="hero-hoodie" src="/brand/STAND_PNG_PinkHoodie.webp" alt="" />
+          <div class="hero-kicker">Designed entirely by a kid. Really.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="lp-marquee" aria-hidden="true">
+      <div class="lp-marquee-inner">
+        <span>Dream. Build. Grow. <em>&rarr;</em> Create your brand. <em>&rarr;</em> Design the hoodie. <em>&rarr;</em> Set an honest price. <em>&rarr;</em> Open a real store. <em>&rarr;</em> Outfit the whole team. <em>&rarr;</em></span>
+        <span>Dream. Build. Grow. <em>&rarr;</em> Create your brand. <em>&rarr;</em> Design the hoodie. <em>&rarr;</em> Set an honest price. <em>&rarr;</em> Open a real store. <em>&rarr;</em> Outfit the whole team. <em>&rarr;</em></span>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <section class="lp-how lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Kid-built, parent-cleared</p>
+          <h2>They build it. You say yes. It ships.</h2>
+        </div>
+        <div class="lp-grid-3">
+          <div class="lp-how-card"><div class="lp-how-num">1</div><h3>Your kid builds</h3><p>They name the brand, design the logo, create the hoodie or cap, set the price, and write the pitch — guided step by step by a patient AI coach.</p></div>
+          <div class="lp-how-card is-approve"><div class="lp-how-num">2</div><h3>A parent says yes</h3><p>Before the shop can go live, a parent has to give consent — a built-in gate. COPPA-compliant: no ads, no data selling, every image moderated, and the AI coach is always disclosed as an AI.</p></div>
+          <div class="lp-how-card"><div class="lp-how-num">3</div><h3>The real thing ships</h3><p>When a teammate's family orders, the garment is actually printed or embroidered and mailed to their door — one order at a time, made to size. The app even nudges them to order a sample first, so you inspect the real thing together.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM / ROSTER WEDGE -->
+    <section class="lp-section lp-team">
+      <div class="lp-wrap">
+        <div class="lp-team-panel">
+          <p class="lp-eyebrow">The apparel wedge</p>
+          <h2>One kid outfits the whole team — zero inventory risk to any family.</h2>
+          <p class="lp-team-lead">A kid on the roster designs the team cap and hoodie, the store link goes in the group chat, and every family orders their own size. Because it's print-on-demand, each garment is made only when it's ordered — so nobody fronts a bulk order and nobody's garage fills with leftovers.</p>
+          <div class="lp-team-proofs">
+            <span>No size spreadsheet.</span>
+            <span>No bulk order to front.</span>
+            <span>No leftover boxes.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIDE STAND — real app screenshots -->
+    <section class="lp-section lp-inside">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Inside Stand</p>
+          <h2>This is the actual software your kid uses.</h2>
+          <p>Not a slideshow. A real, guided workspace — with an AI coach narrating every step, the whole business on one screen, and honest money math built in.</p>
+        </div>
+        <div class="lp-grid-3">
+          <div>
+            <div class="lp-shot"><img src="/app-screens/hat-workshop.png" alt="Stand's Product Lab — designing a real garment with the AI coach" loading="lazy" /></div>
+            <p class="lp-shot-cap">A real product lab, guided by AI</p>
+          </div>
+          <div>
+            <div class="lp-shot"><img src="/app-screens/hoodie-receipt.png" alt="Stand's Money Math lesson — the live hoodie receipt: price, cost, shipping, card fee, and what the kid keeps" loading="lazy" /></div>
+            <p class="lp-shot-cap">Real money math, built in</p>
+          </div>
+          <div>
+            <div class="lp-shot"><img src="/app-screens/hat-storefront.png" alt="The Stand storefront — a kid's apparel business on one screen" loading="lazy" /></div>
+            <p class="lp-shot-cap">The whole business on one screen</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEARNING JOURNEY -->
+    <section id="journey" class="lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);border-bottom:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">The Stand Toolbox</p>
+          <h2>Six real skills, learned by doing each one.</h2>
+          <p>Every tool in Stand levels up a real skill by making your kid actually use it. No worksheets. No lectures. Just doing.</p>
+        </div>
+        <div class="lp-carousel" data-lp-carousel>
+          <button class="lp-carousel-nav prev" type="button" aria-label="Previous tool">&#8249;</button>
+          <button class="lp-carousel-nav next" type="button" aria-label="Next tool">&#8250;</button>
+          <div class="lp-carousel-track">
+            {journey.map((j) => (
+              <article class="lp-jcard">
+                <img class="tool" src={`/brand/icon-${j.tool}.png`} alt="" loading="lazy" />
+                <div class="step">{j.step}</div>
+                <h3>{j.name}</h3>
+                <div class="skill">{j.skill}</div>
+                <p class="row"><b>They do</b>{j.do}</p>
+                <p class="row"><b>They learn</b>{j.learn}</p>
+                <div class="proof">{j.proof}</div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p class="lp-journey-close">From sketch to <span class="lp-forreal">sold.</span></p>
+      </div>
+    </section>
+
+    <!-- WHAT THEY MAKE -->
+    <section class="lp-products lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">What they make</p>
+          <h2>Real gear. What they design is what ships.</h2>
+          <p>No pretend previews. The design your kid finishes in the Product Lab is the file a real fulfillment partner runs when someone orders — printed or stitched, one order at a time.</p>
+        </div>
+        <div class="lp-grid-2">
+          <div class="lp-prod">
+            <div class="lp-prod-visual contain" style="background:var(--stand-pink);"><img src="/brand/STAND_PNG_PinkHoodie.webp" alt="A Stand youth hoodie" /></div>
+            <h3>Youth Hoodie</h3>
+            <p class="lp-prod-line">Their design, printed direct-to-garment or embroidered — made only when a teammate or cousin orders.</p>
+            <div class="lp-ships">Printed per order &middot; Really ships</div>
+          </div>
+          <div class="lp-prod">
+            <div class="lp-photo-ph"><span>Real photo — a designed crewneck on a kid (PRD &sect;10)</span></div>
+            <h3>Youth Crewneck Sweatshirt</h3>
+            <p class="lp-prod-line">The everyday layer — same design, ordered to size by every family on the roster.</p>
+            <div class="lp-ships">Printed per order &middot; Really ships</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="lp-section">
+      <div class="lp-wrap">
+        <div class="lp-sec-head">
+          <p class="lp-eyebrow">Picture your kid</p>
+          <h2>Six groups that already want matching gear.</h2>
+          <p>Apparel's superpower: every team, club, and crew is a built-in customer list of families who all want the same thing.</p>
+        </div>
+        <div class="lp-grid-3">
+          {useCases.map((u) => (
+            <div class={`lp-uc${u.wide ? " is-wide" : ""}`}><h3>{u.h}</h3><p>{u.p}</p><div class="who">{u.who}</div></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- MONEY -->
+    <section class="lp-money lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);border-bottom:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div>
+          <p class="lp-eyebrow">Money — the lesson parents love</p>
+          <h2 style="font-size:40px;margin-top:14px;">Real numbers. A real lesson. No pretend profit.</h2>
+          <p style="margin-top:16px;color:var(--lp-ink-70);font-size:18px;">When your kid sets a price, Stand shows the live math — real production and shipping costs and the real card-processing fee. Stand takes no cut of your kid's sales. If they price too low, the screen shows a loss — and they learn why.</p>
+          <p class="lp-lesson">It teaches money. It never promises money. The lesson ends the way real money decisions do: reinvest, save, spend, or donate.</p>
+        </div>
+        <div class="lp-receipts">
+          <div class="lp-receipt" aria-label="Example margin receipt — crewneck sweatshirt">
+            <div class="r-title">One crewneck, sold — the live math</div>
+            <div class="row"><span>Sweatshirt</span><span>$45.00</span></div>
+            <div class="row"><span>Making the real thing</span><span>&minus;$14.07</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$5.99</span></div>
+            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.61</span></div>
+            <div class="row total"><span>Your kid keeps</span><span>$23.33</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (52% margin). Stand takes no cut.</p>
+          </div>
+          <div class="lp-receipt" aria-label="Example margin receipt — youth hoodie">
+            <div class="r-title">One hoodie, sold — the live math</div>
+            <div class="row"><span>Hoodie</span><span>$49.00</span></div>
+            <div class="row"><span>Making the real thing</span><span>&minus;$16.56</span></div>
+            <div class="row"><span>Shipping</span><span>&minus;$5.99</span></div>
+            <div class="row"><span>Card fee (2.9% + 30¢)</span><span>&minus;$1.72</span></div>
+            <div class="row total"><span>Your kid keeps</span><span>$24.73</span></div>
+            <p class="note">Real numbers — the app's default price and true costs (50% margin). Stand takes no cut.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOUNDER LETTER -->
+    <section class="lp-section">
+      <div class="lp-wrap">
+        <div class="lp-letter-wrap lp-letter">
+          <div class="lp-letter-photo lp-photo-ph"><span>Real photo — the founder (PRD &sect;10)</span></div>
+          <div>
+            <p class="lp-eyebrow">Why we built Stand</p>
+            <h2>A real business — because pretend wasn't enough.</h2>
+            <p class="lp-sample-tag" style="margin-bottom:14px;">Placeholder — replace with a real, signed founder letter</p>
+            <p>[Founder letter — 4 to 6 sentences, first person. The origin: why a real shop that really ships beats a worksheet or an app that's secretly a game. The thing every kid should walk away with: the proof they can make a real thing and put it into the world.]</p>
+            <p>[Close on the parent: you don't have to be an entrepreneur to raise one. Stand does the heavy lifting — the tools, the coach, the printing, the shipping. You just say yes.]</p>
+            <p class="sig">— [Founder name]</p>
+            <p class="sig-name">[Title], Stand Kids Inc</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BECOMING A BUILDER -->
+    <section class="lp-section" style="background:var(--stand-white);border-top:2px solid var(--lp-ink);">
+      <div class="lp-wrap">
+        <div class="lp-manifesto">
+          <p class="lp-eyebrow">The long game</p>
+          <h2>It's not an apparel business. It's a <span class="lp-forreal">builder.</span></h2>
+          <p>The goal was never a perfect shop at age nine. It's a kid who learns, for real, that they can make something and put it into the world — and the quiet confidence to do it again. Built for them. And for you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING + CLOSE -->
+    <section class="lp-close lp-section" id="pricing">
+      <div class="lp-wrap">
+        <div class="lp-price">
+          <div class="flag">Limited time — summer on us with code STANDSUMMER</div>
+          <p class="lp-eyebrow" style="color:var(--lp-ink-55);">This summer, the whole thing is free</p>
+          <div class="amount"><span class="strike">$99/yr</span>$0<small> until Sept 1</small></div>
+          <p class="reframe">$99/yr after the summer — less than $2 a week.</p>
+          <p style="color:var(--lp-ink-70);margin-top:6px;">Use code STANDSUMMER for full access all summer — the journey, the coach, the real store, real orders. The whole season's gear, sorted. Pay only if you continue after September 1.</p>
+          <ul>
+            <li set:html={Check + "<span>The full six-step journey with the AI coach</span>"}></li>
+            <li set:html={Check + "<span>A real, shareable shop — opened only after a parent consents</span>"}></li>
+            <li set:html={Check + "<span>Printing, embroidery, and shipping, handled per order</span>"}></li>
+            <li set:html={Check + "<span>The full parent dashboard</span>"}></li>
+          </ul>
+          <a href={APP} class="lp-btn" style="width:100%;justify-content:center;">Start your kid's apparel business <span aria-hidden="true">&rarr;</span></a>
+        </div>
+        <h2>Stand by your kid — and turn their team's idea into something <span class="lp-forreal">real.</span></h2>
+        <p class="sub">This summer, trying it costs nothing. After September 1, it's $99/yr — less than $2 a week.</p>
+        <a href={APP} class="lp-btn">Start your kid's apparel business <span aria-hidden="true">&rarr;</span></a>
+        <p class="lp-cta-note">Free all summer with code STANDSUMMER. A parent consents before anything goes live. Questions? <a href="/faq">Read the FAQ</a>.</p>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  // Click-through carousel for the learning-journey cards.
+  document.querySelectorAll<HTMLElement>("[data-lp-carousel]").forEach((root) => {
+    const track = root.querySelector<HTMLElement>(".lp-carousel-track");
+    if (!track) return;
+    const stepBy = () => {
+      const card = track.querySelector<HTMLElement>(".lp-jcard");
+      return card ? card.getBoundingClientRect().width + 22 : 360;
+    };
+    root.querySelector(".lp-carousel-nav.prev")?.addEventListener("click", () =>
+      track.scrollBy({ left: -stepBy(), behavior: "smooth" })
+    );
+    root.querySelector(".lp-carousel-nav.next")?.addEventListener("click", () =>
+      track.scrollBy({ left: stepBy(), behavior: "smooth" })
+    );
+  });
+</script>
+
+<style>
+  .lp-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; max-width: var(--lp-maxw); margin: 0 auto; gap: 16px; }
+  .lp-head-right { display: flex; align-items: center; gap: 18px; }
+  .lp-login { font-family: var(--font-sans); font-size: 14px; color: var(--lp-ink); }
+  .lp-login strong { color: var(--stand-red); text-decoration: underline; text-underline-offset: 3px; margin-left: 3px; }
+  .lp-head-cta { font-size: 14px; padding: 10px 18px; box-shadow: var(--lp-shadow-chip); }
+
+  .hero-blob { position: absolute; inset: 6% 8%; background: var(--stand-blue); border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; border: 2px solid var(--lp-ink); }
+  .hero-hoodie { position: relative; width: 70%; filter: drop-shadow(0 18px 22px rgba(35,33,32,0.25)); transform: rotate(-5deg); }
+  .hero-kicker { position: absolute; bottom: 2%; left: 0; background: var(--stand-postit); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-card); padding: 9px 16px; font-size: 14px; box-shadow: var(--lp-shadow-chip); transform: rotate(-3deg); }
+  .lp-hero-stage { min-height: 380px; }
+
+  /* Team / roster wedge — a postit panel that reuses the lp card system. */
+  .lp-team-panel { background: var(--stand-postit); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-overlay); padding: 44px; box-shadow: var(--lp-shadow-card); }
+  .lp-team-panel h2 { font-size: 34px; max-width: 720px; margin-top: 12px; }
+  .lp-team-lead { margin-top: 16px; max-width: 720px; font-size: 18px; color: var(--lp-ink-70); }
+  .lp-team-proofs { display: flex; gap: 14px; margin-top: 26px; flex-wrap: wrap; }
+  .lp-team-proofs span { background: var(--stand-cream); border: 2px solid var(--lp-ink); border-radius: var(--lp-r-pill); padding: 9px 18px; font-family: var(--font-sans); font-size: 14px; font-weight: 700; }
+
+  /* Two stacked receipts in the money grid's right column. */
+  .lp-receipts { display: flex; flex-direction: column; gap: 22px; justify-self: center; width: 100%; }
+
+  @media (max-width: 900px) {
+    .lp-head-cta { display: none; }
+    .lp-hero-stage { min-height: 300px; margin-top: 20px; }
+    .lp-team-panel { padding: 30px; }
+    .lp-team-panel h2 { font-size: 27px; }
+  }
+</style>

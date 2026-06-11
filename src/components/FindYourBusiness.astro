@@ -29,42 +29,42 @@ interface Business {
 const HERO_W = 1437;
 const HERO_H = 1083;
 const MOBILE_W = 375;
-const MOBILE_H = 700;
+const MOBILE_H = 513;
 const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
 const DEFAULT_TITLE = 'hover over an item';
 const DEFAULT_DESC = 'to learn more about our Product Lab.';
 
 const items: Business[] = [
-  { name: 'hats', desc: 'Design custom hats of your own creation.',
+  { name: 'hats', desc: 'Small bio here about the hats you can design.',
     svg: 'STAND_SVG_BlueHat_Silhouette', photo: 'STAND_PNG_BlueHat',
     sx: 90, sy: 291, sw: 263, sh: 263, z: 4,
-    mx: 60, my: 90, mw: 150, mh: 150,
-    photoScale: 1.115 },
+    mx: 91, my: 117, mw: 163, mh: 100,
+    photoScale: 1.600 },
   { name: 'stickers & art', desc: 'Create sticker packs, cards, prints, and custom designs.',
     svg: 'STAND_SVG_YellowSticker_Silhouette', photo: 'STAND_PNG_YellowSticker',
     sx: 301, sy: 470, sw: 220, sh: 220, z: 2,
-    mx: 10, my: 265, mw: 110, mh: 130,
+    mx: -6, my: 198, mw: 124, mh: 123,
     photoScale: 1.315 },
   { name: 'jewelry', desc: 'Make bracelets, charms and accessories with your own style.',
     svg: 'STAND_SVG_GreenBracelet_Silhouette', photo: 'STAND_PNG_GreenBracelet',
     sx: 513, sy: 350, sw: 183, sh: 183, z: 6,
-    mx: 15, my: 440, mw: 140, mh: 130,
-    photoScale: 1.075, photoOffsetY: 2 },
+    mx: -2, my: 358, mw: 155, mh: 106,
+    photoScale: 1.200, photoOffsetY: 2 },
   { name: 'baked goods', desc: 'Cookies, cupcakes and other treats with your own brand.',
     svg: 'STAND_SVG_RedCupcake_Silhouette', photo: 'STAND_PNG_RedCupcake',
     sx: 672, sy: 416, sw: 227, sh: 227, z: 5,
-    mx: 230, my: 90, mw: 130, mh: 150,
-    photoScale: 1.060 },
+    mx: 264, my: 108, mw: 88, mh: 150,
+    photoScale: 1.600 },
   { name: 'collectibles', desc: 'Create fun collectible products like plushies and slime.',
     svg: 'STAND_SVG_YellowPlushie_Silhouette', photo: 'STAND_PNG_YellowPlushie',
     sx: 890, sy: 329, sw: 230, sh: 230, z: 1,
-    mx: 135, my: 280, mw: 115, mh: 115,
+    mx: 118, my: 231, mw: 125, mh: 116,
     photoScale: 1.085, photoOffsetX: 1 },
   { name: 'clothes & apparel', desc: 'Create hoodies, tees, and other products with your own designs.',
     svg: 'STAND_SVG_PinkHoodie_Silhouette', photo: 'STAND_PNG_PinkHoodie',
     sx: 1084, sy: 384, sw: 236, sh: 236, z: 3,
-    mx: 195, my: 400, mw: 180, mh: 170,
+    mx: 180, my: 293, mw: 176, mh: 179,
     photoScale: 1.065, photoOffsetY: -3, photoOffsetX: 5 },
 ];
 ---
@@ -146,10 +146,12 @@ const items: Business[] = [
         const wasActive = card.classList.contains('active');
         cards.forEach((c) => c.classList.remove('active'));
         if (!wasActive) {
+          section.classList.add('has-active');
           card.classList.add('active');
           titleEl.textContent = card.getAttribute('data-name');
           descEl.textContent = card.getAttribute('data-desc');
         } else {
+          section.classList.remove('has-active');
           titleEl.textContent = defTitle;
           descEl.textContent = defDesc;
         }
@@ -290,26 +292,40 @@ const items: Business[] = [
   }
 
   @media (max-width: 768px) {
-    .find-business { padding: 0; }
+    .find-business {
+      padding: 0;
+      transition: padding-bottom 260ms ease-out;
+    }
+
+    .find-business.has-active { padding-bottom: 188px; }
 
     /* Mobile: same frame-based layout as desktop, but portrait canvas with
        a compact mobile coordinate set on each item. Header sits top-left,
        white panel sits below the icon cluster, prompt updates on tap. */
     .frame {
       max-width: none;
-      aspect-ratio: 375 / 700;
+      aspect-ratio: 375 / 513;
     }
 
-    .panel { height: 16%; }
+    .panel { display: none; }
 
     .header-inner {
-      top: 4%;
-      left: 6%;
-      right: 6%;
+      top: 7%;
+      left: 10%;
+      right: 8%;
     }
 
-    .eyebrow { margin: 0 0 12px; }
-    .headline { line-height: 1.05; letter-spacing: -0.3px; }
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 10px;
+      line-height: 1.1;
+    }
+
+    .headline {
+      font-size: 22px;
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
 
     .biz {
       left: var(--mx);
@@ -318,24 +334,46 @@ const items: Business[] = [
       height: var(--mh);
     }
 
+    .biz:focus-visible {
+      outline: none;
+    }
+
+    .biz.active .photo {
+      transform: translate(var(--photo-offset-x, 0px), var(--photo-offset-y, 0px)) scale(calc(var(--photo-scale, 1.115) * 1.25));
+    }
+
     .biz-label { display: none; }
 
     .prompt {
-      left: 6%;
-      right: 6%;
-      top: 88%;
+      left: 0;
+      right: auto;
+      top: calc(100% - 16px);
+      width: 100vw;
+      min-height: 188px;
+      box-sizing: border-box;
+      padding: 26px 38px 28px;
+      background: var(--stand-white);
       text-align: left;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease-out;
+    }
+
+    .find-business.has-active .prompt {
+      opacity: 1;
     }
 
     .prompt-title {
-      font-size: 24px;
-      line-height: 1.1;
-      margin: 0 0 6px;
+      font-size: 27px;
+      line-height: 0.9;
+      margin: 0 0 18px;
     }
 
     .prompt-desc {
-      font-size: 13px;
-      line-height: 1.3;
+      max-width: 300px;
+      font-size: 17px;
+      line-height: 1.08;
+      letter-spacing: 0;
     }
   }
 </style>
