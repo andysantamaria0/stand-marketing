@@ -46,9 +46,6 @@ const stickerPhrases = [
       <a href="/faq" class="learn-more">Learn More →</a>
     </div>
 
-    <div class="mobile-photo" aria-hidden="true">
-      <img src="/brand/happy-teenagers.png" alt="" loading="lazy" />
-    </div>
   </div>
 </section>
 
@@ -169,10 +166,6 @@ const stickerPhrases = [
     display: none;
   }
 
-  .mobile-photo {
-    display: none;
-  }
-
   @media (max-width: 768px) {
     .about {
       padding: 36px 0 40px;
@@ -182,17 +175,19 @@ const stickerPhrases = [
       display: block;
     }
     .inner {
-      padding: 0 20px;
+      padding: 0 10%;
     }
     .eyebrow {
-      line-height: 1.18;
-      letter-spacing: -0.4px;
-      margin: 0 0 20px;
+      font-size: 10px;
+      line-height: 1.1;
+      letter-spacing: 0;
+      margin: 0 0 8px;
       padding-left: 0;
     }
     .headline {
-      line-height: 1.05;
-      letter-spacing: -0.3px;
+      font-size: 22px;
+      line-height: 0.98;
+      letter-spacing: 0;
       max-width: none;
       overflow-wrap: break-word;
     }
@@ -220,17 +215,5 @@ const stickerPhrases = [
       display: inline-block;
     }
 
-    /* happy-teenagers photo, mobile only — sits at the bottom of About. The
-       PNG already has the tilted white frame + drop shadow baked in. */
-    .mobile-photo {
-      display: block;
-      margin: 36px auto 0;
-      max-width: 280px;
-    }
-    .mobile-photo img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
   }
 </style>
