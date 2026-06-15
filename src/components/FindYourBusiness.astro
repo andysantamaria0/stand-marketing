@@ -165,7 +165,10 @@ const items: Business[] = [
     position: relative;
     background: var(--stand-cream);
     width: 100%;
-    overflow-x: hidden;
+    /* clip (not hidden) so horizontal overflow is still cut, but overflow-y
+       stays visible. overflow-x:hidden would force overflow-y to compute to
+       auto, turning this block into its own vertical scroll container. */
+    overflow-x: clip;
   }
 
   .frame {
