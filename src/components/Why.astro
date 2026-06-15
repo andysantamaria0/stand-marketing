@@ -255,7 +255,10 @@ const items: WhyItem[] = [
   .photo {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    /* contain (not cover) so the kid's cap and shirt aren't cropped top/bottom;
+       anchored right so the photo still hugs the viewport's right edge. */
+    object-fit: contain;
+    object-position: right center;
     display: block;
   }
 
@@ -280,9 +283,17 @@ const items: WhyItem[] = [
 
     .photo-card {
       position: static;
+      /* Full-bleed both sides — stretch edge to edge, no left/right padding. */
       width: calc(100% + 40px);
       margin-inline: -20px;
-      aspect-ratio: 375 / 309;
+      aspect-ratio: 4 / 5;
+    }
+
+    /* Mobile fills the full width (desktop contains it on the right). Anchored
+       to the top so the cap/logo is never cropped — only the bottom is cut. */
+    .photo {
+      object-fit: cover;
+      object-position: top center;
     }
 
     .badge-wrap {

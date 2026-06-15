@@ -57,7 +57,7 @@
             </span>
           </div>
         </div>
-        <button type="submit">Sign Up &rarr;</button>
+        <a href="https://app.standkids.com" class="signup-btn">Sign Up &rarr;</a>
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
@@ -90,35 +90,12 @@
   input?.addEventListener('focus', () => { if (input) input.placeholder = ''; });
   input?.addEventListener('blur', () => { if (input && !input.value) input.placeholder = 'hello@standkids.com'; });
 
-  form?.addEventListener('submit', async (e) => {
+  // The footer no longer captures emails — the "Sign Up →" control is a plain
+  // link to the app (same destination as the "Start Building" link). Pressing
+  // Enter in the email field should follow that same path, not POST anywhere.
+  form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!input || !status) return;
-
-    const email = input.value.trim();
-    if (!email.includes('@')) {
-      status.textContent = 'Please enter a valid email.';
-      input.focus();
-      return;
-    }
-
-    const button = form.querySelector('button') as HTMLButtonElement;
-    button.disabled = true;
-    status.textContent = 'Joining…';
-
-    try {
-      const res = await fetch('https://app.standkids.com/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: form.dataset.source || 'footer', marketingOptIn: true }),
-      });
-      if (!res.ok) throw new Error('Bad status ' + res.status);
-      status.textContent = '';
-      input.value = '';
-      form.classList.add('is-confirmed');
-    } catch {
-      status.textContent = "Couldn't sign up just now. Try again in a sec.";
-      button.disabled = false;
-    }
+    window.location.href = 'https://app.standkids.com';
   });
 
   // Smooth-scroll all "early-access" links to the footer signup.
@@ -232,7 +209,7 @@
     opacity: 1;
   }
 
-  .signup button {
+  .signup .signup-btn {
     position: absolute;
     z-index: 2;
     right: 7%;
@@ -294,7 +271,7 @@
   }
 
   .signup.is-confirmed input,
-  .signup.is-confirmed > button {
+  .signup.is-confirmed > .signup-btn {
     visibility: hidden;
   }
 
@@ -345,12 +322,13 @@
       width: 100%;
       padding-right: 0;
     }
-    .signup button {
+    .signup .signup-btn {
       position: static;
       transform: none;
       display: block;
       margin: 14px auto 0;
       font-size: 16px;
+      text-align: center;
     }
     .signup-bg img {
       object-fit: fill;
