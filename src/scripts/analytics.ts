@@ -26,7 +26,7 @@ if (typeof window !== "undefined") {
       persistence: "memory", // cookieless — no banner, no cross-visit identity
       autocapture: false, // pageviews + UTMs are all we need; keep it lean
       capture_pageview: true, // carries utm_source/medium/campaign/content/term
-      capture_pageleave: false,
+      capture_pageleave: true, // on so bounce rate + session duration are accurate
       disable_session_recording: true,
     });
   } catch {
