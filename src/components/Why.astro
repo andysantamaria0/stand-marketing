@@ -12,25 +12,25 @@ interface WhyItem {
 
 const items: WhyItem[] = [
   {
-    num: '01',
+    num: '1',
     heading: 'No worksheets. No lectures. Just doing.',
     body: 'Pricing, marketing, planning. Every skill gets learned because they actually have to use it.',
     color: 'var(--stand-mustard)',
   },
   {
-    num: '02',
+    num: '2',
     heading: "Confidence you can't fake or manufacture.",
     body: 'Kids learn to talk about what they built, explain why it’s good, and pitch to real people. That kind of confidence only comes from doing something real.',
     color: 'var(--stand-pink)',
   },
   {
-    num: '03',
+    num: '3',
     heading: "Money clicks differently when it's theirs.",
     body: 'Pricing, profit, saving versus spending. These things actually land when your kid earned the money themselves.',
     color: 'var(--stand-blue)',
   },
   {
-    num: '04',
+    num: '4',
     heading: 'Reward the fails, not just the sales.',
     body: 'Stand is built for when things don’t go perfectly. Because that’s actually where kids grow the most. We don’t paper over the hard stuff.',
     color: 'var(--stand-green)',
@@ -228,8 +228,8 @@ const items: WhyItem[] = [
     display: block;
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: 12px;
-    line-height: 1.3;
+    font-size: clamp(15px, 1.18vw, 18px);
+    line-height: 1.4;
     letter-spacing: -0.2px;
     color: var(--stand-black);
   }
@@ -316,6 +316,11 @@ const items: WhyItem[] = [
 
     .callout {
       max-width: none;
+    }
+
+    .callout-body {
+      font-size: 16px;
+      line-height: 1.4;
     }
   }
 </style>

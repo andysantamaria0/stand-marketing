@@ -151,13 +151,22 @@ const slides: Slide[] = [
     let swipeStartX = 0;
     let swipeStartY = 0;
 
+    let swiping = false;
+
     slider.addEventListener('pointerdown', (e) => {
+      // Let the nav arrows handle their own clicks. Capturing the pointer on
+      // the slider would retarget the follow-up `click` event to the slider,
+      // so the buttons' click listeners would never fire.
+      if ((e.target as HTMLElement).closest('.nav')) return;
+      swiping = true;
       swipeStartX = e.clientX;
       swipeStartY = e.clientY;
       slider.setPointerCapture?.(e.pointerId);
     });
 
     slider.addEventListener('pointerup', (e) => {
+      if (!swiping) return;
+      swiping = false;
       slider.releasePointerCapture?.(e.pointerId);
       const dx = e.clientX - swipeStartX;
       const dy = e.clientY - swipeStartY;
@@ -170,6 +179,7 @@ const slides: Slide[] = [
     }, { passive: true });
 
     slider.addEventListener('pointercancel', (e) => {
+      swiping = false;
       slider.releasePointerCapture?.(e.pointerId);
     }, { passive: true });
 
@@ -184,11 +194,12 @@ const slides: Slide[] = [
     overflow: hidden;
     box-sizing: border-box;
     padding: clamp(48px, 7vh, 100px) 0 clamp(140px, 16vh, 220px);
-    /* Slide width derived from viewport HEIGHT so the whole module (headline +
-       paint can + card) fits one screen on a 13" laptop. 1.58 = frame aspect
-       (724x1142); reserves room for the headline + top/bottom padding so the
-       active card always has cream breathing room above the next section. */
-    --slide-w: min(720px, calc((100vh - 380px) / 1.58));
+    /* Slide width tracks the container WIDTH (cqw of .inner, which is the same
+       container-max * 0.75 cap every other section uses) so the module sizes
+       consistently with the rest of the page and doesn't collapse on short
+       viewports. clamp floor keeps the card readable on narrow screens; the
+       cap matches the previous max. */
+    --slide-w: clamp(300px, 44cqw, 560px);
   }
 
   .inner {
@@ -447,7 +458,7 @@ const slides: Slide[] = [
   }
 
   @media (max-width: 1024px) {
-    /* Stage/slide/offsets all derive from --slide-w (viewport height), so they
+    /* Stage/slide/offsets all derive from --slide-w (container width), so they
        scale here automatically; only the arrow gap needs tightening. */
     .slider { gap: 16px; }
   }
