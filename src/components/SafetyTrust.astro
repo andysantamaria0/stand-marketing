@@ -1,14 +1,11 @@
 ---
 // SAFETY AND TRUST — Figma node 118:330 (1437×1137)
 // Post-it yellow bg with two large skewed white cards (left at -2.59°, right at +2.13°).
-// Cream Mug rotated -9.09° at top-left of section. "For Real." script positioned in
-// the lower band as a vector group.
+// "For Real." script positioned in the lower band as a vector group.
 ---
 
 <section class="safety">
   <div class="cards-stack">
-    <img class="prop-mug" src="/brand/STAND_PNG_CreamMug.webp" alt="" loading="lazy" aria-hidden="true" />
-
     <div class="cards">
     <article class="note note-left">
       <h3>safety &amp; trust</h3>
@@ -46,26 +43,13 @@
     padding: clamp(60px, 8vh, 100px) 0 0;
   }
 
-  /* Holds the mug + cards; the top padding reserves the mug's peek above the
-     cards so the section can be vertically centered without the mug clipping. */
   .cards-stack {
     position: relative;
     width: 100%;
     max-width: calc(var(--container-max) * 0.75);
-    /* Top offset lifts the mug clear of the card title (it overlaps the card's
-       white top edge, not the "safety & trust" text). */
-    padding-top: clamp(110px, 16vh, 160px);
-  }
-
-  .prop-mug {
-    position: absolute;
-    left: 30%;
-    top: 0;
-    width: 16.15%;
-    max-width: 240px;
-    aspect-ratio: 1;
-    transform: rotate(-9.09deg);
-    z-index: 3;
+    /* Reserve the right card's upward stagger (.note-right margin-top: -80px) so
+       its top edge doesn't clip against the section's overflow:hidden top. */
+    padding-top: 80px;
   }
 
   .cards {
@@ -118,9 +102,9 @@
   .note p {
     font-family: var(--font-sans);
     font-weight: 400;
-    /* Anchored to the ExtraBio .copy p paragraph (14px) so both body
+    /* Anchored to the ExtraBio .copy p paragraph (16px) so both body
        paragraphs read at one size across the site. */
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
     letter-spacing: -0.24px;
     color: var(--stand-black);
@@ -153,24 +137,6 @@
     }
     .cards-stack {
       padding-top: 0;
-    }
-    .prop-mug {
-      /* On mobile, take the mug OUT of absolute positioning and let it
-         flow above the first card. Absolute-positioning it into the
-         heading's band (top: -32px, etc.) was fragile — clearance depended
-         on exact viewport width + the webp's internal transparent padding,
-         so it covered the "safety & trust" heading on some phones. In flow
-         with a small negative margin-bottom, the mug rests on the card's
-         top-left corner (white border region) and the heading — which sits
-         a full card-padding (28px) below the card's top edge — is always
-         clear, at any phone width. */
-      position: relative;
-      z-index: 3;
-      width: 30%;
-      max-width: 150px;
-      margin: 0 0 -52px 6%;
-      left: auto;
-      top: auto;
     }
     .cards {
       grid-template-columns: 1fr;

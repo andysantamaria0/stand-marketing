@@ -22,14 +22,18 @@ const icons: Icon[] = [
   { svg: 'STAND_SVG_YellowSticker_Silhouette', color: 'var(--stand-mustard)' },
 ];
 
-// Faster scroll (~2x) and a big trailing gap per group so the icon set "ends"
-// with green space between loops instead of tiling into a dense stream.
+// Continuous seamless scroll: repeat the 6-icon set enough times that the track
+// always overfills even a wide viewport (no trailing gap), then shift by exactly
+// one copy width so the loop is seamless. Scroll speed = one copy / duration, so
+// it's independent of the copy count.
 const duration = 20;
-const groups = [0, 1, 2];
+const COPIES = 10;
+const groups = Array.from({ length: COPIES }, (_, i) => i);
+const shift = `-${(100 / COPIES).toFixed(4)}%`;
 ---
 
 <div class="icon-ticker" aria-hidden="true">
-  <div class="track" style={{ animationDuration: `${duration}s` }}>
+  <div class="track" style={{ animationDuration: `${duration}s`, '--shift': shift }}>
     {
       groups.map(() => (
         <div class="group">
@@ -90,10 +94,11 @@ const groups = [0, 1, 2];
     -webkit-mask-size: contain;
   }
 
-  /* Track is 3 identical groups; shifting by one group-width loops seamlessly. */
+  /* Track is N identical groups; shifting by one group-width (100/N%) loops
+     seamlessly. --shift is set inline so it always matches the COPIES count. */
   @keyframes icon-scroll {
     from { transform: translateX(0); }
-    to { transform: translateX(-33.333%); }
+    to { transform: translateX(var(--shift, -10%)); }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -1,76 +1,70 @@
 ---
-// FIND YOUR BUSINESS — Figma node 107:744 (1437×1083, redesign 2026-05-26).
-// Cream frame with a white panel across the bottom. Eyebrow + headline, a
-// horizontal row of 6 product silhouettes, and a shared prompt that defaults to
-// "hover over an item / to learn more about our Product Lab." and swaps to the
-// hovered item's name + bio. On hover the silhouette becomes the real photo.
-// Type scales with the frame (cqw) so it stays proportional below 1437px.
+// FIND YOUR BUSINESS — Figma node 653:322 (1437×630, redesign 2026-06-22).
+// Cream section. Eyebrow + headline, then a horizontal row of 6 product
+// silhouettes — three of them tilted (hat, sticker, plushie) per the design.
+// On hover the silhouette becomes the real photo and a label (name +
+// description) appears directly beneath that item — no shared prompt, nothing
+// shown by default. Assets share a uniform 3000×3000 canvas, so photo and
+// silhouette register exactly (no per-item scale). Each item is positioned by
+// its centre + art size + rotation so the tilt pivots in place. Type scales
+// with the frame (cqw) so it stays proportional below 1437px.
 
 interface Business {
   name: string;
   desc: string;
   svg: string;   // silhouette (default)
   photo: string; // real product image (revealed on hover)
-  // bounding box in raw Figma px, relative to the 1437×1083 frame
-  sx: number; sy: number; sw: number; sh: number;
+  // Centre point + square art size (raw Figma px, relative to the 1437×630
+  // frame) + rotation in degrees. Centre-based so the tilt pivots in place.
+  cx: number; cy: number; aw: number; rot: number;
   z: number; // stacking order (higher = front)
-  // Mobile coords, relative to MOBILE_W × MOBILE_H portrait frame
+  // Hover label box in raw Figma px (relative to the frame); text is centred.
+  lx: number; ly: number; lw: number;
+  // Mobile coords (top-left), relative to MOBILE_W × MOBILE_H portrait frame.
   mx: number; my: number; mw: number; mh: number;
-  // Per-item hover-photo scale. The PNGs have varying internal padding, so
-  // each one needs its own factor to fill the silhouette without overshooting.
-  photoScale: number;
-  // Per-item hover-photo nudges in px (positive Y = down, positive X = right).
-  // Default 0; some PNGs have asymmetric padding that needs a tiny shift to align
-  // with the silhouette.
-  photoOffsetY?: number;
-  photoOffsetX?: number;
 }
 
 const HERO_W = 1437;
-const HERO_H = 1083;
+const HERO_H = 630;
 const MOBILE_W = 375;
 const MOBILE_H = 513;
 const pct = (n: number, base: number) => `${(n / base) * 100}%`;
 
-const DEFAULT_TITLE = 'hover over an item';
-const DEFAULT_DESC = 'to learn more about our Product Lab.';
-
 const items: Business[] = [
   { name: 'hats', desc: 'Design custom hats of your own creation.',
     svg: 'STAND_SVG_BlueHat_Silhouette', photo: 'STAND_PNG_BlueHat',
-    sx: 90, sy: 291, sw: 263, sh: 263, z: 4,
-    mx: 91, my: 117, mw: 163, mh: 100,
-    photoScale: 1.120 },
+    cx: 209.44, cy: 339.44, aw: 307.10, rot: 23.56, z: 6,
+    lx: 63, ly: 451, lw: 214,
+    mx: 91, my: 117, mw: 163, mh: 100 },
   { name: 'stickers & art', desc: 'Create sticker packs, cards, prints, and custom designs.',
     svg: 'STAND_SVG_YellowSticker_Silhouette', photo: 'STAND_PNG_YellowSticker',
-    sx: 301, sy: 470, sw: 220, sh: 220, z: 2,
-    mx: -6, my: 198, mw: 124, mh: 123,
-    photoScale: 1.315 },
-  { name: 'jewelry', desc: 'Make bracelets, charms and accessories with your own style.',
+    cx: 424.52, cy: 307.52, aw: 254.36, rot: -4.87, z: 5,
+    lx: 273, ly: 471, lw: 279,
+    mx: -6, my: 198, mw: 124, mh: 123 },
+  { name: 'jewelry', desc: 'Make bracelets, charms, and accessories with your own style.',
     svg: 'STAND_SVG_GreenBracelet_Silhouette', photo: 'STAND_PNG_GreenBracelet',
-    sx: 513, sy: 350, sw: 183, sh: 183, z: 6,
-    mx: -2, my: 358, mw: 155, mh: 106,
-    photoScale: 1.200, photoOffsetY: 2 },
-  { name: 'baked goods', desc: 'Cookies, cupcakes and other treats with your own brand.',
+    cx: 641.08, cy: 308.08, aw: 228.16, rot: 0, z: 2,
+    lx: 480, ly: 466, lw: 279,
+    mx: -2, my: 358, mw: 155, mh: 106 },
+  { name: 'baked goods', desc: 'Cookies, cupcakes, and other treats with your own brand.',
     svg: 'STAND_SVG_RedCupcake_Silhouette', photo: 'STAND_PNG_RedCupcake',
-    sx: 672, sy: 416, sw: 227, sh: 227, z: 5,
-    mx: 264, my: 108, mw: 88, mh: 150,
-    photoScale: 0.960 },
-  { name: 'collectibles', desc: 'Create fun collectible products like plushies and slime.',
+    cx: 860.01, cy: 342.01, aw: 284.02, rot: 0, z: 1,
+    lx: 704, ly: 500, lw: 279,
+    mx: 264, my: 108, mw: 88, mh: 150 },
+  { name: 'collectibles', desc: 'Create fun collectible products like plushies or slime.',
     svg: 'STAND_SVG_YellowPlushie_Silhouette', photo: 'STAND_PNG_YellowPlushie',
-    sx: 890, sy: 329, sw: 230, sh: 230, z: 1,
-    mx: 118, my: 231, mw: 125, mh: 116,
-    photoScale: 1.085, photoOffsetX: 1 },
-  { name: 'clothes & apparel', desc: 'Create hoodies, tees, and other products with your own designs.',
+    cx: 1068.65, cy: 301.65, aw: 254.36, rot: -8, z: 4,
+    lx: 906, ly: 489, lw: 279,
+    mx: 118, my: 231, mw: 125, mh: 116 },
+  { name: 'clothes & apparel', desc: 'Create hoodies, tees, and other products with your own design.',
     svg: 'STAND_SVG_PinkHoodie_Silhouette', photo: 'STAND_PNG_PinkHoodie',
-    sx: 1084, sy: 384, sw: 236, sh: 236, z: 3,
-    mx: 180, my: 293, mw: 176, mh: 179,
-    photoScale: 1.065, photoOffsetY: -3, photoOffsetX: 5 },
+    cx: 1269.01, cy: 321.01, aw: 294.03, rot: 0, z: 3,
+    lx: 1030, ly: 490, lw: 407,
+    mx: 180, my: 293, mw: 176, mh: 179 },
 ];
 ---
 
 <section class="find-business">
-  <div class="panel" aria-hidden="true"></div>
   <div class="frame">
     <div class="header-inner">
       <p class="eyebrow">Find Your Business</p>
@@ -78,39 +72,38 @@ const items: Business[] = [
     </div>
 
     {
-      items.map((item, i) => (
+      items.map((item) => (
         <button
           class="biz"
           type="button"
           data-name={item.name}
           data-desc={item.desc}
-          data-num={String(i + 1)}
+          data-lx={pct(item.lx, HERO_W)}
+          data-ly={pct(item.ly, HERO_H)}
+          data-lw={pct(item.lw, HERO_W)}
           aria-label={item.name}
           style={{
-            '--x': pct(item.sx, HERO_W),
-            '--y': pct(item.sy, HERO_H),
-            '--w': pct(item.sw, HERO_W),
-            '--h': pct(item.sh, HERO_H),
+            '--cx': pct(item.cx, HERO_W),
+            '--cy': pct(item.cy, HERO_H),
+            '--w': pct(item.aw, HERO_W),
+            '--h': pct(item.aw, HERO_H),
+            '--rot': `${item.rot}deg`,
             '--mx': pct(item.mx, MOBILE_W),
             '--my': pct(item.my, MOBILE_H),
             '--mw': pct(item.mw, MOBILE_W),
             '--mh': pct(item.mh, MOBILE_H),
-            '--photo-scale': item.photoScale,
-            '--photo-offset-y': `${item.photoOffsetY ?? 0}px`,
-            '--photo-offset-x': `${item.photoOffsetX ?? 0}px`,
             zIndex: item.z,
           }}
         >
           <img class="silhouette" src={`/brand/${item.svg}.svg`} alt={item.name} />
           <img class="photo" src={`/brand/${item.photo}.webp`} alt="" aria-hidden="true" loading="lazy" />
-          <span class="biz-label"><strong>{item.name}</strong><em>{item.desc}</em></span>
         </button>
       ))
     }
 
-    <div class="prompt" data-default-title={DEFAULT_TITLE} data-default-desc={DEFAULT_DESC}>
-      <h3 class="prompt-title">{DEFAULT_TITLE}</h3>
-      <p class="prompt-desc">{DEFAULT_DESC}</p>
+    <div class="label" aria-hidden="true">
+      <h3 class="label-title"></h3>
+      <p class="label-desc"></p>
     </div>
   </div>
 </section>
@@ -118,42 +111,46 @@ const items: Business[] = [
 <script>
   const section = document.querySelector('.find-business');
   if (section) {
-    const prompt = section.querySelector('.prompt');
-    const titleEl = prompt?.querySelector('.prompt-title');
-    const descEl = prompt?.querySelector('.prompt-desc');
-    const defTitle = prompt?.getAttribute('data-default-title') ?? '';
-    const defDesc = prompt?.getAttribute('data-default-desc') ?? '';
+    const label = section.querySelector('.label') as HTMLElement | null;
+    const titleEl = label?.querySelector('.label-title');
+    const descEl = label?.querySelector('.label-desc');
     const isDesktop = () => window.matchMedia('(min-width: 769px)').matches;
     const cards = section.querySelectorAll('.biz');
 
+    const show = (card: Element) => {
+      if (!label || !titleEl || !descEl) return;
+      titleEl.textContent = card.getAttribute('data-name');
+      descEl.textContent = card.getAttribute('data-desc');
+      label.style.left = card.getAttribute('data-lx') ?? '';
+      label.style.top = card.getAttribute('data-ly') ?? '';
+      label.style.width = card.getAttribute('data-lw') ?? '';
+      label.classList.add('is-visible');
+    };
+    const hide = () => label?.classList.remove('is-visible');
+
     cards.forEach((card) => {
       card.addEventListener('pointerenter', () => {
-        if (!isDesktop() || !titleEl || !descEl) return;
+        if (!isDesktop()) return;
         card.classList.add('active');
-        titleEl.textContent = card.getAttribute('data-name');
-        descEl.textContent = card.getAttribute('data-desc');
+        show(card);
       });
       card.addEventListener('pointerleave', () => {
-        if (!isDesktop() || !titleEl || !descEl) return;
+        if (!isDesktop()) return;
         card.classList.remove('active');
-        titleEl.textContent = defTitle;
-        descEl.textContent = defDesc;
+        hide();
       });
-      // Mobile: tap a card to reveal the product photo AND update the prompt
-      // (one open at a time). Same active class as desktop hover state.
+      // Mobile: tap to reveal the product photo + label (one open at a time).
       card.addEventListener('click', () => {
-        if (isDesktop() || !titleEl || !descEl) return;
+        if (isDesktop()) return;
         const wasActive = card.classList.contains('active');
         cards.forEach((c) => c.classList.remove('active'));
         if (!wasActive) {
           section.classList.add('has-active');
           card.classList.add('active');
-          titleEl.textContent = card.getAttribute('data-name');
-          descEl.textContent = card.getAttribute('data-desc');
+          show(card);
         } else {
           section.classList.remove('has-active');
-          titleEl.textContent = defTitle;
-          descEl.textContent = defDesc;
+          hide();
         }
       });
     });
@@ -176,45 +173,32 @@ const items: Business[] = [
     width: 100%;
     max-width: calc(var(--container-max) * 0.75);
     margin: 0 auto;
-    aspect-ratio: 1437 / 1083;
+    aspect-ratio: 1437 / 630;
     container-type: inline-size;
-  }
-
-  /* White panel across the bottom third (Figma rect 453:137).
-     Lives on the section so it spans the full viewport width — the .frame is
-     centered and capped, but the panel must reach edge-to-edge. */
-  .panel {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 30%;
-    background: var(--stand-white);
-    z-index: 0;
   }
 
   .header-inner {
     position: absolute;
-    top: 7%;
-    left: 6.5%;
-    right: 6.5%;
+    top: 12.86%;
+    left: 11.76%;
+    right: 6%;
     z-index: 3;
   }
 
   .eyebrow {
     font-family: var(--font-serif);
     font-weight: 300;
-    line-height: 1.18;
-    letter-spacing: -0.04em;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
     color: var(--stand-black);
-    margin: 0 0 clamp(12px, 2.25vh, 45px); /* matches About */
+    margin: 0 0 clamp(8px, 1.5vh, 26px);
   }
 
   .headline {
     font-family: var(--font-sans);
     font-weight: 400;
     line-height: 1;
-    letter-spacing: -0.022em;
+    letter-spacing: -0.02em;
     color: var(--stand-black);
     margin: 0;
     max-width: none;
@@ -223,10 +207,11 @@ const items: Business[] = [
   .biz {
     position: absolute;
     z-index: 2;
-    left: var(--x);
-    top: var(--y);
+    left: var(--cx);
+    top: var(--cy);
     width: var(--w);
     height: var(--h);
+    transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
     padding: 0;
     border: 0;
     background: transparent;
@@ -244,10 +229,9 @@ const items: Business[] = [
     transition: opacity 260ms ease-out;
   }
 
-  /* Photos are square PNGs with padding; scale up to match the tight silhouette.
-     Each item passes its own --photo-scale because the PNGs have varying padding. */
+  /* Photo and silhouette share a uniform 3000×3000 canvas, so they register
+     exactly — just cross-fade, no per-item scaling. */
   .photo {
-    transform: translate(var(--photo-offset-x, 0px), var(--photo-offset-y, 0px)) scale(var(--photo-scale, 1.115));
     opacity: 0;
     pointer-events: none;
   }
@@ -261,22 +245,22 @@ const items: Business[] = [
     opacity: 1;
   }
 
-  /* Per-item label is desktop-hidden (shown only in the mobile list). */
-  .biz-label {
-    display: none;
-  }
-
-  /* Shared prompt on the white panel. */
-  .prompt {
+  /* Per-item hover label — positioned beneath the hovered item by JS and shown
+     only while it (or, on mobile, the tapped item) is active. Not rotated. */
+  .label {
     position: absolute;
-    left: 6%;
-    right: 6%;
-    top: 80%;
+    z-index: 10;
     text-align: center;
-    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease-out;
   }
 
-  .prompt-title {
+  .label.is-visible {
+    opacity: 1;
+  }
+
+  .label-title {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 2.296cqw; /* 33px @1437 */
@@ -285,7 +269,7 @@ const items: Business[] = [
     margin: 0 0 0.8cqw;
   }
 
-  .prompt-desc {
+  .label-desc {
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 1.113cqw; /* 16px @1437 */
@@ -303,15 +287,13 @@ const items: Business[] = [
 
     .find-business.has-active { padding-bottom: 188px; }
 
-    /* Mobile: same frame-based layout as desktop, but portrait canvas with
-       a compact mobile coordinate set on each item. Header sits top-left,
-       white panel sits below the icon cluster, prompt updates on tap. */
+    /* Mobile: portrait canvas with a compact mobile coordinate set on each item.
+       Items are upright (no tilt) and corner-positioned; the label becomes a
+       fixed bottom panel on tap. */
     .frame {
       max-width: none;
       aspect-ratio: 375 / 513;
     }
-
-    .panel { display: none; }
 
     .header-inner {
       top: 7%;
@@ -336,6 +318,7 @@ const items: Business[] = [
       top: var(--my);
       width: var(--mw);
       height: var(--mh);
+      transform: none;
     }
 
     .biz:focus-visible {
@@ -344,38 +327,25 @@ const items: Business[] = [
       filter: drop-shadow(0 0 0.45rem var(--stand-white));
     }
 
-    .biz.active .photo {
-      transform: translate(var(--photo-offset-x, 0px), var(--photo-offset-y, 0px)) scale(calc(var(--photo-scale, 1.115) * 1.25));
-    }
-
-    .biz-label { display: none; }
-
-    .prompt {
-      left: 0;
-      right: auto;
-      top: calc(100% - 16px);
-      width: 100vw;
+    /* Override the JS-set inline position: pin the label to a bottom panel. */
+    .label {
+      left: 0 !important;
+      top: calc(100% - 16px) !important;
+      width: 100vw !important;
       min-height: 188px;
       box-sizing: border-box;
       padding: 26px 38px 28px;
       background: var(--stand-white);
       text-align: left;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 220ms ease-out;
     }
 
-    .find-business.has-active .prompt {
-      opacity: 1;
-    }
-
-    .prompt-title {
+    .label-title {
       font-size: 27px;
       line-height: 0.9;
       margin: 0 0 18px;
     }
 
-    .prompt-desc {
+    .label-desc {
       max-width: 300px;
       font-size: 17px;
       line-height: 1.08;

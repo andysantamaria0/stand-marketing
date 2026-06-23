@@ -20,32 +20,32 @@ interface Slide {
 const slides: Slide[] = [
   { name: 'ideas tent',
     desc: 'choose your business to build with Stand.',
-    icon: 'icon-ideas-tent', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
-    iconScale: 0.7, iconOffsetX: 0, iconOffsetY: 0 },
+    icon: 'STAND_PNG_YellowLightbulb', silhouette: 'STAND_SVG_YellowLightbulb_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'brand studio',
     desc: 'create your business name, logo, colors, and brand style.',
-    icon: 'icon-brand-studio', silhouette: 'STAND_SVG_PinkPaint_Silhouette',
+    icon: 'STAND_PNG_PinkPaint', silhouette: 'STAND_SVG_PinkPaint_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'product lab',
     desc: 'design your products and create what you need to make your vision a reality.',
-    icon: 'icon-product-lab', silhouette: 'STAND_SVG_GreenBox_Silhouette',
+    icon: 'STAND_PNG_GreenBox', silhouette: 'STAND_SVG_GreenBox_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'money',
     desc: 'price your product, set your goals and start thinking like an owner.',
-    icon: 'icon-money', silhouette: 'STAND_SVG_BlueReceipt_Silhouette',
+    icon: 'STAND_PNG_BlueReceipt', silhouette: 'STAND_SVG_BlueReceipt_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'marketing',
     desc: 'learn how to get the word out, launch your business and get customers.',
-    icon: 'icon-marketing', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette',
+    icon: 'STAND_PNG_YellowMegaphone', silhouette: 'STAND_SVG_YellowMegaphone_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'storefront',
     desc: 'launch your shop and start taking orders.',
-    icon: 'icon-storefront', silhouette: 'STAND_SVG_RedOpenSign_Silhouette',
+    icon: 'STAND_PNG_RedOpenSign', silhouette: 'STAND_SVG_RedOpenSign_Silhouette',
     iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
   { name: 'dashboard',
     desc: 'your ongoing progress, weekly to do’s, business lessons and more.',
-    icon: 'icon-dashboard', silhouette: 'STAND_SVG_CreamDesk_Silhouette',
-    iconScale: 1.2, iconOffsetX: 0, iconOffsetY: 0 },
+    icon: 'STAND_PNG_CreamDesk', silhouette: 'STAND_SVG_CreamDesk_Silhouette',
+    iconScale: 1, iconOffsetX: 0, iconOffsetY: 0 },
 ];
 ---
 
@@ -81,7 +81,7 @@ const slides: Slide[] = [
               <div class="frame-wrap">
                 <img
                   class="tool-icon"
-                  src={`/brand/${s.icon}.png`}
+                  src={`/brand/${s.icon}.webp`}
                   alt={s.name}
                   loading={i < 3 ? 'eager' : 'lazy'}
                 />
@@ -250,7 +250,7 @@ const slides: Slide[] = [
     color: var(--stand-black);
     z-index: 10;
     cursor: pointer;
-    top: calc(var(--slide-w) * 0.65);
+    top: calc(var(--slide-w) * 0.8);
     transform: translate(-50%, -50%);
   }
 
@@ -324,17 +324,15 @@ const slides: Slide[] = [
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
-    /* Shift each silhouette up by half its own height so the bottom edge
-       lands on the dotted line (which sits at the wrap's vertical center)
-       instead of cutting through the middle of the icon. Per-slide nudges
-       compose on top of that baseline shift.
-       Using separate translate functions (instead of a single calc with mixed
-       % + px) so the percentage and the per-slide pixel nudge can't fight each
-       other in the calc parser when --icon-offset-y is a negative px value. */
+    /* The wrap already centers the image, and the dotted line sits at the wrap's
+       vertical center — so with no lift the silhouette's middle lands on the line.
+       --sil-offset-y is the silhouette's OWN vertical nudge, decoupled from the
+       active icon's --icon-offset-y, so moving the silhouettes never moves the
+       real photo. Positive = down. Tune this one value (cqw scales with slide). */
+    --sil-offset-y: 0cqw;
     transform:
       translateX(var(--icon-offset-x, 0px))
-      translateY(var(--icon-offset-y, 0px))
-      translateY(-50%)
+      translateY(var(--sil-offset-y))
       scale(var(--icon-scale, 1));
   }
 
