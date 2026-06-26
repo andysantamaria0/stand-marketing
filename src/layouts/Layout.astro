@@ -1,5 +1,6 @@
 ---
 import '@/styles/tokens.css';
+import CookieNotice from '@/components/CookieNotice.astro';
 
 interface Props {
   title?: string;
@@ -51,6 +52,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
   </head>
   <body>
     <slot />
+
+    <CookieNotice />
 
     <script>
       // Marketing-site analytics — see src/scripts/analytics.ts.
