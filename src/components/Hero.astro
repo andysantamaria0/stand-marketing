@@ -79,21 +79,21 @@ const ICON_SCALE = 75 / 95;
 
     <svg
       class="signup-arrow"
-      viewBox="0 0 72 118"
+      viewBox="0 0 84 132"
       fill="none"
       aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M58 6 C 70 42, 62 82, 30 104"
+        d="M14 6 C 58 26, 78 76, 34 120"
         stroke="currentColor"
-        stroke-width="2.4"
+        stroke-width="2.6"
         stroke-linecap="round"
       />
       <path
-        d="M13 104 L 30 104 L 30 85"
+        d="M53 120 L 34 120 L 34 101"
         stroke="currentColor"
-        stroke-width="2.4"
+        stroke-width="2.6"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
@@ -244,13 +244,14 @@ const ICON_SCALE = 75 / 95;
 
   .signup-arrow {
     position: absolute;
-    right: 1.5%;
-    /* Sit just above the bar's top edge. The form box is later in the DOM and
-       would otherwise paint over (clip) the arrowhead, so z-index lifts the
-       arrow above it. */
-    bottom: calc(100% - 6px);
+    right: -3%;
+    /* The tip dives ~34px past the bar's top edge, landing in the cream just
+       outside the sticker's slanted right side like the mock. The form box is
+       later in the DOM and would otherwise paint over the arrowhead, so z-index
+       lifts the arrow above it. */
+    bottom: calc(100% - 34px);
     z-index: 2;
-    width: clamp(46px, 4vw, 68px);
+    width: clamp(54px, 5vw, 82px);
     height: auto;
     color: var(--stand-black);
     pointer-events: none;
