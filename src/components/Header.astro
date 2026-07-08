@@ -82,10 +82,14 @@
   }
 
   @media (max-width: 768px) {
-    /* Mobile: move both CTAs to the bottom of the hero, stacked + centered. */
+    /* Mobile: the hero is a vertical flex stack (canvas → these CTAs → signup),
+       so the header flows in-line between the canvas and the signup bar rather
+       than anchoring absolutely to the hero bottom (which would overlap the
+       signup form). */
     .site-header {
+      position: static;
       top: auto;
-      bottom: 8.5%;
+      bottom: auto;
       flex-direction: column;
       align-items: center;
       gap: 6px;
