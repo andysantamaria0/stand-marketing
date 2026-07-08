@@ -42,8 +42,6 @@ const ICON_SCALE = 75 / 95;
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <Header />
-
   <h1 id="hero-title" class="visually-hidden">Build your own thing. For Real.</h1>
 
   <div class="hero-canvas">
@@ -73,6 +71,53 @@ const ICON_SCALE = 75 / 95;
 
     <img class="lockup" src="/brand/hero-lockup.webp" alt="" aria-hidden="true" />
   </div>
+
+  <Header />
+
+  <div class="hero-signup">
+    <p class="signup-caption">Sign up to our mailing list for<br />news, updates,<br />and special offers!</p>
+
+    <svg
+      class="signup-arrow"
+      viewBox="0 0 84 132"
+      fill="none"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14 6 C 58 26, 78 76, 34 120"
+        stroke="currentColor"
+        stroke-width="2.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M53 120 L 34 120 L 34 101"
+        stroke="currentColor"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+
+    <form class="hero-signup-form" id="hero-waitlist-form" aria-label="Email signup" novalidate>
+      <div class="hero-signup-box">
+        <picture class="signup-card-bg" aria-hidden="true">
+          <source srcset="/brand/sticker-card.webp" type="image/webp" />
+          <img src="/brand/sticker-card.png" alt="" />
+        </picture>
+        <input
+          type="email"
+          name="email"
+          id="hero-waitlist-email"
+          placeholder="hello@email.com"
+          aria-label="Email address"
+          autocomplete="email"
+          required
+        />
+        <button type="submit" class="hero-submit">Submit &rarr;</button>
+      </div>
+    </form>
+  </div>
 </section>
 
 <style>
@@ -81,19 +126,26 @@ const ICON_SCALE = 75 / 95;
     background: var(--stand-cream);
     width: 100%;
     overflow: hidden;
-    /* Fill the viewport and center the canvas so the next (yellow) section
-       doesn't peek in and the cupcake at the canvas bottom gets cream room. */
+    /* Fill the viewport and vertically center the canvas + signup group so the
+       next (yellow) section doesn't peek in and the composition sits balanced. */
     min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: clamp(16px, 3.5vh, 44px);
+    padding: 20px 0;
   }
 
+  /* The canvas is sized off its HEIGHT (not width) so the whole composition plus
+     the signup bar always fits inside 100svh. min(62svh, 42vw) lands the product
+     cluster at ~64% of the frame width — the same proportion as the Figma mock —
+     on both tall laptops and wide short monitors. Width is derived from the
+     1437/871 aspect ratio, so the internal product positions never distort. */
   .hero-canvas {
     position: relative;
-    width: 95%;
     aspect-ratio: 1437 / 871;
-    max-width: calc(var(--container-max) * 0.95);
+    height: min(80svh, 55vw);
+    max-width: 92%;
     margin: 0 auto;
   }
 
@@ -163,15 +215,177 @@ const ICON_SCALE = 75 / 95;
     z-index: 1;
   }
 
+  /* ── Email signup bar ──────────────────────────────────────────────────
+     A skewed white "sticker" input with a hard, offset black drop-shadow, a
+     handwritten mailing-list caption, and a drawn arrow pointing at the box —
+     matching the Figma hero mock. The caption + arrow are absolutely anchored
+     to the box's upper-right so they float over the cream without reserving
+     layout space. */
+  .hero-signup {
+    position: relative;
+    width: 78%;
+    max-width: 1180px;
+    margin: 0 auto;
+    z-index: 5;
+  }
+
+  .signup-caption {
+    position: absolute;
+    right: 7%;
+    bottom: calc(100% + 30px);
+    margin: 0;
+    text-align: right;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(13px, 1vw, 16px);
+    line-height: 1.3;
+    color: var(--stand-black);
+  }
+
+  .signup-arrow {
+    position: absolute;
+    right: -3%;
+    /* The tip dives ~34px past the bar's top edge, landing in the cream just
+       outside the sticker's slanted right side like the mock. The form box is
+       later in the DOM and would otherwise paint over the arrowhead, so z-index
+       lifts the arrow above it. */
+    bottom: calc(100% - 34px);
+    z-index: 2;
+    width: clamp(54px, 5vw, 82px);
+    height: auto;
+    color: var(--stand-black);
+    pointer-events: none;
+  }
+
+  .hero-signup-form {
+    position: relative;
+  }
+
+  /* The skewed white sticker + hard black shadow is the shared brand vector
+     (sticker-card), the same asset the Footer signup uses. It's stretched
+     (object-fit: fill) to the bar's thin proportions and carries the shadow, so
+     no CSS-drawn box is needed. Larger bottom padding lifts the input/submit off
+     the vector's bottom shadow band into the white area. */
+  .hero-signup-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: clamp(60px, 5.2vw, 84px);
+    /* Vertical padding is in px, NOT %, because % padding resolves against the
+       box WIDTH — on a ~1130px-wide, ~78px-tall bar even 2% became ~23px and
+       shoved the text up. The small bottom padding lifts both the email and
+       Submit just off the vector's shadow band so they read optically centered. */
+    padding: 0 4% 6px 5%;
+  }
+
+  .signup-card-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .signup-card-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  .hero-signup-box input {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    outline: none;
+    text-align: center;
+    /* The left box padding + the Submit button on the right make the flex area
+       asymmetric; this pulls the centered text back so it reads centered in the
+       full bar rather than in the leftover space beside Submit. */
+    padding-right: 6%;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(20px, 2.4vw, 34px);
+    line-height: 1;
+    color: var(--stand-black);
+  }
+
+  .hero-signup-box input::placeholder {
+    color: var(--stand-black);
+    opacity: 1;
+  }
+
+  .hero-submit {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    padding-left: 3%;
+    white-space: nowrap;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(15px, 1.4vw, 20px);
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+    color: var(--stand-black);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
   @media (max-width: 768px) {
+    /* Vertical stack: canvas → header CTAs → signup (Header goes static below). */
     .hero {
-      min-height: 0;
-      display: block;
+      min-height: 100svh;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px 0 28px;
     }
     .hero-canvas {
       width: 100%;
+      height: auto;
       max-width: var(--container-max);
       aspect-ratio: 375 / 491;
+      /* The 375×491 mobile frame reserves an empty band below the products (it
+         used to hold the absolute CTAs). Now that the header flows beneath the
+         canvas, reclaim that band with a negative margin so the CTAs/signup pull
+         up against the composition instead of floating below a gap. A width-
+         relative % tracks the band's height across phone widths. */
+      margin-bottom: -22%;
+    }
+
+    .hero-signup {
+      width: 88%;
+    }
+    /* In flow (not absolute) on mobile so it can't overlap the header CTAs that
+       sit just above it: header → caption → bar. */
+    .signup-caption {
+      position: static;
+      right: auto;
+      bottom: auto;
+      margin: 0 0 10px;
+      text-align: center;
+      font-size: 12px;
+    }
+    /* Drop the desktop line breaks so the caption flows on one line on mobile. */
+    .signup-caption br {
+      display: none;
+    }
+    /* Arrow reads as clutter at phone width; the caption sits right above the box. */
+    .signup-arrow {
+      display: none;
+    }
+    .hero-signup-box {
+      height: clamp(54px, 14vw, 66px);
+    }
+    .hero-signup-box input {
+      font-size: clamp(17px, 5vw, 22px);
+    }
+    .hero-submit {
+      font-size: 15px;
     }
 
     .product {
@@ -246,4 +460,21 @@ const ICON_SCALE = 75 / 95;
       }, 450 + i * 90);
     });
   }
+
+  // Hero email signup. Mirrors the Footer's contract: the marketing site does not
+  // capture emails itself — submitting (or pressing Enter) hands off to the app's
+  // waitlist flow at app.standkids.com, so there's a single source of truth for
+  // signups and no duplicate/unauthenticated capture endpoint to maintain.
+  const heroForm = document.getElementById('hero-waitlist-form') as HTMLFormElement | null;
+  const heroEmail = document.getElementById('hero-waitlist-email') as HTMLInputElement | null;
+
+  // The placeholder is styled like real text; clear it on focus so the field
+  // reads as empty and editable, and restore it on blur if nothing was typed.
+  heroEmail?.addEventListener('focus', () => { if (heroEmail) heroEmail.placeholder = ''; });
+  heroEmail?.addEventListener('blur', () => { if (heroEmail && !heroEmail.value) heroEmail.placeholder = 'hello@email.com'; });
+
+  heroForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.location.href = 'https://app.standkids.com';
+  });
 </script>
