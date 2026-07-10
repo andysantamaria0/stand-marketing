@@ -75,7 +75,7 @@ const ICON_SCALE = 75 / 95;
   <Header />
 
   <div class="hero-signup">
-    <p class="signup-caption">Sign up to our mailing list for<br />news, updates,<br />and special offers!</p>
+    <p class="signup-caption">Sign up to our mailing list for <br />news, updates, <br />and special offers!</p>
 
     <svg
       class="signup-arrow"
@@ -109,13 +109,13 @@ const ICON_SCALE = 75 / 95;
           type="email"
           name="email"
           id="hero-waitlist-email"
-          placeholder="hello@email.com"
           aria-label="Email address"
           autocomplete="email"
           required
         />
         <button type="submit" class="hero-submit">Submit &rarr;</button>
       </div>
+      <button type="submit" class="hero-submit-mobile">Sign up &rarr;</button>
     </form>
   </div>
 </section>
@@ -311,11 +311,6 @@ const ICON_SCALE = 75 / 95;
     color: var(--stand-black);
   }
 
-  .hero-signup-box input::placeholder {
-    color: var(--stand-black);
-    opacity: 1;
-  }
-
   .hero-submit {
     position: relative;
     z-index: 1;
@@ -325,6 +320,24 @@ const ICON_SCALE = 75 / 95;
     font-family: var(--font-serif);
     font-weight: 400;
     font-size: clamp(15px, 1.4vw, 20px);
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+    color: var(--stand-black);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  /* Mobile-only submit CTA below the bar; the in-bar Submit is desktop-only. */
+  .hero-submit-mobile {
+    display: none;
+    margin: 12px auto 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 17px;
     line-height: 1.2;
     letter-spacing: -0.4px;
     text-decoration: underline;
@@ -369,6 +382,7 @@ const ICON_SCALE = 75 / 95;
       margin: 0 0 10px;
       text-align: center;
       font-size: 12px;
+      color: var(--stand-red);
     }
     /* Drop the desktop line breaks so the caption flows on one line on mobile. */
     .signup-caption br {
@@ -383,9 +397,17 @@ const ICON_SCALE = 75 / 95;
     }
     .hero-signup-box input {
       font-size: clamp(17px, 5vw, 22px);
+      /* No visible Submit button on mobile, so drop the desktop offset that
+         compensated for its width — the text centers in the full bar. */
+      padding-right: 0;
     }
+    /* The in-bar Submit reads as clutter at phone width; a dedicated
+       "Sign up →" CTA sits below the bar instead. */
     .hero-submit {
-      font-size: 15px;
+      display: none;
+    }
+    .hero-submit-mobile {
+      display: block;
     }
 
     .product {
@@ -467,11 +489,6 @@ const ICON_SCALE = 75 / 95;
   // signups and no duplicate/unauthenticated capture endpoint to maintain.
   const heroForm = document.getElementById('hero-waitlist-form') as HTMLFormElement | null;
   const heroEmail = document.getElementById('hero-waitlist-email') as HTMLInputElement | null;
-
-  // The placeholder is styled like real text; clear it on focus so the field
-  // reads as empty and editable, and restore it on blur if nothing was typed.
-  heroEmail?.addEventListener('focus', () => { if (heroEmail) heroEmail.placeholder = ''; });
-  heroEmail?.addEventListener('blur', () => { if (heroEmail && !heroEmail.value) heroEmail.placeholder = 'hello@email.com'; });
 
   heroForm?.addEventListener('submit', (e) => {
     e.preventDefault();
