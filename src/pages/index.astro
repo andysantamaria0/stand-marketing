@@ -17,8 +17,8 @@ import Footer from '@/components/Footer.astro';
 
 <Layout>
   <main>
-    <Header />
     <VideoBlock />
+    <Header />
     <Hero />
     <About />
     <FindYourBusiness />
@@ -32,3 +32,19 @@ import Footer from '@/components/Footer.astro';
   </main>
   <Footer />
 </Layout>
+
+<style>
+  /* DOM order is Video → Header → Hero (so mobile flows video-first, header
+     below the film — per the mobile layout). On desktop, lift the header back
+     to the very top (order: -1) so it reads as the page's nav bar. The reorder
+     needs main to be a flex column. */
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 769px) {
+    main :global(.site-header) {
+      order: -1;
+    }
+  }
+</style>
