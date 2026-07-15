@@ -1,0 +1,139 @@
+---
+// VIDEO BLOCK — the film, between Hero and About.
+// Press-to-play (never autoplay), sound ON once played (allowed because the
+// click is a user gesture). Poster + headline overlay hide on play; native
+// controls appear so the viewer can pause / seek / adjust volume. preload="none"
+// so the 33MB file only downloads when a viewer actually presses play.
+const HEADLINE = 'The modern generation of the lemonade stand.';
+---
+
+<section class="film" aria-label="Watch the Stand film">
+  <div class="inner">
+    <figure class="player" id="film-player">
+      <video
+        class="video"
+        preload="none"
+        playsinline
+        poster="/video/poster.jpg"
+        aria-label="Stand — the film"
+      >
+        <source src="/video/stand-website.mp4" type="video/mp4" />
+        Your browser can&rsquo;t play this video.
+      </video>
+
+      <button class="overlay" type="button" aria-label="Play the film with sound">
+        <span class="play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"></path></svg>
+        </span>
+        <span class="headline">{HEADLINE}</span>
+      </button>
+    </figure>
+  </div>
+</section>
+
+<script>
+  const wrap = document.getElementById('film-player');
+  if (wrap) {
+    const video = wrap.querySelector('video');
+    const overlay = wrap.querySelector('.overlay');
+    if (video && overlay) {
+      overlay.addEventListener('click', () => {
+        overlay.setAttribute('hidden', '');
+        video.controls = true;
+        video.muted = false; // sound on — this runs inside the click gesture
+        video.play().catch(() => {
+          // if playback is blocked, restore the poster overlay so the viewer can retry
+          overlay.removeAttribute('hidden');
+          video.controls = false;
+        });
+      });
+      // back to the poster + headline once the film finishes
+      video.addEventListener('ended', () => {
+        overlay.removeAttribute('hidden');
+        video.controls = false;
+        video.currentTime = 0;
+      });
+    }
+  }
+</script>
+
+<style>
+  .film {
+    background: var(--stand-cream);
+    padding: clamp(16px, 4vh, 56px) 0 clamp(28px, 6vh, 72px);
+  }
+  .inner {
+    max-width: min(1080px, 92%);
+    margin: 0 auto;
+  }
+  .player {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid var(--stand-black);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.12);
+    background: var(--stand-black);
+  }
+  .video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* poster overlay = the play control (covers the whole frame) */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(18px, 3.2vh, 30px);
+    padding: 24px;
+    cursor: pointer;
+    border: 0;
+    color: var(--stand-white);
+    background:
+      radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
+    transition: background 0.25s ease;
+  }
+  .overlay[hidden] { display: none; }
+  .overlay:hover { background: radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.5)); }
+  .overlay:focus-visible { outline: 4px solid var(--stand-mustard); outline-offset: -6px; }
+
+  .play {
+    display: grid;
+    place-items: center;
+    width: clamp(66px, 8vw, 94px);
+    height: clamp(66px, 8vw, 94px);
+    border-radius: 50%;
+    background: var(--stand-red);
+    color: var(--stand-white);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+  }
+  .play svg { transform: translateX(2px); width: clamp(28px, 3.4vw, 40px); height: auto; }
+
+  .headline {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(23px, 3.7vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-align: center;
+    text-wrap: balance;
+    max-width: 15ch;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .play { transition: transform 0.2s ease; }
+    .overlay:hover .play { transform: scale(1.06); }
+  }
+
+  @media (max-width: 640px) {
+    .player { border-radius: 14px; box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12); }
+  }
+</style>

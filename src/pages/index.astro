@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/Hero.astro';
+import VideoBlock from '@/components/VideoBlock.astro';
 import About from '@/components/About.astro';
 import FindYourBusiness from '@/components/FindYourBusiness.astro';
 import Marquee from '@/components/Marquee.astro';
@@ -16,6 +17,7 @@ import Footer from '@/components/Footer.astro';
 <Layout>
   <main>
     <Hero />
+    <VideoBlock />
     <About />
     <FindYourBusiness />
     <Marquee items={[{ text: 'Dream. Build. Grow.', font: 'sans' }, { text: 'What will you build?', font: 'serif' }]} height={56} />
