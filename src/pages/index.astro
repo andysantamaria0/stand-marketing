@@ -1,6 +1,8 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header.astro';
 import Hero from '@/components/Hero.astro';
+import VideoBlock from '@/components/VideoBlock.astro';
 import About from '@/components/About.astro';
 import FindYourBusiness from '@/components/FindYourBusiness.astro';
 import Marquee from '@/components/Marquee.astro';
@@ -15,6 +17,8 @@ import Footer from '@/components/Footer.astro';
 
 <Layout>
   <main>
+    <VideoBlock />
+    <Header />
     <Hero />
     <About />
     <FindYourBusiness />
@@ -28,3 +32,19 @@ import Footer from '@/components/Footer.astro';
   </main>
   <Footer />
 </Layout>
+
+<style>
+  /* DOM order is Video → Header → Hero (so mobile flows video-first, header
+     below the film — per the mobile layout). On desktop, lift the header back
+     to the very top (order: -1) so it reads as the page's nav bar. The reorder
+     needs main to be a flex column. */
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 769px) {
+    main :global(.site-header) {
+      order: -1;
+    }
+  }
+</style>
