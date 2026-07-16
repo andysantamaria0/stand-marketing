@@ -1,24 +1,24 @@
 ---
-// VIDEO BLOCK — the film, between Hero and About.
-// Press-to-play (never autoplay), sound ON once played (allowed because the
-// click is a user gesture). Poster + headline overlay hide on play; native
-// controls appear so the viewer can pause / seek / adjust volume. preload="none"
-// so the film only downloads when a viewer actually presses play.
-//
-// The film is hosted on Vercel Blob (CDN, off-repo) rather than committed to
-// public/ — see the `stand-media` Blob store. Pristine 1080p (CRF 18), V2 cut.
+// VIDEO BLOCK — the film, between the header and the hero.
+// AUTOPLAYS on load, MUTED + looping. Browsers BLOCK autoplay with sound, so
+// muted is required; a corner "sound" button unmutes (that click is the gesture
+// browsers need). Respects prefers-reduced-motion (no autoplay — poster shown,
+// sound button still starts it). Hosted on Vercel Blob (`stand-media` store),
+// pristine 1080p (CRF 18), V2 cut.
 const VIDEO_URL =
   'https://mk7xj0szdtkawdqj.public.blob.vercel-storage.com/video/stand-website-v2-RzQBNxWaJiAOJwSAv6dveovpSRwsLH.mp4';
-const HEADLINE = 'The modern generation of the lemonade stand.';
 ---
 
-<section class="film" aria-label="Watch the Stand film">
+<section class="film" aria-label="Stand film">
   <div class="inner">
     <figure class="player" id="film-player">
       <video
         class="video"
-        preload="none"
+        autoplay
+        muted
+        loop
         playsinline
+        preload="auto"
         poster="/video/poster.jpg"
         aria-label="Stand — the film"
       >
@@ -26,11 +26,16 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
         Your browser can&rsquo;t play this video.
       </video>
 
-      <button class="overlay" type="button" aria-label="Play the film with sound">
-        <span class="play" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"></path></svg>
-        </span>
-        <span class="headline">{HEADLINE}</span>
+      <button class="sound" id="film-sound" type="button" aria-pressed="false" aria-label="Turn sound on">
+        <svg class="ico off" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
+          <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5" />
+        </svg>
+        <svg class="ico on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
+          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 8.5a4.5 4.5 0 010 7M19 6a8 8 0 010 12" />
+        </svg>
+        <span class="label">sound on</span>
       </button>
     </figure>
   </div>
@@ -40,24 +45,44 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
   const wrap = document.getElementById('film-player');
   if (wrap) {
     const video = wrap.querySelector('video');
-    const overlay = wrap.querySelector('.overlay');
-    if (video && overlay) {
-      overlay.addEventListener('click', () => {
-        overlay.setAttribute('hidden', '');
-        video.controls = true;
-        video.muted = false; // sound on — this runs inside the click gesture
-        video.play().catch(() => {
-          // if playback is blocked, restore the poster overlay so the viewer can retry
-          overlay.removeAttribute('hidden');
-          video.controls = false;
-        });
-      });
-      // back to the poster + headline once the film finishes
-      video.addEventListener('ended', () => {
-        overlay.removeAttribute('hidden');
-        video.controls = false;
+    const btn = document.getElementById('film-sound');
+    const label = btn && btn.querySelector('.label');
+    if (video && btn && label) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        // Don't autoplay for reduced-motion users — hold on the poster.
+        video.autoplay = false;
+        video.loop = false;
+        video.pause();
         video.currentTime = 0;
+      } else {
+        // Belt-and-suspenders: kick playback if the attribute didn't fire
+        // (still muted, so no gesture needed).
+        video.play().catch(() => {});
+      }
+
+      const sync = () => {
+        const on = !video.muted && !video.paused;
+        wrap.classList.toggle('sound-on', on);
+        btn.setAttribute('aria-pressed', String(on));
+        btn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
+        label.textContent = on ? 'sound off' : 'sound on';
+      };
+
+      btn.addEventListener('click', () => {
+        if (video.muted) {
+          video.muted = false;
+          if (video.paused) video.play().catch(() => {}); // start it if reduced-motion / stalled
+        } else {
+          video.muted = true;
+        }
+        sync();
       });
+
+      video.addEventListener('volumechange', sync);
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      sync();
     }
   }
 </script>
@@ -88,57 +113,62 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
     display: block;
   }
 
-  /* poster overlay = the play control (covers the whole frame) */
-  .overlay {
+  /* Sound toggle — the film is muted on autoplay; this turns audio on. */
+  .sound {
     position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
+    right: clamp(12px, 2vw, 18px);
+    bottom: clamp(12px, 2vw, 18px);
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: clamp(18px, 3.2vh, 30px);
-    padding: 24px;
-    cursor: pointer;
-    border: 0;
-    color: var(--stand-white);
-    background:
-      radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
-    transition: background 0.25s ease;
-  }
-  .overlay[hidden] { display: none; }
-  .overlay:hover { background: radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.5)); }
-  .overlay:focus-visible { outline: 4px solid var(--stand-mustard); outline-offset: -6px; }
-
-  .play {
-    display: grid;
-    place-items: center;
-    width: clamp(66px, 8vw, 94px);
-    height: clamp(66px, 8vw, 94px);
-    border-radius: 50%;
+    gap: 7px;
+    padding: 9px 15px 9px 12px;
+    border: 2px solid var(--stand-black);
+    border-radius: 999px;
     background: var(--stand-red);
     color: var(--stand-white);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
-  }
-  .play svg { transform: translateX(2px); width: clamp(28px, 3.4vw, 40px); height: auto; }
-
-  .headline {
     font-family: var(--font-sans);
+    font-size: 14px;
     font-weight: 700;
-    font-size: clamp(23px, 3.7vw, 46px);
-    line-height: 1.04;
     letter-spacing: -0.01em;
-    text-align: center;
-    text-wrap: balance;
-    max-width: 15ch;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
+  }
+  .sound .ico {
+    display: block;
+    flex: none;
+  }
+  .sound .ico.on {
+    display: none;
+  }
+  .sound-on .sound .ico.off {
+    display: none;
+  }
+  .sound-on .sound .ico.on {
+    display: block;
+  }
+  .sound:focus-visible {
+    outline: 3px solid var(--stand-mustard);
+    outline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .play { transition: transform 0.2s ease; }
-    .overlay:hover .play { transform: scale(1.06); }
+    .sound {
+      transition: transform 0.15s ease;
+    }
+    .sound:hover {
+      transform: scale(1.04);
+    }
   }
 
   @media (max-width: 640px) {
-    .player { border-radius: 14px; box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12); }
+    .player {
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .sound {
+      font-size: 13px;
+      padding: 8px 13px 8px 10px;
+    }
   }
 </style>
