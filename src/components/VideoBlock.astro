@@ -128,15 +128,36 @@ const VIDEO_URL =
         sync();
       });
 
+      // Auto-hide the controls ~2s into playback so they don't sit on the film;
+      // reveal them on any interaction, and keep them up while paused / on the
+      // still frame (and never auto-hide for reduced-motion users).
+      let hideTimer;
+      const revealControls = () => {
+        wrap.classList.remove('controls-hidden');
+        clearTimeout(hideTimer);
+        if (!reduce && !video.paused) {
+          hideTimer = setTimeout(() => {
+            if (!video.paused && !wrap.contains(document.activeElement)) {
+              wrap.classList.add('controls-hidden');
+            }
+          }, 2000);
+        }
+      };
+
       // When the film finishes, rewind to the opening still frame (no loop).
       video.addEventListener('ended', () => {
         video.currentTime = 0;
         sync();
+        revealControls();
       });
       video.addEventListener('volumechange', sync);
-      video.addEventListener('play', sync);
-      video.addEventListener('pause', sync);
+      video.addEventListener('play', () => { sync(); revealControls(); });
+      video.addEventListener('pause', () => { sync(); revealControls(); });
+      wrap.addEventListener('pointermove', revealControls);
+      wrap.addEventListener('pointerdown', revealControls);
+      wrap.addEventListener('focusin', revealControls);
       sync();
+      revealControls();
     }
   }
 </script>
@@ -175,6 +196,16 @@ const VIDEO_URL =
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+  /* Auto-hide during playback (JS toggles .controls-hidden on the figure).
+     Keep them up whenever a control has keyboard focus. */
+  .controls-hidden .controls {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .player:focus-within .controls {
+    opacity: 1;
+    pointer-events: auto;
   }
   .ctl {
     display: inline-flex;
@@ -221,6 +252,9 @@ const VIDEO_URL =
     .ctl:hover {
       transform: scale(1.04);
     }
+    .controls {
+      transition: opacity 0.35s ease;
+    }
   }
 
   @media (max-width: 640px) {
@@ -228,14 +262,25 @@ const VIDEO_URL =
       border-radius: 14px;
       box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
     }
+    .controls {
+      right: 10px;
+      bottom: 10px;
+      gap: 6px;
+    }
     .ctl {
-      font-size: 13px;
+      font-size: 12px;
+      gap: 5px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    }
+    .ctl .ico {
+      width: 15px;
+      height: 15px;
     }
     .sound {
-      padding: 8px 13px 8px 10px;
+      padding: 6px 11px 6px 9px;
     }
     .play {
-      padding: 8px;
+      padding: 7px;
     }
   }
 </style>
