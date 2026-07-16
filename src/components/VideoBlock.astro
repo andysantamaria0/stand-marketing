@@ -4,9 +4,10 @@
 // still frame when it ends. A corner pause button stops/resumes it; a red
 // "sound" pill unmutes (that click is the gesture browsers need to allow audio,
 // since autoplay is only permitted while muted). A visible pause control is
-// also required for autoplaying motion >5s (WCAG 2.2.2). prefers-reduced-motion
-// users don't get autoplay — they hold on the still frame and press play.
-// Hosted on Vercel Blob (`stand-media` store), pristine 1080p (CRF 18), V2 cut.
+// also required for autoplaying motion >5s (WCAG 2.2.2) — the pause button
+// covers that, so we autoplay for everyone (including reduced-motion users; the
+// film is muted and stoppable). Hosted on Vercel Blob (`stand-media` store),
+// pristine 1080p (CRF 18), V2 cut.
 //
 // Each control keeps ONE always-visible <svg> and swaps its shape via innerHTML
 // on toggle. This is deliberate: Chrome will not repaint an icon that is
@@ -78,17 +79,12 @@ const VIDEO_URL =
           '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 8.5a4.5 4.5 0 010 7M19 6a8 8 0 010 12"></path>',
       };
 
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        // Don't autoplay for reduced-motion users — hold on the still frame.
-        video.autoplay = false;
-        video.pause();
-        video.currentTime = 0;
-      } else {
-        // Belt-and-suspenders: kick playback if the attribute didn't fire
-        // (still muted, so no gesture needed).
-        video.play().catch(() => {});
-      }
+      // Autoplay muted on load (browsers allow autoplay only while muted). We
+      // intentionally do NOT suppress it for prefers-reduced-motion: the film is
+      // muted and the pause button lets anyone stop the motion, which satisfies
+      // WCAG 2.2.2 without denying the autoplay the site wants. Belt-and-
+      // suspenders play() in case the attribute didn't fire.
+      video.play().catch(() => {});
 
       let lastPlayIcon = '';
       let lastSoundIcon = '';
@@ -130,12 +126,12 @@ const VIDEO_URL =
 
       // Auto-hide the controls ~2s into playback so they don't sit on the film;
       // reveal them on any interaction, and keep them up while paused / on the
-      // still frame (and never auto-hide for reduced-motion users).
+      // still frame. The fade itself is disabled under reduced-motion in CSS.
       let hideTimer;
       const revealControls = () => {
         wrap.classList.remove('controls-hidden');
         clearTimeout(hideTimer);
-        if (!reduce && !video.paused) {
+        if (!video.paused) {
           hideTimer = setTimeout(() => {
             if (!video.paused && !wrap.contains(document.activeElement)) {
               wrap.classList.add('controls-hidden');
