@@ -1,10 +1,18 @@
 ---
 // VIDEO BLOCK — the film, between the header and the hero.
-// AUTOPLAYS on load, MUTED + looping. Browsers BLOCK autoplay with sound, so
-// muted is required; a corner "sound" button unmutes (that click is the gesture
-// browsers need). Respects prefers-reduced-motion (no autoplay — poster shown,
-// sound button still starts it). Hosted on Vercel Blob (`stand-media` store),
-// pristine 1080p (CRF 18), V2 cut.
+// Autoplays MUTED on load, plays ONCE (no loop), and returns to the opening
+// still frame when it ends. A corner pause button stops/resumes it; a red
+// "sound" pill unmutes (that click is the gesture browsers need to allow audio,
+// since autoplay is only permitted while muted). A visible pause control is
+// also required for autoplaying motion >5s (WCAG 2.2.2). prefers-reduced-motion
+// users don't get autoplay — they hold on the still frame and press play.
+// Hosted on Vercel Blob (`stand-media` store), pristine 1080p (CRF 18), V2 cut.
+//
+// Each control keeps ONE always-visible <svg> and swaps its shape via innerHTML
+// on toggle. This is deliberate: Chrome will not repaint an icon that is
+// revealed (display/opacity) over the composited <video> layer, so the button
+// goes blank after a state change. Rewriting the live SVG's geometry forces a
+// real re-render, which paints correctly.
 const VIDEO_URL =
   'https://mk7xj0szdtkawdqj.public.blob.vercel-storage.com/video/stand-website-v2-RzQBNxWaJiAOJwSAv6dveovpSRwsLH.mp4';
 ---
@@ -16,7 +24,6 @@ const VIDEO_URL =
         class="video"
         autoplay
         muted
-        loop
         playsinline
         preload="auto"
         poster="/video/poster.jpg"
@@ -26,17 +33,22 @@ const VIDEO_URL =
         Your browser can&rsquo;t play this video.
       </video>
 
-      <button class="sound" id="film-sound" type="button" aria-pressed="false" aria-label="Turn sound on">
-        <svg class="ico off" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
-          <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5" />
-        </svg>
-        <svg class="ico on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
-          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 8.5a4.5 4.5 0 010 7M19 6a8 8 0 010 12" />
-        </svg>
-        <span class="label">sound on</span>
-      </button>
+      <div class="controls">
+        <button class="ctl play" id="film-play" type="button" aria-label="Pause film">
+          <svg class="ico" id="film-play-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" />
+            <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" />
+          </svg>
+        </button>
+
+        <button class="ctl sound" id="film-sound" type="button" aria-pressed="false" aria-label="Turn sound on">
+          <svg class="ico" id="film-sound-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5" />
+          </svg>
+          <span class="label">sound on</span>
+        </button>
+      </div>
     </figure>
   </div>
 </section>
@@ -45,14 +57,31 @@ const VIDEO_URL =
   const wrap = document.getElementById('film-player');
   if (wrap) {
     const video = wrap.querySelector('video');
-    const btn = document.getElementById('film-sound');
-    const label = btn && btn.querySelector('.label');
-    if (video && btn && label) {
+    const soundBtn = document.getElementById('film-sound');
+    const playBtn = document.getElementById('film-play');
+    const label = soundBtn && soundBtn.querySelector('.label');
+    const playIco = document.getElementById('film-play-ico');
+    const soundIco = document.getElementById('film-sound-ico');
+    if (video && soundBtn && playBtn && label && playIco && soundIco) {
+      // Icon geometries, swapped into the live SVGs on state change so they
+      // repaint over the video (see the header note).
+      const ICON = {
+        pause:
+          '<rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"></rect>' +
+          '<rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"></rect>',
+        play: '<polygon fill="currentColor" points="8,5 8,19 19,12"></polygon>',
+        muted:
+          '<path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"></path>' +
+          '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5"></path>',
+        sound:
+          '<path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"></path>' +
+          '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 8.5a4.5 4.5 0 010 7M19 6a8 8 0 010 12"></path>',
+      };
+
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduce) {
-        // Don't autoplay for reduced-motion users — hold on the poster.
+        // Don't autoplay for reduced-motion users — hold on the still frame.
         video.autoplay = false;
-        video.loop = false;
         video.pause();
         video.currentTime = 0;
       } else {
@@ -61,24 +90,49 @@ const VIDEO_URL =
         video.play().catch(() => {});
       }
 
+      let lastPlayIcon = '';
+      let lastSoundIcon = '';
       const sync = () => {
-        const on = !video.muted && !video.paused;
-        wrap.classList.toggle('sound-on', on);
-        btn.setAttribute('aria-pressed', String(on));
-        btn.setAttribute('aria-label', on ? 'Turn sound off' : 'Turn sound on');
-        label.textContent = on ? 'sound off' : 'sound on';
+        const soundOn = !video.muted && !video.paused;
+        soundBtn.setAttribute('aria-pressed', String(soundOn));
+        soundBtn.setAttribute('aria-label', soundOn ? 'Turn sound off' : 'Turn sound on');
+        label.textContent = soundOn ? 'sound off' : 'sound on';
+        playBtn.setAttribute('aria-label', video.paused ? 'Play film' : 'Pause film');
+
+        // Only rewrite the SVG when the shape actually changes.
+        const nextPlay = video.paused ? ICON.play : ICON.pause;
+        if (nextPlay !== lastPlayIcon) {
+          playIco.innerHTML = nextPlay;
+          lastPlayIcon = nextPlay;
+        }
+        const nextSound = soundOn ? ICON.sound : ICON.muted;
+        if (nextSound !== lastSoundIcon) {
+          soundIco.innerHTML = nextSound;
+          lastSoundIcon = nextSound;
+        }
       };
 
-      btn.addEventListener('click', () => {
+      playBtn.addEventListener('click', () => {
+        if (video.paused) video.play().catch(() => {});
+        else video.pause();
+        sync();
+      });
+
+      soundBtn.addEventListener('click', () => {
         if (video.muted) {
           video.muted = false;
-          if (video.paused) video.play().catch(() => {}); // start it if reduced-motion / stalled
+          if (video.paused) video.play().catch(() => {}); // unmuting also resumes a paused film
         } else {
           video.muted = true;
         }
         sync();
       });
 
+      // When the film finishes, rewind to the opening still frame (no loop).
+      video.addEventListener('ended', () => {
+        video.currentTime = 0;
+        sync();
+      });
       video.addEventListener('volumechange', sync);
       video.addEventListener('play', sync);
       video.addEventListener('pause', sync);
@@ -113,19 +167,22 @@ const VIDEO_URL =
     display: block;
   }
 
-  /* Sound toggle — the film is muted on autoplay; this turns audio on. */
-  .sound {
+  /* Controls cluster — bottom-right of the film: pause (neutral) + sound (red). */
+  .controls {
     position: absolute;
     right: clamp(12px, 2vw, 18px);
     bottom: clamp(12px, 2vw, 18px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ctl {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 7px;
-    padding: 9px 15px 9px 12px;
     border: 2px solid var(--stand-black);
     border-radius: 999px;
-    background: var(--stand-red);
-    color: var(--stand-white);
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 700;
@@ -134,29 +191,34 @@ const VIDEO_URL =
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
   }
-  .sound .ico {
-    display: block;
-    flex: none;
-  }
-  .sound .ico.on {
-    display: none;
-  }
-  .sound-on .sound .ico.off {
-    display: none;
-  }
-  .sound-on .sound .ico.on {
-    display: block;
-  }
-  .sound:focus-visible {
+  .ctl:focus-visible {
     outline: 3px solid var(--stand-mustard);
     outline-offset: 3px;
   }
+  .ctl .ico {
+    display: block;
+    flex: none;
+  }
+
+  /* Pause / play — neutral, icon-only circle. */
+  .play {
+    padding: 9px;
+    background: var(--stand-white);
+    color: var(--stand-black);
+  }
+
+  /* Sound toggle — the film is muted on autoplay; this turns audio on. */
+  .sound {
+    padding: 9px 15px 9px 12px;
+    background: var(--stand-red);
+    color: var(--stand-white);
+  }
 
   @media (prefers-reduced-motion: no-preference) {
-    .sound {
+    .ctl {
       transition: transform 0.15s ease;
     }
-    .sound:hover {
+    .ctl:hover {
       transform: scale(1.04);
     }
   }
@@ -166,9 +228,14 @@ const VIDEO_URL =
       border-radius: 14px;
       box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
     }
-    .sound {
+    .ctl {
       font-size: 13px;
+    }
+    .sound {
       padding: 8px 13px 8px 10px;
+    }
+    .play {
+      padding: 8px;
     }
   }
 </style>
