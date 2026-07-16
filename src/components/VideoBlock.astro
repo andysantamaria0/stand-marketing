@@ -1,24 +1,32 @@
 ---
-// VIDEO BLOCK — the film, between Hero and About.
-// Press-to-play (never autoplay), sound ON once played (allowed because the
-// click is a user gesture). Poster + headline overlay hide on play; native
-// controls appear so the viewer can pause / seek / adjust volume. preload="none"
-// so the film only downloads when a viewer actually presses play.
+// VIDEO BLOCK — the film, between the header and the hero.
+// Autoplays MUTED on load, plays ONCE (no loop), and returns to the opening
+// still frame when it ends. A corner pause button stops/resumes it; a red
+// "sound" pill unmutes (that click is the gesture browsers need to allow audio,
+// since autoplay is only permitted while muted). A visible pause control is
+// also required for autoplaying motion >5s (WCAG 2.2.2) — the pause button
+// covers that, so we autoplay for everyone (including reduced-motion users; the
+// film is muted and stoppable). Hosted on Vercel Blob (`stand-media` store),
+// pristine 1080p (CRF 18), V2 cut.
 //
-// The film is hosted on Vercel Blob (CDN, off-repo) rather than committed to
-// public/ — see the `stand-media` Blob store. Pristine 1080p (CRF 18), V2 cut.
+// Each control keeps ONE always-visible <svg> and swaps its shape via innerHTML
+// on toggle. This is deliberate: Chrome will not repaint an icon that is
+// revealed (display/opacity) over the composited <video> layer, so the button
+// goes blank after a state change. Rewriting the live SVG's geometry forces a
+// real re-render, which paints correctly.
 const VIDEO_URL =
   'https://mk7xj0szdtkawdqj.public.blob.vercel-storage.com/video/stand-website-v2-RzQBNxWaJiAOJwSAv6dveovpSRwsLH.mp4';
-const HEADLINE = 'The modern generation of the lemonade stand.';
 ---
 
-<section class="film" aria-label="Watch the Stand film">
+<section class="film" aria-label="Stand film">
   <div class="inner">
     <figure class="player" id="film-player">
       <video
         class="video"
-        preload="none"
+        autoplay
+        muted
         playsinline
+        preload="auto"
         poster="/video/poster.jpg"
         aria-label="Stand — the film"
       >
@@ -26,12 +34,22 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
         Your browser can&rsquo;t play this video.
       </video>
 
-      <button class="overlay" type="button" aria-label="Play the film with sound">
-        <span class="play" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"></path></svg>
-        </span>
-        <span class="headline">{HEADLINE}</span>
-      </button>
+      <div class="controls">
+        <button class="ctl play" id="film-play" type="button" aria-label="Pause film">
+          <svg class="ico" id="film-play-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" />
+            <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" />
+          </svg>
+        </button>
+
+        <button class="ctl sound" id="film-sound" type="button" aria-pressed="false" aria-label="Turn sound on">
+          <svg class="ico" id="film-sound-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z" />
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5" />
+          </svg>
+          <span class="label">sound on</span>
+        </button>
+      </div>
     </figure>
   </div>
 </section>
@@ -40,24 +58,102 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
   const wrap = document.getElementById('film-player');
   if (wrap) {
     const video = wrap.querySelector('video');
-    const overlay = wrap.querySelector('.overlay');
-    if (video && overlay) {
-      overlay.addEventListener('click', () => {
-        overlay.setAttribute('hidden', '');
-        video.controls = true;
-        video.muted = false; // sound on — this runs inside the click gesture
-        video.play().catch(() => {
-          // if playback is blocked, restore the poster overlay so the viewer can retry
-          overlay.removeAttribute('hidden');
-          video.controls = false;
-        });
+    const soundBtn = document.getElementById('film-sound');
+    const playBtn = document.getElementById('film-play');
+    const label = soundBtn && soundBtn.querySelector('.label');
+    const playIco = document.getElementById('film-play-ico');
+    const soundIco = document.getElementById('film-sound-ico');
+    if (video && soundBtn && playBtn && label && playIco && soundIco) {
+      // Icon geometries, swapped into the live SVGs on state change so they
+      // repaint over the video (see the header note).
+      const ICON = {
+        pause:
+          '<rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"></rect>' +
+          '<rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"></rect>',
+        play: '<polygon fill="currentColor" points="8,5 8,19 19,12"></polygon>',
+        muted:
+          '<path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"></path>' +
+          '<path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 9.5l4 5M20.5 9.5l-4 5"></path>',
+        sound:
+          '<path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"></path>' +
+          '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16.5 8.5a4.5 4.5 0 010 7M19 6a8 8 0 010 12"></path>',
+      };
+
+      // Autoplay muted on load (browsers allow autoplay only while muted). We
+      // intentionally do NOT suppress it for prefers-reduced-motion: the film is
+      // muted and the pause button lets anyone stop the motion, which satisfies
+      // WCAG 2.2.2 without denying the autoplay the site wants. Belt-and-
+      // suspenders play() in case the attribute didn't fire.
+      video.play().catch(() => {});
+
+      let lastPlayIcon = '';
+      let lastSoundIcon = '';
+      const sync = () => {
+        const soundOn = !video.muted && !video.paused;
+        soundBtn.setAttribute('aria-pressed', String(soundOn));
+        soundBtn.setAttribute('aria-label', soundOn ? 'Turn sound off' : 'Turn sound on');
+        label.textContent = soundOn ? 'sound off' : 'sound on';
+        playBtn.setAttribute('aria-label', video.paused ? 'Play film' : 'Pause film');
+
+        // Only rewrite the SVG when the shape actually changes.
+        const nextPlay = video.paused ? ICON.play : ICON.pause;
+        if (nextPlay !== lastPlayIcon) {
+          playIco.innerHTML = nextPlay;
+          lastPlayIcon = nextPlay;
+        }
+        const nextSound = soundOn ? ICON.sound : ICON.muted;
+        if (nextSound !== lastSoundIcon) {
+          soundIco.innerHTML = nextSound;
+          lastSoundIcon = nextSound;
+        }
+      };
+
+      playBtn.addEventListener('click', () => {
+        if (video.paused) video.play().catch(() => {});
+        else video.pause();
+        sync();
       });
-      // back to the poster + headline once the film finishes
+
+      soundBtn.addEventListener('click', () => {
+        if (video.muted) {
+          video.muted = false;
+          if (video.paused) video.play().catch(() => {}); // unmuting also resumes a paused film
+        } else {
+          video.muted = true;
+        }
+        sync();
+      });
+
+      // Auto-hide the controls ~2s into playback so they don't sit on the film;
+      // reveal them on any interaction, and keep them up while paused / on the
+      // still frame. The fade itself is disabled under reduced-motion in CSS.
+      let hideTimer;
+      const revealControls = () => {
+        wrap.classList.remove('controls-hidden');
+        clearTimeout(hideTimer);
+        if (!video.paused) {
+          hideTimer = setTimeout(() => {
+            if (!video.paused && !wrap.contains(document.activeElement)) {
+              wrap.classList.add('controls-hidden');
+            }
+          }, 2000);
+        }
+      };
+
+      // When the film finishes, rewind to the opening still frame (no loop).
       video.addEventListener('ended', () => {
-        overlay.removeAttribute('hidden');
-        video.controls = false;
         video.currentTime = 0;
+        sync();
+        revealControls();
       });
+      video.addEventListener('volumechange', sync);
+      video.addEventListener('play', () => { sync(); revealControls(); });
+      video.addEventListener('pause', () => { sync(); revealControls(); });
+      wrap.addEventListener('pointermove', revealControls);
+      wrap.addEventListener('pointerdown', revealControls);
+      wrap.addEventListener('focusin', revealControls);
+      sync();
+      revealControls();
     }
   }
 </script>
@@ -88,57 +184,99 @@ const HEADLINE = 'The modern generation of the lemonade stand.';
     display: block;
   }
 
-  /* poster overlay = the play control (covers the whole frame) */
-  .overlay {
+  /* Controls cluster — bottom-right of the film: pause (neutral) + sound (red). */
+  .controls {
     position: absolute;
-    inset: 0;
+    right: clamp(12px, 2vw, 18px);
+    bottom: clamp(12px, 2vw, 18px);
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  /* Auto-hide during playback (JS toggles .controls-hidden on the figure).
+     Keep them up whenever a control has keyboard focus. */
+  .controls-hidden .controls {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .player:focus-within .controls {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .ctl {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(18px, 3.2vh, 30px);
-    padding: 24px;
+    gap: 7px;
+    border: 2px solid var(--stand-black);
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
     cursor: pointer;
-    border: 0;
-    color: var(--stand-white);
-    background:
-      radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.42));
-    transition: background 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.32);
   }
-  .overlay[hidden] { display: none; }
-  .overlay:hover { background: radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.5)); }
-  .overlay:focus-visible { outline: 4px solid var(--stand-mustard); outline-offset: -6px; }
+  .ctl:focus-visible {
+    outline: 3px solid var(--stand-mustard);
+    outline-offset: 3px;
+  }
+  .ctl .ico {
+    display: block;
+    flex: none;
+  }
 
+  /* Pause / play — neutral, icon-only circle. */
   .play {
-    display: grid;
-    place-items: center;
-    width: clamp(66px, 8vw, 94px);
-    height: clamp(66px, 8vw, 94px);
-    border-radius: 50%;
+    padding: 9px;
+    background: var(--stand-white);
+    color: var(--stand-black);
+  }
+
+  /* Sound toggle — the film is muted on autoplay; this turns audio on. */
+  .sound {
+    padding: 9px 15px 9px 12px;
     background: var(--stand-red);
     color: var(--stand-white);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
-  }
-  .play svg { transform: translateX(2px); width: clamp(28px, 3.4vw, 40px); height: auto; }
-
-  .headline {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: clamp(23px, 3.7vw, 46px);
-    line-height: 1.04;
-    letter-spacing: -0.01em;
-    text-align: center;
-    text-wrap: balance;
-    max-width: 15ch;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .play { transition: transform 0.2s ease; }
-    .overlay:hover .play { transform: scale(1.06); }
+    .ctl {
+      transition: transform 0.15s ease;
+    }
+    .ctl:hover {
+      transform: scale(1.04);
+    }
+    .controls {
+      transition: opacity 0.35s ease;
+    }
   }
 
   @media (max-width: 640px) {
-    .player { border-radius: 14px; box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12); }
+    .player {
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+    .controls {
+      right: 10px;
+      bottom: 10px;
+      gap: 6px;
+    }
+    .ctl {
+      font-size: 12px;
+      gap: 5px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    }
+    .ctl .ico {
+      width: 15px;
+      height: 15px;
+    }
+    .sound {
+      padding: 6px 11px 6px 9px;
+    }
+    .play {
+      padding: 7px;
+    }
   }
 </style>
