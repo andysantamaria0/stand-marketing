@@ -49,25 +49,21 @@ const EVENT = {
 // TODO(copy): beats + minute splits come from Lauren's one-pager.
 const beats = [
   {
-    n: '01',
     minutes: '~20 min',
     title: 'Find your thing',
     body: 'We start with what your kid already loves — games, baking, drawing, sneakers, anything — and turn interests into raw material for a business.',
   },
   {
-    n: '02',
     minutes: '~25 min',
     title: 'Shape the idea',
     body: 'Guided narrowing: from "lots of interests" to one concrete business idea that a kid can actually run — and that works on Stand from day one.',
   },
   {
-    n: '03',
     minutes: '~25 min',
     title: 'Make it real',
     body: 'Who is it for? What is it called? What does it cost? Every builder locks in an audience, a name, and a starting price.',
   },
   {
-    n: '04',
     minutes: '~20 min',
     title: 'Leave with something',
     body: 'Each kid produces a tangible branding output they made themselves — and a clear next step: launching their storefront on Stand.',
@@ -183,7 +179,6 @@ const faqs = [
       </h2>
       <div class="promise-grid">
         <article class="promise-card">
-          <p class="card-kicker">01</p>
           <h3 class="name">A business idea that&rsquo;s theirs</h3>
           <p class="desc">
             Not a worksheet — one concrete idea, built from what your kid already
@@ -191,7 +186,6 @@ const faqs = [
           </p>
         </article>
         <article class="promise-card">
-          <p class="card-kicker">02</p>
           <h3 class="name">A brand they made themselves</h3>
           <p class="desc">
             A name, an audience, a price — and a tangible branding output they
@@ -199,7 +193,6 @@ const faqs = [
           </p>
         </article>
         <article class="promise-card">
-          <p class="card-kicker">03</p>
           <h3 class="name">A real path to launch</h3>
           <p class="desc">
             Every participant gets free access to Stand, where the idea becomes an
@@ -219,7 +212,6 @@ const faqs = [
         {
           beats.map((b) => (
             <li class="beat">
-              <span class="beat-n" aria-hidden="true">{b.n}</span>
               <div class="beat-body">
                 <h3 class="name">
                   {b.title} <span class="beat-minutes">{b.minutes}</span>
@@ -260,7 +252,7 @@ const faqs = [
     <!-- ── 5 · Parent FAQ ─────────────────────────────────────────────────── -->
     <section class="faq" aria-labelledby="faq-title">
       <h2 id="faq-title" class="headline section-title">
-        The stuff parents ask
+        FAQ
         <span class="draft-chip">Draft answers &mdash; Lauren to review</span>
       </h2>
       <div class="faq-list">
@@ -467,6 +459,20 @@ const faqs = [
     color: var(--stand-black);
     font-family: var(--font-sans);
     overflow-x: hidden;
+    /* Colored sections render as inset rounded "cards" (Toca treatment):
+       page background shows around each panel through this gap. */
+    --band-gap: clamp(12px, 1.8vw, 28px);
+    --band-radius: clamp(20px, 3vw, 44px);
+  }
+
+  .poster,
+  .proof,
+  .minutes {
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--band-radius);
   }
 
   /* ── Nav ─────────────────────────────────────────────────────────────── */
@@ -508,15 +514,14 @@ const faqs = [
     margin: 0 0 clamp(24px, 4vh, 44px);
   }
 
-  /* Post-it "sticker" tag — the scarcity marker. Slight rotation + hard offset
-     shadow keeps it in the brand's hand-made sticker language. */
+  /* Post-it pill tag — the scarcity marker. */
   .seats-tag {
     display: inline-block;
     background: var(--stand-postit);
     border: 2px solid var(--stand-black);
-    box-shadow: 4px 4px 0 var(--stand-black);
+    border-radius: 999px;
     transform: rotate(-2deg);
-    padding: 6px 14px;
+    padding: 6px 16px;
     margin: 0 0 20px;
     font-weight: 700;
     font-size: 15px;
@@ -529,39 +534,45 @@ const faqs = [
     display: inline-block;
     vertical-align: middle;
     margin-left: 12px;
-    padding: 3px 8px;
+    padding: 3px 10px;
     border: 1.5px dashed var(--stand-red);
+    border-radius: 999px;
     color: var(--stand-red);
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 12px;
     letter-spacing: 0.2px;
     text-transform: uppercase;
-    transform: rotate(0.5deg);
   }
 
+  /* Rounded pill CTA (Bored Cow / Ramen Bae button language). */
   .cta-btn {
     display: inline-block;
     background: var(--stand-red);
     color: var(--stand-cream);
-    border: 2.5px solid var(--stand-black);
-    box-shadow: 5px 5px 0 var(--stand-black);
-    padding: 16px 32px;
+    border: 2px solid var(--stand-black);
+    border-radius: 999px;
+    padding: 16px 36px;
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(17px, 1.6vw, 21px);
     line-height: 1;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    transition: transform 0.15s ease;
   }
 
   .cta-btn:hover {
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0 var(--stand-black);
+    transform: translateY(-2px);
   }
 
   .cta-btn:active {
-    transform: translate(5px, 5px);
-    box-shadow: 0 0 0 var(--stand-black);
+    transform: translateY(1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-btn:hover,
+    .cta-btn:active {
+      transform: none;
+    }
   }
 
   /* ── Hero ────────────────────────────────────────────────────────────────
@@ -571,11 +582,19 @@ const faqs = [
      no reduced-motion branch. */
   .hero {
     position: sticky;
-    top: 0;
+    /* Pins with a cream gap above, so the card reads as a card even frozen. */
+    top: var(--band-gap);
     z-index: 0;
     text-align: center;
+    /* The hero is itself a rounded post-it card on the cream canvas (the
+       Bored Cow page frame): every colored moment on this page is a card. */
+    width: calc(100% - 2 * var(--band-gap));
     max-width: none;
-    padding-top: clamp(24px, 4vh, 56px);
+    margin: 0 auto;
+    background: var(--stand-postit);
+    border-radius: var(--band-radius);
+    padding-top: clamp(32px, 5vh, 64px);
+    padding-bottom: clamp(40px, 7vh, 88px);
   }
 
   /* All post-hero content paints above the pinned hero. The opaque background
@@ -630,7 +649,9 @@ const faqs = [
 
   .hero-sub {
     font-weight: 700;
-    font-size: clamp(18px, 2vw, 28px);
+    /* 19px floor: red-on-postit passes contrast as large text only, and
+       bold text qualifies as "large" from 18.66px up. */
+    font-size: clamp(19px, 2vw, 28px);
     line-height: 1.25;
     max-width: 30ch;
     margin: 0 auto 24px;
@@ -641,13 +662,15 @@ const faqs = [
     color: var(--stand-red);
   }
 
-  /* ── Poster — full-bleed red statement that slides over the hero ───────── */
+  /* ── Poster — rounded red card that slides over the hero ───────────────── */
   .poster {
-    max-width: none;
     background: var(--stand-red);
     text-align: center;
     padding-top: clamp(64px, 12vh, 140px);
     padding-bottom: clamp(64px, 12vh, 140px);
+    /* Cream breathing room above, so the card reads as a card the moment it
+       starts covering the pinned hero. */
+    margin-top: var(--band-gap);
   }
 
   .poster-title {
@@ -675,13 +698,13 @@ const faqs = [
     color: var(--stand-black);
   }
 
-  /* ── Social proof strip — thin black band, "as seen on" slot ───────────── */
+  /* ── Social proof strip — thin black card, "as seen on" slot ───────────── */
   .proof {
-    max-width: none;
     background: var(--stand-black);
     text-align: center;
     padding-top: 20px;
     padding-bottom: 20px;
+    margin-top: var(--band-gap);
   }
 
   .proof-line {
@@ -739,24 +762,18 @@ const faqs = [
     gap: 20px;
   }
 
+  /* Ramen-Bae-style cards: each with its own brand color, rounded corners,
+     thin black outline — no offset shadow, no tilt. All three pairs pass the
+     brand guide's ADA table with black text. */
   .promise-card {
-    background: var(--stand-white);
     border: 2px solid var(--stand-black);
-    box-shadow: 5px 5px 0 var(--stand-black);
-    padding: 24px 22px 26px;
+    border-radius: clamp(18px, 2vw, 28px);
+    padding: 28px 24px;
   }
 
-  /* Alternating tilt keeps the grid from reading as a corporate card row. */
-  .promise-card:nth-child(1) { transform: rotate(-0.6deg); }
-  .promise-card:nth-child(2) { transform: rotate(0.5deg); }
-  .promise-card:nth-child(3) { transform: rotate(-0.4deg); }
-
-  .card-kicker {
-    font-family: var(--font-serif);
-    font-size: 15px;
-    margin: 0 0 10px;
-    color: var(--stand-red);
-  }
+  .promise-card:nth-child(1) { background: var(--stand-white); }
+  .promise-card:nth-child(2) { background: var(--stand-postit); }
+  .promise-card:nth-child(3) { background: var(--stand-pink); }
 
   .promise-card .name {
     font-weight: 700;
@@ -770,14 +787,13 @@ const faqs = [
   }
 
   /* ── The 90 minutes ──────────────────────────────────────────────────────
-     Full-bleed mustard band (black-on-mustard passes AA 4.5+ per the brand
-     guide) — the section keeps its centered 880px column; the box-shadow +
-     clip-path pair paints the background out to the viewport edges without
-     extra wrapper markup. */
+     Rounded mustard card (black-on-mustard passes AA 4.5+ per the brand
+     guide). The card spans nearly the full viewport; padding re-centers the
+     original 832px content column inside it. */
   .minutes {
     background: var(--stand-mustard);
-    box-shadow: 0 0 0 100vmax var(--stand-mustard);
-    clip-path: inset(0 -100vmax);
+    padding-left: max(24px, calc((100% - 832px) / 2));
+    padding-right: max(24px, calc((100% - 832px) / 2));
   }
 
   .beats {
@@ -787,20 +803,6 @@ const faqs = [
     display: flex;
     flex-direction: column;
     gap: clamp(24px, 4vh, 40px);
-  }
-
-  .beat {
-    display: flex;
-    gap: 24px;
-    align-items: baseline;
-  }
-
-  .beat-n {
-    font-family: var(--font-display);
-    font-size: clamp(28px, 3.4vw, 44px);
-    color: var(--stand-red);
-    flex-shrink: 0;
-    width: 64px;
   }
 
   .beat-body .name {
@@ -834,8 +836,7 @@ const faqs = [
     aspect-ratio: 4 / 5;
     background: var(--stand-white);
     border: 2px solid var(--stand-black);
-    box-shadow: 6px 6px 0 var(--stand-black);
-    transform: rotate(-1.2deg);
+    border-radius: clamp(18px, 2vw, 28px);
     display: grid;
     place-items: center;
   }
@@ -931,8 +932,8 @@ const faqs = [
 
   .signup-card {
     background: var(--stand-white);
-    border: 2.5px solid var(--stand-black);
-    box-shadow: 8px 8px 0 var(--stand-black);
+    border: 2px solid var(--stand-black);
+    border-radius: var(--band-radius);
     padding: clamp(28px, 4vw, 48px);
     text-align: center;
   }
@@ -980,18 +981,18 @@ const faqs = [
   .field select {
     border: 2px solid var(--stand-black);
     background: var(--stand-cream);
-    padding: 12px 14px;
+    padding: 12px 16px;
     font-family: var(--font-sans);
     font-size: 17px;
     color: var(--stand-black);
-    border-radius: 0;
+    border-radius: 14px;
     outline: none;
     width: 100%;
   }
 
   .field input:focus,
   .field select:focus {
-    box-shadow: 3px 3px 0 var(--stand-red);
+    border-color: var(--stand-red);
   }
 
   .field select {
