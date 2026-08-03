@@ -121,18 +121,29 @@ const faqs = [
       <a href="#signup" class="nav-cta">Save my kid&rsquo;s spot &rarr;</a>
     </nav>
 
-    <!-- ── 1 · Hero — the outcome, not the format ─────────────────────────── -->
+    <!-- ── 1 · Hero — giant type IS the poster (Toca superfans structure:
+         program name as a viewport-filling wordmark, a product sticker embedded
+         inside it, hand-drawn burst accent). Sticky: the sections that follow
+         slide up over it. ──────────────────────────────────────────────────── -->
     <section class="hero" aria-labelledby="mc-title">
-      <p class="seats-tag">Free &middot; only {EVENT.seats} spots</p>
-
-      <p class="eyebrow hero-eyebrow">
-        A live {EVENT.lengthAdj} masterclass for kids {EVENT.ages}
-      </p>
-
       <h1 id="mc-title" class="hero-title">
-        Your kid walks in with interests.<br />
-        <em>They walk out with a business.</em>
+        <svg class="hero-burst" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="4.5" stroke-linecap="round">
+            <path d="M8 52 L16 40" />
+            <path d="M22 34 L26 22" />
+            <path d="M40 16 L36 28" />
+            <path d="M52 10 L44 20" />
+          </g>
+        </svg>
+        Kickstart Your Business<span class="hero-sticker"
+          ><img src="/brand/STAND_PNG_YellowSticker.webp" alt="" /></span
+        >Builder
       </h1>
+
+      <p class="hero-sub">
+        A live {EVENT.lengthAdj} masterclass for kids {EVENT.ages}. They walk in
+        with interests. <em>They walk out with a business.</em>
+      </p>
 
       <ul class="event-facts" aria-label="Event details">
         <li>{EVENT.weekday}, {EVENT.date}</li>
@@ -142,6 +153,18 @@ const faqs = [
 
       <a href="#signup" class="cta-btn">Save my kid&rsquo;s spot &rarr;</a>
       <p class="cta-sub">Takes 30 seconds. No credit card &mdash; it&rsquo;s free.</p>
+    </section>
+
+    <div class="mc-rest">
+    <!-- ── 1b · Poster — full-bleed red statement section that slides over the
+         pinned hero, carrying the scarcity story in giant type. ───────────── -->
+    <section class="poster" aria-labelledby="poster-title">
+      <h2 id="poster-title" class="poster-title">Free. Only {EVENT.seats}&nbsp;spots.</h2>
+      <p class="poster-sub">
+        {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; first come,
+        first served
+      </p>
+      <a href="#signup" class="cta-btn cta-btn-postit">Save my kid&rsquo;s spot &rarr;</a>
     </section>
 
     <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
@@ -314,6 +337,7 @@ const faqs = [
         </div>
       </div>
     </section>
+    </div>
   </main>
   <Footer />
 </Layout>
@@ -531,29 +555,115 @@ const faqs = [
     box-shadow: 0 0 0 var(--stand-black);
   }
 
-  /* ── Hero ────────────────────────────────────────────────────────────── */
+  /* ── Hero ────────────────────────────────────────────────────────────────
+     Toca-superfans structure: the event name as a viewport-filling wordmark.
+     The hero is sticky at the top of the stack (z-index 0) so .mc-rest slides
+     up and over it on scroll — position-driven, so it costs nothing and needs
+     no reduced-motion branch. */
   .hero {
+    position: sticky;
+    top: 0;
+    z-index: 0;
     text-align: center;
-    padding-top: clamp(32px, 6vh, 72px);
+    max-width: none;
+    padding-top: clamp(24px, 4vh, 56px);
   }
 
-  .hero-eyebrow {
-    font-family: var(--font-serif);
-    letter-spacing: -0.3px;
-    margin: 0 0 16px;
+  /* All post-hero content paints above the pinned hero. The opaque background
+     is load-bearing: without it the hero would show through every section. */
+  .mc-rest {
+    position: relative;
+    z-index: 1;
+    background: var(--stand-cream);
+  }
+
+  /* Burst hugs the wordmark's first letter (anchored to the h1, not the
+     section) — the Toca accent placement. */
+  .hero-burst {
+    position: absolute;
+    top: -0.28em;
+    left: -0.12em;
+    width: 0.42em;
+    height: auto;
+    color: var(--stand-black);
+    pointer-events: none;
+    transform: rotate(-12deg);
   }
 
   .hero-title {
+    position: relative;
     font-weight: 900;
-    font-size: clamp(38px, 6.4vw, 84px);
-    line-height: 1.02;
-    letter-spacing: -1px;
-    margin: 0 0 28px;
+    /* Fills the frame like a wordmark: sized to make "Kickstart Your" span
+       the viewport on two lines. */
+    font-size: clamp(52px, 9.6vw, 150px);
+    line-height: 0.98;
+    letter-spacing: clamp(-4px, -0.03em, -1px);
+    margin: 0 auto 24px;
+    max-width: 12ch;
   }
 
-  .hero-title em {
+  /* Product sticker embedded inside the wordmark — the Toca "emoji in the
+     logotype" move, with a Stand product PNG instead. */
+  .hero-sticker {
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin: 0 0.06em;
+    vertical-align: -0.12em;
+  }
+
+  .hero-sticker img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: rotate(-8deg);
+  }
+
+  .hero-sub {
+    font-weight: 700;
+    font-size: clamp(18px, 2vw, 28px);
+    line-height: 1.25;
+    max-width: 30ch;
+    margin: 0 auto 24px;
+  }
+
+  .hero-sub em {
     font-style: normal;
     color: var(--stand-red);
+  }
+
+  /* ── Poster — full-bleed red statement that slides over the hero ───────── */
+  .poster {
+    max-width: none;
+    background: var(--stand-red);
+    text-align: center;
+    padding-top: clamp(64px, 12vh, 140px);
+    padding-bottom: clamp(64px, 12vh, 140px);
+  }
+
+  .poster-title {
+    color: var(--stand-cream);
+    font-weight: 900;
+    font-size: clamp(44px, 8.4vw, 130px);
+    line-height: 0.98;
+    letter-spacing: clamp(-3px, -0.025em, -1px);
+    margin: 0 auto 20px;
+    max-width: 11ch;
+  }
+
+  .poster-sub {
+    /* White, not cream: red/cream only passes contrast as large text and this
+       line is body-sized — red/white is a full 4.5:1 pass per the brand guide. */
+    color: var(--stand-white);
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.8vw, 24px);
+    margin: 0 0 36px;
+  }
+
+  /* Post-it CTA reads loudest on the red field (black-on-postit passes AA). */
+  .cta-btn-postit {
+    background: var(--stand-postit);
+    color: var(--stand-black);
   }
 
   .event-facts {
@@ -622,7 +732,17 @@ const faqs = [
     line-height: 1.45;
   }
 
-  /* ── The 90 minutes ──────────────────────────────────────────────────── */
+  /* ── The 90 minutes ──────────────────────────────────────────────────────
+     Full-bleed mustard band (black-on-mustard passes AA 4.5+ per the brand
+     guide) — the section keeps its centered 880px column; the box-shadow +
+     clip-path pair paints the background out to the viewport edges without
+     extra wrapper markup. */
+  .minutes {
+    background: var(--stand-mustard);
+    box-shadow: 0 0 0 100vmax var(--stand-mustard);
+    clip-path: inset(0 -100vmax);
+  }
+
   .beats {
     list-style: none;
     margin: 0;
@@ -908,8 +1028,23 @@ const faqs = [
       padding: 44px 20px;
     }
 
+    .hero {
+      /* On short phone viewports the pinned hero can outlast a screen of
+         scroll; static keeps the page calm where the effect is cramped. */
+      position: static;
+    }
+
     .hero-title {
-      letter-spacing: -0.5px;
+      letter-spacing: -1.5px;
+    }
+
+    .hero-burst {
+      top: 4px;
+      left: 8px;
+    }
+
+    .poster-title {
+      letter-spacing: -1.5px;
     }
 
     .event-facts {
