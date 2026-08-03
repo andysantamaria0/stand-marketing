@@ -476,16 +476,24 @@ const faqs = [
   }
 
   /* ── Nav ─────────────────────────────────────────────────────────────── */
+  /* Logo centered in the bar (Bored Cow / Toca nav pattern); the CTA holds
+     the right edge and a mirrored empty column keeps the logo truly centered. */
   .mc-nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     padding: 24px 48px;
     gap: 24px;
   }
 
   .mc-nav .back-link {
     line-height: 0;
+    grid-column: 2;
+  }
+
+  .mc-nav .nav-cta {
+    grid-column: 3;
+    justify-self: end;
   }
 
   .nav-cta {
