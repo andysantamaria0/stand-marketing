@@ -442,6 +442,11 @@ const faqs = [
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     text-underline-offset: 2px;
+    /* The text is ~22px tall — padding grows the tap target past the 44px
+       floor, and the negative margin keeps the nav bar's visual height. */
+    display: inline-block;
+    padding: 12px 8px;
+    margin: -12px -8px;
   }
 
   /* ── Shared bits ─────────────────────────────────────────────────────── */
