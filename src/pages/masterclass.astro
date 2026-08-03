@@ -413,11 +413,16 @@ const faqs = [
     }
   });
 
-  // Smooth-scroll the hero/nav CTAs to the form.
+  // Smooth-scroll the hero/nav CTAs to the form (instant when the visitor
+  // prefers reduced motion — a long animated scroll is exactly the kind of
+  // large-viewport movement that setting exists for).
   document.querySelectorAll<HTMLAnchorElement>('a[href="#signup"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document
+        .getElementById('signup')
+        ?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
       track('masterclass_cta_clicked');
     });
   });
