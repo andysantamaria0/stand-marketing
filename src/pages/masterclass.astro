@@ -748,6 +748,25 @@ const faqs = [
     max-width: 64ch;
   }
 
+  /* <details> snaps open with no feedback; a short ease-out fade/settle makes
+     the reveal read as intentional. Entrance-only — collapse stays instant. */
+  .faq-item[open] .a {
+    animation: faq-reveal 0.22s ease-out;
+  }
+
+  @keyframes faq-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item[open] .a {
+      animation: none;
+    }
+  }
+
   /* ── Signup ──────────────────────────────────────────────────────────── */
   .signup {
     max-width: 720px;
