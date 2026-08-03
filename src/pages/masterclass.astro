@@ -123,14 +123,6 @@ const faqs = [
          slide up over it. ──────────────────────────────────────────────────── -->
     <section class="hero" aria-labelledby="mc-title">
       <h1 id="mc-title" class="hero-title">
-        <svg class="hero-burst" viewBox="0 0 60 60" fill="none" aria-hidden="true">
-          <g stroke="currentColor" stroke-width="4.5" stroke-linecap="round">
-            <path d="M8 52 L16 40" />
-            <path d="M22 34 L26 22" />
-            <path d="M40 16 L36 28" />
-            <path d="M52 10 L44 20" />
-          </g>
-        </svg>
         Kickstart Your Business<span class="hero-sticker"
           ><img src="/brand/STAND_PNG_YellowSticker.webp" alt="" /></span
         >Builder
@@ -592,8 +584,29 @@ const faqs = [
     margin: 0 auto;
     background: var(--stand-postit);
     border-radius: var(--band-radius);
-    padding-top: clamp(32px, 5vh, 64px);
+    padding-top: clamp(64px, 10vh, 128px);
     padding-bottom: clamp(40px, 7vh, 88px);
+  }
+
+  /* As the page scrolls, the post-it card grows from inset-rounded to
+     full-bleed (scroll-driven, no JS; browsers without support just keep the
+     inset card). Width/radius here are cheap: the hero repaints alone. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .hero {
+        animation: hero-expand linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 70vh;
+      }
+    }
+  }
+
+  @keyframes hero-expand {
+    to {
+      width: 100%;
+      top: 0;
+      border-radius: 0;
+    }
   }
 
   /* All post-hero content paints above the pinned hero. The opaque background
@@ -602,19 +615,6 @@ const faqs = [
     position: relative;
     z-index: 1;
     background: var(--stand-cream);
-  }
-
-  /* Burst hugs the wordmark's first letter (anchored to the h1, not the
-     section) — the Toca accent placement. */
-  .hero-burst {
-    position: absolute;
-    top: -0.28em;
-    left: -0.12em;
-    width: 0.42em;
-    height: auto;
-    color: var(--stand-black);
-    pointer-events: none;
-    transform: rotate(-12deg);
   }
 
   .hero-title {
@@ -1084,11 +1084,6 @@ const faqs = [
 
     .hero-title {
       letter-spacing: -1.5px;
-    }
-
-    .hero-burst {
-      top: 4px;
-      left: 8px;
     }
 
     .poster-title {
