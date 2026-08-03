@@ -467,6 +467,34 @@ const faqs = [
     border-radius: var(--band-radius);
   }
 
+  /* Like the hero: each color panel grows to full-bleed as it scrolls into
+     view. view() gives every panel its own timeline — the expansion happens
+     while the panel travels from viewport entry to ~35% coverage, then holds.
+     Browsers without scroll-driven animations (and reduced-motion) keep the
+     inset rounded cards. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .poster,
+      .proof,
+      .minutes {
+        animation: band-expand linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+      }
+    }
+  }
+
+  @keyframes band-expand {
+    from {
+      width: calc(100% - 2 * var(--band-gap));
+      border-radius: var(--band-radius);
+    }
+    to {
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+
   /* ── Nav ─────────────────────────────────────────────────────────────── */
   /* Logo centered in the bar (Bored Cow / Toca nav pattern); the CTA holds
      the right edge and a mirrored empty column keeps the logo truly centered. */
