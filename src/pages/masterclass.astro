@@ -365,12 +365,21 @@ const faqs = [
       return;
     }
 
-    if (!payload.parentName || !payload.kidFirstName || !payload.kidAge) {
+    // On validation failure, focus the first offending field — the status line
+    // renders below the submit button, so focus is what actually points the
+    // parent at the problem.
+    const firstEmpty = (['kidFirstName', 'kidAge', 'parentName', 'parentEmail'] as const).find(
+      (name) => !String(data.get(name) ?? '').trim(),
+    );
+    if (firstEmpty) {
       if (status) status.textContent = 'Please fill in every field — it takes 30 seconds.';
+      const el = form.elements.namedItem(firstEmpty);
+      if (el instanceof HTMLElement) el.focus();
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.parentEmail)) {
       if (status) status.textContent = 'That email doesn’t look right — mind checking it?';
+      (form.elements.namedItem('parentEmail') as HTMLElement | null)?.focus();
       return;
     }
 
