@@ -167,6 +167,15 @@ const faqs = [
       <a href="#signup" class="cta-btn cta-btn-postit">Save my kid&rsquo;s spot &rarr;</a>
     </section>
 
+    <!-- ── 1c · Social proof strip — the one real credential until press and
+         testimonials exist (chip marks the slot). ─────────────────────────── -->
+    <section class="proof" aria-label="Credibility">
+      <p class="proof-line">
+        Taught by <strong>Lauren Kassan</strong> &mdash; co-founder of The Wing
+        <span class="draft-chip">Press logos &amp; testimonials TK</span>
+      </p>
+    </section>
+
     <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
     <section class="promise" aria-labelledby="promise-title">
       <h2 id="promise-title" class="headline section-title">
@@ -664,6 +673,34 @@ const faqs = [
   .cta-btn-postit {
     background: var(--stand-postit);
     color: var(--stand-black);
+  }
+
+  /* ── Social proof strip — thin black band, "as seen on" slot ───────────── */
+  .proof {
+    max-width: none;
+    background: var(--stand-black);
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .proof-line {
+    color: var(--stand-cream);
+    font-family: var(--font-serif);
+    font-size: clamp(15px, 1.6vw, 21px);
+    letter-spacing: -0.2px;
+    margin: 0;
+  }
+
+  .proof-line strong {
+    font-family: var(--font-sans);
+    font-weight: 700;
+  }
+
+  /* Red-on-black is illegible; the chip goes post-it on the dark band. */
+  .proof .draft-chip {
+    color: var(--stand-postit);
+    border-color: var(--stand-postit);
   }
 
   .event-facts {
