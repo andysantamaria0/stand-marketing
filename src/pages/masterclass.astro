@@ -565,22 +565,13 @@ const faqs = [
     font-weight: 700;
     font-size: clamp(17px, 1.6vw, 21px);
     line-height: 1;
-    transition: transform 0.15s ease;
+    transition: background-color 0.15s ease;
   }
 
+  /* Hover is a color swap, not motion. */
   .cta-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .cta-btn:active {
-    transform: translateY(1px);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cta-btn:hover,
-    .cta-btn:active {
-      transform: none;
-    }
+    background: var(--stand-black);
+    color: var(--stand-cream);
   }
 
   /* ── Hero ────────────────────────────────────────────────────────────────
@@ -703,6 +694,11 @@ const faqs = [
   /* Post-it CTA reads loudest on the red field (black-on-postit passes AA). */
   .cta-btn-postit {
     background: var(--stand-postit);
+    color: var(--stand-black);
+  }
+
+  .cta-btn-postit:hover {
+    background: var(--stand-mustard);
     color: var(--stand-black);
   }
 
@@ -985,15 +981,17 @@ const faqs = [
     letter-spacing: -0.2px;
   }
 
+  /* Oversized pill fields (Harvest reference): stadium radius, generous
+     padding, full-width stack. */
   .field input,
   .field select {
     border: 2px solid var(--stand-black);
     background: var(--stand-cream);
-    padding: 12px 16px;
+    padding: 18px 26px;
     font-family: var(--font-sans);
     font-size: 17px;
     color: var(--stand-black);
-    border-radius: 14px;
+    border-radius: 999px;
     outline: none;
     width: 100%;
   }
@@ -1007,7 +1005,7 @@ const faqs = [
     appearance: none;
     background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 14px center;
+    background-position: right 22px center;
   }
 
   /* Honeypot — visually gone but still in the accessibility-invisible DOM. */
@@ -1019,9 +1017,13 @@ const faqs = [
     overflow: hidden;
   }
 
+  /* Full-width pill submit, same block shape as the fields above it. */
   .submit-btn {
     margin-top: 8px;
-    align-self: center;
+    align-self: stretch;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 
   .form-status {
