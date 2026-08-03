@@ -1,0 +1,926 @@
+---
+// /masterclass — "Kickstart Your Business Builder" landing page (45-day sprint).
+//
+// Skeleton created 2026-08-03 per planning meeting. Copy marked with a
+// visible "Draft copy" chip is placeholder — Lauren's one-pager (curriculum) and
+// Celestine's comms copy replace it before the Aug 5 announcement. The chips are
+// deliberately visible in the rendered page so unfinished sections can't slip
+// out silently; delete the <span class="draft-chip"> when the copy is final.
+//
+// Launch checklist:
+//   [ ] Curriculum beats + time splits from Lauren's one-pager (section: minutes)
+//   [ ] Founder bio copy + photo (section: founder) — photo at /brand/lauren.webp
+//   [ ] FAQ answers reviewed by Lauren (section: faq)
+//   [ ] Signup endpoint live on app.standkids.com (contract below)
+//   [ ] Remove `noindex` from <Layout> at announcement
+//   [ ] OG image for the announcement post (og:image currently site default)
+//
+// ── Signup capture contract (app-side work, owned by Andy) ────────────────────
+// This repo is a static site with no backend, so the form POSTs JSON to the app
+// origin, which already owns Supabase + Resend:
+//
+//   POST https://app.standkids.com/api/masterclass-signup
+//   Content-Type: application/json
+//   { parentName: string, parentEmail: string, kidFirstName: string,
+//     kidAge: string, source: "masterclass-landing", utm: Record<string,string> }
+//
+//   → 200 { status: "confirmed" }   seat secured (send confirmation email +
+//                                   calendar invite via Resend; reminders T-24h/T-1h)
+//   → 200 { status: "waitlist" }    the 12 seats are gone; store on the
+//                                   "August cohort first dibs" list
+//   → 4xx/5xx                       page shows the mailto fallback
+//
+// CORS: allow origin https://standkids.com. De-dupe by parentEmail (idempotent
+// re-submits, same as the waitlist table).
+import Layout from '@/layouts/Layout.astro';
+import Footer from '@/components/Footer.astro';
+
+const EVENT = {
+  weekday: 'Monday',
+  date: 'August 24',
+  time: '4:30 PM PT / 7:30 PM ET',
+  length: '90 minutes',
+  lengthAdj: '90-minute',
+  where: 'Live on Zoom',
+  seats: 12,
+  ages: '10–16',
+};
+
+// TODO(copy): beats + minute splits come from Lauren's one-pager.
+const beats = [
+  {
+    n: '01',
+    minutes: '~20 min',
+    title: 'Find your thing',
+    body: 'We start with what your kid already loves — games, baking, drawing, sneakers, anything — and turn interests into raw material for a business.',
+  },
+  {
+    n: '02',
+    minutes: '~25 min',
+    title: 'Shape the idea',
+    body: 'Guided narrowing: from "lots of interests" to one concrete business idea that a kid can actually run — and that works on Stand from day one.',
+  },
+  {
+    n: '03',
+    minutes: '~25 min',
+    title: 'Make it real',
+    body: 'Who is it for? What is it called? What does it cost? Every builder locks in an audience, a name, and a starting price.',
+  },
+  {
+    n: '04',
+    minutes: '~20 min',
+    title: 'Leave with something',
+    body: 'Each kid produces a tangible branding output they made themselves — and a clear next step: launching their storefront on Stand.',
+  },
+];
+
+// TODO(copy): answers are drafts — Lauren to review before launch.
+const faqs = [
+  {
+    q: 'How does the class work?',
+    a: 'It’s live on Zoom — not a recording. A guided, interactive 90 minutes capped at 12 kids, so every builder gets seen and heard.',
+  },
+  {
+    q: 'What does my kid need?',
+    a: 'A laptop or tablet, a working mic, and their ideas. No prep, no materials, no business experience — that’s the point of the class.',
+  },
+  {
+    q: 'What ages is this for?',
+    a: `Built for ages ${EVENT.ages}. Younger builders are welcome with a parent nearby to help.`,
+  },
+  {
+    q: 'Do parents need to join?',
+    a: 'No — this is your kid’s room. You’re welcome to be nearby, and we’ll send you a recap of what they built afterward.',
+  },
+  {
+    q: 'What happens after the class?',
+    a: 'Every participant gets free access to Stand to take their idea from the class into a real storefront — with parent approval built into every step.',
+  },
+  {
+    q: 'Is it really free?',
+    a: 'Yes. This is the first session of its kind and we’re keeping it small — 12 kids, free, live. The only cost is showing up with ideas.',
+  },
+  {
+    q: 'How do you keep kids safe?',
+    a: 'Parent sign-up and approval is required, the session is run by the Stand team, and there’s no chat with strangers — same rules as the Stand platform itself.',
+  },
+];
+---
+
+<Layout
+  title="Stand — Kickstart Your Business Builder · A live masterclass for kids"
+  description={`A free, live 90-minute masterclass for kids ${EVENT.ages}. ${EVENT.weekday}, ${EVENT.date} — every kid leaves with a real business idea and a path to launching it on Stand. ${EVENT.seats} spots only.`}
+  noindex
+>
+  <main class="mc">
+    <!-- ── Nav (same lightweight pattern as /faq) ─────────────────────────── -->
+    <nav class="mc-nav">
+      <a href="/" class="back-link">
+        <img src="/brand/logo.svg" alt="Stand" width="100" />
+      </a>
+      <a href="#signup" class="nav-cta">Save my kid&rsquo;s spot &rarr;</a>
+    </nav>
+
+    <!-- ── 1 · Hero — the outcome, not the format ─────────────────────────── -->
+    <section class="hero" aria-labelledby="mc-title">
+      <p class="seats-tag">Free &middot; only {EVENT.seats} spots</p>
+
+      <p class="eyebrow hero-eyebrow">
+        A live {EVENT.lengthAdj} masterclass for kids {EVENT.ages}
+      </p>
+
+      <h1 id="mc-title" class="hero-title">
+        Your kid walks in with interests.<br />
+        <em>They walk out with a business.</em>
+      </h1>
+
+      <ul class="event-facts" aria-label="Event details">
+        <li>{EVENT.weekday}, {EVENT.date}</li>
+        <li>{EVENT.time}</li>
+        <li>{EVENT.where}</li>
+      </ul>
+
+      <a href="#signup" class="cta-btn">Save my kid&rsquo;s spot &rarr;</a>
+      <p class="cta-sub">Takes 30 seconds. No credit card &mdash; it&rsquo;s free.</p>
+    </section>
+
+    <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
+    <section class="promise" aria-labelledby="promise-title">
+      <h2 id="promise-title" class="headline section-title">
+        Every kid leaves with something real
+      </h2>
+      <div class="promise-grid">
+        <article class="promise-card">
+          <p class="card-kicker">01</p>
+          <h3 class="name">A business idea that&rsquo;s theirs</h3>
+          <p class="desc">
+            Not a worksheet — one concrete idea, built from what your kid already
+            loves, shaped live during the class.
+          </p>
+        </article>
+        <article class="promise-card">
+          <p class="card-kicker">02</p>
+          <h3 class="name">A brand they made themselves</h3>
+          <p class="desc">
+            A name, an audience, a price — and a tangible branding output they
+            create with their own hands before the session ends.
+          </p>
+        </article>
+        <article class="promise-card">
+          <p class="card-kicker">03</p>
+          <h3 class="name">A real path to launch</h3>
+          <p class="desc">
+            Every participant gets free access to Stand, where the idea becomes an
+            actual storefront — real products, real customers, real money math.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── 3 · The 90 minutes (placeholder until Lauren's one-pager) ──────── -->
+    <section class="minutes" aria-labelledby="minutes-title">
+      <h2 id="minutes-title" class="headline section-title">
+        What happens in the {EVENT.length}
+        <span class="draft-chip">Draft copy &mdash; awaiting Lauren&rsquo;s one-pager</span>
+      </h2>
+      <ol class="beats">
+        {
+          beats.map((b) => (
+            <li class="beat">
+              <span class="beat-n" aria-hidden="true">{b.n}</span>
+              <div class="beat-body">
+                <h3 class="name">
+                  {b.title} <span class="beat-minutes">{b.minutes}</span>
+                </h3>
+                <p class="desc">{b.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ── 4 · The founder — where the announcement traffic lands ─────────── -->
+    <section class="founder" aria-labelledby="founder-title">
+      <div class="founder-photo" aria-hidden="true">
+        <!-- TODO(asset): founder photo → /brand/lauren.webp, then replace this frame. -->
+        <span class="photo-placeholder">Photo</span>
+      </div>
+      <div class="founder-copy">
+        <h2 id="founder-title" class="headline">
+          Taught live by Lauren Kassan
+          <span class="draft-chip">Draft copy &mdash; bio pending</span>
+        </h2>
+        <p class="lede founder-cred">
+          Co-founder of The Wing. Founder of Stand.
+        </p>
+        <p class="desc">
+          Lauren has spent her career building spaces where people do their most
+          ambitious work. With Stand, she&rsquo;s building the modern lemonade
+          stand — a place where kids learn business by actually running one. This
+          masterclass is the front door: her framework for going from
+          &ldquo;I like things&rdquo; to &ldquo;I built a thing,&rdquo; live, in
+          one session.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── 5 · Parent FAQ ─────────────────────────────────────────────────── -->
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="headline section-title">
+        The stuff parents ask
+        <span class="draft-chip">Draft answers &mdash; Lauren to review</span>
+      </h2>
+      <div class="faq-list">
+        {
+          faqs.map((item) => (
+            <details class="faq-item">
+              <summary class="q">{item.q}</summary>
+              <p class="a desc">{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ── 6 · Signup ─────────────────────────────────────────────────────── -->
+    <section class="signup" id="signup" aria-labelledby="signup-title">
+      <div class="signup-card">
+        <p class="seats-tag signup-tag">Only {EVENT.seats} spots</p>
+        <h2 id="signup-title" class="headline">Save your kid&rsquo;s spot</h2>
+        <p class="desc signup-when">
+          {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; {EVENT.where} &middot; Free
+        </p>
+
+        <form id="mc-form" novalidate>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">Kid&rsquo;s first name</span>
+              <input type="text" name="kidFirstName" autocomplete="off" required />
+            </label>
+            <label class="field field-age">
+              <span class="field-label">Kid&rsquo;s age</span>
+              <select name="kidAge" required>
+                <option value="" selected disabled>&nbsp;</option>
+                {Array.from({ length: 7 }, (_, i) => 10 + i).map((age) => (
+                  <option value={String(age)}>{age}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span class="field-label">Your name</span>
+            <input type="text" name="parentName" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span class="field-label">Your email</span>
+            <input type="email" name="parentEmail" autocomplete="email" required />
+          </label>
+
+          <!-- Honeypot: hidden from humans; bots that fill it are dropped
+               client-side (and the endpoint should drop it server-side too). -->
+          <label class="hp" aria-hidden="true">
+            Company
+            <input type="text" name="company" tabindex="-1" autocomplete="off" />
+          </label>
+
+          <button type="submit" class="cta-btn submit-btn">
+            Save my kid&rsquo;s spot &rarr;
+          </button>
+          <p class="form-status" id="mc-status" role="status" aria-live="polite"></p>
+          <p class="form-fineprint">
+            You&rsquo;ll get a confirmation email with the calendar invite, plus a
+            reminder the day before. Spot goes to the first {EVENT.seats} — after
+            that you&rsquo;re first in line for the next session.
+          </p>
+        </form>
+
+        <!-- Post-submit states: swapped in by the script below. -->
+        <div class="confirm confirm-seat" hidden>
+          <p class="confirm-big">You&rsquo;re in! &#127881;</p>
+          <p class="desc">
+            Check your email — your confirmation and calendar invite for
+            {EVENT.weekday}, {EVENT.date} are on the way. We&rsquo;ll remind you
+            the day before and an hour before, too.
+          </p>
+        </div>
+        <div class="confirm confirm-waitlist" hidden>
+          <p class="confirm-big">You&rsquo;re on the list.</p>
+          <p class="desc">
+            All {EVENT.seats} spots are taken — but you&rsquo;re first in line: if
+            a spot opens up, or when the next session is announced, you hear
+            about it before anyone else.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const ENDPOINT = 'https://app.standkids.com/api/masterclass-signup';
+
+  const form = document.getElementById('mc-form') as HTMLFormElement | null;
+  const status = document.getElementById('mc-status');
+  const seatConfirm = document.querySelector<HTMLElement>('.confirm-seat');
+  const waitlistConfirm = document.querySelector<HTMLElement>('.confirm-waitlist');
+
+  // Analytics is best-effort — an ad blocker must never affect the form.
+  const track = (event: string, props?: Record<string, unknown>) => {
+    try { posthog.capture(event, props); } catch { /* non-critical */ }
+  };
+
+  // Forward the visitor's campaign params into the signup payload so each of
+  // the 12 seats is attributable to a channel (LinkedIn vs email vs IG) — the
+  // sprint's KPI is signups per channel, and the static site has no other way
+  // to join a signup back to its source.
+  const utm: Record<string, string> = {};
+  new URLSearchParams(window.location.search).forEach((v, k) => {
+    if (k.startsWith('utm_')) utm[k] = v;
+  });
+
+  let submitting = false;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (submitting) return; // double-click guard — one seat request per visitor
+
+    const data = new FormData(form);
+    const payload = {
+      parentName: String(data.get('parentName') ?? '').trim(),
+      parentEmail: String(data.get('parentEmail') ?? '').trim(),
+      kidFirstName: String(data.get('kidFirstName') ?? '').trim(),
+      kidAge: String(data.get('kidAge') ?? ''),
+      source: 'masterclass-landing',
+      utm,
+    };
+
+    // Honeypot tripped → silently succeed so the bot learns nothing.
+    if (String(data.get('company') ?? '') !== '') {
+      form.hidden = true;
+      if (seatConfirm) seatConfirm.hidden = false;
+      return;
+    }
+
+    if (!payload.parentName || !payload.kidFirstName || !payload.kidAge) {
+      if (status) status.textContent = 'Please fill in every field — it takes 30 seconds.';
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.parentEmail)) {
+      if (status) status.textContent = 'That email doesn’t look right — mind checking it?';
+      return;
+    }
+
+    submitting = true;
+    if (status) status.textContent = 'Saving your spot…';
+    track('masterclass_signup_submitted', { kid_age: payload.kidAge, ...utm });
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body = await res.json().catch(() => ({ status: 'confirmed' }));
+
+      form.hidden = true;
+      const waitlisted = body.status === 'waitlist';
+      if (waitlisted && waitlistConfirm) waitlistConfirm.hidden = false;
+      else if (seatConfirm) seatConfirm.hidden = false;
+      track('masterclass_signup_succeeded', { status: body.status ?? 'confirmed' });
+    } catch {
+      // Endpoint down / not deployed yet / CORS — give the parent a human path
+      // instead of a dead end. hello@ is monitored; a seat is worth an email.
+      submitting = false;
+      if (status) {
+        status.innerHTML =
+          'Hmm, that didn’t go through. Email us at <a href="mailto:hello@standkids.com?subject=Masterclass%20signup">hello@standkids.com</a> and we’ll save the spot by hand.';
+      }
+      track('masterclass_signup_failed');
+    }
+  });
+
+  // Smooth-scroll the hero/nav CTAs to the form.
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#signup"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('signup')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      track('masterclass_cta_clicked');
+    });
+  });
+</script>
+
+<style>
+  .mc {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  /* ── Nav ─────────────────────────────────────────────────────────────── */
+  .mc-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 48px;
+    gap: 24px;
+  }
+
+  .mc-nav .back-link {
+    line-height: 0;
+  }
+
+  .nav-cta {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+  }
+
+  /* ── Shared bits ─────────────────────────────────────────────────────── */
+  section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(48px, 8vh, 96px) 24px;
+  }
+
+  .section-title {
+    font-weight: 700;
+    margin: 0 0 clamp(24px, 4vh, 44px);
+  }
+
+  /* Post-it "sticker" tag — the scarcity marker. Slight rotation + hard offset
+     shadow keeps it in the brand's hand-made sticker language. */
+  .seats-tag {
+    display: inline-block;
+    background: var(--stand-postit);
+    border: 2px solid var(--stand-black);
+    box-shadow: 4px 4px 0 var(--stand-black);
+    transform: rotate(-2deg);
+    padding: 6px 14px;
+    margin: 0 0 20px;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* Visible placeholder marker — see the header comment. Ugly on purpose. */
+  .draft-chip {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 12px;
+    padding: 3px 8px;
+    border: 1.5px dashed var(--stand-red);
+    color: var(--stand-red);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    transform: rotate(0.5deg);
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--stand-red);
+    color: var(--stand-cream);
+    border: 2.5px solid var(--stand-black);
+    box-shadow: 5px 5px 0 var(--stand-black);
+    padding: 16px 32px;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(17px, 1.6vw, 21px);
+    line-height: 1;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .cta-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 var(--stand-black);
+  }
+
+  .cta-btn:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0 0 0 var(--stand-black);
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding-top: clamp(32px, 6vh, 72px);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-serif);
+    letter-spacing: -0.3px;
+    margin: 0 0 16px;
+  }
+
+  .hero-title {
+    font-weight: 900;
+    font-size: clamp(38px, 6.4vw, 84px);
+    line-height: 1.02;
+    letter-spacing: -1px;
+    margin: 0 0 28px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  .event-facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 0;
+    padding: 0;
+    margin: 0 0 36px;
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.6vw, 20px);
+  }
+
+  .event-facts li {
+    display: flex;
+    align-items: center;
+  }
+
+  .event-facts li + li::before {
+    content: '\00B7';
+    margin: 0 14px;
+    font-weight: 700;
+  }
+
+  .cta-sub {
+    margin: 14px 0 0;
+    font-size: 14px;
+    opacity: 0.75;
+  }
+
+  /* ── Promise ─────────────────────────────────────────────────────────── */
+  .promise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .promise-card {
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 5px 5px 0 var(--stand-black);
+    padding: 24px 22px 26px;
+  }
+
+  /* Alternating tilt keeps the grid from reading as a corporate card row. */
+  .promise-card:nth-child(1) { transform: rotate(-0.6deg); }
+  .promise-card:nth-child(2) { transform: rotate(0.5deg); }
+  .promise-card:nth-child(3) { transform: rotate(-0.4deg); }
+
+  .card-kicker {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    margin: 0 0 10px;
+    color: var(--stand-red);
+  }
+
+  .promise-card .name {
+    font-weight: 700;
+    margin: 0 0 10px;
+    line-height: 1.15;
+  }
+
+  .promise-card .desc {
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  /* ── The 90 minutes ──────────────────────────────────────────────────── */
+  .beats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vh, 40px);
+  }
+
+  .beat {
+    display: flex;
+    gap: 24px;
+    align-items: baseline;
+  }
+
+  .beat-n {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.4vw, 44px);
+    color: var(--stand-red);
+    flex-shrink: 0;
+    width: 64px;
+  }
+
+  .beat-body .name {
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .beat-minutes {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 0.6em;
+    letter-spacing: -0.2px;
+    margin-left: 10px;
+    opacity: 0.7;
+  }
+
+  .beat-body .desc {
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* ── Founder ─────────────────────────────────────────────────────────── */
+  .founder {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .founder-photo {
+    aspect-ratio: 4 / 5;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 6px 6px 0 var(--stand-black);
+    transform: rotate(-1.2deg);
+    display: grid;
+    place-items: center;
+  }
+
+  .photo-placeholder {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    opacity: 0.4;
+  }
+
+  .founder-copy .headline {
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .founder-cred {
+    font-family: var(--font-serif);
+    margin: 0 0 16px;
+    color: var(--stand-red);
+  }
+
+  .founder-copy .desc {
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  /* ── FAQ ─────────────────────────────────────────────────────────────── */
+  .faq-list {
+    border-top: 2px solid var(--stand-black);
+  }
+
+  .faq-item {
+    border-bottom: 2px solid var(--stand-black);
+  }
+
+  .faq-item .q {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 40px 18px 4px;
+    font-weight: 700;
+    font-size: clamp(17px, 1.8vw, 22px);
+    position: relative;
+  }
+
+  .faq-item .q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item .q::after {
+    content: '+';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 26px;
+  }
+
+  .faq-item[open] .q::after {
+    content: '\2212';
+  }
+
+  .faq-item .a {
+    margin: 0;
+    padding: 0 4px 20px;
+    max-width: 64ch;
+  }
+
+  /* ── Signup ──────────────────────────────────────────────────────────── */
+  .signup {
+    max-width: 720px;
+  }
+
+  .signup-card {
+    background: var(--stand-white);
+    border: 2.5px solid var(--stand-black);
+    box-shadow: 8px 8px 0 var(--stand-black);
+    padding: clamp(28px, 4vw, 48px);
+    text-align: center;
+  }
+
+  .signup-tag {
+    transform: rotate(1.5deg);
+  }
+
+  .signup-card .headline {
+    font-weight: 900;
+    margin: 0 0 8px;
+  }
+
+  .signup-when {
+    font-family: var(--font-serif);
+    margin: 0 0 28px;
+  }
+
+  #mc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 16px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field-label {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    letter-spacing: -0.2px;
+  }
+
+  .field input,
+  .field select {
+    border: 2px solid var(--stand-black);
+    background: var(--stand-cream);
+    padding: 12px 14px;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    color: var(--stand-black);
+    border-radius: 0;
+    outline: none;
+    width: 100%;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    box-shadow: 3px 3px 0 var(--stand-red);
+  }
+
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  /* Honeypot — visually gone but still in the accessibility-invisible DOM. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .submit-btn {
+    margin-top: 8px;
+    align-self: center;
+  }
+
+  .form-status {
+    min-height: 1.3em;
+    margin: 0;
+    font-size: 15px;
+    text-align: center;
+    color: var(--stand-red);
+  }
+
+  .form-status :global(a) {
+    text-decoration: underline;
+  }
+
+  .form-fineprint {
+    margin: 0;
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.7;
+    max-width: 46ch;
+    align-self: center;
+  }
+
+  .confirm-big {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.6vw, 44px);
+    margin: 8px 0 12px;
+  }
+
+  .confirm .desc {
+    margin: 0 auto;
+    max-width: 44ch;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .mc-nav {
+      padding: 18px 20px;
+    }
+
+    .mc-nav .back-link img {
+      width: 80px;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+    }
+
+    section {
+      padding: 44px 20px;
+    }
+
+    .hero-title {
+      letter-spacing: -0.5px;
+    }
+
+    .event-facts {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .event-facts li {
+      justify-content: center;
+    }
+
+    .event-facts li + li::before {
+      content: none;
+    }
+
+    .promise-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .founder {
+      grid-template-columns: 1fr;
+    }
+
+    .founder-photo {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
+    .founder-copy {
+      text-align: center;
+    }
+
+    .founder-copy .desc {
+      margin: 0 auto;
+    }
+
+    .draft-chip {
+      display: block;
+      width: fit-content;
+      margin: 8px auto 0;
+    }
+
+    .section-title,
+    .founder-copy .headline {
+      text-align: center;
+    }
+
+    .field-row {
+      grid-template-columns: 1fr 96px;
+    }
+  }
+</style>

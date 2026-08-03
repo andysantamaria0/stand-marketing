@@ -5,12 +5,16 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  /** Keep pre-launch pages (e.g. /masterclass before the announcement) out of
+   *  search indexes without unpublishing them. Remove the flag at launch. */
+  noindex?: boolean;
 }
 
 const {
   title = 'Stand — Build your own thing. For Real.',
   description = 'Stand is where kids create, launch, and grow real businesses. Brand studio, product lab, storefront, money math — the modern lemonade stand for the next generation.',
   ogImage = '/og-image.png',
+  noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.com');
@@ -22,6 +26,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#faf3d6" />
     <link rel="canonical" href={canonical.toString()} />
 
