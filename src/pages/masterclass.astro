@@ -1,11 +1,10 @@
 ---
 // /masterclass — "Kickstart Your Business Builder" landing page (45-day sprint).
 //
-// Skeleton created 2026-08-03 per planning meeting. Copy marked with a
-// visible "Draft copy" chip is placeholder — Lauren's one-pager (curriculum) and
-// Celestine's comms copy replace it before the Aug 5 announcement. The chips are
-// deliberately visible in the rendered page so unfinished sections can't slip
-// out silently; delete the <span class="draft-chip"> when the copy is final.
+// Skeleton created 2026-08-03 per planning meeting. This is a WIREFRAME:
+// every piece of narrative copy is a visible <placeholder> token that Lauren /
+// Celestine replace before the Aug 5 announcement. Functional microcopy (form
+// labels, validation messages) is real and stays.
 //
 // Launch checklist:
 //   [ ] Curriculum beats + time splits from Lauren's one-pager (section: minutes)
@@ -46,61 +45,19 @@ const EVENT = {
   ages: '10–16',
 };
 
-// TODO(copy): beats + minute splits come from Lauren's one-pager.
-const beats = [
-  {
-    minutes: '~20 min',
-    title: 'Find your thing',
-    body: 'We start with what your kid already loves — games, baking, drawing, sneakers, anything — and turn interests into raw material for a business.',
-  },
-  {
-    minutes: '~25 min',
-    title: 'Shape the idea',
-    body: 'Guided narrowing: from "lots of interests" to one concrete business idea that a kid can actually run — and that works on Stand from day one.',
-  },
-  {
-    minutes: '~25 min',
-    title: 'Make it real',
-    body: 'Who is it for? What is it called? What does it cost? Every builder locks in an audience, a name, and a starting price.',
-  },
-  {
-    minutes: '~20 min',
-    title: 'Leave with something',
-    body: 'Each kid produces a tangible branding output they made themselves — and a clear next step: launching their storefront on Stand.',
-  },
-];
+// Wireframe slots — Lauren's one-pager fills these (4 beats, ~90 min total).
+const beats = Array.from({ length: 4 }, (_, i) => ({
+  minutes: '<min>',
+  title: `<Step ${i + 1} title>`,
+  body: '<Body text — what happens in this step, what the kid produces>',
+}));
 
-// TODO(copy): answers are drafts — Lauren to review before launch.
-const faqs = [
-  {
-    q: 'How does the class work?',
-    a: 'It’s live on Zoom — not a recording. A guided, interactive 90 minutes capped at 12 kids, so every builder gets seen and heard.',
-  },
-  {
-    q: 'What does my kid need?',
-    a: 'A laptop or tablet, a working mic, and their ideas. No prep, no materials, no business experience — that’s the point of the class.',
-  },
-  {
-    q: 'What ages is this for?',
-    a: `Built for ages ${EVENT.ages}. Younger builders are welcome with a parent nearby to help.`,
-  },
-  {
-    q: 'Do parents need to join?',
-    a: 'No — this is your kid’s room. You’re welcome to be nearby, and we’ll send you a recap of what they built afterward.',
-  },
-  {
-    q: 'What happens after the class?',
-    a: 'Every participant gets free access to Stand to take their idea from the class into a real storefront — with parent approval built into every step.',
-  },
-  {
-    q: 'Is it really free?',
-    a: 'Yes. This is the first session of its kind and we’re keeping it small — 12 kids, free, live. The only cost is showing up with ideas.',
-  },
-  {
-    q: 'How do you keep kids safe?',
-    a: 'Parent sign-up and approval is required, the session is run by the Stand team, and there’s no chat with strangers — same rules as the Stand platform itself.',
-  },
-];
+// Wireframe slots — parent FAQ, Lauren to write (format, age range, what the
+// kid needs, what happens after, free?, safety).
+const faqs = Array.from({ length: 6 }, (_, i) => ({
+  q: `<Question ${i + 1}>`,
+  a: '<Answer — plain, reassuring, parent-voiced>',
+}));
 ---
 
 <Layout
@@ -114,7 +71,7 @@ const faqs = [
       <a href="/" class="back-link">
         <img src="/brand/logo.svg" alt="Stand" width="100" />
       </a>
-      <a href="#signup" class="nav-cta">Save my kid&rsquo;s spot &rarr;</a>
+      <a href="#signup" class="nav-cta">&lt;CTA&gt; &rarr;</a>
     </nav>
 
     <!-- ── 1 · Hero — giant type IS the poster (Toca superfans structure:
@@ -123,81 +80,65 @@ const faqs = [
          slide up over it. ──────────────────────────────────────────────────── -->
     <section class="hero" aria-labelledby="mc-title">
       <h1 id="mc-title" class="hero-title">
-        Kickstart Your Business<span class="hero-sticker"
+        &lt;Masterclass<span class="hero-sticker"
           ><img src="/brand/STAND_PNG_YellowSticker.webp" alt="" /></span
-        >Builder
+        >title&gt;
       </h1>
 
       <p class="hero-sub">
-        A live {EVENT.lengthAdj} masterclass for kids {EVENT.ages}. They walk in
-        with interests. <em>They walk out with a business.</em>
+        &lt;One-line value prop &mdash; who it&rsquo;s for,
+        <em>what they walk out with&gt;</em>
       </p>
 
       <ul class="event-facts" aria-label="Event details">
-        <li>{EVENT.weekday}, {EVENT.date}</li>
-        <li>{EVENT.time}</li>
-        <li>{EVENT.where}</li>
+        <li>&lt;Date&gt;</li>
+        <li>&lt;Time&gt;</li>
+        <li>&lt;Platform&gt;</li>
       </ul>
 
-      <a href="#signup" class="cta-btn">Save my kid&rsquo;s spot &rarr;</a>
+      <a href="#signup" class="cta-btn">&lt;CTA&gt; &rarr;</a>
     </section>
 
     <div class="mc-rest">
     <!-- ── 1b · Poster — full-bleed red statement section that slides over the
          pinned hero, carrying the scarcity story in giant type. ───────────── -->
     <section class="poster" aria-labelledby="poster-title">
-      <h2 id="poster-title" class="poster-title">Free. Only {EVENT.seats}&nbsp;spots.</h2>
-      <p class="poster-sub">
-        {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; first come,
-        first served
-      </p>
-      <a href="#signup" class="cta-btn cta-btn-postit">Save my kid&rsquo;s spot &rarr;</a>
+      <h2 id="poster-title" class="poster-title">&lt;Scarcity statement&gt;</h2>
+      <p class="poster-sub">&lt;Event details &middot; urgency line&gt;</p>
+      <a href="#signup" class="cta-btn cta-btn-postit">&lt;CTA&gt; &rarr;</a>
     </section>
 
-    <!-- ── 1c · Social proof strip — the one real credential until press and
-         testimonials exist (chip marks the slot). ─────────────────────────── -->
+    <!-- ── 1c · Social proof strip ────────────────────────────────────────── -->
     <section class="proof" aria-label="Credibility">
       <p class="proof-line">
-        Taught by <strong>Lauren Kassan</strong> &mdash; co-founder of The Wing
-        <span class="draft-chip">Press logos &amp; testimonials TK</span>
+        &lt;Social proof &mdash; <strong>founder credential</strong> &middot;
+        press logos &middot; testimonials&gt;
       </p>
     </section>
 
     <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
     <section class="promise" aria-labelledby="promise-title">
       <h2 id="promise-title" class="headline section-title">
-        Every kid leaves with something real
+        &lt;Section title &mdash; the promise&gt;
       </h2>
       <div class="promise-grid">
-        <article class="promise-card">
-          <h3 class="name">A business idea that&rsquo;s theirs</h3>
-          <p class="desc">
-            Not a worksheet — one concrete idea, built from what your kid already
-            loves, shaped live during the class.
-          </p>
-        </article>
-        <article class="promise-card">
-          <h3 class="name">A brand they made themselves</h3>
-          <p class="desc">
-            A name, an audience, a price — and a tangible branding output they
-            create with their own hands before the session ends.
-          </p>
-        </article>
-        <article class="promise-card">
-          <h3 class="name">A real path to launch</h3>
-          <p class="desc">
-            Every participant gets free access to Stand, where the idea becomes an
-            actual storefront — real products, real customers, real money math.
-          </p>
-        </article>
+        {
+          [1, 2, 3].map((i) => (
+            <article class="promise-card">
+              <h3 class="name">&lt;Outcome {i} title&gt;</h3>
+              <p class="desc">
+                &lt;Body text &mdash; the tangible thing every kid leaves with&gt;
+              </p>
+            </article>
+          ))
+        }
       </div>
     </section>
 
     <!-- ── 3 · The 90 minutes (placeholder until Lauren's one-pager) ──────── -->
     <section class="minutes" aria-labelledby="minutes-title">
       <h2 id="minutes-title" class="headline section-title">
-        What happens in the {EVENT.length}
-        <span class="draft-chip">Draft copy &mdash; awaiting Lauren&rsquo;s one-pager</span>
+        &lt;Section title &mdash; curriculum&gt;
       </h2>
       <ol class="beats">
         {
@@ -222,30 +163,18 @@ const faqs = [
         <span class="photo-placeholder">Photo</span>
       </div>
       <div class="founder-copy">
-        <h2 id="founder-title" class="headline">
-          Taught live by Lauren Kassan
-          <span class="draft-chip">Draft copy &mdash; bio pending</span>
-        </h2>
-        <p class="lede founder-cred">
-          Co-founder of The Wing. Founder of Stand.
-        </p>
+        <h2 id="founder-title" class="headline">&lt;Founder headline&gt;</h2>
+        <p class="lede founder-cred">&lt;Credential line&gt;</p>
         <p class="desc">
-          Lauren has spent her career building spaces where people do their most
-          ambitious work. With Stand, she&rsquo;s building the modern lemonade
-          stand — a place where kids learn business by actually running one. This
-          masterclass is the front door: her framework for going from
-          &ldquo;I like things&rdquo; to &ldquo;I built a thing,&rdquo; live, in
-          one session.
+          &lt;Founder bio &mdash; the trust transfer: who Lauren is, why she
+          built Stand, why she&rsquo;s teaching this class herself&gt;
         </p>
       </div>
     </section>
 
     <!-- ── 5 · Parent FAQ ─────────────────────────────────────────────────── -->
     <section class="faq" aria-labelledby="faq-title">
-      <h2 id="faq-title" class="headline section-title">
-        FAQ
-        <span class="draft-chip">Draft answers &mdash; Lauren to review</span>
-      </h2>
+      <h2 id="faq-title" class="headline section-title">FAQ</h2>
       <div class="faq-list">
         {
           faqs.map((item) => (
@@ -262,15 +191,11 @@ const faqs = [
     <section class="signup" id="signup" aria-labelledby="signup-title">
       <div class="signup-grid">
         <div class="signup-copy">
-          <h2 id="signup-title" class="signup-title">Save your kid&rsquo;s spot</h2>
-          <p class="signup-when">
-            {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; {EVENT.where} &middot; Free
-          </p>
+          <h2 id="signup-title" class="signup-title">&lt;Form title&gt;</h2>
+          <p class="signup-when">&lt;Event details &middot; price&gt;</p>
           <p class="signup-blurb">
-            Only {EVENT.seats} kids get in &mdash; first come, first served.
-            You&rsquo;ll get a confirmation email with the calendar invite, plus
-            a reminder the day before. Miss the cut and you&rsquo;re first in
-            line for the next session.
+            &lt;Post-signup expectations &mdash; confirmation email, calendar
+            invite, reminders, what happens when spots run out&gt;
           </p>
         </div>
 
@@ -308,26 +233,23 @@ const faqs = [
           </label>
 
           <button type="submit" class="cta-btn cta-btn-postit submit-btn">
-            Save my kid&rsquo;s spot &rarr;
+            &lt;CTA&gt; &rarr;
           </button>
           <p class="form-status" id="mc-status" role="status" aria-live="polite"></p>
         </form>
 
         <!-- Post-submit states: swapped in by the script below. -->
         <div class="confirm confirm-seat" hidden>
-          <p class="confirm-big">You&rsquo;re in! &#127881;</p>
+          <p class="confirm-big">&lt;Confirmed headline&gt;</p>
           <p class="desc">
-            Check your email — your confirmation and calendar invite for
-            {EVENT.weekday}, {EVENT.date} are on the way. We&rsquo;ll remind you
-            the day before and an hour before, too.
+            &lt;Confirmed body &mdash; check email, calendar invite, reminders&gt;
           </p>
         </div>
         <div class="confirm confirm-waitlist" hidden>
-          <p class="confirm-big">You&rsquo;re on the list.</p>
+          <p class="confirm-big">&lt;Waitlist headline&gt;</p>
           <p class="desc">
-            All {EVENT.seats} spots are taken — but you&rsquo;re first in line: if
-            a spot opens up, or when the next session is announced, you hear
-            about it before anyone else.
+            &lt;Waitlist body &mdash; spots full, first in line for the next
+            session&gt;
           </p>
         </div>
         </div>
@@ -565,23 +487,7 @@ const faqs = [
     margin: 0 0 clamp(24px, 4vh, 44px);
   }
 
-  /* Visible placeholder marker — see the header comment. Ugly on purpose. */
-  .draft-chip {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 12px;
-    padding: 3px 10px;
-    border: 1.5px dashed var(--stand-red);
-    border-radius: 999px;
-    color: var(--stand-red);
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 12px;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-  }
-
-  /* Rounded pill CTA (Bored Cow / Ramen Bae button language). */
+/* Rounded pill CTA (Bored Cow / Ramen Bae button language). */
   .cta-btn {
     display: inline-block;
     background: var(--stand-red);
@@ -760,11 +666,6 @@ const faqs = [
     font-weight: 700;
   }
 
-  /* Red-on-black is illegible; the chip goes post-it on the dark band. */
-  .proof .draft-chip {
-    color: var(--stand-postit);
-    border-color: var(--stand-postit);
-  }
 
   .event-facts {
     list-style: none;
@@ -1224,12 +1125,6 @@ const faqs = [
 
     .founder-copy .desc {
       margin: 0 auto;
-    }
-
-    .draft-chip {
-      display: block;
-      width: fit-content;
-      margin: 8px auto 0;
     }
 
     .section-title,
