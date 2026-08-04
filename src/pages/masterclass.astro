@@ -77,7 +77,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
       <a href="#signup" class="nav-cta">&lt;CTA&gt; &rarr;</a>
     </nav>
 
-    <!-- ── 1 · Hero — giant type IS the poster (Toca superfans structure:
+    <!-- ── 1 · Hero — giant type IS the poster (poster structure:
          program name as a viewport-filling wordmark, a product sticker embedded
          inside it, hand-drawn burst accent). Sticky: the sections that follow
          slide up over it. ──────────────────────────────────────────────────── -->
@@ -278,7 +278,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     </section>
     </div>
 
-    <!-- ── Countdown — sticky urgency widget (Ramen Bae reference). Ticks to
+    <!-- ── Countdown — sticky urgency widget. Ticks to
          the real event start; clicking jumps to the signup form; hides itself
          once the class has begun. ─────────────────────────────────────────── -->
     <a
@@ -469,7 +469,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
        hijacking the panels' view() timelines (they'd resolve against .mc,
        which never scrolls, and freeze at their end state). The body already
        clips horizontal overflow and propagates it to the viewport. */
-    /* Colored sections render as inset rounded "cards" (Toca treatment):
+    /* Colored sections render as inset rounded "cards" (inset-card treatment):
        page background shows around each panel through this gap. */
     --band-gap: clamp(12px, 1.8vw, 28px);
     --band-radius: clamp(20px, 3vw, 44px);
@@ -514,7 +514,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
   }
 
   /* ── Nav ─────────────────────────────────────────────────────────────── */
-  /* Logo centered in the bar (Bored Cow / Toca nav pattern); the CTA holds
+  /* Logo centered in the bar (centered-brand nav pattern); the CTA holds
      the right edge and a mirrored empty column keeps the logo truly centered. */
   /* Sticky nav bar: cream strip that rides above every panel (hero is z 0,
      content z 1, countdown z 50). */
@@ -566,7 +566,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     margin: 0 0 clamp(24px, 4vh, 44px);
   }
 
-/* Rounded pill CTA (Bored Cow / Ramen Bae button language). */
+/* Rounded pill CTA (pill button language). */
   .cta-btn {
     display: inline-block;
     background: var(--stand-red);
@@ -588,7 +588,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
   }
 
   /* ── Hero ────────────────────────────────────────────────────────────────
-     Toca-superfans structure: the event name as a viewport-filling wordmark.
+     Poster structure: the event name as a viewport-filling wordmark.
      The hero is sticky at the top of the stack (z-index 0) so .mc-rest slides
      up and over it on scroll — position-driven, so it costs nothing and needs
      no reduced-motion branch. */
@@ -599,7 +599,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     z-index: 0;
     text-align: center;
     /* The hero is itself a rounded post-it card on the cream canvas (the
-       Bored Cow page frame): every colored moment on this page is a card. */
+       page-frame treatment): every colored moment on this page is a card. */
     width: calc(100% - 2 * var(--band-gap));
     max-width: none;
     margin: 0 auto;
@@ -650,7 +650,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     max-width: 12ch;
   }
 
-  /* Product sticker embedded inside the wordmark — the Toca "emoji in the
+  /* Product sticker embedded inside the wordmark — an "emoji in the
      logotype" move, with a Stand product PNG instead. */
   .hero-sticker {
     display: inline-block;
@@ -801,7 +801,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     gap: 20px;
   }
 
-  /* Ramen-Bae-style cards: each with its own brand color, rounded corners,
+  /* Color-block cards: each with its own brand color, rounded corners,
      thin black outline — no offset shadow, no tilt. All three pairs pass the
      brand guide's ADA table with black text. */
   .promise-card {
@@ -1025,7 +1025,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     }
   }
 
-  /* ── FAQ — Harvest-style: giant heading, near-full-width rows ──────────── */
+  /* ── FAQ — giant heading, near-full-width rows ──────────── */
   .faq {
     width: calc(100% - 2 * var(--band-gap));
     max-width: none;
@@ -1100,7 +1100,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     }
   }
 
-  /* ── Signup — Harvest format: dark rounded panel, copy left, fields right */
+  /* ── Signup — split panel: dark rounded panel, copy left, fields right */
   .signup {
     width: calc(100% - 2 * var(--band-gap));
     max-width: none;
@@ -1168,7 +1168,7 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     color: var(--stand-cream);
   }
 
-  /* Oversized pill fields (Harvest reference): stadium radius, generous
+  /* Oversized pill fields: stadium radius, generous
      padding, borderless white on the dark panel. */
   .field input,
   .field select {
