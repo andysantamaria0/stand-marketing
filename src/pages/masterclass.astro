@@ -1020,7 +1020,8 @@ const faqs = [
   .signup {
     width: calc(100% - 2 * var(--band-gap));
     max-width: none;
-    margin: 0 auto;
+    /* Cream breathing room before the footer. */
+    margin: 0 auto clamp(32px, 6vh, 72px);
     background: var(--stand-black);
     border-radius: var(--band-radius);
     color: var(--stand-cream);
