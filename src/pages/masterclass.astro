@@ -840,17 +840,20 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     gap: clamp(24px, 4vh, 40px);
   }
 
-  /* Beats reveal one-by-one — same t-stagger mechanism as the promise cards,
-     with a wider 140ms gap so each step clearly takes its turn. */
+  /* Beats reveal strictly one-by-one: each step owns a 450ms slot — its
+     title rises first, its body follows 150ms behind — before the next step
+     begins. Unmistakably sequential even with all four steps in view. */
   .beats {
-    --stagger-dur: 500ms;
+    --stagger-dur: 400ms;
     --stagger-distance: 24px;
-    --stagger-stagger: 140ms;
+    --step-gap: 450ms;
+    --body-lag: 150ms;
     --stagger-blur: 2px;
     --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .beats.is-ready .beat {
+  .beats.is-ready .beat .name,
+  .beats.is-ready .beat .desc {
     opacity: 0;
     transform: translateY(var(--stagger-distance));
     filter: blur(var(--stagger-blur));
@@ -861,18 +864,24 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     will-change: transform, opacity, filter;
   }
 
-  .beats.is-ready .beat:nth-child(2) { transition-delay: var(--stagger-stagger); }
-  .beats.is-ready .beat:nth-child(3) { transition-delay: calc(var(--stagger-stagger) * 2); }
-  .beats.is-ready .beat:nth-child(4) { transition-delay: calc(var(--stagger-stagger) * 3); }
+  .beats.is-ready .beat:nth-child(1) .desc { transition-delay: var(--body-lag); }
+  .beats.is-ready .beat:nth-child(2) .name { transition-delay: var(--step-gap); }
+  .beats.is-ready .beat:nth-child(2) .desc { transition-delay: calc(var(--step-gap) + var(--body-lag)); }
+  .beats.is-ready .beat:nth-child(3) .name { transition-delay: calc(var(--step-gap) * 2); }
+  .beats.is-ready .beat:nth-child(3) .desc { transition-delay: calc(var(--step-gap) * 2 + var(--body-lag)); }
+  .beats.is-ready .beat:nth-child(4) .name { transition-delay: calc(var(--step-gap) * 3); }
+  .beats.is-ready .beat:nth-child(4) .desc { transition-delay: calc(var(--step-gap) * 3 + var(--body-lag)); }
 
-  .beats.is-shown .beat {
+  .beats.is-shown .beat .name,
+  .beats.is-shown .beat .desc {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .beats.is-ready .beat {
+    .beats.is-ready .beat .name,
+    .beats.is-ready .beat .desc {
       transition: none !important;
     }
   }
