@@ -501,11 +501,17 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
   /* ── Nav ─────────────────────────────────────────────────────────────── */
   /* Logo centered in the bar (Bored Cow / Toca nav pattern); the CTA holds
      the right edge and a mirrored empty column keeps the logo truly centered. */
+  /* Sticky nav bar: cream strip that rides above every panel (hero is z 0,
+     content z 1, countdown z 50). */
   .mc-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--stand-cream);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    padding: 24px 48px;
+    padding: 18px 48px;
     gap: 24px;
   }
 
