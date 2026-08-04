@@ -260,12 +260,21 @@ const faqs = [
 
     <!-- ── 6 · Signup ─────────────────────────────────────────────────────── -->
     <section class="signup" id="signup" aria-labelledby="signup-title">
-      <div class="signup-card">
-        <h2 id="signup-title" class="headline">Save your kid&rsquo;s spot</h2>
-        <p class="desc signup-when">
-          {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; {EVENT.where} &middot; Free
-        </p>
+      <div class="signup-grid">
+        <div class="signup-copy">
+          <h2 id="signup-title" class="signup-title">Save your kid&rsquo;s spot</h2>
+          <p class="signup-when">
+            {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; {EVENT.where} &middot; Free
+          </p>
+          <p class="signup-blurb">
+            Only {EVENT.seats} kids get in &mdash; first come, first served.
+            You&rsquo;ll get a confirmation email with the calendar invite, plus
+            a reminder the day before. Miss the cut and you&rsquo;re first in
+            line for the next session.
+          </p>
+        </div>
 
+        <div class="signup-form-col">
         <form id="mc-form" novalidate>
           <div class="field-row">
             <label class="field">
@@ -298,15 +307,10 @@ const faqs = [
             <input type="text" name="company" tabindex="-1" autocomplete="off" />
           </label>
 
-          <button type="submit" class="cta-btn submit-btn">
+          <button type="submit" class="cta-btn cta-btn-postit submit-btn">
             Save my kid&rsquo;s spot &rarr;
           </button>
           <p class="form-status" id="mc-status" role="status" aria-live="polite"></p>
-          <p class="form-fineprint">
-            You&rsquo;ll get a confirmation email with the calendar invite, plus a
-            reminder the day before. Spot goes to the first {EVENT.seats} — after
-            that you&rsquo;re first in line for the next session.
-          </p>
         </form>
 
         <!-- Post-submit states: swapped in by the script below. -->
@@ -325,6 +329,7 @@ const faqs = [
             a spot opens up, or when the next session is announced, you hear
             about it before anyone else.
           </p>
+        </div>
         </div>
       </div>
     </section>
@@ -427,6 +432,23 @@ const faqs = [
       track('masterclass_signup_failed');
     }
   });
+
+  // Promise-card entrance: one-shot reveal when the row is ~20% visible.
+  // is-ready arms the hidden state only when JS runs (no-JS renders static).
+  const promiseGrid = document.querySelector('.promise-grid');
+  if (promiseGrid && 'IntersectionObserver' in window) {
+    promiseGrid.classList.add('is-ready');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          promiseGrid.classList.add('is-shown');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(promiseGrid);
+  }
 
   // Smooth-scroll the hero/nav CTAs to the form (instant when the visitor
   // prefers reduced motion — a long animated scroll is exactly the kind of
@@ -787,42 +809,47 @@ const faqs = [
   .promise-card:nth-child(2) { background: var(--stand-postit); }
   .promise-card:nth-child(3) { background: var(--stand-pink); }
 
-  /* Staggered scroll-driven rise: cards fade up left-to-right as the row
-     scrolls into view — same scroll-as-playhead language as the panels.
-     Offset animation-ranges create the stagger; scrubbing back reverses it. */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .promise-card {
-        animation: card-rise linear both;
-        animation-timeline: view();
-      }
-
-      .promise-card:nth-child(1) { animation-range: entry 5% entry 55%; }
-      .promise-card:nth-child(2) { animation-range: entry 20% entry 70%; }
-      .promise-card:nth-child(3) { animation-range: entry 35% entry 85%; }
-    }
+  /* Staggered entrance — transitions.dev "texts reveal" (t-stagger) pattern.
+     Time-based once triggered (IntersectionObserver adds .is-shown), so the
+     rise always plays in full — unlike scroll-scrubbing, cards can't freeze
+     half-risen when scrolling pauses. .is-ready is set by JS before
+     observing: no JS, no hidden state — cards just render. */
+  .promise-grid {
+    --stagger-dur: 500ms;
+    --stagger-distance: 12px;
+    --stagger-stagger: 80ms;
+    --stagger-blur: 3px;
+    --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  @keyframes card-rise {
-    from {
-      opacity: 0;
-      transform: translateY(36px) scale(0.97);
-    }
+  .promise-grid.is-ready .promise-card {
+    opacity: 0;
+    transform: translateY(var(--stagger-distance));
+    filter: blur(var(--stagger-blur));
+    transition:
+      opacity var(--stagger-dur) var(--stagger-ease),
+      transform var(--stagger-dur) var(--stagger-ease),
+      filter var(--stagger-dur) var(--stagger-ease);
+    will-change: transform, opacity, filter;
   }
 
-  /* From-only keyframes leave the resting state free, so the hover tilt
-     still works once a card has risen. */
-  .promise-card {
-    transition: transform 0.18s ease;
+  .promise-grid.is-ready .promise-card:nth-child(2) {
+    transition-delay: var(--stagger-stagger);
   }
 
-  .promise-card:hover {
-    transform: rotate(-1.2deg) scale(1.02);
+  .promise-grid.is-ready .promise-card:nth-child(3) {
+    transition-delay: calc(var(--stagger-stagger) * 2);
+  }
+
+  .promise-grid.is-shown .promise-card {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .promise-card:hover {
-      transform: none;
+    .promise-grid.is-ready .promise-card {
+      transition: none !important;
     }
   }
 
@@ -843,7 +870,6 @@ const faqs = [
      original 832px content column inside it. */
   .minutes {
     background: var(--stand-mustard);
-    border: 2px solid var(--stand-black);
     padding-left: max(24px, calc((100% - 832px) / 2));
     padding-right: max(24px, calc((100% - 832px) / 2));
   }
@@ -990,27 +1016,45 @@ const faqs = [
     }
   }
 
-  /* ── Signup ──────────────────────────────────────────────────────────── */
+  /* ── Signup — Harvest format: dark rounded panel, copy left, fields right */
   .signup {
-    max-width: 720px;
-  }
-
-  .signup-card {
-    background: var(--stand-white);
-    border: 2px solid var(--stand-black);
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    margin: 0 auto;
+    background: var(--stand-black);
     border-radius: var(--band-radius);
-    padding: clamp(28px, 4vw, 48px);
-    text-align: center;
+    color: var(--stand-cream);
+    padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 96px);
   }
 
-  .signup-card .headline {
+  .signup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+  }
+
+  .signup-title {
+    color: var(--stand-postit);
     font-weight: 900;
-    margin: 0 0 8px;
+    font-size: clamp(40px, 4.8vw, 72px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+    margin: 0 0 18px;
   }
 
   .signup-when {
     font-family: var(--font-serif);
-    margin: 0 0 28px;
+    font-size: clamp(17px, 1.6vw, 22px);
+    margin: 0 0 20px;
+  }
+
+  .signup-blurb {
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.5;
+    opacity: 0.85;
+    max-width: 44ch;
+    margin: 0;
   }
 
   #mc-form {
@@ -1036,15 +1080,16 @@ const faqs = [
     font-family: var(--font-serif);
     font-size: 15px;
     letter-spacing: -0.2px;
+    color: var(--stand-cream);
   }
 
   /* Oversized pill fields (Harvest reference): stadium radius, generous
-     padding, full-width stack. */
+     padding, borderless white on the dark panel. */
   .field input,
   .field select {
-    border: 2px solid var(--stand-black);
-    background: var(--stand-cream);
-    padding: 18px 26px;
+    border: 0;
+    background: var(--stand-white);
+    padding: 20px 26px;
     font-family: var(--font-sans);
     font-size: 17px;
     color: var(--stand-black);
@@ -1055,7 +1100,8 @@ const faqs = [
 
   .field input:focus,
   .field select:focus {
-    border-color: var(--stand-red);
+    outline: 3px solid var(--stand-postit);
+    outline-offset: 2px;
   }
 
   .field select {
@@ -1088,20 +1134,11 @@ const faqs = [
     margin: 0;
     font-size: 15px;
     text-align: center;
-    color: var(--stand-red);
+    color: var(--stand-postit);
   }
 
   .form-status :global(a) {
     text-decoration: underline;
-  }
-
-  .form-fineprint {
-    margin: 0;
-    font-size: 13px;
-    text-align: center;
-    opacity: 0.7;
-    max-width: 46ch;
-    align-self: center;
   }
 
   .confirm-big {
@@ -1201,6 +1238,10 @@ const faqs = [
 
     .field-row {
       grid-template-columns: 1fr 96px;
+    }
+
+    .signup-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
