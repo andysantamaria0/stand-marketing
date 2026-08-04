@@ -34,6 +34,9 @@
 import Layout from '@/layouts/Layout.astro';
 import Footer from '@/components/Footer.astro';
 
+// Real decided data (meeting notes): countdown target for the urgency widget.
+const EVENT_START_ISO = '2026-08-24T16:30:00-07:00';
+
 const EVENT = {
   weekday: 'Monday',
   date: 'August 24',
@@ -256,6 +259,28 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
       </div>
     </section>
     </div>
+
+    <!-- ── Countdown — sticky urgency widget (Ramen Bae reference). Ticks to
+         the real event start; clicking jumps to the signup form; hides itself
+         once the class has begun. ─────────────────────────────────────────── -->
+    <a
+      href="#signup"
+      id="mc-countdown"
+      class="countdown"
+      data-target={EVENT_START_ISO}
+      aria-label="Time left until the masterclass — jump to signup"
+    >
+      <span class="countdown-label">&lt;Urgency label&gt;</span>
+      <span class="countdown-cells" role="timer">
+        <span class="cell"><b data-cd="d">00</b><i>days</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="h">00</b><i>hrs</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="m">00</b><i>min</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="s">00</b><i>sec</i></span>
+      </span>
+    </a>
   </main>
   <Footer />
 </Layout>
@@ -355,21 +380,51 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     }
   });
 
-  // Promise-card entrance: one-shot reveal when the row is ~20% visible.
-  // is-ready arms the hidden state only when JS runs (no-JS renders static).
-  const promiseGrid = document.querySelector('.promise-grid');
-  if (promiseGrid && 'IntersectionObserver' in window) {
-    promiseGrid.classList.add('is-ready');
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          promiseGrid.classList.add('is-shown');
-          io.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(promiseGrid);
+  // Staggered entrances (promise cards + curriculum beats): one-shot reveal
+  // when the group is ~20% visible. is-ready arms the hidden state only when
+  // JS runs (no-JS renders static).
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.promise-grid, .beats').forEach((group) => {
+      group.classList.add('is-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            group.classList.add('is-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.2 },
+      );
+      io.observe(group);
+    });
+  }
+
+  // Countdown to the event start. Cheap DOM writes once a second; the widget
+  // removes itself when the class has started (urgency has no meaning then).
+  const cd = document.getElementById('mc-countdown');
+  if (cd) {
+    const target = new Date(cd.dataset.target ?? '').getTime();
+    const cells: Record<string, HTMLElement | null> = {
+      d: cd.querySelector('[data-cd="d"]'),
+      h: cd.querySelector('[data-cd="h"]'),
+      m: cd.querySelector('[data-cd="m"]'),
+      s: cd.querySelector('[data-cd="s"]'),
+    };
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = target - Date.now();
+      if (!Number.isFinite(target) || diff <= 0) {
+        cd.remove();
+        window.clearInterval(timer);
+        return;
+      }
+      if (cells.d) cells.d.textContent = pad(Math.floor(diff / 86_400_000));
+      if (cells.h) cells.h.textContent = pad(Math.floor(diff / 3_600_000) % 24);
+      if (cells.m) cells.m.textContent = pad(Math.floor(diff / 60_000) % 60);
+      if (cells.s) cells.s.textContent = pad(Math.floor(diff / 1000) % 60);
+    };
+    const timer = window.setInterval(tick, 1000);
+    tick();
   }
 
   // Smooth-scroll the hero/nav CTAs to the form (instant when the visitor
@@ -717,9 +772,10 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
      observing: no JS, no hidden state — cards just render. */
   .promise-grid {
     --stagger-dur: 500ms;
-    --stagger-distance: 12px;
+    /* Deep enough travel to read as a slide-up, not a fade. */
+    --stagger-distance: 44px;
     --stagger-stagger: 80ms;
-    --stagger-blur: 3px;
+    --stagger-blur: 2px;
     --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -782,6 +838,43 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     display: flex;
     flex-direction: column;
     gap: clamp(24px, 4vh, 40px);
+  }
+
+  /* Beats reveal one-by-one — same t-stagger mechanism as the promise cards,
+     with a wider 140ms gap so each step clearly takes its turn. */
+  .beats {
+    --stagger-dur: 500ms;
+    --stagger-distance: 24px;
+    --stagger-stagger: 140ms;
+    --stagger-blur: 2px;
+    --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .beats.is-ready .beat {
+    opacity: 0;
+    transform: translateY(var(--stagger-distance));
+    filter: blur(var(--stagger-blur));
+    transition:
+      opacity var(--stagger-dur) var(--stagger-ease),
+      transform var(--stagger-dur) var(--stagger-ease),
+      filter var(--stagger-dur) var(--stagger-ease);
+    will-change: transform, opacity, filter;
+  }
+
+  .beats.is-ready .beat:nth-child(2) { transition-delay: var(--stagger-stagger); }
+  .beats.is-ready .beat:nth-child(3) { transition-delay: calc(var(--stagger-stagger) * 2); }
+  .beats.is-ready .beat:nth-child(4) { transition-delay: calc(var(--stagger-stagger) * 3); }
+
+  .beats.is-shown .beat {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beats.is-ready .beat {
+      transition: none !important;
+    }
   }
 
   .beat-body .name {
@@ -1054,6 +1147,69 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     max-width: 44ch;
   }
 
+  /* ── Countdown — sticky bottom-right urgency card ──────────────────────── */
+  .countdown {
+    position: fixed;
+    right: var(--band-gap);
+    bottom: var(--band-gap);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    border-radius: 18px;
+    padding: 10px 18px 12px;
+    color: var(--stand-black);
+    text-align: center;
+  }
+
+  .countdown-label {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: -0.2px;
+  }
+
+  .countdown-cells {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .countdown .cell {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 2.2ch;
+  }
+
+  .countdown .cell b {
+    font-weight: 900;
+    font-size: 26px;
+    line-height: 1;
+    /* Equal-width digits so the card doesn't jitter every second. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown .cell i {
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 3px;
+    opacity: 0.6;
+  }
+
+  .countdown em {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1;
+    align-self: flex-start;
+  }
+
   /* ── Mobile ──────────────────────────────────────────────────────────── */
   @media (max-width: 768px) {
     .mc-nav {
@@ -1138,6 +1294,14 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
 
     .signup-grid {
       grid-template-columns: 1fr;
+    }
+
+    .countdown {
+      padding: 8px 14px 10px;
+    }
+
+    .countdown .cell b {
+      font-size: 20px;
     }
   }
 </style>
