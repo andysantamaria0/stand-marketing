@@ -262,7 +262,6 @@ const faqs = [
     <!-- ── 6 · Signup ─────────────────────────────────────────────────────── -->
     <section class="signup" id="signup" aria-labelledby="signup-title">
       <div class="signup-card">
-        <p class="seats-tag signup-tag">Only {EVENT.seats} spots</p>
         <h2 id="signup-title" class="headline">Save your kid&rsquo;s spot</h2>
         <p class="desc signup-when">
           {EVENT.weekday}, {EVENT.date} &middot; {EVENT.time} &middot; {EVENT.where} &middot; Free
@@ -450,7 +449,10 @@ const faqs = [
     background: var(--stand-cream);
     color: var(--stand-black);
     font-family: var(--font-sans);
-    overflow-x: hidden;
+    /* No overflow-x:hidden here — that would make .mc a scroll container,
+       hijacking the panels' view() timelines (they'd resolve against .mc,
+       which never scrolls, and freeze at their end state). The body already
+       clips horizontal overflow and propagates it to the viewport. */
     /* Colored sections render as inset rounded "cards" (Toca treatment):
        page background shows around each panel through this gap. */
     --band-gap: clamp(12px, 1.8vw, 28px);
@@ -540,21 +542,6 @@ const faqs = [
   .section-title {
     font-weight: 700;
     margin: 0 0 clamp(24px, 4vh, 44px);
-  }
-
-  /* Post-it pill tag — the scarcity marker. */
-  .seats-tag {
-    display: inline-block;
-    background: var(--stand-postit);
-    border: 2px solid var(--stand-black);
-    border-radius: 999px;
-    transform: rotate(-2deg);
-    padding: 6px 16px;
-    margin: 0 0 20px;
-    font-weight: 700;
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
   }
 
   /* Visible placeholder marker — see the header comment. Ugly on purpose. */
@@ -968,10 +955,6 @@ const faqs = [
     border-radius: var(--band-radius);
     padding: clamp(28px, 4vw, 48px);
     text-align: center;
-  }
-
-  .signup-tag {
-    transform: rotate(1.5deg);
   }
 
   .signup-card .headline {
