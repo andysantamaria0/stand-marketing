@@ -958,6 +958,27 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     margin-top: clamp(24px, 4vh, 48px);
   }
 
+  /* The wave rolls sideways as it crosses the viewport — scroll-scrubbed
+     background-position on its own view() timeline (the tile repeats, so the
+     travel is seamless). Static line for no-support / reduced-motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .wave-divider {
+        animation: wave-roll linear both;
+        animation-timeline: view();
+      }
+    }
+  }
+
+  @keyframes wave-roll {
+    from {
+      background-position-x: 0;
+    }
+    to {
+      background-position-x: 480px;
+    }
+  }
+
   /* ── FAQ — Harvest-style: giant heading, near-full-width rows ──────────── */
   .faq {
     width: calc(100% - 2 * var(--band-gap));
