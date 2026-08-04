@@ -2,10 +2,17 @@
 // FOOTER — Figma node 202:2993
 // Yellow post-it bg. Stand wordmark + tagline + social, email signup tag, 4 columns of links.
 // Signup posts to the existing waitlist endpoint on app.standkids.com — same handler the legacy site used.
+// `signup={false}` drops the email card (used on /masterclass, which has its
+// own signup form) — the footer is then just the brand sign-off.
+interface Props {
+  signup?: boolean;
+}
+
+const { signup = true } = Astro.props;
 ---
 
 <footer class="footer">
-  <div class="inner">
+  <div class:list={['inner', { 'brand-only': !signup }]}>
     <div class="brand">
       <img src="/brand/logo.svg" alt="Stand" width="120" />
       <p>STAND&reg; is where kids create, launch, and grow real businesses.</p>
@@ -25,6 +32,7 @@
       </div>
     </div>
 
+    {signup && (
     <div class="right-stack">
       <form
         class="signup"
@@ -61,6 +69,7 @@
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
+    )}
   </div>
 </footer>
 
@@ -126,6 +135,35 @@
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: start;
+  }
+
+  /* signup={false}: no right column, the brand block owns the row and
+     rearranges — a big "long" wordmark on the left, tagline + socials beside
+     it. The logo spans both right-column rows so the pair reads as one
+     lockup, not a list. */
+  .inner.brand-only {
+    grid-template-columns: 1fr;
+  }
+
+  .inner.brand-only .brand {
+    display: grid;
+    /* One row: logo · description · socials. The 1fr middle pushes the
+       social icons to the far edge. */
+    grid-template-columns: auto 1fr auto;
+    column-gap: clamp(24px, 3vw, 44px);
+    align-items: center;
+  }
+
+  .inner.brand-only .brand img {
+    width: clamp(72px, 7vw, 100px);
+    height: auto;
+    margin-bottom: 0;
+  }
+
+  .inner.brand-only .brand p {
+    margin: 0;
+    /* One long line beside the logo — drop the base rule's 280px wrap cap. */
+    max-width: none;
   }
 
   .right-stack {
@@ -307,6 +345,21 @@
     .brand p {
       font-size: 16px;
       max-width: none;
+    }
+    /* brand-only goes back to a stack at phone width — 220px+ of wordmark
+       plus a paragraph doesn't fit side by side. */
+    .inner.brand-only .brand {
+      grid-template-columns: 1fr;
+      row-gap: 4px;
+    }
+    .inner.brand-only .brand img {
+      grid-row: auto;
+      width: 90px;
+      margin-bottom: 12px;
+    }
+    .inner.brand-only .brand p {
+      align-self: auto;
+      margin: 0 0 20px;
     }
     .signup {
       justify-self: stretch;
