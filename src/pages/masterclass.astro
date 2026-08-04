@@ -111,12 +111,27 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
       <a href="#signup" class="cta-btn cta-btn-postit">&lt;CTA&gt; &rarr;</a>
     </section>
 
-    <!-- ── 1c · Social proof strip ────────────────────────────────────────── -->
+    <!-- ── 1c · Social proof marquee — continuous ticker (3 copies, track
+         slides one copy-width for a seamless loop, same technique as the
+         homepage Marquee). ───────────────────────────────────────────────── -->
     <section class="proof" aria-label="Credibility">
-      <p class="proof-line">
-        &lt;Social proof &mdash; <strong>founder credential</strong> &middot;
-        press logos &middot; testimonials&gt;
+      <p class="visually-hidden">
+        Social proof: founder credential, press, testimonials.
       </p>
+      <div class="proof-track" aria-hidden="true">
+        {
+          [0, 1, 2].map(() => (
+            <span class="proof-copy">
+              <strong>&lt;Founder credential&gt;</strong>
+              <em>&rarr;</em>
+              <span>&lt;Press logos&gt;</span>
+              <em>&rarr;</em>
+              <span>&lt;Testimonial quote&gt;</span>
+              <em>&rarr;</em>
+            </span>
+          ))
+        }
+      </div>
     </section>
 
     <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
@@ -708,26 +723,51 @@ const faqs = Array.from({ length: 6 }, (_, i) => ({
     color: var(--stand-black);
   }
 
-  /* ── Social proof strip — thin black card, "as seen on" slot. Butts flush
-     against the poster above (no gap). ──────────────────────────────────── */
+  /* ── Social proof marquee — thin black card, continuous ticker. Butts
+     flush against the poster above (no gap). ────────────────────────────── */
   .proof {
     background: var(--stand-black);
-    text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    overflow: hidden;
   }
 
-  .proof-line {
+  .proof-track {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    width: max-content;
+    animation: proof-scroll 28s linear infinite;
+    will-change: transform;
     color: var(--stand-cream);
     font-family: var(--font-serif);
     font-size: clamp(15px, 1.6vw, 21px);
     letter-spacing: -0.2px;
-    margin: 0;
   }
 
-  .proof-line strong {
+  .proof-copy {
+    flex: 0 0 auto;
+  }
+
+  .proof-copy strong {
     font-family: var(--font-sans);
     font-weight: 700;
+  }
+
+  .proof-copy em {
+    font-style: normal;
+    font-family: var(--font-sans);
+    margin: 0 1.2em;
+    opacity: 0.7;
+  }
+
+  @keyframes proof-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-33.3333%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proof-track { animation: none; }
   }
 
 
