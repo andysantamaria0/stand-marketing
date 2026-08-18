@@ -24,9 +24,12 @@ const FACT_GROUPS = [
 <section class="fc-program" id="program" aria-labelledby="program-title">
   <div class="copy">
     <div class="chunk drift" style="--drift: 50px">
-      <p class="eyebrow">The Program</p>
+      <!-- Three-beat reveal: each phrase gets its own slice of the scroll
+           timeline, so they land one after another. -->
       <h2 id="program-title" class="headline-xl">
-        Eight weeks. One real business. In person, in LA.
+        <span class="ph ph-1">Eight weeks.</span>
+        <span class="ph ph-2">One real business.</span>
+        <span class="ph ph-3">In person, in LA.</span>
       </h2>
     </div>
 
@@ -90,6 +93,45 @@ const FACT_GROUPS = [
     }
   }
 
+  /* Headline phrases: same scrubbed timeline, staggered windows — beat one
+     lands first, beats two and three trail it. */
+  .ph {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .ph {
+        animation: fc-phrase linear both;
+        animation-timeline: view();
+      }
+
+      .ph-1 {
+        animation-range: entry 0% cover 22%;
+      }
+
+      .ph-2 {
+        animation-range: entry 30% cover 42%;
+      }
+
+      .ph-3 {
+        animation-range: entry 60% cover 62%;
+      }
+    }
+  }
+
+  @keyframes fc-phrase {
+    from {
+      opacity: 0;
+      transform: translateY(0.45em);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   .fc-program {
     display: grid;
     grid-template-columns: 3fr 2fr;
@@ -115,13 +157,6 @@ const FACT_GROUPS = [
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-  }
-
-  .eyebrow {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    color: var(--stand-red);
   }
 
   .headline-xl {
@@ -151,11 +186,6 @@ const FACT_GROUPS = [
     justify-content: space-between;
     gap: var(--space-3);
     padding: 12px 0;
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
-  }
-
-  .row:first-child {
-    border-top: 1px dashed rgba(0, 0, 0, 0.3);
   }
 
   dt {
