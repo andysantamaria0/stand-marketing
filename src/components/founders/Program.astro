@@ -4,41 +4,54 @@
 // the landing page (team decision pending Celestine/Andy — see wireframe
 // review); remove the Price row here if the call comes back "hold until
 // /enroll".
-const FACTS = [
-  { k: 'Format', v: '8-week in-person semester' },
-  { k: 'Ages', v: '8–13' },
-  { k: 'Where', v: 'Westwood, LA' },
-  { k: 'Schedule', v: 'Tue/Thu 4–6pm · Sat 12–2pm PT' },
-  { k: 'Starts', v: 'First week of October' },
-  { k: 'Finale', v: 'Pitch night · early December' },
-  { k: 'Price', v: '$500 · First Founder’s discount' },
+// Facts arrive in chunks with generous scroll-room between them, so the
+// pinned cameo holds while each group rises past it (Graza-style tall column).
+const FACT_GROUPS = [
+  [
+    { k: 'Format', v: '8-week in-person semester' },
+    { k: 'Ages', v: '8–13' },
+    { k: 'Where', v: 'Westwood, LA' },
+  ],
+  [
+    { k: 'Schedule', v: 'Tue/Thu 4–6pm · Sat 12–2pm PT' },
+    { k: 'Starts', v: 'First week of October' },
+    { k: 'Finale', v: 'Pitch night · early December' },
+  ],
+  [{ k: 'Price', v: '$500 · First Founder’s discount' }],
 ];
 ---
 
 <section class="fc-program" id="program" aria-labelledby="program-title">
-  <div class="copy drift" style="--drift: 50px">
-    <p class="eyebrow">The Program</p>
-    <h2 id="program-title" class="headline-xl">
-      Eight weeks. One real business. In person, in LA.
-    </h2>
-    <p class="desc">
+  <div class="copy">
+    <div class="chunk drift" style="--drift: 50px">
+      <p class="eyebrow">The Program</p>
+      <h2 id="program-title" class="headline-xl">
+        Eight weeks. One real business. In person, in LA.
+      </h2>
+    </div>
+
+    <p class="desc chunk drift" style="--drift: 70px">
       &lt;Program body &mdash; kid takes an idea, or finds one here, and builds it into a
       real business: a brand, a product, a plan. On pitch night they get up and
       present it.&gt;
     </p>
 
-    <dl class="facts" id="details">
-      {
-        FACTS.map((f) => (
-          <div class="row">
-            <dt>{f.k}</dt>
-            <dd>{f.v}</dd>
-          </div>
-        ))
-      }
-    </dl>
+    {
+      FACT_GROUPS.map((group, gi) => (
+        <dl class="facts chunk drift" id={gi === 0 ? 'details' : undefined} style="--drift: 70px">
+          {group.map((f) => (
+            <div class="row">
+              <dt>{f.k}</dt>
+              <dd>{f.v}</dd>
+            </div>
+          ))}
+        </dl>
+      ))
+    }
 
-    <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
+    <div class="chunk drift" style="--drift: 70px">
+      <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
+    </div>
   </div>
 
   <div class="photo drift" style="--drift: 150px">
@@ -92,6 +105,15 @@ const FACTS = [
   .copy {
     display: flex;
     flex-direction: column;
+    /* The big gaps ARE the effect: they stretch the column across ~2.5
+       viewports so the pinned cameo holds while each chunk scrolls past. */
+    gap: min(32vh, 320px);
+    padding-bottom: var(--space-7);
+  }
+
+  .chunk {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-3);
   }
 
@@ -118,9 +140,10 @@ const FACTS = [
   }
 
   .facts {
-    margin: var(--space-2) 0 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
+    gap: 0;
   }
 
   .row {
