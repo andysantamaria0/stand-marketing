@@ -81,7 +81,9 @@ const FACTS = [
     display: grid;
     grid-template-columns: 3fr 2fr;
     gap: var(--space-6);
-    align-items: stretch;
+    /* start (not stretch): a stretched child can never stick — sticky needs
+       room to travel inside the grid cell. */
+    align-items: start;
     max-width: var(--container-max);
     margin: 0 auto;
     padding: var(--space-6) var(--space-5);
@@ -162,7 +164,11 @@ const FACTS = [
   }
 
   .photo {
-    min-height: 420px;
+    /* Graza-style pin: the cameo sticks below the fixed nav while the copy
+       column scrolls past, releasing when the section ends. */
+    position: sticky;
+    top: calc(var(--header-h) - 20px);
+    height: min(72vh, 560px);
     /* Oval mask — the portrait reads as a big arched cameo, not a card. */
     border-radius: 50%;
     overflow: hidden;
