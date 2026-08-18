@@ -95,7 +95,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
         }
         if ([...carried].length === 0) return;
 
-        for (const a of document.querySelectorAll('a[href*="app.standkids.com"]')) {
+        // Also decorate internal /enroll links. Ads should deep-link /enroll with
+        // its own UTMs, but a visitor who lands on the homepage first and then
+        // clicks through would otherwise arrive with no first-touch attribution
+        // at all — the enrollment island reads them off location.search.
+        const selector = 'a[href*="app.standkids.com"], a[href^="/enroll"], a[href*="standkids.com/enroll"]';
+        for (const a of document.querySelectorAll(selector)) {
           const href = a.getAttribute("href");
           // Never rewrite API/form endpoints (e.g. /api/waitlist) — only nav CTAs.
           if (!href || href.includes("/api/")) continue;
