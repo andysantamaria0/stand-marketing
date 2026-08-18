@@ -47,7 +47,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               class="input"
               type="email"
               id="enroll-email"
-              name="email"
               autocomplete="email"
               inputmode="email"
               placeholder={COPY.form.emailPlaceholder}
@@ -62,7 +61,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               class="input"
               type="tel"
               id="enroll-phone"
-              name="phone"
               autocomplete="tel"
               inputmode="tel"
               placeholder={COPY.form.phonePlaceholder}
@@ -85,8 +83,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               </div>
 
               <div class="kid-row">
-                <div class="field field-grow">
-                  <label class="label">{COPY.form.kidNameLabel}</label>
+                <label class="field field-grow">
+                  <span class="label">{COPY.form.kidNameLabel}</span>
                   <input
                     class="input"
                     type="text"
@@ -95,11 +93,10 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                     autocomplete="off"
                     placeholder={COPY.form.kidNamePlaceholder}
                   />
-                  <p class="error" data-error="name" role="alert" hidden></p>
-                </div>
+                </label>
 
-                <div class="field field-age">
-                  <label class="label">{COPY.form.kidAgeLabel}</label>
+                <label class="field field-age">
+                  <span class="label">{COPY.form.kidAgeLabel}</span>
                   <input
                     class="input"
                     type="number"
@@ -110,9 +107,13 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                     inputmode="numeric"
                     placeholder={COPY.form.kidAgePlaceholder}
                   />
-                  <p class="error" data-error="age" role="alert" hidden></p>
-                </div>
+                </label>
               </div>
+
+              <!-- Errors sit OUTSIDE the row: inside the fixed 88px age column
+                   they would wrap to a dozen lines and blow the layout out. -->
+              <p class="error" data-error="name" role="alert" hidden></p>
+              <p class="error" data-error="age" role="alert" hidden></p>
 
               <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
 
@@ -148,7 +149,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                thing that permits texting. -->
           <div class="consent">
             <label class="check">
-              <input type="checkbox" id="enroll-sms" name="smsOptIn" />
+              <input type="checkbox" id="enroll-sms" />
               <span>{COPY.form.smsConsent}</span>
             </label>
             <p class="privacy">
@@ -228,8 +229,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
         </div>
 
         <div class="kid-row">
-          <div class="field field-grow">
-            <label class="label">{COPY.form.kidNameLabel}</label>
+          <label class="field field-grow">
+            <span class="label">{COPY.form.kidNameLabel}</span>
             <input
               class="input"
               type="text"
@@ -238,11 +239,10 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               autocomplete="off"
               placeholder={COPY.form.kidNamePlaceholder}
             />
-            <p class="error" data-error="name" role="alert" hidden></p>
-          </div>
+          </label>
 
-          <div class="field field-age">
-            <label class="label">{COPY.form.kidAgeLabel}</label>
+          <label class="field field-age">
+            <span class="label">{COPY.form.kidAgeLabel}</span>
             <input
               class="input"
               type="number"
@@ -253,9 +253,11 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               inputmode="numeric"
               placeholder={COPY.form.kidAgePlaceholder}
             />
-            <p class="error" data-error="age" role="alert" hidden></p>
-          </div>
+          </label>
         </div>
+
+        <p class="error" data-error="name" role="alert" hidden></p>
+        <p class="error" data-error="age" role="alert" hidden></p>
 
         <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
 
@@ -284,6 +286,26 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     </template>
   </main>
 </Layout>
+
+<script is:inline>
+  // The ONE place is:inline is correct on this page: this must run during HTML
+  // parsing, before the island bundle has downloaded.
+  //
+  // The form has no action, so its browser default is a GET navigation to the
+  // current URL. Until the island attaches its own preventDefault, a tap on
+  // SUBMIT — or Enter in any text field, which `novalidate` does not stop —
+  // would reload the page, silently drop the signup, and (if any control ever
+  // regains a `name`) put what the parent typed into the URL, where the
+  // site-wide PostHog init would capture it as $current_url. This has no env
+  // references, so nothing here needs Astro's processing.
+  document.addEventListener(
+    'submit',
+    function (event) {
+      event.preventDefault();
+    },
+    true
+  );
+</script>
 
 <script>
   // Processed module script — NOT is:inline and NOT define:vars. Both skip
@@ -448,6 +470,11 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     font-size: 14px;
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
+    /* The rest of the page holds 44px; this control was ~20px because
+       tokens.css resets button padding to 0 globally. */
+    min-height: 44px;
+    padding: 0 8px;
+    margin: -12px -8px;
   }
 
   .kid-remove[hidden] {

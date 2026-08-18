@@ -39,9 +39,17 @@ interface KidPayload {
 
 const $ = <T extends HTMLElement>(id: string): T | null => document.getElementById(id) as T | null;
 
-/** The mode the page OPENED in, so a mid-session flip can be explained. */
-let openedInMode: Mode = "open";
+/**
+ * The mode the parent was actually SHOWN while filling the form — not the mode
+ * the server rendered. The page always renders "open" (the fail-open rule), so
+ * reading this from the DOM at boot alone would leave it permanently "open" and
+ * make every waitlisted parent see the mid-session-flip copy. It is updated
+ * when the availability swap happens.
+ */
+let shownMode: Mode = "open";
 let submitting = false;
+/** `enroll_full_seen` is a once-per-session beat, not once per render path. */
+let fullSeenTracked = false;
 let resumeToken: string | null = null;
 let startedTracked = false;
 let emailTracked = false;
@@ -203,17 +211,27 @@ function markStarted(): void {
 
 /* ── mode ────────────────────────────────────────────────────────────────── */
 
+/** Fires the waitlist-seen beat at most once per page load. */
+function trackFullSeen(): void {
+  if (fullSeenTracked) return;
+  fullSeenTracked = true;
+  track("enroll_full_seen", {});
+}
+
 /** Swaps the page into waitlist mode. Only ever called on a confirmed "full". */
 function applyWaitlistMode(): void {
   const root = $<HTMLElement>("enroll-root");
   if (!root || root.dataset.mode === "waitlist") return;
   root.dataset.mode = "waitlist";
+  // The parent is now LOOKING at the waitlist headline, so their success copy
+  // must be the waitlist one, not the "filled up just now" flip explanation.
+  shownMode = "waitlist";
 
   const headline = $<HTMLElement>("enroll-headline");
   const lede = $<HTMLElement>("enroll-lede");
   if (headline) headline.textContent = COPY.waitlist.headline;
   if (lede) lede.textContent = COPY.waitlist.lede;
-  track("enroll_full_seen", {});
+  trackFullSeen();
 }
 
 /**
@@ -324,7 +342,7 @@ function collectPayload(): {
 function showSuccess(waitlisted: boolean): void {
   const copy = !waitlisted
     ? COPY.success.open
-    : openedInMode === "open"
+    : shownMode === "open"
       ? COPY.success.flipped
       : COPY.success.waitlist;
 
@@ -337,7 +355,7 @@ function showSuccess(waitlisted: boolean): void {
   const success = $<HTMLElement>("enroll-success");
   if (page1) page1.hidden = true;
   if (success) success.hidden = false;
-  if (waitlisted) track("enroll_full_seen", {});
+  if (waitlisted) trackFullSeen();
   success?.scrollIntoView({ behavior: "smooth", block: "start" });
   $<HTMLElement>("success-title")?.focus();
 }
@@ -411,8 +429,10 @@ async function submitDetails(): Promise<void> {
   if (submitting || !resumeToken) return;
   const detailsError = $<HTMLElement>("details-error");
   const button = $<HTMLButtonElement>("details-submit");
+  const skip = $<HTMLButtonElement>("details-skip");
   submitting = true;
   if (button) button.disabled = true;
+  if (skip) skip.disabled = true;
   setError(detailsError, "");
 
   try {
@@ -440,6 +460,7 @@ async function submitDetails(): Promise<void> {
   } finally {
     submitting = false;
     if (button) button.disabled = false;
+    if (skip) skip.disabled = false;
   }
 }
 
@@ -448,7 +469,7 @@ async function submitDetails(): Promise<void> {
 function init(): void {
   const root = $<HTMLElement>("enroll-root");
   if (!root) return;
-  openedInMode = root.dataset.mode === "waitlist" ? "waitlist" : "open";
+  shownMode = root.dataset.mode === "waitlist" ? "waitlist" : "open";
 
   kidBlocks().forEach(wireKidBlock);
   syncKidChrome();
@@ -475,6 +496,10 @@ function init(): void {
     void submitDetails();
   });
   $<HTMLButtonElement>("details-skip")?.addEventListener("click", () => {
+    // Guarded: skipping mid-save would swap in the done screen and take the
+    // failed-save retry copy with it, so the parent would never learn their
+    // answers did not land.
+    if (submitting) return;
     track("enroll_details_skipped", {});
     showDone();
   });
