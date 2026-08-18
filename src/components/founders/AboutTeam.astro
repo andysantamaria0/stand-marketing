@@ -104,6 +104,13 @@ const TEAM = [
     padding: 0;
     display: flex;
     flex-direction: column;
+    /* Same receipt-style rule as the Program fact table: ~6px dashes on an
+       11px rhythm — `border: dashed` can't control dash length or gap. */
+    --dash: repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.55) 0 6px,
+      transparent 6px 11px
+    );
   }
 
   .team li {
@@ -112,11 +119,18 @@ const TEAM = [
     justify-content: space-between;
     gap: var(--space-3);
     padding: 12px 0;
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+    background-image: var(--dash);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 1px;
   }
 
   .team li:first-child {
-    border-top: 1px dashed rgba(0, 0, 0, 0.3);
+    background-image: var(--dash), var(--dash);
+    background-position:
+      left bottom,
+      left top;
+    background-size: 100% 1px;
   }
 
   .team strong {

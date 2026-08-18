@@ -1,60 +1,37 @@
 ---
 // The Program — asymmetric split (3:2): pitch + fact table left, photo right.
-// Facts are real decided data from the one-pager (Aug 2026). Price stays on
-// the landing page (team decision pending Celestine/Andy — see wireframe
-// review); remove the Price row here if the call comes back "hold until
-// /enroll".
-// Facts arrive in chunks with generous scroll-room between them, so the
-// pinned cameo holds while each group rises past it (Graza-style tall column).
-const FACT_GROUPS = [
-  [
-    { k: 'Format', v: '8-week in-person semester' },
-    { k: 'Ages', v: '8–13' },
-    { k: 'Where', v: 'Westwood, LA' },
-  ],
-  [
-    { k: 'Schedule', v: 'Tue/Thu 4–6pm · Sat 12–2pm PT' },
-    { k: 'Starts', v: 'First week of October' },
-    { k: 'Finale', v: 'Pitch night · early December' },
-  ],
-  [{ k: 'Price', v: '$500 · First Founder’s discount' }],
+// Facts are real decided data from the one-pager (Aug 2026), pared to the
+// three essentials — schedule/starts/finale and price live on /enroll.
+const FACTS = [
+  { k: 'Format', v: '8-week in-person semester' },
+  { k: 'Ages', v: '8–13' },
+  { k: 'Where', v: 'Westwood, LA' },
 ];
 ---
 
 <section class="fc-program" id="program" aria-labelledby="program-title">
-  <div class="copy">
-    <div class="chunk drift" style="--drift: 50px">
-      <!-- Three-beat reveal: each phrase gets its own slice of the scroll
-           timeline, so they land one after another. -->
-      <h2 id="program-title" class="headline-xl">
-        <span class="ph ph-1">Eight weeks.</span>
-        <span class="ph ph-2">One real business.</span>
-        <span class="ph ph-3">In person, in LA.</span>
-      </h2>
-    </div>
-
-    <p class="desc chunk drift" style="--drift: 70px">
+  <div class="copy drift" style="--drift: 50px">
+    <h2 id="program-title" class="headline-xl">
+      Eight weeks. One real business. In person, in LA.
+    </h2>
+    <p class="desc">
       &lt;Program body &mdash; kid takes an idea, or finds one here, and builds it into a
       real business: a brand, a product, a plan. On pitch night they get up and
       present it.&gt;
     </p>
 
-    {
-      FACT_GROUPS.map((group, gi) => (
-        <dl class="facts chunk drift" id={gi === 0 ? 'details' : undefined} style="--drift: 70px">
-          {group.map((f) => (
-            <div class="row">
-              <dt>{f.k}</dt>
-              <dd>{f.v}</dd>
-            </div>
-          ))}
-        </dl>
-      ))
-    }
+    <dl class="facts" id="details">
+      {
+        FACTS.map((f) => (
+          <div class="row">
+            <dt>{f.k}</dt>
+            <dd>{f.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
 
-    <div class="chunk drift" style="--drift: 70px">
-      <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
-    </div>
+    <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
   </div>
 
   <div class="photo drift" style="--drift: 150px">
@@ -93,67 +70,17 @@ const FACT_GROUPS = [
     }
   }
 
-  /* Headline phrases: same scrubbed timeline, staggered windows — beat one
-     lands first, beats two and three trail it. */
-  .ph {
-    display: inline-block;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .ph {
-        animation: fc-phrase linear both;
-        animation-timeline: view();
-      }
-
-      .ph-1 {
-        animation-range: entry 0% cover 22%;
-      }
-
-      .ph-2 {
-        animation-range: entry 30% cover 42%;
-      }
-
-      .ph-3 {
-        animation-range: entry 60% cover 62%;
-      }
-    }
-  }
-
-  @keyframes fc-phrase {
-    from {
-      opacity: 0;
-      transform: translateY(0.45em);
-    }
-
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
   .fc-program {
     display: grid;
     grid-template-columns: 3fr 2fr;
     gap: var(--space-6);
-    /* start (not stretch): a stretched child can never stick — sticky needs
-       room to travel inside the grid cell. */
-    align-items: start;
+    align-items: stretch;
     max-width: var(--container-max);
     margin: 0 auto;
     padding: var(--space-6) var(--space-5);
   }
 
   .copy {
-    display: flex;
-    flex-direction: column;
-    /* The big gaps ARE the effect: they stretch the column across ~2.5
-       viewports so the pinned cameo holds while each chunk scrolls past. */
-    gap: min(32vh, 320px);
-    padding-bottom: var(--space-7);
-  }
-
-  .chunk {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -175,10 +102,16 @@ const FACT_GROUPS = [
   }
 
   .facts {
-    margin: 0;
+    margin: var(--space-2) 0 0;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    /* Receipt-style rule: ~6px dashes on an 11px rhythm. A repeating gradient
+       because `border: dashed` can't control dash length or gap. */
+    --dash: repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.55) 0 6px,
+      transparent 6px 11px
+    );
   }
 
   .row {
@@ -186,6 +119,18 @@ const FACT_GROUPS = [
     justify-content: space-between;
     gap: var(--space-3);
     padding: 12px 0;
+    background-image: var(--dash);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 1px;
+  }
+
+  .row:first-child {
+    background-image: var(--dash), var(--dash);
+    background-position:
+      left bottom,
+      left top;
+    background-size: 100% 1px;
   }
 
   dt {
@@ -217,11 +162,7 @@ const FACT_GROUPS = [
   }
 
   .photo {
-    /* Graza-style pin: the cameo sticks below the fixed nav while the copy
-       column scrolls past, releasing when the section ends. */
-    position: sticky;
-    top: calc(var(--header-h) - 20px);
-    height: min(72vh, 560px);
+    min-height: 420px;
     /* Oval mask — the portrait reads as a big arched cameo, not a card. */
     border-radius: 50%;
     overflow: hidden;
