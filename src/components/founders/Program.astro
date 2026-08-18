@@ -41,9 +41,14 @@ const FACTS = [
     <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
   </div>
 
-  <!-- TODO(asset): kids-building photo → /brand/program-kids.webp -->
-  <div class="photo frame-placeholder drift" style="--drift: 150px">
-    <span>&lt;Photo &mdash; kids building, hands on the work&gt;</span>
+  <div class="photo drift" style="--drift: 150px">
+    <img
+      src="/brand/program-kid.jpg"
+      alt="A kid in a red STAND cap grinning up at the camera"
+      loading="lazy"
+      width="715"
+      height="1033"
+    />
   </div>
 </section>
 
@@ -158,25 +163,14 @@ const FACTS = [
 
   .photo {
     min-height: 420px;
-  }
-
-  /* Shared placeholder frame for photography that hasn't landed yet. */
-  .frame-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--space-3);
-    border: 2px dashed rgba(0, 0, 0, 0.35);
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.04);
+    overflow: hidden;
   }
 
-  .frame-placeholder span {
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: 18px;
-    opacity: 0.65;
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   @media (max-width: 900px) {
