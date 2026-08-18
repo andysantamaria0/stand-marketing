@@ -1,0 +1,193 @@
+---
+// The Program — asymmetric split (3:2): pitch + fact table left, photo right.
+// Facts are real decided data from the one-pager (Aug 2026). Price stays on
+// the landing page (team decision pending Celestine/Andy — see wireframe
+// review); remove the Price row here if the call comes back "hold until
+// /enroll".
+const FACTS = [
+  { k: 'Format', v: '8-week in-person semester' },
+  { k: 'Ages', v: '8–13' },
+  { k: 'Where', v: 'Westwood, LA' },
+  { k: 'Schedule', v: 'Tue/Thu 4–6pm · Sat 12–2pm PT' },
+  { k: 'Starts', v: 'First week of October' },
+  { k: 'Finale', v: 'Pitch night · early December' },
+  { k: 'Price', v: '$500 · First Founder’s discount' },
+];
+---
+
+<section class="fc-program" id="program" aria-labelledby="program-title">
+  <div class="copy drift" style="--drift: 50px">
+    <p class="eyebrow">The Program</p>
+    <h2 id="program-title" class="headline-xl">
+      Eight weeks. One real business. In person, in LA.
+    </h2>
+    <p class="desc">
+      &lt;Program body &mdash; kid takes an idea, or finds one here, and builds it into a
+      real business: a brand, a product, a plan. On pitch night they get up and
+      present it.&gt;
+    </p>
+
+    <dl class="facts" id="details">
+      {
+        FACTS.map((f) => (
+          <div class="row">
+            <dt>{f.k}</dt>
+            <dd>{f.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
+  </div>
+
+  <!-- TODO(asset): kids-building photo → /brand/program-kids.webp -->
+  <div class="photo frame-placeholder drift" style="--drift: 150px">
+    <span>&lt;Photo &mdash; kids building, hands on the work&gt;</span>
+  </div>
+</section>
+
+<style>
+  /* Graza-style scrubbed parallax: each column rises into place tied to the
+     scroll position itself (reverses on scroll-up), and the two columns move
+     at different speeds — --drift is how far each lags. CSS view timelines
+     run on the compositor; browsers without support just render static. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .drift {
+        animation: fc-drift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+    }
+  }
+
+  @keyframes fc-drift {
+    from {
+      transform: translateY(var(--drift, 60px));
+    }
+
+    to {
+      transform: none;
+    }
+  }
+
+  .fc-program {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: var(--space-6);
+    align-items: stretch;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    color: var(--stand-red);
+  }
+
+  .headline-xl {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .desc {
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  .facts {
+    margin: var(--space-2) 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+  }
+
+  .row:first-child {
+    border-top: 1px dashed rgba(0, 0, 0, 0.3);
+  }
+
+  dt {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .apply {
+    align-self: flex-start;
+    margin-top: var(--space-2);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--stand-black);
+    background: var(--color-cta);
+    border-radius: 999px;
+    padding: 14px 28px;
+    transition: transform 120ms ease;
+  }
+
+  .apply:hover {
+    transform: scale(1.04);
+  }
+
+  .photo {
+    min-height: 420px;
+  }
+
+  /* Shared placeholder frame for photography that hasn't landed yet. */
+  .frame-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-3);
+    border: 2px dashed rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .frame-placeholder span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+    opacity: 0.65;
+  }
+
+  @media (max-width: 900px) {
+    .fc-program {
+      grid-template-columns: 1fr;
+      padding: var(--space-5) var(--space-3);
+    }
+
+    .photo {
+      min-height: 280px;
+      order: -1;
+    }
+  }
+</style>

@@ -1,0 +1,124 @@
+---
+// Parent FAQ — native <details>/<summary> accordion (zero JS, keyboard
+// accessible for free). Questions are decided; answers are Lauren's to write
+// (plain, reassuring, parent-voiced) so they ship as placeholder tokens.
+const FAQS = [
+  'Who is it for?',
+  'What will my kid actually build?',
+  'Where is it held, and when?',
+  'What does the $500 cover?',
+  'What happens on pitch night?',
+  'Does my kid need an idea already?',
+  'What do they keep after the semester?',
+];
+---
+
+<section class="fc-faq" id="faq" aria-labelledby="faq-title">
+  <p class="eyebrow">FAQ</p>
+  <h2 id="faq-title" class="headline-xl">Questions, answered.</h2>
+
+  <div class="list">
+    {
+      FAQS.map((q) => (
+        <details>
+          <summary>
+            <span>{q}</span>
+            <span class="mark" aria-hidden="true">+</span>
+          </summary>
+          <p class="desc">&lt;Answer &mdash; plain, reassuring, parent-voiced. Lauren to write.&gt;</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .fc-faq {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3);
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    color: var(--stand-red);
+  }
+
+  .headline-xl {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  details {
+    border-bottom: 1px solid var(--stand-black);
+  }
+
+  details:first-child {
+    border-top: 1px solid var(--stand-black);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 22px 0;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 22px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--stand-red);
+    outline-offset: 4px;
+  }
+
+  .mark {
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--stand-red);
+    transition: transform 160ms ease;
+  }
+
+  details[open] .mark {
+    transform: rotate(45deg);
+  }
+
+  details .desc {
+    margin: 0;
+    padding: 0 0 22px;
+    max-width: 62ch;
+  }
+
+  @media (max-width: 768px) {
+    .fc-faq {
+      padding: var(--space-6) var(--space-3);
+    }
+
+    summary {
+      font-size: 18px;
+      padding: 18px 0;
+    }
+  }
+</style>

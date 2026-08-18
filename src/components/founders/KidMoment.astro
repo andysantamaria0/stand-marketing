@@ -1,0 +1,37 @@
+---
+// Full-bleed kid moment — one edge-to-edge photograph, no copy. Per the brand
+// brief: a real kid mid-work, absorbed, a little serious. Not posed.
+// TODO(asset): photo → /brand/kid-moment.webp, then swap the placeholder
+// frame for an <img> (loading="lazy", alt written by Faye/Sabeena).
+---
+
+<section class="fc-moment" aria-label="A kid at work">
+  <div class="frame-placeholder">
+    <span>&lt;Full-bleed photo &mdash; kid mid-pitch, absorbed in the work&gt;</span>
+  </div>
+</section>
+
+<style>
+  .fc-moment {
+    padding: var(--space-4) 0;
+  }
+
+  .frame-placeholder {
+    min-height: 62vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-3);
+    border-top: 2px dashed rgba(0, 0, 0, 0.35);
+    border-bottom: 2px dashed rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .frame-placeholder span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+    opacity: 0.65;
+  }
+</style>

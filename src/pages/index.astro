@@ -1,30 +1,91 @@
 ---
+// Homepage — Founder's Class landing (in-person LA program, Oct 2026).
+// Replaces the digital-platform homepage per the approved one-pager +
+// enrollment-journey docs (Aug 13–15). Page rhythm mirrors the signed-off
+// wireframe:
+//
+//   nav → video hero → what-STAND-is → program split → kid moment →
+//   Lauren & team → big facts → idea/make/sell/pitch → FAQ → closing CTA →
+//   minimal footer
+//
+// Every CTA routes to /enroll (owned by Andy — email-first, then payment;
+// see the Enrollment Journey doc for the email_captured / payment_completed
+// contract). The old platform homepage components remain in src/components/
+// untouched, and /masterclass (the superseded Zoom-class concept) is not
+// affected.
+//
+// Launch checklist:
+//   [ ] Hero film → /public/brand/hero-video.mp4
+//   [ ] Photography: program-kids, kid-moment, lauren portraits
+//   [ ] <placeholder> copy tokens — Celestine (page), Lauren (bio, FAQ answers)
+//   [ ] /enroll live (Andy) before this page ships — every CTA points there
+//   [ ] Confirm price-on-landing call (currently: shown, per team lean)
 import Layout from '@/layouts/Layout.astro';
-import Hero from '@/components/Hero.astro';
-import About from '@/components/About.astro';
-import FindYourBusiness from '@/components/FindYourBusiness.astro';
-import Marquee from '@/components/Marquee.astro';
+import VideoHero from '@/components/founders/VideoHero.astro';
+import WhatIs from '@/components/founders/WhatIs.astro';
+import Program from '@/components/founders/Program.astro';
+import KidMoment from '@/components/founders/KidMoment.astro';
+import AboutTeam from '@/components/founders/AboutTeam.astro';
+import Journey from '@/components/founders/Journey.astro';
+import Faq from '@/components/founders/Faq.astro';
+import Closing from '@/components/founders/Closing.astro';
+// Carried over from the previous homepage — same brand furniture, new story.
 import IconTicker from '@/components/IconTicker.astro';
-import Toolbox from '@/components/Toolbox.astro';
-import ExtraBio from '@/components/ExtraBio.astro';
-import SafetyTrust from '@/components/SafetyTrust.astro';
-import Why from '@/components/Why.astro';
-import StartNow from '@/components/StartNow.astro';
+import Marquee from '@/components/Marquee.astro';
 import Footer from '@/components/Footer.astro';
 ---
 
-<Layout>
-  <main>
-    <Hero />
-    <About />
-    <FindYourBusiness />
-    <Marquee items={[{ text: 'Dream. Build. Grow.', font: 'sans' }, { text: 'What will you build?', font: 'serif' }]} height={56} />
-    <Toolbox />
+<Layout
+  title="Stand — Build your own thing. For Real."
+  description="An 8-week in-person program in LA where kids 8–13 take an idea and build it into a real business — a brand, a product, a plan, and a pitch night. The modern day lemonade stand."
+>
+  <main class="founders-page">
+    <VideoHero />
+    <WhatIs />
+    <Program />
+    <KidMoment />
+    <AboutTeam />
+    <Journey />
     <IconTicker />
-    <ExtraBio />
-    <SafetyTrust />
-    <Why />
-    <StartNow />
+    <Faq />
+    <Marquee
+      items={[
+        { text: 'Idea. Make. Build. Pitch.', font: 'sans' },
+        { text: 'The modern day lemonade stand.', font: 'serif' },
+      ]}
+      height={64}
+    />
+    <Closing />
   </main>
-  <Footer />
+  <Footer signup={false} />
 </Layout>
+
+<style is:global>
+  /* Section tops clear the viewport edge on anchor jumps. Smoothing itself is
+     Lenis's job (script below) — CSS scroll-behavior:smooth must stay OFF or
+     the two smoothing systems fight over programmatic scrolls. */
+  .founders-page [id] {
+    scroll-margin-top: var(--space-4);
+  }
+</style>
+
+<script>
+  // Buttery scroll — Lenis momentum smoothing. The wheel/touch input is
+  // intercepted and the real scroll position eased toward the target each
+  // animation frame (exponential lerp), which is what reads as "buttery".
+  // Reduced-motion users keep native instant scrolling.
+  import Lenis from 'lenis';
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      lerp: 0.1, // smoothing factor per frame: lower = floatier, higher = tighter
+      anchors: true, // nav tabs (#program, #faq…) ride the same easing
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }
+</script>

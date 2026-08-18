@@ -1,0 +1,144 @@
+---
+// Meet Lauren & team — editorial profile. Portrait left, copy right.
+// Bio copy is Lauren-voiced and needs her sign-off (same rule as the
+// from-Lauren emails), so it ships as a placeholder token.
+const TEAM = [
+  { name: 'Lauren', role: 'Founder · teaches every weekday cohort' },
+  { name: 'Kobe', role: 'Curriculum' },
+  { name: '<Community manager>', role: 'Parents & day-of support' },
+];
+---
+
+<section class="fc-about" id="about" aria-labelledby="about-title">
+  <!-- TODO(asset): portrait → /brand/lauren.webp -->
+  <div class="portrait frame-placeholder">
+    <span>&lt;Portrait &mdash; Lauren&gt;</span>
+  </div>
+
+  <div class="copy">
+    <p class="eyebrow">About</p>
+    <h2 id="about-title" class="headline-xl">Meet Lauren &amp; team</h2>
+    <p class="desc">
+      &lt;Lauren bio &mdash; her voice, needs her sign-off. Working line from the
+      one-pager: &ldquo;I didn&rsquo;t go to business school. I just did
+      business.&rdquo;&gt;
+    </p>
+
+    <ul class="team">
+      {
+        TEAM.map((m) => (
+          <li>
+            <strong>{m.name}</strong>
+            <span>{m.role}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .fc-about {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: var(--space-6);
+    align-items: center;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .portrait {
+    aspect-ratio: 3 / 4;
+    max-height: 560px;
+  }
+
+  .frame-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-3);
+    border: 2px dashed rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .frame-placeholder span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+    opacity: 0.65;
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    color: var(--stand-red);
+  }
+
+  .headline-xl {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+  }
+
+  .desc {
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  .team {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+  }
+
+  .team li:first-child {
+    border-top: 1px dashed rgba(0, 0, 0, 0.3);
+  }
+
+  .team strong {
+    font-weight: 700;
+  }
+
+  .team span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+    text-align: right;
+  }
+
+  @media (max-width: 900px) {
+    .fc-about {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+      padding: var(--space-6) var(--space-3);
+    }
+
+    .portrait {
+      max-width: 420px;
+    }
+  }
+</style>

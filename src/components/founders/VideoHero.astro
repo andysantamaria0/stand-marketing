@@ -1,0 +1,153 @@
+---
+import Nav from './Nav.astro';
+
+// Hero — editorial split layout (ref: Google Cloud × Team USA):
+// intro copy upper-left, inset rounded video upper-right, and the headline
+// at poster scale across the bottom of the viewport. Cream ground, so the
+// video is a framed object rather than a full-bleed backdrop.
+//
+// The film streams from the same Vercel Blob asset the production site uses —
+// video binaries stay out of git. If the blob is ever rotated, grab the new
+// URL from the live site's <video> source.
+const FILM_SRC =
+  'https://mk7xj0szdtkawdqj.public.blob.vercel-storage.com/video/stand-website-v2-RzQBNxWaJiAOJwSAv6dveovpSRwsLH.mp4';
+---
+
+<section class="fc-hero" aria-labelledby="fc-hero-title">
+  <Nav />
+
+  <div class="top">
+    <div class="intro">
+      <p class="lede">
+        STAND is the in-person program where kids build a real business, from
+        the idea to a real sale. It runs in LA, in a real space, with real
+        teachers.
+      </p>
+      <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
+    </div>
+
+    <div class="film-frame">
+      <video autoplay muted loop playsinline preload="metadata" aria-label="Stand — the film">
+        <source src={FILM_SRC} type="video/mp4" />
+      </video>
+    </div>
+  </div>
+
+  <h1 id="fc-hero-title">Build your own thing. <em>For Real.</em></h1>
+</section>
+
+<style>
+  .fc-hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: calc(var(--header-h) + var(--space-1)) 48px var(--space-4);
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+
+  .top {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+  }
+
+  .lede {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(20px, 1.9vw, 28px);
+    line-height: 1.35;
+    max-width: 24ch;
+    text-wrap: pretty;
+  }
+
+  .apply {
+    align-self: flex-start;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--stand-black);
+    background: var(--color-cta);
+    border-radius: 999px;
+    padding: 15px 30px;
+    transition: transform 120ms ease;
+  }
+
+  .apply:hover {
+    transform: scale(1.04);
+  }
+
+  .film-frame {
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    /* Dark ground doubles as the placeholder until the film asset lands. */
+    background: #191512;
+  }
+
+  .film-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .fc-hero h1 {
+    /* Poster scale, overlapping the film frame's lower-left corner —
+       type rides ABOVE the video in the stack. */
+    position: relative;
+    z-index: 3;
+    margin: -3.5vw 0 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(48px, 8.4vw, 128px);
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .fc-hero h1 em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--stand-red);
+  }
+
+  @media (max-width: 900px) {
+    .fc-hero {
+      padding: calc(var(--header-h) - 10px) 20px var(--space-4);
+      gap: var(--space-4);
+    }
+
+    .top {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    /* No overlap once the columns stack. */
+    .fc-hero h1 {
+      margin-top: var(--space-4);
+    }
+
+    /* Video leads on mobile; the pitch follows it. */
+    .film-frame {
+      order: -1;
+    }
+
+    .intro {
+      padding-top: 0;
+      gap: var(--space-3);
+    }
+  }
+</style>
