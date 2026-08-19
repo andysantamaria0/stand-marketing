@@ -1,12 +1,14 @@
 ---
 // Huge closing enrollment CTA — red ground, the headline at poster scale.
 // The hero line returns here deliberately (bookend), with the real scarcity
-// line under the button.
+// line under the button. CTA is the shared paper-tag rectangle, same as
+// every other signup moment on the page.
+import SignupButton from './SignupButton.astro';
 ---
 
 <section class="fc-closing" aria-labelledby="closing-title">
   <h2 id="closing-title">Build your own thing. <em>For Real.</em></h2>
-  <a href="/enroll" class="apply">Apply for the Class &rarr;</a>
+  <SignupButton label="Apply for the Class →" />
   <p class="seats">Up to 20 seats this fall. First come.</p>
 </section>
 
@@ -40,20 +42,6 @@
     color: var(--stand-postit);
   }
 
-  .apply {
-    font-weight: 700;
-    font-size: 20px;
-    color: var(--stand-black);
-    background: var(--color-cta);
-    border-radius: 999px;
-    padding: 18px 38px;
-    transition: transform 120ms ease;
-  }
-
-  .apply:hover {
-    transform: scale(1.05);
-  }
-
   .seats {
     margin: 0;
     font-family: var(--font-serif);
@@ -64,11 +52,6 @@
   @media (max-width: 768px) {
     .fc-closing {
       padding: var(--space-7) var(--space-3);
-    }
-
-    .apply {
-      font-size: 16px;
-      padding: 14px 28px;
     }
   }
 </style>

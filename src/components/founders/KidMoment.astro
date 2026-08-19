@@ -1,7 +1,9 @@
 ---
-// Full-bleed kid moment (Figma "HEADER (7)") — portrait photo cover-cropped
-// into the comp's landscape frame, yellow type lockup layered on top, binder
-// clip straddling the top seam as if pinning the photo to the page.
+// Full-bleed kid moment (Figma frame "3") — portrait photo dimmed toward
+// black, the "Build your own thing. For Real." lockup in white layered on
+// top. The white comes from a filter on the existing yellow lockup PNG
+// (brightness(0) flattens it to a silhouette, invert(1) flips it white), so
+// there's no second lockup asset to keep in sync.
 ---
 
 <section class="fc-moment">
@@ -22,25 +24,16 @@
     width="776"
     height="676"
   />
-
-  <img
-    class="clip"
-    src="/brand/clip-yellow.png"
-    alt=""
-    aria-hidden="true"
-    loading="lazy"
-    width="353"
-    height="406"
-  />
 </section>
 
 <style>
   .fc-moment {
     position: relative;
-    /* No overflow:hidden — the binder clip must poke above the top seam.
-       The photo itself is inset:0 + cover, so nothing else can spill. */
     /* The comp's landscape frame; the portrait photo crops into it. */
-    aspect-ratio: 1437 / 1054;
+    aspect-ratio: 1437 / 823;
+    /* Black ground + 70% photo = the mock's scrim; it's what keeps the
+       white lockup legible over the busy bead spill. */
+    background: var(--stand-black);
   }
 
   .photo {
@@ -51,27 +44,19 @@
     object-fit: cover;
     /* Bias the crop toward the STAND box (middle band of the portrait). */
     object-position: 50% 42%;
+    opacity: 0.7;
   }
 
   .lockup {
     position: absolute;
-    /* Anchored to the top of the frame (not centered) so the type sits over
-       the bead spill and the STAND box below stays clear. */
-    top: 5%;
-    left: 23%;
-    width: 53%;
+    /* Centered with the mock's slight rightward bias (+81px of 1437),
+       spanning nearly the full frame height. */
+    top: 12%;
+    left: 56%;
+    transform: translateX(-50%);
+    width: 50%;
     height: auto;
-  }
-
-  .clip {
-    position: absolute;
-    /* Straddles the top seam like it's pinning the photo up; nudged right of
-       the lockup so the type stays clear. */
-    top: 0;
-    left: 62%;
-    width: clamp(60px, 7vw, 100px);
-    height: auto;
-    transform: translateY(-42%) rotate(6deg);
-    pointer-events: none;
+    /* Yellow PNG → white silhouette. */
+    filter: brightness(0) invert(1);
   }
 </style>

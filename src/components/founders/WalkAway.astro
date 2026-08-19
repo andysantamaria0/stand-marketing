@@ -1,64 +1,75 @@
 ---
-// "What a kid walks away with" — blue/green diagonal-stripe band, Pie Pie
-// display title, centered cream copy. Sits right under the red marquee.
+// Pink kid collage (Figma frame "4") — hot-pink band, kid cutouts bleeding
+// off the top and side edges. Replaces the blue/green striped "what a kid
+// walks away with" section; the copy was cut per the Aug 19 review, leaving
+// the collage as a purely visual beat. Cutouts are positioned in % of the
+// fixed-aspect .kids frame (same technique as BrandCollage) so the collage
+// scales as one piece.
 ---
 
-<section class="fc-walkaway" aria-labelledby="walkaway-title">
-  <div class="inner">
-    <h2 id="walkaway-title">what a kid walks away with</h2>
-
-    <p>
-      Every kid takes an idea, one they came in with or one they find here,
-      and builds it into a real business: a brand, a product, a plan. On pitch
-      night they get up and present it.
-    </p>
-    <p>
-      Kids get a Founder&rsquo;s grab bag and a member card they can hold, and
-      a STAND login where their business lives online, so they can keep
-      building their idea after the semester ends.
-    </p>
+<section class="fc-walkaway" aria-label="STAND kids">
+  <div class="kids" aria-hidden="true">
+    <img
+      class="boy"
+      src="/brand/cutout-boy-tote.png"
+      alt=""
+      loading="lazy"
+      width="579"
+      height="1022"
+    />
+    <img
+      class="girl"
+      src="/brand/cutout-girl-bracelets.png"
+      alt=""
+      loading="lazy"
+      width="823"
+      height="1039"
+    />
+    <img
+      class="pair"
+      src="/brand/cutout-kids-dancing.png"
+      alt=""
+      loading="lazy"
+      width="1014"
+      height="1039"
+    />
   </div>
 </section>
 
 <style>
   .fc-walkaway {
-    /* Diagonal candy stripe: two brand colors, hard stops, compositor-cheap. */
-    background: repeating-linear-gradient(
-      65deg,
-      var(--stand-blue) 0 34px,
-      var(--stand-green) 34px 68px
-    );
+    position: relative;
+    background: var(--stand-pink);
   }
 
-  .inner {
-    max-width: 72ch;
-    margin: 0 auto;
-    padding: clamp(56px, 9vh, 110px) 24px;
-    text-align: center;
+  /* Shorter than the comp's 1437×1022 frame — with the copy cut, the band
+     ends just under the cutouts instead of trailing empty pink. */
+  .kids {
+    position: relative;
+    aspect-ratio: 1437 / 860;
+    overflow: hidden;
   }
 
-  h2 {
-    margin: 0 0 var(--space-3);
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(24px, 2.6vw, 38px);
-    letter-spacing: 0.01em;
-    color: var(--stand-postit);
+  .kids img {
+    position: absolute;
+    height: auto;
   }
 
-  p {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: clamp(18px, 1.8vw, 26px);
-    line-height: 1.35;
-    color: var(--stand-white);
-    text-wrap: pretty;
+  .boy {
+    left: -4%;
+    top: -3%;
+    width: 42%;
   }
 
-  @media (max-width: 768px) {
-    .inner {
-      padding: 48px 20px;
-    }
+  .girl {
+    left: 13%;
+    top: 3%;
+    width: 57%;
+  }
+
+  .pair {
+    left: 42%;
+    top: -13%;
+    width: 58%;
   }
 </style>

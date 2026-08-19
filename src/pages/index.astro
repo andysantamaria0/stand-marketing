@@ -4,9 +4,10 @@
 // enrollment-journey docs (Aug 13–15). Page rhythm mirrors the signed-off
 // wireframe:
 //
-//   nav → video hero → what-STAND-is → program split → kid moment →
-//   Lauren & team → big facts → idea/make/sell/pitch → FAQ → closing CTA →
-//   minimal footer
+//   nav → video hero → green manifesto → program facts → kid moment →
+//   pink collage → FAQ → closing CTA → minimal footer
+//   (what-is / program split / team / journey / offer / intro pitch /
+//   what's-included / green collage / icon ticker cut per Aug 19 review)
 //
 // Every CTA routes to /enroll (owned by Andy — email-first, then payment;
 // see the Enrollment Journey doc for the email_captured / payment_completed
@@ -22,20 +23,13 @@
 //   [ ] Confirm price-on-landing call (currently: shown, per team lean)
 import Layout from '@/layouts/Layout.astro';
 import VideoHero from '@/components/founders/VideoHero.astro';
-import IntroPitch from '@/components/founders/IntroPitch.astro';
+import Manifesto from '@/components/founders/Manifesto.astro';
+import ProgramFacts from '@/components/founders/ProgramFacts.astro';
 import WalkAway from '@/components/founders/WalkAway.astro';
-import WhatsIncluded from '@/components/founders/WhatsIncluded.astro';
-import BrandCollage from '@/components/founders/BrandCollage.astro';
-import TheOffer from '@/components/founders/TheOffer.astro';
-import WhatIs from '@/components/founders/WhatIs.astro';
-import Program from '@/components/founders/Program.astro';
 import KidMoment from '@/components/founders/KidMoment.astro';
-import AboutTeam from '@/components/founders/AboutTeam.astro';
-import Journey from '@/components/founders/Journey.astro';
 import Faq from '@/components/founders/Faq.astro';
 import Closing from '@/components/founders/Closing.astro';
 // Carried over from the previous homepage — same brand furniture, new story.
-import IconTicker from '@/components/IconTicker.astro';
 import Marquee from '@/components/Marquee.astro';
 import Footer from '@/components/Footer.astro';
 ---
@@ -46,18 +40,11 @@ import Footer from '@/components/Footer.astro';
 >
   <main class="founders-page">
     <VideoHero />
-    <IntroPitch />
+    <Manifesto />
+    <ProgramFacts />
     <Marquee />
-    <TheOffer />
-    <WalkAway />
     <KidMoment />
-    <WhatsIncluded />
-    <BrandCollage />
-    <WhatIs />
-    <Program />
-    <AboutTeam />
-    <Journey />
-    <IconTicker />
+    <WalkAway />
     <Faq />
     <Marquee
       items={[
@@ -65,6 +52,7 @@ import Footer from '@/components/Footer.astro';
         { text: 'The modern day lemonade stand.', font: 'serif' },
       ]}
       height={64}
+      bg="var(--stand-blue)"
     />
     <Closing />
   </main>
