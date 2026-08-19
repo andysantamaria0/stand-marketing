@@ -1,0 +1,722 @@
+---
+/**
+ * /enroll — the [Founders Program] intake page.
+ *
+ * One URL, one form, a client-side state swap. Page 1 is the required stuff;
+ * the thank-you screen IS page 2, carrying the optional questions. No payment
+ * anywhere this week.
+ *
+ * STYLED BY REFERENCE to the current standkids.com: the site's own tokens
+ * (`src/styles/tokens.css`), fonts (Authentic Sans / Editorial New / Pie Pie),
+ * cream ground, red accents, post-it CTA, and the chunky 2px ink stroke with a
+ * hard offset shadow that `CookieNotice.astro` already uses. Nothing invented.
+ * Fay's rebrand lands on top; JY iterates layout and copy after handoff.
+ *
+ * Deliberate reversal, noted here so nobody "fixes" it back: `Hero.astro` says
+ * the marketing site does not capture emails itself. Superseded by the 8/18
+ * meeting — /enroll IS the capture surface.
+ *
+ * Mobile is the PRIMARY target (this is where ad traffic lands): single column,
+ * full-width controls, tappable day chips, and the consent block visible in the
+ * same glance as the submit button.
+ */
+import Layout from '@/layouts/Layout.astro';
+import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
+---
+
+<Layout title={COPY.meta.title} description={COPY.meta.description}>
+  <main class="enroll">
+    <!-- The page ALWAYS renders in open mode. The availability call swaps this
+         to "waitlist" only on a confirmed "full" — never a blocking round trip
+         on the highest-friction surface we have. -->
+    <div class="wrap" id="enroll-root" data-mode="open">
+      <a class="back" href="/">STAND</a>
+
+      <header class="intro">
+        <p class="eyebrow" id="enroll-eyebrow">{COPY.open.eyebrow}</p>
+        <h1 class="title" id="enroll-headline">{COPY.open.headline}</h1>
+        <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
+      </header>
+
+      <!-- ── PAGE 1 ─────────────────────────────────────────────────────── -->
+      <section class="card" id="enroll-page1">
+        <form id="enroll-form" novalidate>
+          <div class="field">
+            <label class="label" for="enroll-email">{COPY.form.emailLabel}</label>
+            <input
+              class="input"
+              type="email"
+              id="enroll-email"
+              autocomplete="email"
+              inputmode="email"
+              placeholder={COPY.form.emailPlaceholder}
+              required
+            />
+            <p class="error" id="enroll-email-error" data-error="email" role="alert" hidden></p>
+          </div>
+
+          <div class="field">
+            <label class="label" for="enroll-phone">{COPY.form.phoneLabel}</label>
+            <input
+              class="input"
+              type="tel"
+              id="enroll-phone"
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder={COPY.form.phonePlaceholder}
+              required
+            />
+            <p class="hint">{COPY.form.phoneWhy}</p>
+            <p class="error" id="enroll-phone-error" data-error="phone" role="alert" hidden></p>
+          </div>
+
+          <div id="enroll-kids">
+            <!-- The first kid block is server-rendered so the form works before
+                 the island boots. Extra blocks clone the template below — the
+                 same markup, so the two can never drift. -->
+            {/* Named with aria-label, not a legend element: that only names a
+                fieldset when it is the fieldset's FIRST child, and the remove
+                button shares this line. Nested in the div it was inert, so
+                every kid block was unnamed and three kids gave a screen reader
+                three identical day-chip groups. syncKidChrome() keeps the
+                label and the visible heading in lockstep on add/remove. */}
+            <fieldset class="kid" data-kid-block aria-label={`${COPY.form.kidLegend} 1`}>
+              <div class="kid-head">
+                <span class="kid-legend" data-kid-legend>{COPY.form.kidLegend} 1</span>
+                <button type="button" class="kid-remove" data-kid-remove hidden>
+                  {COPY.form.removeKid}
+                </button>
+              </div>
+
+              <div class="kid-row">
+                <label class="field field-grow">
+                  <span class="label">{COPY.form.kidNameLabel}</span>
+                  <input
+                    class="input"
+                    type="text"
+                    data-kid-name
+                    maxlength="64"
+                    autocomplete="off"
+                    placeholder={COPY.form.kidNamePlaceholder}
+                  />
+                </label>
+
+                <label class="field field-age">
+                  <span class="label">{COPY.form.kidAgeLabel}</span>
+                  <input
+                    class="input"
+                    type="number"
+                    data-kid-age
+                    min="5"
+                    max="17"
+                    step="1"
+                    inputmode="numeric"
+                    placeholder={COPY.form.kidAgePlaceholder}
+                  />
+                </label>
+              </div>
+
+              <!-- Errors sit OUTSIDE the row: inside the fixed 88px age column
+                   they would wrap to a dozen lines and blow the layout out. -->
+              <p class="error" data-error="name" role="alert" hidden></p>
+              <p class="error" data-error="age" role="alert" hidden></p>
+
+              <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
+
+              <div class="field">
+                <span class="label">{COPY.form.kidDaysLabel}</span>
+                <div class="chips">
+                  {
+                    DAYS.map((day) => (
+                      <button type="button" class="chip" data-day={day.value} aria-pressed="false">
+                        {day.label}
+                      </button>
+                    ))
+                  }
+                  <button
+                    type="button"
+                    class="chip chip-any"
+                    data-day={ANY_DAY.value}
+                    aria-pressed="false"
+                  >
+                    {ANY_DAY.label}
+                  </button>
+                </div>
+                <p class="error" data-error="days" role="alert" hidden></p>
+              </div>
+            </fieldset>
+          </div>
+
+          <button type="button" class="add-kid" id="enroll-add-kid">{COPY.form.addKid}</button>
+
+          <!-- Consent block, per the reference screenshot: an UNCHECKED SMS
+               checkbox, then the italic privacy line, then the submit button.
+               Submitting covers the program emails; the checkbox is the ONLY
+               thing that permits texting. -->
+          <div class="consent">
+            <label class="check">
+              <input type="checkbox" id="enroll-sms" />
+              <span>{COPY.form.smsConsent}</span>
+            </label>
+            <p class="privacy">
+              {COPY.form.privacyPrefix}<a href={COPY.form.privacyHref}
+                >{COPY.form.privacyLinkText}</a
+              >{COPY.form.privacySuffix}
+            </p>
+          </div>
+
+          <button type="submit" class="submit" id="enroll-submit">{COPY.form.submit}</button>
+          <p class="error error-form" id="enroll-form-error" data-error="form" role="alert" hidden>
+          </p>
+        </form>
+      </section>
+
+      <!-- ── SUCCESS + the optional questions (this IS page 2) ──────────── -->
+      <section class="card" id="enroll-success" hidden>
+        <h2 class="success-title" id="success-title" tabindex="-1"></h2>
+        <p class="success-body" id="success-body"></p>
+
+        <hr class="rule" />
+
+        <p class="details-intro">{COPY.details.intro}</p>
+        <form id="details-form" novalidate>
+          <div class="field">
+            <label class="label" for="details-location">{COPY.details.locationLabel}</label>
+            <input
+              class="input"
+              type="text"
+              id="details-location"
+              maxlength="200"
+              placeholder={COPY.details.locationPlaceholder}
+            />
+          </div>
+
+          <div class="field">
+            <label class="label" for="details-time">{COPY.details.timeLabel}</label>
+            <select class="input" id="details-time">
+              <option value="">—</option>
+              {TIMES.map((time) => <option value={time.value}>{time.label}</option>)}
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="label" for="details-other">{COPY.details.otherCityLabel}</label>
+            <input
+              class="input"
+              type="text"
+              id="details-other"
+              maxlength="200"
+              placeholder={COPY.details.otherCityPlaceholder}
+            />
+          </div>
+
+          <div class="details-actions">
+            <button type="submit" class="submit" id="details-submit">{COPY.details.submit}</button>
+            <button type="button" class="skip" id="details-skip">{COPY.details.skip}</button>
+          </div>
+          <p class="error error-form" id="details-error" data-error="details" role="alert" hidden>
+          </p>
+        </form>
+      </section>
+
+      <!-- ── DONE ───────────────────────────────────────────────────────── -->
+      <section class="card card-done" id="enroll-done" hidden>
+        <p class="done">{COPY.details.done}</p>
+      </section>
+    </div>
+
+    <!-- Cloned by the island for kids 2-4. Kept in Astro markup rather than
+         built as an HTML string so no user data ever meets innerHTML. -->
+    <template id="enroll-kid-template">
+      <fieldset class="kid" data-kid-block aria-label="">
+        <div class="kid-head">
+          <span class="kid-legend" data-kid-legend></span>
+          <button type="button" class="kid-remove" data-kid-remove>{COPY.form.removeKid}</button>
+        </div>
+
+        <div class="kid-row">
+          <label class="field field-grow">
+            <span class="label">{COPY.form.kidNameLabel}</span>
+            <input
+              class="input"
+              type="text"
+              data-kid-name
+              maxlength="64"
+              autocomplete="off"
+              placeholder={COPY.form.kidNamePlaceholder}
+            />
+          </label>
+
+          <label class="field field-age">
+            <span class="label">{COPY.form.kidAgeLabel}</span>
+            <input
+              class="input"
+              type="number"
+              data-kid-age
+              min="5"
+              max="17"
+              step="1"
+              inputmode="numeric"
+              placeholder={COPY.form.kidAgePlaceholder}
+            />
+          </label>
+        </div>
+
+        <p class="error" data-error="name" role="alert" hidden></p>
+        <p class="error" data-error="age" role="alert" hidden></p>
+
+        <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
+
+        <div class="field">
+          <span class="label">{COPY.form.kidDaysLabel}</span>
+          <div class="chips">
+            {
+              DAYS.map((day) => (
+                <button type="button" class="chip" data-day={day.value} aria-pressed="false">
+                  {day.label}
+                </button>
+              ))
+            }
+            <button
+              type="button"
+              class="chip chip-any"
+              data-day={ANY_DAY.value}
+              aria-pressed="false"
+            >
+              {ANY_DAY.label}
+            </button>
+          </div>
+          <p class="error" data-error="days" role="alert" hidden></p>
+        </div>
+      </fieldset>
+    </template>
+  </main>
+</Layout>
+
+<script is:inline>
+  // The ONE place is:inline is correct on this page: this must run during HTML
+  // parsing, before the island bundle has downloaded.
+  //
+  // The form has no action, so its browser default is a GET navigation to the
+  // current URL. Until the island attaches its own preventDefault, a tap on
+  // SUBMIT — or Enter in any text field, which `novalidate` does not stop —
+  // would reload the page, silently drop the signup, and (if any control ever
+  // regains a `name`) put what the parent typed into the URL, where the
+  // site-wide PostHog init would capture it as $current_url. This has no env
+  // references, so nothing here needs Astro's processing.
+  document.addEventListener(
+    'submit',
+    function (event) {
+      event.preventDefault();
+    },
+    true
+  );
+</script>
+
+<script>
+  // Processed module script — NOT is:inline and NOT define:vars. Both skip
+  // Astro's processing, which would leave PUBLIC_ENROLL_API_BASE un-inlined and
+  // point every submit at the literal string "undefined".
+  import '@/scripts/enroll/island';
+</script>
+
+<style>
+  /* Ground and rhythm follow the rest of the site: cream page, Authentic Sans
+     body, Editorial New for the eyebrow, and the chunky ink stroke + hard
+     offset shadow used by CookieNotice. */
+  .enroll {
+    background: var(--stand-cream);
+    min-height: 100vh;
+    padding: 24px 20px 80px;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .back {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 20px;
+    letter-spacing: 0.02em;
+    color: var(--stand-black);
+    margin-bottom: 28px;
+  }
+
+  .intro {
+    margin-bottom: 24px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--stand-red);
+    margin: 0 0 8px;
+  }
+
+  .title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+    margin: 0 0 12px;
+  }
+
+  .lede {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  .card {
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    border-radius: 14px;
+    box-shadow: 6px 6px 0 var(--stand-black);
+    padding: 24px 20px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .label {
+    display: block;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .input {
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: 16px; /* 16px minimum, or iOS Safari zooms on focus. */
+    color: var(--stand-black);
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    border-radius: 10px;
+    padding: 12px 14px;
+    outline: none;
+  }
+
+  .input:focus-visible {
+    box-shadow: 0 0 0 3px var(--stand-postit);
+  }
+
+  select.input {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--stand-black) 50%),
+      linear-gradient(135deg, var(--stand-black) 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(50% + 2px),
+      calc(100% - 14px) calc(50% + 2px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+  }
+
+  .hint {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    opacity: 0.7;
+    margin: 6px 0 0;
+  }
+
+  .error {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: var(--stand-red);
+    margin: 6px 0 0;
+  }
+
+  .error[hidden] {
+    display: none;
+  }
+
+  .error-form {
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* Kid blocks read as inner wells: cream fill, thinner stroke, no lift. */
+  .kid {
+    border: 2px solid var(--stand-black);
+    border-radius: 12px;
+    background: var(--stand-cream);
+    padding: 16px 14px 4px;
+    margin: 0 0 16px;
+  }
+
+  .kid-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .kid-legend {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 0;
+  }
+
+  .kid-remove {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    /* The rest of the page holds 44px; this control was ~20px because
+       tokens.css resets button padding to 0 globally. */
+    min-height: 44px;
+    padding: 0 8px;
+    margin: -12px -8px;
+  }
+
+  .kid-remove[hidden] {
+    display: none;
+  }
+
+  .kid-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .field-grow {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .field-age {
+    width: 88px;
+    flex: none;
+  }
+
+  .notice {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.4;
+    background: var(--stand-postit);
+    border: 2px solid var(--stand-black);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 0 0 18px;
+  }
+
+  .notice[hidden] {
+    display: none;
+  }
+
+  /* Day chips: pill outline, post-it fill when selected. Sized for a thumb. */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 2px solid var(--stand-black);
+    border-radius: 999px;
+    background: var(--stand-white);
+    color: var(--stand-black);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--stand-postit);
+    box-shadow: 2px 2px 0 var(--stand-black);
+  }
+
+  .chip-any {
+    font-family: var(--font-serif);
+  }
+
+  .add-kid {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    min-height: 44px;
+    margin-bottom: 20px;
+  }
+
+  .add-kid:disabled {
+    opacity: 0.35;
+    text-decoration: none;
+    cursor: default;
+  }
+
+  /* Consent sits directly above submit so the small print is in the same
+     glance as the button, per the reference screenshot. */
+  .consent {
+    margin-bottom: 20px;
+  }
+
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.45;
+    cursor: pointer;
+  }
+
+  .check input {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: 1px 0 0;
+    accent-color: var(--stand-red);
+  }
+
+  .privacy {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 12px 0 0;
+  }
+
+  .privacy a {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+  }
+
+  .submit {
+    display: block;
+    width: 100%;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: 0.06em;
+    color: var(--stand-white);
+    background: var(--stand-red);
+    border: 2px solid var(--stand-black);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--stand-black);
+    min-height: 56px;
+    padding: 0 20px;
+  }
+
+  .submit:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--stand-black);
+  }
+
+  .submit:disabled {
+    opacity: 0.6;
+    transform: none;
+    cursor: default;
+  }
+
+  .success-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.1;
+    margin: 0 0 10px;
+    outline: none;
+  }
+
+  .success-body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .rule {
+    border: 0;
+    border-top: 2px solid var(--stand-black);
+    margin: 24px 0 20px;
+  }
+
+  .details-intro {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    margin: 0 0 18px;
+  }
+
+  .details-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .details-actions .submit {
+    flex: 1;
+  }
+
+  .skip {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    min-height: 44px;
+  }
+
+  .card-done {
+    text-align: center;
+  }
+
+  .done {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1.1;
+    margin: 8px 0;
+  }
+
+  /* Reserve room under the form for the site-wide cookie notice.
+     `CookieNotice` is position:fixed, bottom:16px, z-index:9999 and renders
+     for every visitor who has not dismissed it — i.e. exactly the ad traffic
+     landing cold on /enroll. Below 520px it stacks into a column ~160px tall,
+     and /enroll is the one page with no Footer, so the old 80px of bottom
+     padding left SUBMIT entirely inside the banner's footprint at full
+     scroll: the parent taps the button, the banner swallows it, and nothing
+     happens until they find "Got it". Dead space at the very bottom of a form
+     is harmless; a submit button that cannot be tapped is not.
+     Sized for a four-line wrap of the notice plus the iOS home indicator. */
+  @media (max-width: 767px) {
+    .enroll {
+      padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* Desktop keeps the same single column — this is a form, not a landing
+     page — and only loosens the type and spacing. */
+  @media (min-width: 768px) {
+    .enroll {
+      padding: 40px 24px 120px;
+    }
+    .title {
+      font-size: 48px;
+    }
+    .lede {
+      font-size: 19px;
+    }
+    .card {
+      padding: 32px 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .submit:active {
+      transform: none;
+    }
+  }
+</style>
