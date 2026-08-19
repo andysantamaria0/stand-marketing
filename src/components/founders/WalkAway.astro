@@ -1,0 +1,64 @@
+---
+// "What a kid walks away with" — blue/green diagonal-stripe band, Pie Pie
+// display title, centered cream copy. Sits right under the red marquee.
+---
+
+<section class="fc-walkaway" aria-labelledby="walkaway-title">
+  <div class="inner">
+    <h2 id="walkaway-title">what a kid walks away with</h2>
+
+    <p>
+      Every kid takes an idea, one they came in with or one they find here,
+      and builds it into a real business: a brand, a product, a plan. On pitch
+      night they get up and present it.
+    </p>
+    <p>
+      Kids get a Founder&rsquo;s grab bag and a member card they can hold, and
+      a STAND login where their business lives online, so they can keep
+      building their idea after the semester ends.
+    </p>
+  </div>
+</section>
+
+<style>
+  .fc-walkaway {
+    /* Diagonal candy stripe: two brand colors, hard stops, compositor-cheap. */
+    background: repeating-linear-gradient(
+      65deg,
+      var(--stand-blue) 0 34px,
+      var(--stand-green) 34px 68px
+    );
+  }
+
+  .inner {
+    max-width: 72ch;
+    margin: 0 auto;
+    padding: clamp(56px, 9vh, 110px) 24px;
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(24px, 2.6vw, 38px);
+    letter-spacing: 0.01em;
+    color: var(--stand-postit);
+  }
+
+  p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.35;
+    color: var(--stand-white);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 768px) {
+    .inner {
+      padding: 48px 20px;
+    }
+  }
+</style>

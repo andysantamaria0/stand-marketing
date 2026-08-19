@@ -1,37 +1,77 @@
 ---
-// Full-bleed kid moment — one edge-to-edge photograph, no copy. Per the brand
-// brief: a real kid mid-work, absorbed, a little serious. Not posed.
-// TODO(asset): photo → /brand/kid-moment.webp, then swap the placeholder
-// frame for an <img> (loading="lazy", alt written by Faye/Sabeena).
+// Full-bleed kid moment (Figma "HEADER (7)") — portrait photo cover-cropped
+// into the comp's landscape frame, yellow type lockup layered on top, binder
+// clip straddling the top seam as if pinning the photo to the page.
 ---
 
-<section class="fc-moment" aria-label="A kid at work">
-  <div class="frame-placeholder">
-    <span>&lt;Full-bleed photo &mdash; kid mid-pitch, absorbed in the work&gt;</span>
-  </div>
+<section class="fc-moment">
+  <img
+    class="photo"
+    src="/brand/kid-moment.jpg"
+    alt="A kid at a craft table covered in beads, holding a white box wrapped in STAND tape"
+    loading="lazy"
+    width="2000"
+    height="3000"
+  />
+
+  <img
+    class="lockup"
+    src="/brand/lockup-build-for-real.png"
+    alt="Build your own thing. For Real."
+    loading="lazy"
+    width="776"
+    height="676"
+  />
+
+  <img
+    class="clip"
+    src="/brand/clip-yellow.png"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    width="353"
+    height="406"
+  />
 </section>
 
 <style>
   .fc-moment {
-    padding: var(--space-4) 0;
+    position: relative;
+    /* No overflow:hidden — the binder clip must poke above the top seam.
+       The photo itself is inset:0 + cover, so nothing else can spill. */
+    /* The comp's landscape frame; the portrait photo crops into it. */
+    aspect-ratio: 1437 / 1054;
   }
 
-  .frame-placeholder {
-    min-height: 62vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--space-3);
-    border-top: 2px dashed rgba(0, 0, 0, 0.35);
-    border-bottom: 2px dashed rgba(0, 0, 0, 0.35);
-    background: rgba(0, 0, 0, 0.04);
+  .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Bias the crop toward the STAND box (middle band of the portrait). */
+    object-position: 50% 42%;
   }
 
-  .frame-placeholder span {
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: 18px;
-    opacity: 0.65;
+  .lockup {
+    position: absolute;
+    /* Anchored to the top of the frame (not centered) so the type sits over
+       the bead spill and the STAND box below stays clear. */
+    top: 5%;
+    left: 23%;
+    width: 53%;
+    height: auto;
+  }
+
+  .clip {
+    position: absolute;
+    /* Straddles the top seam like it's pinning the photo up; nudged right of
+       the lockup so the type stays clear. */
+    top: 0;
+    left: 62%;
+    width: clamp(60px, 7vw, 100px);
+    height: auto;
+    transform: translateY(-42%) rotate(6deg);
+    pointer-events: none;
   }
 </style>

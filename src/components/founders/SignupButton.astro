@@ -1,0 +1,48 @@
+---
+// Shared "sign up now" CTA — Faye's paper-tag rectangle (border, skew, and
+// hard shadow baked into the PNG) stretched under Pie Pie type. Used by
+// IntroPitch, WhatsIncluded, and TheOffer.
+interface Props {
+  label?: string;
+  href?: string;
+}
+
+const { label = 'sign up now', href = '/enroll' } = Astro.props;
+---
+
+<a href={href} class="signup">{label}</a>
+
+<style>
+  .signup {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: min(536px, 100%);
+    min-height: 78px;
+    /* The tag art stretches with the label; 100% 100% keeps the baked border
+       and shadow pinned to the button's own edges. */
+    background: url('/brand/signup-tag.png') no-repeat center / 100% 100%;
+    /* The baked shadow occupies the bottom sliver — nudge the label up so it
+       centers on the white face, not the full image box. */
+    padding: 10px 64px 16px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: var(--stand-black);
+    transition: transform 120ms ease;
+  }
+
+  .signup:hover {
+    transform: translate(2px, 3px);
+  }
+
+  @media (max-width: 768px) {
+    .signup {
+      align-self: stretch;
+      min-width: 0;
+      padding: 10px 24px 16px;
+    }
+  }
+</style>
