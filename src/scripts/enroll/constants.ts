@@ -30,11 +30,18 @@ export const DAYS = [
 /** The flexible-parent escape hatch. One tap instead of six. */
 export const ANY_DAY = { value: "any", label: "Any day works" } as const;
 
-/** Time-of-day options on the optional questions. Values are the API contract. */
+/**
+ * Time-of-day options on the optional questions. Values are the API contract.
+ *
+ * "Weekend mornings" (`weekend_am`) was removed 8/19: the working class plan is
+ * Sat 12-2pm, i.e. midday, so the option was offering a slot we do not intend
+ * to run. Removed from the server's TIME_VALUES in the same pass, so the value
+ * is refused rather than merely un-offered. Re-adding it means re-adding it in
+ * BOTH repos.
+ */
 export const TIMES = [
   { value: "afternoon", label: "Afternoons" },
   { value: "evening", label: "Evenings" },
-  { value: "weekend_am", label: "Weekend mornings" },
   { value: "flexible", label: "Flexible" },
 ] as const;
 

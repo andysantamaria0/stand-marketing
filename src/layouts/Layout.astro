@@ -15,6 +15,21 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.com');
+
+// Klaviyo's onsite script renders a full-screen signup popup ~5s after load
+// that covers EVERY control on /enroll (email, phone, day chips, add-kid, the
+// SMS checkbox, submit) and locks body scroll until it is dismissed. On the
+// enrollment page that popup is also a COMPETING signup ask: a parent who
+// hands it their email joins the general subscriber list and never enrolls —
+// no kid, no phone, no days — while still looking like a successful capture.
+// /enroll runs its own PostHog analytics and its Klaviyo profile + metric
+// writes happen server-side in /api/enroll/start, so skipping the onsite
+// loader here costs no tracking we rely on.
+//
+// Belt-and-braces: the matching Klaviyo dashboard change (exclude /enroll from
+// onsite form targeting) should land too, so a future enrollment URL does not
+// re-arm the same trap. This guard is what makes launch not depend on it.
+const skipKlaviyoOnsite = Astro.url.pathname.replace(/\/+$/, '') === '/enroll';
 ---
 
 <!doctype html>
@@ -123,14 +138,22 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
         the onsite signup forms / waitlist popup. `is:inline` so Astro emits
         both scripts verbatim (the loader must keep its src + async, and the
         _klOnsite init is Klaviyo's own snippet, not a module to bundle). */}
-    <script
-      is:inline
-      async
-      type="text/javascript"
-      src="https://static.klaviyo.com/onsite/js/RqafrJ/klaviyo.js?company_id=RqafrJ"
-    ></script>
-    <script is:inline type="text/javascript">
-      !function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();
-    </script>
+    {
+      !skipKlaviyoOnsite && (
+        <script
+          is:inline
+          async
+          type="text/javascript"
+          src="https://static.klaviyo.com/onsite/js/RqafrJ/klaviyo.js?company_id=RqafrJ"
+        />
+      )
+    }
+    {
+      !skipKlaviyoOnsite && (
+        <script is:inline type="text/javascript">
+          {`!function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();`}
+        </script>
+      )
+    }
   </body>
 </html>
