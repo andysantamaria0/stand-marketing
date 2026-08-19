@@ -527,7 +527,11 @@ function init(): void {
   // from the drop-off read the PRD buys it for. SUBMIT is deliberately IN the
   // list — focusing it is a real interaction, and counting it repairs a funnel
   // that could otherwise emit `enroll_cta_clicked` with no preceding start.
-  const STARTED_CONTROLS = "input, select, textarea, [data-day], #enroll-add-kid, #enroll-submit";
+  // Every focusable inside #enroll-form EXCEPT the privacy anchor. Keep it that
+  // way: the exclusion list is meant to be exactly one element, so a control
+  // added later is a deliberate decision rather than a silent omission.
+  const STARTED_CONTROLS =
+    "input, select, textarea, [data-day], [data-kid-remove], #enroll-add-kid, #enroll-submit";
   $<HTMLFormElement>("enroll-form")?.addEventListener("focusin", (event) => {
     if ((event.target as HTMLElement | null)?.closest?.(STARTED_CONTROLS)) markStarted();
   });
