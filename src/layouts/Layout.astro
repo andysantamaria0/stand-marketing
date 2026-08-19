@@ -30,6 +30,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
 // onsite form targeting) should land too, so a future enrollment URL does not
 // re-arm the same trap. This guard is what makes launch not depend on it.
 const skipKlaviyoOnsite = Astro.url.pathname.replace(/\/+$/, '') === '/enroll';
+
+// Klaviyo's own init shim, verbatim. It lives here as a string and is emitted
+// with `set:html` because Astro renders the children of an `is:inline` script
+// as RAW TEXT — a `{`...`}` expression inside one is not evaluated, it is
+// printed literally, which silently ships a template literal instead of the
+// shim and leaves `window.klaviyo` undefined on every page.
+const KLAVIYO_ONSITE_INIT = String.raw`!function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();`;
 ---
 
 <!doctype html>
@@ -150,9 +157,7 @@ const skipKlaviyoOnsite = Astro.url.pathname.replace(/\/+$/, '') === '/enroll';
     }
     {
       !skipKlaviyoOnsite && (
-        <script is:inline type="text/javascript">
-          {`!function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();`}
-        </script>
+        <script is:inline type="text/javascript" set:html={KLAVIYO_ONSITE_INIT} />
       )
     }
   </body>

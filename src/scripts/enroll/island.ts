@@ -48,6 +48,14 @@ const $ = <T extends HTMLElement>(id: string): T | null => document.getElementBy
  */
 let shownMode: Mode = "open";
 let submitting = false;
+/**
+ * True once page 1 has been left behind for the success screen. The headline
+ * and lede live OUTSIDE `#enroll-page1`, so they stay on screen above the
+ * success card — a late availability response must not rewrite them to the
+ * waitlist copy over a parent who is already reading "You're on the list", nor
+ * move `shownMode` out from under `showSuccess`'s three-way copy choice.
+ */
+let leftPage1 = false;
 /** `enroll_full_seen` is a once-per-session beat, not once per render path. */
 let fullSeenTracked = false;
 let resumeToken: string | null = null;
@@ -116,8 +124,15 @@ function kidBlocks(): HTMLElement[] {
 function syncKidChrome(): void {
   const blocks = kidBlocks();
   blocks.forEach((block, index) => {
+    const heading = `${COPY.form.kidLegend} ${index + 1}`;
     const legend = block.querySelector<HTMLElement>("[data-kid-legend]");
-    if (legend) legend.textContent = `${COPY.form.kidLegend} ${index + 1}`;
+    if (legend) legend.textContent = heading;
+    // The fieldset carries its accessible name as aria-label rather than a
+    // <legend> (which would have to be the fieldset's first child, and the
+    // remove button shares that line). Set in lockstep with the visible
+    // heading, or removing a middle kid renames the box on screen and leaves
+    // the announced name pointing at the wrong child.
+    block.setAttribute("aria-label", heading);
     const remove = block.querySelector<HTMLButtonElement>("[data-kid-remove]");
     if (remove) remove.hidden = blocks.length <= 1;
   });
@@ -220,6 +235,11 @@ function trackFullSeen(): void {
 
 /** Swaps the page into waitlist mode. Only ever called on a confirmed "full". */
 function applyWaitlistMode(): void {
+  // Availability is fetched at boot and never blocks the render, so its
+  // response can land after the parent has already submitted. Past page 1 the
+  // swap is strictly harmful: the destination is the server's answer by then,
+  // and rewriting the still-visible headline would contradict the success copy.
+  if (leftPage1) return;
   const root = $<HTMLElement>("enroll-root");
   if (!root || root.dataset.mode === "waitlist") return;
   root.dataset.mode = "waitlist";
@@ -351,6 +371,10 @@ function showSuccess(waitlisted: boolean): void {
   if (title) title.textContent = copy.title;
   if (body) body.textContent = copy.body;
 
+  // Latch BEFORE the swap: an availability response arriving from here on must
+  // not repaint the headline that stays visible above this card.
+  leftPage1 = true;
+
   const page1 = $<HTMLElement>("enroll-page1");
   const success = $<HTMLElement>("enroll-success");
   if (page1) page1.hidden = true;
@@ -436,15 +460,26 @@ async function submitDetails(): Promise<void> {
   setError(detailsError, "");
 
   try {
+    // OMIT blank answers rather than sending "" / null. The server keeps a
+    // three-way distinction: key absent means "leave what is stored alone",
+    // key present but blank means "clear it" (see optionalText in the API's
+    // validate.ts). Sending every field unconditionally collapses that, so a
+    // returning parent — the PRD's headline flow, back to add a sibling — who
+    // taps SEND on the empty optional form would erase the location and time
+    // they gave last visit. Tapping SKIP would have preserved them, so the
+    // more engaged parent lost more data, silently.
+    const body: Record<string, string> = { token: resumeToken };
+    const location = $<HTMLInputElement>("details-location")?.value.trim() ?? "";
+    const time = $<HTMLSelectElement>("details-time")?.value ?? "";
+    const otherCity = $<HTMLInputElement>("details-other")?.value.trim() ?? "";
+    if (location) body.locationPreference = location;
+    if (time) body.timePreference = time;
+    if (otherCity) body.otherCity = otherCity;
+
     const res = await fetch(`${API_BASE}/api/enroll/details`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token: resumeToken,
-        locationPreference: $<HTMLInputElement>("details-location")?.value ?? "",
-        timePreference: $<HTMLSelectElement>("details-time")?.value || null,
-        otherCity: $<HTMLInputElement>("details-other")?.value ?? "",
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
@@ -475,6 +510,14 @@ function init(): void {
   syncKidChrome();
 
   $<HTMLButtonElement>("enroll-add-kid")?.addEventListener("click", addKidBlock);
+
+  // The PRD pins `enroll_form_started` to FIRST FOCUS, once per load. Binding
+  // it only to `input`/`change` missed the parent who taps into a field and
+  // leaves without typing — which is exactly the drop-off this beat is meant
+  // to measure. `focusin` bubbles, so one listener covers every control; the
+  // per-field listeners below stay as a floor for any control that gets a
+  // value without ever taking focus.
+  $<HTMLFormElement>("enroll-form")?.addEventListener("focusin", markStarted);
 
   const emailInput = $<HTMLInputElement>("enroll-email");
   emailInput?.addEventListener("input", markStarted);

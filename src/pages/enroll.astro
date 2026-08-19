@@ -74,9 +74,15 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
             <!-- The first kid block is server-rendered so the form works before
                  the island boots. Extra blocks clone the template below — the
                  same markup, so the two can never drift. -->
-            <fieldset class="kid" data-kid-block>
+            {/* Named with aria-label, not a legend element: that only names a
+                fieldset when it is the fieldset's FIRST child, and the remove
+                button shares this line. Nested in the div it was inert, so
+                every kid block was unnamed and three kids gave a screen reader
+                three identical day-chip groups. syncKidChrome() keeps the
+                label and the visible heading in lockstep on add/remove. */}
+            <fieldset class="kid" data-kid-block aria-label={`${COPY.form.kidLegend} 1`}>
               <div class="kid-head">
-                <legend class="kid-legend" data-kid-legend>{COPY.form.kidLegend} 1</legend>
+                <span class="kid-legend" data-kid-legend>{COPY.form.kidLegend} 1</span>
                 <button type="button" class="kid-remove" data-kid-remove hidden>
                   {COPY.form.removeKid}
                 </button>
@@ -222,9 +228,9 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     <!-- Cloned by the island for kids 2-4. Kept in Astro markup rather than
          built as an HTML string so no user data ever meets innerHTML. -->
     <template id="enroll-kid-template">
-      <fieldset class="kid" data-kid-block>
+      <fieldset class="kid" data-kid-block aria-label="">
         <div class="kid-head">
-          <legend class="kid-legend" data-kid-legend></legend>
+          <span class="kid-legend" data-kid-legend></span>
           <button type="button" class="kid-remove" data-kid-remove>{COPY.form.removeKid}</button>
         </div>
 
@@ -673,6 +679,22 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     font-size: 34px;
     line-height: 1.1;
     margin: 8px 0;
+  }
+
+  /* Reserve room under the form for the site-wide cookie notice.
+     `CookieNotice` is position:fixed, bottom:16px, z-index:9999 and renders
+     for every visitor who has not dismissed it — i.e. exactly the ad traffic
+     landing cold on /enroll. Below 520px it stacks into a column ~160px tall,
+     and /enroll is the one page with no Footer, so the old 80px of bottom
+     padding left SUBMIT entirely inside the banner's footprint at full
+     scroll: the parent taps the button, the banner swallows it, and nothing
+     happens until they find "Got it". Dead space at the very bottom of a form
+     is harmless; a submit button that cannot be tapped is not.
+     Sized for a four-line wrap of the notice plus the iOS home indicator. */
+  @media (max-width: 767px) {
+    .enroll {
+      padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px));
+    }
   }
 
   /* Desktop keeps the same single column — this is a form, not a landing
