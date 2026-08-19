@@ -13,8 +13,12 @@
  * is same-origin with every other page, so identity continuity from a marketing
  * pageview is automatic. A second init would break it.
  *
- * PII rule, same as the app: kid names and phone numbers never leave the form.
- * Counts, ages and enum values only.
+ * PII rule, same as the app: kid names and phone numbers never reach ANALYTICS.
+ * They are of course POSTed to the API — that is the product — but no event
+ * below carries either one. Client events carry counts and enum values only;
+ * unlike the server's `enroll_email_captured`, nothing here sends an age. The
+ * one identifier that does ride along is the parent's email, attached as a
+ * PostHog PERSON property by `identifyFamily` after a successful submit.
  */
 
 import posthog from "posthog-js";
