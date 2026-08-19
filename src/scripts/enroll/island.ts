@@ -517,7 +517,20 @@ function init(): void {
   // to measure. `focusin` bubbles, so one listener covers every control; the
   // per-field listeners below stay as a floor for any control that gets a
   // value without ever taking focus.
-  $<HTMLFormElement>("enroll-form")?.addEventListener("focusin", markStarted);
+  //
+  // TARGET-FILTERED, and it must stay that way. The consent block's
+  // privacy-policy anchor sits INSIDE this form, and clicking a link focuses
+  // it in Chromium and Firefox — so a bare listener counts the parent who
+  // reads the privacy policy and bounces as having started the form. That is
+  // the one cohort this beat most needs to keep separate: it inflates
+  // landed -> started and deflates started -> submitted, which is backwards
+  // from the drop-off read the PRD buys it for. SUBMIT is deliberately IN the
+  // list — focusing it is a real interaction, and counting it repairs a funnel
+  // that could otherwise emit `enroll_cta_clicked` with no preceding start.
+  const STARTED_CONTROLS = "input, select, textarea, [data-day], #enroll-add-kid, #enroll-submit";
+  $<HTMLFormElement>("enroll-form")?.addEventListener("focusin", (event) => {
+    if ((event.target as HTMLElement | null)?.closest?.(STARTED_CONTROLS)) markStarted();
+  });
 
   const emailInput = $<HTMLInputElement>("enroll-email");
   emailInput?.addEventListener("input", markStarted);
