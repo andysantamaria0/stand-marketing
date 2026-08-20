@@ -193,7 +193,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
           <section id="enroll-success" hidden>
             <p class="success-body" id="success-body"></p>
 
-            <p class="details-intro">{COPY.details.intro}</p>
+            <p class="details-intro" id="details-intro">{COPY.details.intro}</p>
             <form id="details-form" novalidate>
               <div class="field">
                 <label class="label" for="details-location">{COPY.details.locationLabel}</label>
@@ -392,6 +392,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
       if (page1) page1.hidden = true;
       if (mode === 'done') {
         if (done) done.hidden = false;
+        const headline = document.getElementById('enroll-headline');
+        if (headline) headline.hidden = true;
       } else if (success) {
         success.hidden = false;
         const copy = mode === 'waitlist' ? COPY.success.waitlist : COPY.success.open;
@@ -406,6 +408,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
           body.textContent = copy.body;
           body.hidden = copy.body === '';
         }
+        const intro = document.getElementById('details-intro');
+        if (intro) intro.hidden = mode === 'waitlist';
       }
     }
   }

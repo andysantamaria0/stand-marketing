@@ -128,7 +128,7 @@ export const COPY = {
     },
     waitlist: {
       headline: "You Joined the Waitlist!",
-      body: "We'll get back to you with any updates — if a spot opens this fall you're first to hear, and you're at the front of the line for next semester.",
+      body: "We'll get back to you with any updates. If a spot opens this fall you're first to hear, and you're at the front of the line for next semester.",
     },
     /** Submitted in open mode, came back waitlisted. Explain, don't confuse. */
     flipped: {

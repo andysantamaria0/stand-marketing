@@ -381,6 +381,10 @@ function showSuccess(waitlisted: boolean): void {
     // Open-mode success has no body line; the waitlist variants still do.
     body.hidden = copy.body === "";
   }
+  // On waitlist outcomes the body already frames what happens next, so the
+  // optional-questions intro line stays out of the way.
+  const intro = $<HTMLElement>("details-intro");
+  if (intro) intro.hidden = waitlisted;
 
   // Latch BEFORE the swap: an availability response arriving from here on must
   // not repaint the headline that now carries the confirmation.
@@ -458,6 +462,9 @@ function showDone(): void {
   const done = $<HTMLElement>("enroll-done");
   if (success) success.hidden = true;
   if (done) done.hidden = false;
+  // The final screen is just "We'll be in touch." — no headline above it.
+  const headline = $<HTMLElement>("enroll-headline");
+  if (headline) headline.hidden = true;
   done?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
