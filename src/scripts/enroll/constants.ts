@@ -147,6 +147,6 @@ export const COPY = {
     otherCityPlaceholder: "City",
     submit: "Send",
     skip: "Skip",
-    done: "We'll be in touch.",
+    done: "Thanks! We'll be in touch.",
   },
 } as const;
