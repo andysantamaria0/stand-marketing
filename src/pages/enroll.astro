@@ -450,9 +450,11 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
      The SVG ships with a black fill, so it's painted via a mask: the element's
      background-color shows through the logo's shape without needing a
      recolored asset. Sits OUTSIDE .wrap, flush to the viewport's left edge. */
+  /* Fluid display sizing: phones scale between the clamp bounds, desktop
+     rides the cap — no per-breakpoint font-size overrides needed. */
   .back {
     display: block;
-    width: 77px;
+    width: clamp(64px, 20vw, 90px);
     aspect-ratio: 199.29 / 47.33;
     background-color: var(--stand-red);
     -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
@@ -463,7 +465,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   .title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 38px;
+    font-size: clamp(28px, 8.5vw, 40px);
     line-height: 1.05;
     letter-spacing: -0.5px;
     color: var(--stand-black);
@@ -744,7 +746,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     width: 100%;
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: 20px;
+    font-size: clamp(17px, 5vw, 20px);
     text-transform: lowercase;
     letter-spacing: -0.3px;
     color: var(--stand-black);
@@ -872,7 +874,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
 
   .done {
     font-family: var(--font-display);
-    font-size: 34px;
+    font-size: clamp(26px, 8vw, 34px);
     line-height: 1.1;
     margin: 8px 0;
   }
@@ -912,11 +914,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
       padding: 24px 0 12px;
     }
     .back {
-      width: 90px;
       margin: 0 0 24px 24px;
-    }
-    .title {
-      font-size: 40px;
     }
     .sheet {
       padding: 20px 0 60px;
