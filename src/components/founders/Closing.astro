@@ -1,14 +1,15 @@
 ---
-// Huge closing enrollment CTA — red ground, the headline at poster scale.
-// The hero line returns here deliberately (bookend), with the real scarcity
-// line under the button. CTA is the shared paper-tag rectangle, same as
-// every other signup moment on the page.
+// Closing enrollment CTA — red ground, big cream stand wordmark, paper-tag
+// sign-up, scarcity line. The wordmark replaced the "Build your own thing.
+// For Real." headline (Aug 20 review: the kid-moment section already says
+// it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
+// as a CSS mask, same technique as the nav and manifesto.
 import SignupButton from './SignupButton.astro';
 ---
 
-<section class="fc-closing" aria-labelledby="closing-title">
-  <h2 id="closing-title">Build your own thing. <em>For Real.</em></h2>
-  <SignupButton label="Apply for the Class →" />
+<section class="fc-closing" aria-label="Sign up">
+  <div class="wordmark" role="img" aria-label="stand"></div>
+  <SignupButton />
   <p class="seats">Up to 20 seats this fall. First come.</p>
 </section>
 
@@ -18,28 +19,18 @@ import SignupButton from './SignupButton.astro';
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: var(--space-4);
+    gap: var(--space-5);
     padding: var(--space-8) var(--space-3);
     background: var(--stand-red);
     color: var(--stand-cream);
   }
 
-  .fc-closing h2 {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-weight: 900;
-    font-size: clamp(40px, 6.5vw, 96px);
-    line-height: 0.98;
-    letter-spacing: -0.02em;
-    max-width: 14ch;
-    text-wrap: balance;
-  }
-
-  .fc-closing h2 em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 300;
-    color: var(--stand-postit);
+  .wordmark {
+    width: min(680px, 82%);
+    aspect-ratio: 199.29 / 47.33;
+    background: var(--stand-cream);
+    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
+    mask: url('/brand/logo.svg') no-repeat center / contain;
   }
 
   .seats {
