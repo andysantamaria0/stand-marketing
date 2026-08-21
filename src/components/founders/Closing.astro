@@ -1,6 +1,7 @@
 ---
 // Closing enrollment CTA — red ground, big cream stand wordmark, paper-tag
-// sign-up, scarcity line. The wordmark replaced the "Build your own thing.
+// sign-up, scarcity line, and the Instagram / TikTok marks as the page's
+// sign-off (this section doubles as the footer). The wordmark replaced the "Build your own thing.
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
@@ -11,6 +12,21 @@ import SignupButton from './SignupButton.astro';
   <div class="wordmark" role="img" aria-label="stand"></div>
   <SignupButton />
   <p class="seats">Up to 20 seats this fall. First come.</p>
+
+  <div class="social">
+    <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+        <circle cx="12" cy="12" r="4"></circle>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </a>
+    <a href="https://www.tiktok.com/@buildwithstand" aria-label="TikTok">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+        <path d="M16 3v3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2V3h3z"></path>
+      </svg>
+    </a>
+  </div>
 </section>
 
 <style>
@@ -38,6 +54,22 @@ import SignupButton from './SignupButton.astro';
     font-family: var(--font-serif);
     font-weight: 300;
     font-size: 16px;
+  }
+
+  /* Cream marks on the red ground; 32px glyphs padded to 44px targets. */
+  .social {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: var(--space-2);
+  }
+
+  .social a {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--stand-cream);
   }
 
   @media (max-width: 768px) {
