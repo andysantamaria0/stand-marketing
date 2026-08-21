@@ -69,8 +69,8 @@ export const COPY = {
 
   open: {
     eyebrow: PROGRAM_NAME,
-    headline: "Save your kid's spot.",
-    lede: "Tell us who's coming and which days work. About a minute — no payment today.",
+    headline: "STAND IS OPENING IN LOS ANGELES!",
+    lede: "Register to get started and updates about our LA space and program.",
   },
 
   waitlist: {
@@ -89,7 +89,7 @@ export const COPY = {
     kidNamePlaceholder: "Their first name",
     kidAgeLabel: "Age",
     kidAgePlaceholder: "10",
-    kidDaysLabel: "Which days could work?",
+    kidDaysLabel: "What days would you be interested in?",
     addKid: "+ Add another kid",
     removeKid: "Remove",
     smsConsent:

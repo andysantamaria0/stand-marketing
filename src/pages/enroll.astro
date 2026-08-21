@@ -44,6 +44,9 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
           {/* tabindex=-1: the island focuses this h1 on the success swap so
               screen readers announce the confirmation it then carries. */}
           <h1 class="title" id="enroll-headline" tabindex="-1">{COPY.open.headline}</h1>
+          <!-- Hidden by the island on the success swap: once the headline
+               carries the confirmation, the sign-up pitch under it is stale. -->
+          <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
         </div>
       </header>
 
@@ -391,6 +394,9 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
       const success = document.getElementById('enroll-success');
       const done = document.getElementById('enroll-done');
       if (page1) page1.hidden = true;
+      // All three previews are past page 1, where the island hides the lede.
+      const lede = document.getElementById('enroll-lede');
+      if (lede) lede.hidden = true;
       if (mode === 'done') {
         if (done) done.hidden = false;
         const headline = document.getElementById('enroll-headline');
@@ -470,6 +476,15 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     letter-spacing: -0.5px;
     color: var(--stand-black);
     margin: 0;
+  }
+
+  .lede {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--stand-black);
+    margin: 12px 0 0;
+    max-width: 46ch;
   }
 
   /* ── Form area — same cream, one continuous field like the comp ────── */

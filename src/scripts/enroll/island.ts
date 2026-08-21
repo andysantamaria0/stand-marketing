@@ -376,6 +376,9 @@ function showSuccess(waitlisted: boolean): void {
     // defined in enroll.astro's styles.
     headline.classList.add("is-confirmed");
   }
+  // The lede is the sign-up pitch; under a confirmation headline it's stale.
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = true;
   if (body) {
     body.textContent = copy.body;
     // Open-mode success has no body line; the waitlist variants still do.
