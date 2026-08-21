@@ -33,10 +33,9 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
 
 <Layout title={COPY.meta.title} description={COPY.meta.description}>
   <main class="enroll">
-    <!-- The page ALWAYS renders in open mode. The availability call swaps this
-         to "waitlist" only on a confirmed "full" — never a blocking round trip
-         on the highest-friction surface we have. -->
-    <div id="enroll-root" data-mode="open">
+    <!-- Enrollment is uncapped (8/21): no waitlist mode, no availability
+         check. The page renders open and stays open. -->
+    <div id="enroll-root">
       <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
       <header class="hero">
         <a class="back" href="/" aria-label="Stand — back to home"></a>
@@ -381,7 +380,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
 <script>
   // DEV-ONLY state preview for design iteration, no backend needed:
   //   /enroll?preview=success   → page 2 (success + optional questions)
-  //   /enroll?preview=waitlist  → page 2 with the waitlist copy
   //   /enroll?preview=done      → the final screen
   // `import.meta.env.DEV` is statically false in `astro build`, so this whole
   // block is dead-code-eliminated from production — the param does nothing live.
@@ -389,12 +387,12 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
 
   if (import.meta.env.DEV) {
     const mode = new URLSearchParams(location.search).get('preview');
-    if (mode === 'success' || mode === 'waitlist' || mode === 'done') {
+    if (mode === 'success' || mode === 'done') {
       const page1 = document.getElementById('enroll-page1');
       const success = document.getElementById('enroll-success');
       const done = document.getElementById('enroll-done');
       if (page1) page1.hidden = true;
-      // All three previews are past page 1, where the island hides the lede.
+      // Both previews are past page 1, where the island hides the lede.
       const lede = document.getElementById('enroll-lede');
       if (lede) lede.hidden = true;
       if (mode === 'done') {
@@ -403,7 +401,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
         if (headline) headline.hidden = true;
       } else if (success) {
         success.hidden = false;
-        const copy = mode === 'waitlist' ? COPY.success.waitlist : COPY.success.open;
+        const copy = COPY.success.open;
         const headline = document.getElementById('enroll-headline');
         const body = document.getElementById('success-body');
         if (headline) {
@@ -415,8 +413,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
           body.textContent = copy.body;
           body.hidden = copy.body === '';
         }
-        const intro = document.getElementById('details-intro');
-        if (intro) intro.hidden = mode === 'waitlist';
       }
     }
   }
@@ -844,7 +840,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   }
 
   /* Three beats: headline pop (0ms) → intro line (550ms) → the form (950ms).
-     The (hidden-in-open-mode) waitlist body line shares the intro's beat. */
+     The success body line (hidden when its copy is empty) shares the intro's
+     beat. */
   #enroll-success:not([hidden]) > :global(*) {
     animation: rest-in 420ms cubic-bezier(0.22, 1, 0.36, 1) 550ms both;
   }

@@ -14,7 +14,9 @@
  * templates. There is no innerHTML assignment below; keep it that way.
  *
  * States: page1 -> submitting -> success (+ optional questions) -> done, plus
- * waitlist mode and an error/retry state. No navigation — one URL throughout.
+ * an error/retry state. No navigation — one URL throughout. Enrollment is
+ * UNCAPPED (8/21): there is no waitlist mode and no availability check — the
+ * server takes every valid signup.
  */
 
 import { track, identifyFamily, currentDistinctId } from "./analytics";
@@ -28,8 +30,6 @@ import {
   UTM_KEYS,
 } from "./constants";
 
-type Mode = "open" | "waitlist";
-
 /** One validated kid, in the exact shape the API expects. */
 interface KidPayload {
   name: string;
@@ -39,25 +39,7 @@ interface KidPayload {
 
 const $ = <T extends HTMLElement>(id: string): T | null => document.getElementById(id) as T | null;
 
-/**
- * The mode the parent was actually SHOWN while filling the form — not the mode
- * the server rendered. The page always renders "open" (the fail-open rule), so
- * reading this from the DOM at boot alone would leave it permanently "open" and
- * make every waitlisted parent see the mid-session-flip copy. It is updated
- * when the availability swap happens.
- */
-let shownMode: Mode = "open";
 let submitting = false;
-/**
- * True once page 1 has been left behind for the success screen. The headline
- * and lede live OUTSIDE `#enroll-page1`, so they stay on screen above the
- * success card — a late availability response must not rewrite them to the
- * waitlist copy over a parent who is already reading "You're on the list", nor
- * move `shownMode` out from under `showSuccess`'s three-way copy choice.
- */
-let leftPage1 = false;
-/** `enroll_full_seen` is a once-per-session beat, not once per render path. */
-let fullSeenTracked = false;
 let resumeToken: string | null = null;
 let startedTracked = false;
 let emailTracked = false;
@@ -224,56 +206,6 @@ function markStarted(): void {
   track("enroll_form_started", {});
 }
 
-/* ── mode ────────────────────────────────────────────────────────────────── */
-
-/** Fires the waitlist-seen beat at most once per page load. */
-function trackFullSeen(): void {
-  if (fullSeenTracked) return;
-  fullSeenTracked = true;
-  track("enroll_full_seen", {});
-}
-
-/** Swaps the page into waitlist mode. Only ever called on a confirmed "full". */
-function applyWaitlistMode(): void {
-  // Availability is fetched at boot and never blocks the render, so its
-  // response can land after the parent has already submitted. Past page 1 the
-  // swap is strictly harmful: the destination is the server's answer by then,
-  // and rewriting the still-visible headline would contradict the success copy.
-  if (leftPage1) return;
-  const root = $<HTMLElement>("enroll-root");
-  if (!root || root.dataset.mode === "waitlist") return;
-  root.dataset.mode = "waitlist";
-  // The parent is now LOOKING at the waitlist headline, so their success copy
-  // must be the waitlist one, not the "filled up just now" flip explanation.
-  shownMode = "waitlist";
-
-  const headline = $<HTMLElement>("enroll-headline");
-  const lede = $<HTMLElement>("enroll-lede");
-  if (headline) headline.textContent = COPY.waitlist.headline;
-  if (lede) lede.textContent = COPY.waitlist.lede;
-  trackFullSeen();
-}
-
-/**
- * Asks the API whether the semester is open.
- *
- * The page has ALREADY rendered in open mode by the time this runs. It swaps to
- * waitlist only on a confirmed `"full"`; any failure, timeout or unexpected
- * shape leaves the page open, because the server re-derives the real answer at
- * submit time anyway. Blocking the highest-friction surface on a round trip to
- * pick a headline would be a bad trade.
- */
-async function checkAvailability(): Promise<void> {
-  try {
-    const res = await fetch(`${API_BASE}/api/enroll/availability`, { method: "GET" });
-    if (!res.ok) return;
-    const data = (await res.json()) as { semester?: string };
-    if (data.semester === "full") applyWaitlistMode();
-  } catch {
-    // Fail open. Deliberate.
-  }
-}
-
 /* ── attribution ─────────────────────────────────────────────────────────── */
 
 /** The five standard UTM keys off the current URL, or null when there are none. */
@@ -352,19 +284,9 @@ function collectPayload(): {
   return { email, phone: phone as string, kids, smsOptIn };
 }
 
-/**
- * Renders the success screen for whichever destination the SERVER decided.
- *
- * Three copies, not two: a parent who filled the form in open mode and came
- * back waitlisted gets told what happened, rather than a confirmation that
- * quietly contradicts the headline they were reading a second ago.
- */
-function showSuccess(waitlisted: boolean): void {
-  const copy = !waitlisted
-    ? COPY.success.open
-    : shownMode === "open"
-      ? COPY.success.flipped
-      : COPY.success.waitlist;
+/** Renders the success screen. One outcome now: the family is enrolled. */
+function showSuccess(): void {
+  const copy = COPY.success.open;
 
   // The page's persistent headline IS the confirmation ("Good, you're on the
   // list now!") — the success card carries only the body line.
@@ -381,23 +303,14 @@ function showSuccess(waitlisted: boolean): void {
   if (lede) lede.hidden = true;
   if (body) {
     body.textContent = copy.body;
-    // Open-mode success has no body line; the waitlist variants still do.
+    // The open success copy has no body line; hide the empty element.
     body.hidden = copy.body === "";
   }
-  // On waitlist outcomes the body already frames what happens next, so the
-  // optional-questions intro line stays out of the way.
-  const intro = $<HTMLElement>("details-intro");
-  if (intro) intro.hidden = waitlisted;
-
-  // Latch BEFORE the swap: an availability response arriving from here on must
-  // not repaint the headline that now carries the confirmation.
-  leftPage1 = true;
 
   const page1 = $<HTMLElement>("enroll-page1");
   const success = $<HTMLElement>("enroll-success");
   if (page1) page1.hidden = true;
   if (success) success.hidden = false;
-  if (waitlisted) trackFullSeen();
   // Focusing the headline announces the new state and scrolls it into view —
   // it sits above the card, so no separate scrollIntoView is needed.
   headline?.focus();
@@ -428,11 +341,12 @@ async function submitPage1(): Promise<void> {
         posthogDistinctId: currentDistinctId(),
       }),
     });
+    // The API still sends a `waitlisted` key, pinned false since the waitlist
+    // retired (8/21); it is deliberately ignored here.
     const data = (await res.json().catch(() => ({}))) as {
       ok?: boolean;
       id?: string;
       token?: string;
-      waitlisted?: boolean;
       error?: string;
     };
 
@@ -446,7 +360,7 @@ async function submitPage1(): Promise<void> {
     resumeToken = data.token;
     identifyFamily(data.id, payload.email);
     track("enroll_step_completed", { step: 1 });
-    showSuccess(data.waitlisted === true);
+    showSuccess();
   } catch {
     setError(formError, COPY.errors.submit);
   } finally {
@@ -526,7 +440,6 @@ async function submitDetails(): Promise<void> {
 function init(): void {
   const root = $<HTMLElement>("enroll-root");
   if (!root) return;
-  shownMode = root.dataset.mode === "waitlist" ? "waitlist" : "open";
 
   kidBlocks().forEach(wireKidBlock);
   syncKidChrome();
@@ -585,8 +498,6 @@ function init(): void {
     track("enroll_details_skipped", {});
     showDone();
   });
-
-  void checkAvailability();
 }
 
 if (document.readyState === "loading") {
