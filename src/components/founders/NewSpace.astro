@@ -41,9 +41,9 @@
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    text-align: center;
+    text-align: left;
     gap: var(--space-4);
     padding: var(--space-6) var(--space-3);
     max-width: var(--container-max);
@@ -51,8 +51,7 @@
     /* Cream is the page ground — the slide rides on it, no band color. */
   }
 
-  /* All three beats speak in the same display voice; the middle statement
-     staggers its lines left/right, the opener and sign-off stay centered. */
+  /* All three beats speak in the same display voice, all left-aligned. */
   .kicker,
   .tagline,
   .statement {
@@ -84,18 +83,6 @@
     fill: var(--stand-red);
     vertical-align: baseline;
     transform: translateY(0.02em);
-  }
-
-  .line-1 {
-    align-self: flex-start;
-    margin-left: 6%;
-    text-align: left;
-  }
-
-  .line-2 {
-    align-self: flex-end;
-    margin-right: 6%;
-    text-align: right;
   }
 
   @media (max-width: 768px) {
