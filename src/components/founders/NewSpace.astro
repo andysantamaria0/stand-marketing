@@ -2,8 +2,9 @@
 // "A new space" statement slide, restyled to the editorial-statement design
 // (the retired WhatIs section): cream ground, floating product art in the
 // corners, and the big staggered statement mixing black sans, the red
-// wordmark, and red serif italics. The "A new space" line sits above as a
-// serif kicker; the lemonade-stand tagline signs off below.
+// wordmark, and red serif italics. All three beats — the "A new space"
+// opener, the wordmark sentence, and the lemonade-stand sign-off — share the
+// same display treatment.
 const FLOATERS = [
   { file: 'STAND_PNG_GreenBracelet', x: '6%', y: '18%', size: 130, rot: -12 },
   { file: 'STAND_PNG_RedCupcake', x: '86%', y: '12%', size: 120, rot: 10 },
@@ -27,8 +28,8 @@ const FLOATERS = [
   }
 
   <p class="kicker" id="newspace-title">
-    A new space for learning entrepreneurial skills. Designed for kids with
-    big ideas.
+    A new space for learning <em>entrepreneurial skills.</em> Designed for
+    kids with <em>big ideas.</em>
   </p>
 
   <h2 class="statement">
@@ -49,7 +50,9 @@ const FLOATERS = [
     <span class="line line-2"><em>build</em> and <em>grow real</em> businesses.</span>
   </h2>
 
-  <p class="tagline">The modern lemonade stand for the next generation.</p>
+  <p class="tagline">
+    The modern <em>lemonade stand</em> for the <em>next generation.</em>
+  </p>
 </section>
 
 <style>
@@ -82,37 +85,34 @@ const FLOATERS = [
     height: auto;
   }
 
+  /* All three beats speak in the same display voice; the middle statement
+     staggers its lines left/right, the opener and sign-off stay centered. */
   .kicker,
-  .tagline {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(17px, 1.6vw, 24px);
-    line-height: 1.3;
-    color: var(--stand-black);
-    max-width: 46ch;
-  }
-
-  /* Staggered statement: display type, first line rides left, second line
-     rides right, air everywhere else. */
+  .tagline,
   .statement {
     margin: 0;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: clamp(32px, 4.4vw, 72px);
     line-height: 1.12;
     letter-spacing: -0.02em;
+    color: var(--stand-black);
+  }
+
+  .statement {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .line {
     display: block;
   }
 
-  /* The action words carry the brand's serif-red emphasis. */
+  /* The emphasis words carry the brand's serif-red treatment. */
+  .kicker em,
+  .tagline em,
   .statement em {
     font-family: var(--font-serif);
     font-style: italic;
