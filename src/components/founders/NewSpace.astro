@@ -1,18 +1,15 @@
 ---
-// "A new space" statement slide: cream ground, one typeface — the display
-// sans — across all three beats (opener, wordmark sentence, lemonade-stand
-// sign-off). The red wordmark is the slide's only accent (Aug 21 review:
-// no serif/italic mixing). The floating product art was cut once the type went
+// About statement slide: cream ground. The lemonade-stand line opens small
+// in the editorial serif, then the wordmark sentence and the "A new space"
+// beat speak in the display sans. The red wordmark is the only other
+// accent. The floating product art was cut once the type went
 // display-scale (Aug 21 review): the beats need the full column.
 ---
 
-<section class="fc-newspace" aria-labelledby="newspace-title">
-  <p class="kicker" id="newspace-title">
-    A new space for learning entrepreneurial skills. Designed for
-    kids with big ideas.
-  </p>
+<section class="fc-newspace" id="about" aria-labelledby="newspace-title">
+  <p class="eyebrow-line">The modern lemonade stand for the next generation.</p>
 
-  <h2 class="statement">
+  <h2 class="statement" id="newspace-title">
     <span class="line line-1">
       <!-- Brand wordmark in red stands in for the word "Stand" (same paths as
            the footer logo); the sr-only span keeps the sentence readable to
@@ -31,7 +28,8 @@
   </h2>
 
   <p class="tagline">
-    The modern lemonade stand for the next generation.
+    A new space for learning entrepreneurial skills. Designed for kids with
+    big ideas.
   </p>
 </section>
 
@@ -52,8 +50,17 @@
     /* Cream is the page ground — the slide rides on it, no band color. */
   }
 
-  /* All three beats speak in the same display voice, all left-aligned. */
-  .kicker,
+  /* The serif opener, small and quiet. */
+  .eyebrow-line {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(17px, 1.6vw, 22px);
+    line-height: 1.3;
+    color: var(--stand-black);
+  }
+
+  /* The two display beats share one voice, left-aligned. */
   .tagline,
   .statement {
     margin: 0;
