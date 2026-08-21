@@ -69,8 +69,8 @@ export const COPY = {
 
   open: {
     eyebrow: PROGRAM_NAME,
-    headline: "Save your kid's spot.",
-    lede: "Tell us who's coming and which days work. About a minute — no payment today.",
+    headline: "STAND IS OPENING IN LOS ANGELES!",
+    lede: "Register to get started and updates about our LA space and program.",
   },
 
   waitlist: {
@@ -84,13 +84,12 @@ export const COPY = {
     emailPlaceholder: "you@example.com",
     phoneLabel: "Your phone number",
     phonePlaceholder: "(310) 555-1234",
-    phoneWhy: "So we can reach you about your kid's spot.",
     kidLegend: "Kid",
-    kidNameLabel: "First name",
+    kidNameLabel: "Kid's name",
     kidNamePlaceholder: "Their first name",
     kidAgeLabel: "Age",
     kidAgePlaceholder: "10",
-    kidDaysLabel: "Which days could work?",
+    kidDaysLabel: "What days would you be interested in?",
     addKid: "+ Add another kid",
     removeKid: "Remove",
     smsConsent:
@@ -117,31 +116,37 @@ export const COPY = {
   /** Shown, never blocking, when an age falls outside the program band. */
   ageNotice: `${PROGRAM_NAME} is built for ages ${PROGRAM_MIN_AGE}-${PROGRAM_MAX_AGE} — if your kid is close, we'll make it work.`,
 
+  /**
+   * On success the page's persistent headline (#enroll-headline) becomes the
+   * confirmation — there is no separate success-title element on the screen.
+   */
   success: {
+    /** Empty body = the island hides the line; the headline says it all. */
     open: {
-      title: "You're on the list.",
-      body: "Keep an eye on your inbox — we'll be in touch soon.",
+      headline: "Good, you're on the list!",
+      body: "",
     },
     waitlist: {
-      title: "You Joined the Waitlist!",
-      body: "We'll get back to you with any updates — if a spot opens this fall you're first to hear, and you're at the front of the line for next semester.",
+      headline: "You Joined the Waitlist!",
+      body: "We'll get back to you with any updates. If a spot opens this fall you're first to hear, and you're at the front of the line for next semester.",
     },
     /** Submitted in open mode, came back waitlisted. Explain, don't confuse. */
     flipped: {
-      title: "You Joined the Waitlist!",
+      headline: "You Joined the Waitlist!",
       body: "Heads up — this fall filled up just now. You joined the waitlist, and you're first in line.",
     },
   },
 
   details: {
-    intro: "A few optional questions — skip any of them.",
+    intro: "A few optional questions for you, you can skip no hard feelings!",
     locationLabel: "Where in LA works best for you?",
     locationPlaceholder: "Neighborhood or area",
     timeLabel: "What time of day usually works?",
+    timePlaceholder: "Choose a time of day",
     otherCityLabel: "Not in LA? Tell us where you'd want STAND to open.",
     otherCityPlaceholder: "City",
     submit: "Send",
     skip: "Skip",
-    done: "We'll be in touch.",
+    done: "Thanks! We'll be in touch.",
   },
 } as const;

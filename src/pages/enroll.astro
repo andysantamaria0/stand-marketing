@@ -6,11 +6,18 @@
  * the thank-you screen IS page 2, carrying the optional questions. No payment
  * anywhere this week.
  *
- * STYLED BY REFERENCE to the current standkids.com: the site's own tokens
- * (`src/styles/tokens.css`), fonts (Authentic Sans / Editorial New / Pie Pie),
- * cream ground, red accents, post-it CTA, and the chunky 2px ink stroke with a
- * hard offset shadow that `CookieNotice.astro` already uses. Nothing invented.
- * Fay's rebrand lands on top; JY iterates layout and copy after handoff.
+ * REDESIGNED (8/20) to the new design-system comp, then re-grounded to the
+ * "offer card" comp the same day: everything on the site's cream, black type,
+ * real logo.svg wordmark (mask-tinted), Pie Pie field labels and CTA label,
+ * and the skewed white sticker CTA with the hard black shadow. No rounded
+ * corners anywhere except day chips. Eyebrow + lede + fact rows cut per JY.
+ * The kid section is staged: hidden until email + phone look filled (see the
+ * inline script), server-rendered visible so no-JS still gets the full form.
+ *
+ * The island contract is untouched: every id, data-* attribute and both
+ * script blocks are exactly as before — this is a reskin, not a rewire.
+ * #enroll-submit must stay a SINGLE TEXT NODE (the island swaps its label via
+ * textContent), so the sticker skew lives on a ::before, never an inner span.
  *
  * Deliberate reversal, noted here so nobody "fixes" it back: `Hero.astro` says
  * the marketing site does not capture emails itself. Superseded by the 8/18
@@ -29,210 +36,221 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     <!-- The page ALWAYS renders in open mode. The availability call swaps this
          to "waitlist" only on a confirmed "full" — never a blocking round trip
          on the highest-friction surface we have. -->
-    <div class="wrap" id="enroll-root" data-mode="open">
-      <a class="back" href="/">STAND</a>
-
-      <header class="intro">
-        <p class="eyebrow" id="enroll-eyebrow">{COPY.open.eyebrow}</p>
-        <h1 class="title" id="enroll-headline">{COPY.open.headline}</h1>
-        <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
+    <div id="enroll-root" data-mode="open">
+      <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
+      <header class="hero">
+        <a class="back" href="/" aria-label="Stand — back to home"></a>
+        <div class="wrap">
+          {/* tabindex=-1: the island focuses this h1 on the success swap so
+              screen readers announce the confirmation it then carries. */}
+          <h1 class="title" id="enroll-headline" tabindex="-1">{COPY.open.headline}</h1>
+          <!-- Hidden by the island on the success swap: once the headline
+               carries the confirmation, the sign-up pitch under it is stale. -->
+          <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
+        </div>
       </header>
 
-      <!-- ── PAGE 1 ─────────────────────────────────────────────────────── -->
-      <section class="card" id="enroll-page1">
-        <form id="enroll-form" novalidate>
-          <div class="field">
-            <label class="label" for="enroll-email">{COPY.form.emailLabel}</label>
-            <input
-              class="input"
-              type="email"
-              id="enroll-email"
-              autocomplete="email"
-              inputmode="email"
-              placeholder={COPY.form.emailPlaceholder}
-              required
-            />
-            <p class="error" id="enroll-email-error" data-error="email" role="alert" hidden></p>
-          </div>
-
-          <div class="field">
-            <label class="label" for="enroll-phone">{COPY.form.phoneLabel}</label>
-            <input
-              class="input"
-              type="tel"
-              id="enroll-phone"
-              autocomplete="tel"
-              inputmode="tel"
-              placeholder={COPY.form.phonePlaceholder}
-              required
-            />
-            <p class="hint">{COPY.form.phoneWhy}</p>
-            <p class="error" id="enroll-phone-error" data-error="phone" role="alert" hidden></p>
-          </div>
-
-          <div id="enroll-kids">
-            <!-- The first kid block is server-rendered so the form works before
-                 the island boots. Extra blocks clone the template below — the
-                 same markup, so the two can never drift. -->
-            {/* Named with aria-label, not a legend element: that only names a
-                fieldset when it is the fieldset's FIRST child, and the remove
-                button shares this line. Nested in the div it was inert, so
-                every kid block was unnamed and three kids gave a screen reader
-                three identical day-chip groups. syncKidChrome() keeps the
-                label and the visible heading in lockstep on add/remove. */}
-            <fieldset class="kid" data-kid-block aria-label={`${COPY.form.kidLegend} 1`}>
-              <div class="kid-head">
-                <span class="kid-legend" data-kid-legend>{COPY.form.kidLegend} 1</span>
-                <button type="button" class="kid-remove" data-kid-remove hidden>
-                  {COPY.form.removeKid}
-                </button>
+      <!-- ── YELLOW SHEET: facts + form ─────────────────────────────────── -->
+      <div class="sheet">
+        <div class="wrap">
+          <!-- ── PAGE 1 ─────────────────────────────────────────────────── -->
+          <section id="enroll-page1">
+            <form id="enroll-form" novalidate>
+              <!-- Side by side on desktop so the unfolded form fits one
+                   viewport; stacked on mobile. -->
+              <div class="contact">
+              <div class="field">
+                <label class="label" for="enroll-email">{COPY.form.emailLabel}</label>
+                <input
+                  class="input"
+                  type="email"
+                  id="enroll-email"
+                  autocomplete="email"
+                  inputmode="email"
+                  placeholder={COPY.form.emailPlaceholder}
+                  required
+                />
+                <p class="error" id="enroll-email-error" data-error="email" role="alert" hidden></p>
               </div>
-
-              <div class="kid-row">
-                <label class="field field-grow">
-                  <span class="label">{COPY.form.kidNameLabel}</span>
-                  <input
-                    class="input"
-                    type="text"
-                    data-kid-name
-                    maxlength="64"
-                    autocomplete="off"
-                    placeholder={COPY.form.kidNamePlaceholder}
-                  />
-                </label>
-
-                <label class="field field-age">
-                  <span class="label">{COPY.form.kidAgeLabel}</span>
-                  <input
-                    class="input"
-                    type="number"
-                    data-kid-age
-                    min="5"
-                    max="17"
-                    step="1"
-                    inputmode="numeric"
-                    placeholder={COPY.form.kidAgePlaceholder}
-                  />
-                </label>
-              </div>
-
-              <!-- Errors sit OUTSIDE the row: inside the fixed 88px age column
-                   they would wrap to a dozen lines and blow the layout out. -->
-              <p class="error" data-error="name" role="alert" hidden></p>
-              <p class="error" data-error="age" role="alert" hidden></p>
-
-              <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
 
               <div class="field">
-                <span class="label">{COPY.form.kidDaysLabel}</span>
-                <div class="chips">
-                  {
-                    DAYS.map((day) => (
-                      <button type="button" class="chip" data-day={day.value} aria-pressed="false">
-                        {day.label}
-                      </button>
-                    ))
-                  }
-                  <button
-                    type="button"
-                    class="chip chip-any"
-                    data-day={ANY_DAY.value}
-                    aria-pressed="false"
-                  >
-                    {ANY_DAY.label}
-                  </button>
-                </div>
-                <p class="error" data-error="days" role="alert" hidden></p>
+                <label class="label" for="enroll-phone">{COPY.form.phoneLabel}</label>
+                <input
+                  class="input"
+                  type="tel"
+                  id="enroll-phone"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  placeholder={COPY.form.phonePlaceholder}
+                  required
+                />
+                <p class="error" id="enroll-phone-error" data-error="phone" role="alert" hidden></p>
               </div>
-            </fieldset>
-          </div>
+              </div>
 
-          <button type="button" class="add-kid" id="enroll-add-kid">{COPY.form.addKid}</button>
+              <!-- Everything below the contact fields is staged: the inline
+                   script at the bottom hides this wrapper until email + phone
+                   look filled, then reveals it once, permanently. Server-
+                   rendered VISIBLE so the form still works without JS. -->
+              <div id="enroll-rest">
+              <div id="enroll-kids">
+                <!-- The first kid block is server-rendered so the form works before
+                     the island boots. Extra blocks clone the template below — the
+                     same markup, so the two can never drift. -->
+                {/* Named with aria-label, not a legend element: that only names a
+                    fieldset when it is the fieldset's FIRST child, and the remove
+                    button shares this line. Nested in the div it was inert, so
+                    every kid block was unnamed and three kids gave a screen reader
+                    three identical day-chip groups. syncKidChrome() keeps the
+                    label and the visible heading in lockstep on add/remove. */}
+                <fieldset class="kid" data-kid-block aria-label={`${COPY.form.kidLegend} 1`}>
+                  <button type="button" class="kid-remove" data-kid-remove hidden>
+                    {COPY.form.removeKid}
+                  </button>
 
-          <!-- Consent block, per the reference screenshot: an UNCHECKED SMS
-               checkbox, then the italic privacy line, then the submit button.
-               Submitting covers the program emails; the checkbox is the ONLY
-               thing that permits texting. -->
-          <div class="consent">
-            <label class="check">
-              <input type="checkbox" id="enroll-sms" />
-              <span>{COPY.form.smsConsent}</span>
-            </label>
-            <p class="privacy">
-              {COPY.form.privacyPrefix}<a href={COPY.form.privacyHref}
-                >{COPY.form.privacyLinkText}</a
-              >{COPY.form.privacySuffix}
-            </p>
-          </div>
+                  <div class="kid-row">
+                    <label class="field field-grow">
+                      <span class="label">{COPY.form.kidNameLabel}</span>
+                      <input
+                        class="input"
+                        type="text"
+                        data-kid-name
+                        maxlength="64"
+                        autocomplete="off"
+                        placeholder={COPY.form.kidNamePlaceholder}
+                      />
+                    </label>
 
-          <button type="submit" class="submit" id="enroll-submit">{COPY.form.submit}</button>
-          <p class="error error-form" id="enroll-form-error" data-error="form" role="alert" hidden>
-          </p>
-        </form>
-      </section>
+                    <label class="field field-age">
+                      <span class="label">{COPY.form.kidAgeLabel}</span>
+                      <input
+                        class="input"
+                        type="number"
+                        data-kid-age
+                        min="5"
+                        max="17"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder={COPY.form.kidAgePlaceholder}
+                      />
+                    </label>
+                  </div>
 
-      <!-- ── SUCCESS + the optional questions (this IS page 2) ──────────── -->
-      <section class="card" id="enroll-success" hidden>
-        <h2 class="success-title" id="success-title" tabindex="-1"></h2>
-        <p class="success-body" id="success-body"></p>
+                  <!-- Errors sit OUTSIDE the row: inside the fixed 88px age column
+                       they would wrap to a dozen lines and blow the layout out. -->
+                  <p class="error" data-error="name" role="alert" hidden></p>
+                  <p class="error" data-error="age" role="alert" hidden></p>
 
-        <hr class="rule" />
+                  <p class="notice" data-age-notice hidden>{COPY.ageNotice}</p>
 
-        <p class="details-intro">{COPY.details.intro}</p>
-        <form id="details-form" novalidate>
-          <div class="field">
-            <label class="label" for="details-location">{COPY.details.locationLabel}</label>
-            <input
-              class="input"
-              type="text"
-              id="details-location"
-              maxlength="200"
-              placeholder={COPY.details.locationPlaceholder}
-            />
-          </div>
+                  <div class="field">
+                    <span class="label">{COPY.form.kidDaysLabel}</span>
+                    <div class="chips">
+                      {
+                        DAYS.map((day) => (
+                          <button type="button" class="chip" data-day={day.value} aria-pressed="false">
+                            {day.label}
+                          </button>
+                        ))
+                      }
+                      <button
+                        type="button"
+                        class="chip chip-any"
+                        data-day={ANY_DAY.value}
+                        aria-pressed="false"
+                      >
+                        {ANY_DAY.label}
+                      </button>
+                    </div>
+                    <p class="error" data-error="days" role="alert" hidden></p>
+                  </div>
+                </fieldset>
+              </div>
 
-          <div class="field">
-            <label class="label" for="details-time">{COPY.details.timeLabel}</label>
-            <select class="input" id="details-time">
-              <option value="">—</option>
-              {TIMES.map((time) => <option value={time.value}>{time.label}</option>)}
-            </select>
-          </div>
+              <button type="button" class="add-kid" id="enroll-add-kid">{COPY.form.addKid}</button>
 
-          <div class="field">
-            <label class="label" for="details-other">{COPY.details.otherCityLabel}</label>
-            <input
-              class="input"
-              type="text"
-              id="details-other"
-              maxlength="200"
-              placeholder={COPY.details.otherCityPlaceholder}
-            />
-          </div>
+              <!-- Consent block, per the reference screenshot: an UNCHECKED SMS
+                   checkbox, then the italic privacy line, then the submit button.
+                   Submitting covers the program emails; the checkbox is the ONLY
+                   thing that permits texting. -->
+              <div class="consent">
+                <label class="check">
+                  <input type="checkbox" id="enroll-sms" />
+                  <span>{COPY.form.smsConsent}</span>
+                </label>
+                <p class="privacy">
+                  {COPY.form.privacyPrefix}<a href={COPY.form.privacyHref}
+                    >{COPY.form.privacyLinkText}</a
+                  >{COPY.form.privacySuffix}
+                </p>
+              </div>
 
-          <div class="details-actions">
-            <button type="submit" class="submit" id="details-submit">{COPY.details.submit}</button>
-            <button type="button" class="skip" id="details-skip">{COPY.details.skip}</button>
-          </div>
-          <p class="error error-form" id="details-error" data-error="details" role="alert" hidden>
-          </p>
-        </form>
-      </section>
+              <button type="submit" class="submit" id="enroll-submit">{COPY.form.submit}</button>
+              <p class="error error-form" id="enroll-form-error" data-error="form" role="alert" hidden>
+              </p>
+              </div>
+            </form>
+          </section>
 
-      <!-- ── DONE ───────────────────────────────────────────────────────── -->
-      <section class="card card-done" id="enroll-done" hidden>
-        <p class="done">{COPY.details.done}</p>
-      </section>
+          <!-- ── SUCCESS + the optional questions (this IS page 2) ────────── -->
+          <section id="enroll-success" hidden>
+            <p class="success-body" id="success-body"></p>
+
+            <p class="details-intro" id="details-intro">{COPY.details.intro}</p>
+            <form id="details-form" novalidate>
+              <div class="field">
+                <label class="label" for="details-location">{COPY.details.locationLabel}</label>
+                <input
+                  class="input"
+                  type="text"
+                  id="details-location"
+                  maxlength="200"
+                  placeholder={COPY.details.locationPlaceholder}
+                />
+              </div>
+
+              <div class="field">
+                <label class="label" for="details-time">{COPY.details.timeLabel}</label>
+                <select class="input" id="details-time">
+                  <option value="">{COPY.details.timePlaceholder}</option>
+                  {TIMES.map((time) => <option value={time.value}>{time.label}</option>)}
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="label" for="details-other">{COPY.details.otherCityLabel}</label>
+                <input
+                  class="input"
+                  type="text"
+                  id="details-other"
+                  maxlength="200"
+                  placeholder={COPY.details.otherCityPlaceholder}
+                />
+              </div>
+
+              <div class="details-actions">
+                <button type="submit" class="submit" id="details-submit">{COPY.details.submit}</button>
+                <button type="button" class="skip" id="details-skip">{COPY.details.skip}</button>
+              </div>
+              <p class="error error-form" id="details-error" data-error="details" role="alert" hidden>
+              </p>
+            </form>
+          </section>
+
+          <!-- ── DONE ─────────────────────────────────────────────────────── -->
+          <section class="done-panel" id="enroll-done" hidden>
+            <p class="done">{COPY.details.done}</p>
+            <a class="submit home-btn" href="/">&larr; back home</a>
+          </section>
+        </div>
+      </div>
     </div>
 
     <!-- Cloned by the island for kids 2-4. Kept in Astro markup rather than
          built as an HTML string so no user data ever meets innerHTML. -->
     <template id="enroll-kid-template">
       <fieldset class="kid" data-kid-block aria-label="">
-        <div class="kid-head">
-          <span class="kid-legend" data-kid-legend></span>
-          <button type="button" class="kid-remove" data-kid-remove>{COPY.form.removeKid}</button>
-        </div>
+        <button type="button" class="kid-remove" data-kid-remove>{COPY.form.removeKid}</button>
 
         <div class="kid-row">
           <label class="field field-grow">
@@ -311,6 +329,46 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     },
     true
   );
+
+  // Staged disclosure: the kid section (and everything after it) stays hidden
+  // until email + phone both look plausibly filled. Lives in the same inline
+  // script so the hide happens before first paint — and never runs at all
+  // without JS, so the no-JS form remains complete. The reveal is a ONE-WAY
+  // latch: editing the email afterwards must never hide a half-filled kid
+  // block. The plausibility checks are deliberately looser than the island's
+  // real validation — this gates pacing, not correctness; submit still owns
+  // the hard errors.
+  (function () {
+    var rest = document.getElementById('enroll-rest');
+    var email = document.getElementById('enroll-email');
+    var phone = document.getElementById('enroll-phone');
+    if (!rest || !email || !phone) return;
+
+    var ready = function () {
+      var emailOk = /\S+@\S+\.\S+/.test(email.value);
+      var digits = phone.value.replace(/\D/g, '');
+      var phoneOk =
+        digits.length >= 10 || (phone.value.trim().charAt(0) === '+' && digits.length >= 8);
+      return emailOk && phoneOk;
+    };
+
+    // Autofill or bfcache restore may land with both fields already set —
+    // never hide a form that is already past the gate.
+    if (ready()) return;
+
+    rest.hidden = true;
+    var reveal = function () {
+      if (!ready()) return;
+      rest.hidden = false;
+      // The entrance animation keys off this class, NOT :not([hidden]), so the
+      // no-JS page (where the section was never hidden) never plays it on load.
+      rest.classList.add('revealed');
+      email.removeEventListener('input', reveal);
+      phone.removeEventListener('input', reveal);
+    };
+    email.addEventListener('input', reveal);
+    phone.addEventListener('input', reveal);
+  })();
 </script>
 
 <script>
@@ -320,77 +378,167 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   import '@/scripts/enroll/island';
 </script>
 
+<script>
+  // DEV-ONLY state preview for design iteration, no backend needed:
+  //   /enroll?preview=success   → page 2 (success + optional questions)
+  //   /enroll?preview=waitlist  → page 2 with the waitlist copy
+  //   /enroll?preview=done      → the final screen
+  // `import.meta.env.DEV` is statically false in `astro build`, so this whole
+  // block is dead-code-eliminated from production — the param does nothing live.
+  import { COPY } from '@/scripts/enroll/constants';
+
+  if (import.meta.env.DEV) {
+    const mode = new URLSearchParams(location.search).get('preview');
+    if (mode === 'success' || mode === 'waitlist' || mode === 'done') {
+      const page1 = document.getElementById('enroll-page1');
+      const success = document.getElementById('enroll-success');
+      const done = document.getElementById('enroll-done');
+      if (page1) page1.hidden = true;
+      // All three previews are past page 1, where the island hides the lede.
+      const lede = document.getElementById('enroll-lede');
+      if (lede) lede.hidden = true;
+      if (mode === 'done') {
+        if (done) done.hidden = false;
+        const headline = document.getElementById('enroll-headline');
+        if (headline) headline.hidden = true;
+      } else if (success) {
+        success.hidden = false;
+        const copy = mode === 'waitlist' ? COPY.success.waitlist : COPY.success.open;
+        const headline = document.getElementById('enroll-headline');
+        const body = document.getElementById('success-body');
+        if (headline) {
+          headline.textContent = copy.headline;
+          // Replays the real success choreography so the preview matches.
+          headline.classList.add('is-confirmed');
+        }
+        if (body) {
+          body.textContent = copy.body;
+          body.hidden = copy.body === '';
+        }
+        const intro = document.getElementById('details-intro');
+        if (intro) intro.hidden = mode === 'waitlist';
+      }
+    }
+  }
+</script>
+
 <style>
-  /* Ground and rhythm follow the rest of the site: cream page, Authentic Sans
-     body, Editorial New for the eyebrow, and the chunky ink stroke + hard
-     offset shadow used by CookieNotice. */
+  /* Design-system ground rules, from the comp: flat full-bleed color blocks,
+     no border-radius anywhere except the day-chip pills, 2px ink strokes on
+     controls, hard offset shadows only on the sticker CTA. */
   .enroll {
     background: var(--stand-cream);
     min-height: 100vh;
-    padding: 24px 20px 80px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #enroll-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
   .wrap {
+    width: 100%;
     max-width: 640px;
     margin: 0 auto;
+    padding: 0 20px;
   }
 
+  /* ── Header ────────────────────────────────────────────────────────── */
+  .hero {
+    background: var(--stand-cream);
+    padding: 20px 0 8px;
+  }
+
+  /* The real wordmark (same asset as Footer/FAQ) doubles as the back link.
+     The SVG ships with a black fill, so it's painted via a mask: the element's
+     background-color shows through the logo's shape without needing a
+     recolored asset. Sits OUTSIDE .wrap, flush to the viewport's left edge. */
+  /* Fluid display sizing: phones scale between the clamp bounds, desktop
+     rides the cap — no per-breakpoint font-size overrides needed. */
   .back {
-    display: inline-block;
-    font-family: var(--font-sans);
-    font-weight: 900;
-    font-size: 20px;
-    letter-spacing: 0.02em;
-    color: var(--stand-black);
-    margin-bottom: 28px;
-  }
-
-  .intro {
-    margin-bottom: 24px;
-  }
-
-  .eyebrow {
-    font-family: var(--font-serif);
-    font-size: 18px;
-    color: var(--stand-red);
-    margin: 0 0 8px;
+    display: block;
+    width: clamp(64px, 20vw, 90px);
+    aspect-ratio: 199.29 / 47.33;
+    background-color: var(--stand-red);
+    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
+    mask: url('/brand/logo.svg') no-repeat left center / contain;
+    margin: 0 0 20px 20px;
   }
 
   .title {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 36px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(28px, 8.5vw, 40px);
     line-height: 1.05;
     letter-spacing: -0.5px;
-    margin: 0 0 12px;
+    color: var(--stand-black);
+    margin: 0;
   }
 
   .lede {
     font-family: var(--font-sans);
-    font-size: 17px;
-    line-height: 1.45;
-    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--stand-black);
+    margin: 12px 0 0;
+    max-width: 46ch;
   }
 
-  .card {
-    background: var(--stand-white);
-    border: 2px solid var(--stand-black);
-    border-radius: 14px;
-    box-shadow: 6px 6px 0 var(--stand-black);
-    padding: 24px 20px;
+  /* ── Form area — same cream, one continuous field like the comp ────── */
+  .sheet {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    flex: 1;
+    padding: 28px 0 80px;
   }
 
   .field {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
 
+  /* ── Staged-reveal entrance ────────────────────────────────────────────
+     Plays only when the inline script adds .revealed — never on a plain
+     page load. Each direct child (kid card, add-kid, consent, submit)
+     rises in with a small stagger. `both` fill keeps the delayed rows
+     invisible until their turn instead of flashing at full opacity. */
+  @keyframes rest-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  #enroll-rest.revealed > :global(*) {
+    animation: rest-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  #enroll-rest.revealed > :global(:nth-child(2)) {
+    animation-delay: 70ms;
+  }
+
+  #enroll-rest.revealed > :global(:nth-child(3)) {
+    animation-delay: 140ms;
+  }
+
+  #enroll-rest.revealed > :global(:nth-child(n + 4)) {
+    animation-delay: 210ms;
+  }
+
+  /* All field labels in Authentic Sans bold. Pie Pie stays reserved for the
+     headline, the sticker CTA, and the done screen. */
   .label {
     display: block;
     font-family: var(--font-sans);
     font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 0;
     margin-bottom: 6px;
   }
 
@@ -401,13 +549,26 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     color: var(--stand-black);
     background: var(--stand-white);
     border: 2px solid var(--stand-black);
-    border-radius: 10px;
+    border-radius: 0;
     padding: 12px 14px;
     outline: none;
+    transition: box-shadow 120ms ease-out;
   }
 
+  /* Focus = the sticker pop: a hard ink shadow, not a soft glow. */
   .input:focus-visible {
-    box-shadow: 0 0 0 3px var(--stand-postit);
+    box-shadow: 3px 3px 0 var(--stand-black);
+  }
+
+  /* While the empty placeholder option is selected, render the select's text
+     in placeholder gray so it reads as a prompt, not a chosen answer. The
+     dropdown's real options stay ink. */
+  select.input:has(option[value='']:checked) {
+    color: #757575;
+  }
+
+  select.input option {
+    color: var(--stand-black);
   }
 
   select.input {
@@ -420,14 +581,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     background-size: 6px 6px;
     background-repeat: no-repeat;
     padding-right: 40px;
-  }
-
-  .hint {
-    font-family: var(--font-sans);
-    font-size: 13px;
-    line-height: 1.4;
-    opacity: 0.7;
-    margin: 6px 0 0;
   }
 
   .error {
@@ -448,31 +601,24 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     text-align: center;
   }
 
-  /* Kid blocks read as inner wells: cream fill, thinner stroke, no lift. */
+  /* Kid blocks: an open 2px ink frame on the yellow — no fill, no lift.
+     The white inputs inside carry the contrast. */
   .kid {
+    position: relative;
     border: 2px solid var(--stand-black);
-    border-radius: 12px;
-    background: var(--stand-cream);
-    padding: 16px 14px 4px;
-    margin: 0 0 16px;
+    border-radius: 0;
+    background: transparent;
+    padding: 14px 14px 2px;
+    margin: 0 0 14px;
   }
 
-  .kid-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .kid-legend {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 15px;
-    padding: 0;
-  }
-
+  /* No visible "Kid N" legend (the fieldset aria-label still carries it for
+     screen readers), so Remove anchors to the frame's top-right corner. */
   .kid-remove {
-    font-family: var(--font-serif);
+    position: absolute;
+    top: 0;
+    right: 6px;
+    font-family: var(--font-sans);
     font-size: 14px;
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
@@ -480,11 +626,16 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
        tokens.css resets button padding to 0 globally. */
     min-height: 44px;
     padding: 0 8px;
-    margin: -12px -8px;
   }
 
   .kid-remove[hidden] {
     display: none;
+  }
+
+  /* Only when Remove is visible (2+ kids) does the frame need headroom for
+     it — otherwise it would sit on top of the Age label. */
+  .kid:has([data-kid-remove]:not([hidden])) {
+    padding-top: 36px;
   }
 
   .kid-row {
@@ -502,13 +653,14 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     flex: none;
   }
 
+  /* Post-it slip on the cream ground. */
   .notice {
     font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.4;
     background: var(--stand-postit);
     border: 2px solid var(--stand-black);
-    border-radius: 10px;
+    border-radius: 0;
     padding: 10px 12px;
     margin: 0 0 18px;
   }
@@ -517,7 +669,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     display: none;
   }
 
-  /* Day chips: pill outline, post-it fill when selected. Sized for a thumb. */
+  /* Day chips: the ONE rounded shape in the system. White pills; selected
+     flips to green with cream text (the brand's filled-surface pair). */
   .chips {
     display: flex;
     flex-wrap: wrap;
@@ -537,21 +690,19 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   }
 
   .chip[aria-pressed='true'] {
-    background: var(--stand-postit);
+    background: var(--stand-green);
+    color: var(--stand-cream);
     box-shadow: 2px 2px 0 var(--stand-black);
   }
 
-  .chip-any {
-    font-family: var(--font-serif);
-  }
-
   .add-kid {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 16px;
+    color: var(--stand-black);
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     min-height: 44px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
 
   .add-kid:disabled {
@@ -563,7 +714,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   /* Consent sits directly above submit so the small print is in the same
      glance as the button, per the reference screenshot. */
   .consent {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
   }
 
   .check {
@@ -571,25 +722,25 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     align-items: flex-start;
     gap: 10px;
     font-family: var(--font-sans);
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.45;
     cursor: pointer;
   }
 
   .check input {
     flex: none;
-    width: 22px;
-    height: 22px;
-    margin: 1px 0 0;
-    accent-color: var(--stand-red);
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--stand-green);
   }
 
   .privacy {
     font-family: var(--font-sans);
     font-style: italic;
-    font-size: 13px;
+    font-size: 11px;
     line-height: 1.45;
-    margin: 12px 0 0;
+    margin: 6px 0 0;
   }
 
   .privacy a {
@@ -597,25 +748,60 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     text-decoration-thickness: 1.5px;
   }
 
+  /* ── The sticker CTA ───────────────────────────────────────────────────
+     The comp's "sign up now" button: a skewed white sticker with a hard ink
+     shadow and a straight, heavy lowercase label. The island swaps this
+     button's label via textContent, so the button must stay a single text
+     node — the sticker is a ::before layer, NOT a wrapper span. isolation
+     keeps its z-index:-1 above the yellow sheet but under the label. */
   .submit {
+    position: relative;
+    isolation: isolate;
     display: block;
     width: 100%;
-    font-family: var(--font-sans);
-    font-weight: 900;
-    font-size: 18px;
-    letter-spacing: 0.06em;
-    color: var(--stand-white);
-    background: var(--stand-red);
-    border: 2px solid var(--stand-black);
-    border-radius: 12px;
-    box-shadow: 4px 4px 0 var(--stand-black);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(17px, 5vw, 20px);
+    text-transform: lowercase;
+    letter-spacing: -0.3px;
+    color: var(--stand-black);
     min-height: 56px;
     padding: 0 20px;
+    transition: transform 150ms ease-out;
+  }
+
+  .submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 5px 5px 0 var(--stand-black);
+    transform: skewX(-5deg);
+    transition: box-shadow 150ms ease-out;
+  }
+
+  /* Lift on hover, slam back on press — the sticker physically moves. */
+  .submit:hover {
+    transform: translate(-3px, -3px);
+  }
+
+  .submit:hover::before {
+    box-shadow: 8px 8px 0 var(--stand-black);
   }
 
   .submit:active {
     transform: translate(2px, 2px);
+  }
+
+  .submit:active::before {
     box-shadow: 2px 2px 0 var(--stand-black);
+  }
+
+  .submit:focus-visible {
+    outline: 3px solid var(--stand-green);
+    outline-offset: 4px;
   }
 
   .submit:disabled {
@@ -624,99 +810,157 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     cursor: default;
   }
 
-  .success-title {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 30px;
-    line-height: 1.1;
-    margin: 0 0 10px;
+  .submit:disabled::before {
+    box-shadow: 5px 5px 0 var(--stand-black);
+  }
+
+  .title:focus {
     outline: none;
+  }
+
+  /* ── Success choreography ──────────────────────────────────────────────
+     The island stamps .is-confirmed when it swaps the headline to the
+     confirmation; the headline pops in first, then the optional-questions
+     card follows half a beat later. The card animates off :not([hidden])
+     because that flip only ever happens on success; `both` keeps it
+     invisible through its delay. */
+  @keyframes headline-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(14px) scale(0.96);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-3px) scale(1.01);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .title.is-confirmed {
+    animation: headline-pop 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Three beats: headline pop (0ms) → intro line (550ms) → the form (950ms).
+     The (hidden-in-open-mode) waitlist body line shares the intro's beat. */
+  #enroll-success:not([hidden]) > :global(*) {
+    animation: rest-in 420ms cubic-bezier(0.22, 1, 0.36, 1) 550ms both;
+  }
+
+  #enroll-success:not([hidden]) > :global(form) {
+    animation-delay: 950ms;
+  }
+
+  #enroll-done:not([hidden]) {
+    animation: rest-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .success-body {
     font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.5;
-    margin: 0;
-  }
-
-  .rule {
-    border: 0;
-    border-top: 2px solid var(--stand-black);
-    margin: 24px 0 20px;
+    margin: 0 0 22px;
   }
 
   .details-intro {
-    font-family: var(--font-serif);
-    font-size: 17px;
+    font-family: var(--font-sans);
+    font-size: 16px;
     margin: 0 0 18px;
   }
 
-  .details-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .details-actions .submit {
-    flex: 1;
-  }
-
+  /* Send is the same full-width sticker as the page-1 submit; Skip sits
+     centered under it as a quiet text link. */
   .skip {
-    font-family: var(--font-serif);
+    display: block;
+    margin: 10px auto 0;
+    font-family: var(--font-sans);
     font-size: 16px;
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
     min-height: 44px;
   }
 
-  .card-done {
+  .done-panel {
     text-align: center;
+    padding: 24px 0;
   }
 
   .done {
     font-family: var(--font-display);
-    font-size: 34px;
+    font-size: clamp(26px, 8vw, 34px);
     line-height: 1.1;
     margin: 8px 0;
+  }
+
+  /* Same sticker as submit, sized to its label and centered — an <a>, so it
+     needs the flex centering buttons get for free. */
+  .home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-width: 220px;
+    margin-top: 20px;
   }
 
   /* Reserve room under the form for the site-wide cookie notice.
      `CookieNotice` is position:fixed, bottom:16px, z-index:9999 and renders
      for every visitor who has not dismissed it — i.e. exactly the ad traffic
      landing cold on /enroll. Below 520px it stacks into a column ~160px tall,
-     and /enroll is the one page with no Footer, so the old 80px of bottom
-     padding left SUBMIT entirely inside the banner's footprint at full
-     scroll: the parent taps the button, the banner swallows it, and nothing
-     happens until they find "Got it". Dead space at the very bottom of a form
-     is harmless; a submit button that cannot be tapped is not.
+     and /enroll is the one page with no Footer, so a short bottom padding
+     leaves SUBMIT entirely inside the banner's footprint at full scroll: the
+     parent taps the button, the banner swallows it, and nothing happens until
+     they find "Got it". Dead space at the very bottom of a form is harmless;
+     a submit button that cannot be tapped is not.
      Sized for a four-line wrap of the notice plus the iOS home indicator. */
   @media (max-width: 767px) {
-    .enroll {
+    .sheet {
       padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px));
     }
   }
 
-  /* Desktop keeps the same single column — this is a form, not a landing
-     page — and only loosens the type and spacing. */
+  /* Desktop: compact vertical rhythm so the fully unfolded form (kid block,
+     consent, submit) fits a single viewport — email + phone go side by side,
+     the headline stays modest, paddings stay tight. */
   @media (min-width: 768px) {
-    .enroll {
-      padding: 40px 24px 120px;
+    .hero {
+      padding: 24px 0 12px;
     }
-    .title {
-      font-size: 48px;
+    .back {
+      margin: 0 0 24px 24px;
     }
-    .lede {
-      font-size: 19px;
+    .sheet {
+      padding: 20px 0 60px;
     }
-    .card {
-      padding: 32px 28px;
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    #enroll-rest.revealed > :global(*),
+    .title.is-confirmed,
+    #enroll-success:not([hidden]) > :global(*),
+    #enroll-done:not([hidden]) {
+      animation: none;
+    }
+    .submit,
+    .submit::before,
+    .input {
+      transition: none;
+    }
+    .submit:hover,
     .submit:active {
       transform: none;
+    }
+    .submit:hover::before,
+    .submit:active::before {
+      box-shadow: 5px 5px 0 var(--stand-black);
     }
   }
 </style>

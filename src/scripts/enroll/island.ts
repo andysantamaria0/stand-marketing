@@ -366,13 +366,31 @@ function showSuccess(waitlisted: boolean): void {
       ? COPY.success.flipped
       : COPY.success.waitlist;
 
-  const title = $<HTMLElement>("success-title");
+  // The page's persistent headline IS the confirmation ("Good, you're on the
+  // list now!") — the success card carries only the body line.
+  const headline = $<HTMLElement>("enroll-headline");
   const body = $<HTMLElement>("success-body");
-  if (title) title.textContent = copy.title;
-  if (body) body.textContent = copy.body;
+  if (headline) {
+    headline.textContent = copy.headline;
+    // Triggers the success choreography (headline pops, card follows) —
+    // defined in enroll.astro's styles.
+    headline.classList.add("is-confirmed");
+  }
+  // The lede is the sign-up pitch; under a confirmation headline it's stale.
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = true;
+  if (body) {
+    body.textContent = copy.body;
+    // Open-mode success has no body line; the waitlist variants still do.
+    body.hidden = copy.body === "";
+  }
+  // On waitlist outcomes the body already frames what happens next, so the
+  // optional-questions intro line stays out of the way.
+  const intro = $<HTMLElement>("details-intro");
+  if (intro) intro.hidden = waitlisted;
 
   // Latch BEFORE the swap: an availability response arriving from here on must
-  // not repaint the headline that stays visible above this card.
+  // not repaint the headline that now carries the confirmation.
   leftPage1 = true;
 
   const page1 = $<HTMLElement>("enroll-page1");
@@ -380,8 +398,9 @@ function showSuccess(waitlisted: boolean): void {
   if (page1) page1.hidden = true;
   if (success) success.hidden = false;
   if (waitlisted) trackFullSeen();
-  success?.scrollIntoView({ behavior: "smooth", block: "start" });
-  $<HTMLElement>("success-title")?.focus();
+  // Focusing the headline announces the new state and scrolls it into view —
+  // it sits above the card, so no separate scrollIntoView is needed.
+  headline?.focus();
 }
 
 async function submitPage1(): Promise<void> {
@@ -446,6 +465,9 @@ function showDone(): void {
   const done = $<HTMLElement>("enroll-done");
   if (success) success.hidden = true;
   if (done) done.hidden = false;
+  // The final screen is just "We'll be in touch." — no headline above it.
+  const headline = $<HTMLElement>("enroll-headline");
+  if (headline) headline.hidden = true;
   done?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
