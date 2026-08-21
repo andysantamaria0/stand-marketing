@@ -1,10 +1,9 @@
 ---
 // Green manifesto screen (Figma frame "2"): serif hook line, the three-beat
-// "real" statement in big Authentic Sans, a giant post-it STAND wordmark, and
-// a left-aligned paper-tag "learn more" CTA. The wordmark reuses logo.svg as
-// a CSS mask so the background color IS the glyph color (same trick as the
-// /masterclass nav) — no second logo asset to keep in sync.
-import SignupButton from './SignupButton.astro';
+// "real" statement in big Authentic Sans, and a giant post-it STAND wordmark.
+// The wordmark reuses logo.svg as a CSS mask so the background color IS the
+// glyph color (same trick as the /masterclass nav) — no second logo asset to
+// keep in sync.
 ---
 
 <section class="fc-manifesto" aria-labelledby="manifesto-title">
@@ -16,10 +15,6 @@ import SignupButton from './SignupButton.astro';
     </h2>
 
     <div class="wordmark" aria-hidden="true"></div>
-
-    <div class="cta">
-      <SignupButton label="learn more" href="#program" />
-    </div>
   </div>
 </section>
 
@@ -63,12 +58,6 @@ import SignupButton from './SignupButton.astro';
     background: var(--stand-postit);
     -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
     mask: url('/brand/logo.svg') no-repeat center / contain;
-  }
-
-  /* Block wrapper neutralizes the button's own align-self so it sits on the
-     column's left edge, per the mock. */
-  .cta {
-    margin-top: clamp(40px, 5.5vw, 80px);
   }
 
   @media (max-width: 768px) {
