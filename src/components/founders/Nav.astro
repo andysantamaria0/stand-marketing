@@ -1,10 +1,11 @@
 ---
 // Cream-bar nav: red stand wordmark at left (logo.svg as a CSS mask, so the
 // background color IS the glyph color), two section links centered, "Already
-// have an account? LOG IN" at right. Once the visitor scrolls past the hero,
-// the bar flips to red with a black wordmark and white links so it never
-// blends into the cream sections below (.is-scrolled, toggled by the script
-// at the bottom).
+// have an account? LOG IN" at right. The bar is section-aware: while it
+// rides over a cream-ground section it flips to red with a black wordmark
+// and white links so it never blends in; over every other ground (video,
+// green, photo, pink, red) it stays cream (.is-scrolled, toggled by the
+// script at the bottom).
 const TABS = [
   { label: 'The Program', href: '#program' },
   { label: 'FAQ', href: '#faq' },
@@ -138,12 +139,26 @@ const TABS = [
 </style>
 
 <script>
-  // Flip the bar to its red state once the hero is mostly behind us. Plain
-  // scrollY check: Lenis eases the native scroll position, so this fires on
-  // the same rAF cadence as the smoothing without extra wiring.
-  const nav = document.querySelector('.fc-nav');
-  const onScroll = () =>
-    nav?.classList.toggle('is-scrolled', window.scrollY > window.innerHeight * 0.6);
+  // Flip the bar to its red state only while it overlaps a cream-ground
+  // section; everywhere else it stays cream. Measured per scroll event
+  // (Lenis eases the native scroll position, so this fires on the same rAF
+  // cadence as the smoothing) — four getBoundingClientRect calls per frame
+  // is well under a millisecond.
+  const nav = document.querySelector<HTMLElement>('.fc-nav');
+  const creamSections = document.querySelectorAll(
+    '.fc-newspace, .fc-facts, .fc-faq',
+  );
+  const onScroll = () => {
+    if (!nav) return;
+    const probe = nav.offsetHeight;
+    let overCream = false;
+    creamSections.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top <= probe && r.bottom > probe) overCream = true;
+    });
+    nav.classList.toggle('is-scrolled', overCream);
+  };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
 </script>

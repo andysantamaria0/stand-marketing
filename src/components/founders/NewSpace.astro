@@ -1,32 +1,13 @@
 ---
-// "A new space" statement slide, restyled to the editorial-statement design
-// (the retired WhatIs section): cream ground, floating product art in the
-// corners, and the big staggered statement mixing black sans, the red
-// wordmark, and red serif italics. All three beats — the "A new space"
-// opener, the wordmark sentence, and the lemonade-stand sign-off — share the
-// same display treatment.
-const FLOATERS = [
-  { file: 'STAND_PNG_GreenBracelet', x: '6%', y: '18%', size: 130, rot: -12 },
-  { file: 'STAND_PNG_RedCupcake', x: '86%', y: '12%', size: 120, rot: 10 },
-  { file: 'STAND_PNG_PinkHoodie', x: '80%', y: '68%', size: 150, rot: -8 },
-  { file: 'STAND_PNG_CreamMug', x: '10%', y: '66%', size: 140, rot: 14 },
-];
+// "A new space" statement slide (editorial-statement design): cream ground
+// and the big staggered statement mixing black sans, the red wordmark, and
+// red serif italics. All three beats — the "A new space" opener, the
+// wordmark sentence, and the lemonade-stand sign-off — share the same
+// display treatment. The floating product art was cut once the type went
+// display-scale (Aug 21 review): the beats need the full column.
 ---
 
 <section class="fc-newspace" aria-labelledby="newspace-title">
-  {
-    FLOATERS.map((f) => (
-      <picture
-        class="floater"
-        style={`--x:${f.x}; --y:${f.y}; --s:${f.size}px; --rot:${f.rot}deg`}
-        aria-hidden="true"
-      >
-        <source srcset={`/brand/${f.file}.webp`} type="image/webp" />
-        <img src={`/brand/${f.file}.webp`} alt="" loading="lazy" width={f.size} height={f.size} />
-      </picture>
-    ))
-  }
-
   <p class="kicker" id="newspace-title">
     A new space for learning <em>entrepreneurial skills.</em> Designed for
     kids with <em>big ideas.</em>
@@ -69,20 +50,6 @@ const FLOATERS = [
     max-width: var(--container-max);
     margin: 0 auto;
     /* Cream is the page ground — the slide rides on it, no band color. */
-  }
-
-  .floater {
-    position: absolute;
-    left: var(--x);
-    top: var(--y);
-    width: var(--s);
-    transform: rotate(var(--rot));
-    pointer-events: none;
-  }
-
-  .floater img {
-    width: 100%;
-    height: auto;
   }
 
   /* All three beats speak in the same display voice; the middle statement
@@ -140,14 +107,6 @@ const FLOATERS = [
     align-self: flex-end;
     margin-right: 6%;
     text-align: right;
-  }
-
-  @media (max-width: 900px) {
-    /* Collage art needs room to breathe around the statement; on small
-       screens it would collide with the type, so it steps back. */
-    .floater {
-      display: none;
-    }
   }
 
   @media (max-width: 768px) {
