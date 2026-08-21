@@ -35,15 +35,15 @@ import SignupButton from './SignupButton.astro';
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: var(--space-5);
-    /* No bottom padding — the social marks close the page flush. */
-    padding: var(--space-8) var(--space-3) var(--space-4);
+    gap: var(--space-3);
+    /* Tight top/bottom — the band sits at ~2/3 of its old height. */
+    padding: var(--space-6) var(--space-3) var(--space-3);
     background: var(--stand-red);
     color: var(--stand-cream);
   }
 
   .wordmark {
-    width: min(680px, 82%);
+    width: min(520px, 70%);
     aspect-ratio: 199.29 / 47.33;
     background: var(--stand-cream);
     -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
@@ -75,7 +75,7 @@ import SignupButton from './SignupButton.astro';
 
   @media (max-width: 768px) {
     .fc-closing {
-      padding: var(--space-7) var(--space-3) var(--space-3);
+      padding: var(--space-5) var(--space-3) var(--space-2);
     }
   }
 </style>
