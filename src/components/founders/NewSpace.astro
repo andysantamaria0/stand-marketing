@@ -7,10 +7,12 @@
 ---
 
 <section class="fc-newspace" id="about" aria-labelledby="newspace-title">
-  <p class="eyebrow-line">The modern lemonade stand for the next generation.</p>
+  <p class="eyebrow-line chunk" style="--i: 0">
+    The modern lemonade stand for the next generation.
+  </p>
 
   <h2 class="statement" id="newspace-title">
-    <span class="line line-1">
+    <span class="line line-1 chunk" style="--i: 1">
       <!-- Brand wordmark in red stands in for the word "Stand" (same paths as
            the footer logo); the sr-only span keeps the sentence readable to
            assistive tech. -->
@@ -24,12 +26,14 @@
       </svg>
       is where kids create,
     </span>
-    <span class="line line-2">build and grow real businesses.</span>
+    <span class="line line-2 chunk" style="--i: 2">build and grow real businesses.</span>
   </h2>
 
   <p class="tagline">
-    A new space for learning entrepreneurial skills. Designed for kids with
-    big ideas.
+    <span class="line chunk" style="--i: 3">
+      A new space for learning entrepreneurial skills.
+    </span>
+    <span class="line chunk" style="--i: 4">Designed for kids with big ideas.</span>
   </p>
 </section>
 
@@ -77,6 +81,33 @@
     display: block;
   }
 
+  /* Chunk-by-chunk reveal: each beat rises in sequence once the section is
+     ~30% in view. Time-based after the trigger (not scroll-scrubbed), so the
+     rise always completes. .is-ready arms the hidden state only when JS
+     runs — no JS renders static. */
+  .fc-newspace.is-ready .chunk {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--i) * 180ms);
+  }
+
+  .fc-newspace.is-shown .chunk {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-newspace.is-ready .chunk {
+      transition: none !important;
+    }
+  }
+
   /* Red wordmark inline with the sentence, scaled to the type's cap height. */
   .logo-word {
     display: inline-block;
@@ -93,3 +124,21 @@
     }
   }
 </style>
+
+<script>
+  // One-shot reveal trigger for the chunk stagger above.
+  const section = document.querySelector('.fc-newspace');
+  if (section && 'IntersectionObserver' in window) {
+    section.classList.add('is-ready');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          section.classList.add('is-shown');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(section);
+  }
+</script>
