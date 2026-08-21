@@ -36,7 +36,8 @@ import SignupButton from './SignupButton.astro';
     align-items: center;
     text-align: center;
     gap: var(--space-5);
-    padding: var(--space-8) var(--space-3);
+    /* No bottom padding — the social marks close the page flush. */
+    padding: var(--space-8) var(--space-3) var(--space-4);
     background: var(--stand-red);
     color: var(--stand-cream);
   }
@@ -74,7 +75,7 @@ import SignupButton from './SignupButton.astro';
 
   @media (max-width: 768px) {
     .fc-closing {
-      padding: var(--space-7) var(--space-3);
+      padding: var(--space-7) var(--space-3) var(--space-3);
     }
   }
 </style>
