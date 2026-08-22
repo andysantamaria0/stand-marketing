@@ -23,6 +23,21 @@ const FILM_SRC =
   <!-- Visually clean film; the h1 stays for the document outline and the
        section's aria-labelledby, just hidden from view. -->
   <h1 id="fc-hero-title" class="sr-only">Build your own thing. For Real.</h1>
+
+  <!-- Sound toggle — the film autoplays muted (browser requirement); this
+       lets the visitor opt into audio. Icon pair swaps on data-muted. -->
+  <button type="button" id="fc-hero-sound" class="sound" data-muted="true" aria-label="Turn sound on">
+    <svg class="icon icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none" />
+      <line x1="16" y1="9" x2="21" y2="14" />
+      <line x1="21" y1="9" x2="16" y2="14" />
+    </svg>
+    <svg class="icon icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+    </svg>
+  </button>
 </section>
 
 <style>
@@ -52,4 +67,58 @@ const FILM_SRC =
     clip-path: inset(50%);
     white-space: nowrap;
   }
+
+  .sound {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--stand-cream);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--stand-cream);
+    cursor: pointer;
+    transition: transform 120ms ease, background-color 120ms ease;
+  }
+
+  .sound:hover {
+    transform: scale(1.08);
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .sound:focus-visible {
+    outline: 3px solid var(--stand-postit);
+    outline-offset: 2px;
+  }
+
+  .sound .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .sound[data-muted='true'] .icon-on,
+  .sound[data-muted='false'] .icon-off {
+    display: none;
+  }
 </style>
+
+<script>
+  // Muted flag flips directly on the <video>; the button mirrors it for the
+  // icon swap and assistive tech. Unmuting also nudges play() in case the
+  // browser paused the film when audio was requested.
+  const hero = document.querySelector('.fc-hero');
+  const film = hero?.querySelector('video');
+  const toggle = document.getElementById('fc-hero-sound');
+  if (film && toggle) {
+    toggle.addEventListener('click', () => {
+      film.muted = !film.muted;
+      if (!film.muted) film.play()?.catch(() => {});
+      toggle.dataset.muted = String(film.muted);
+      toggle.setAttribute('aria-label', film.muted ? 'Turn sound on' : 'Turn sound off');
+    });
+  }
+</script>
