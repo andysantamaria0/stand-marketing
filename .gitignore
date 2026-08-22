@@ -5,6 +5,7 @@ dist
 .env
 .env.local
 .DS_Store
+.env*
 
 # Local AI-agent tooling (per-developer, not shared)
 .agents/

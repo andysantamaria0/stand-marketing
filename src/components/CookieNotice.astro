@@ -1,0 +1,110 @@
+---
+/**
+ * CookieNotice — a small, dismissable bottom banner disclosing that the
+ * marketing site uses a first-party analytics cookie (PostHog) to measure
+ * new-vs-returning visitors. US-only audience: this is a NOTICE, not an
+ * opt-in gate — analytics runs immediately; the banner discloses + links to
+ * the privacy policy. Dismissal is remembered in localStorage so it shows
+ * once per visitor.
+ */
+---
+
+<div id="cookie-notice" class="cookie-notice" role="note" aria-label="Cookie notice"
+     aria-describedby="cookie-notice__text" hidden>
+  <p id="cookie-notice__text" class="cookie-notice__text">
+    Stand uses a cookie to understand site traffic and improve the experience.
+    See our <a href="/privacy">Privacy Policy</a>.
+  </p>
+  <button type="button" id="cookie-notice__dismiss" class="cookie-notice__btn">Got it</button>
+</div>
+
+<style>
+  .cookie-notice {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: min(680px, calc(100vw - 32px));
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--stand-white, #ffffff);
+    color: var(--stand-black, #1a1a1a);
+    border: 2px solid var(--stand-black, #1a1a1a);
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.18);
+    font-family: inherit;
+  }
+  .cookie-notice[hidden] { display: none; }
+  .cookie-notice__text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .cookie-notice__text a {
+    color: var(--stand-red, #db1f26);
+    text-decoration: underline;
+  }
+  .cookie-notice__btn {
+    flex: none;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 12px 20px;
+    color: var(--stand-white, #ffffff);
+    background: var(--stand-red, #db1f26);
+    border: 2px solid var(--stand-black, #1a1a1a);
+    border-radius: 999px;
+  }
+  .cookie-notice__btn:hover { filter: brightness(0.95); }
+  .cookie-notice__btn:active { filter: brightness(0.85); }
+  .cookie-notice__btn:focus-visible {
+    outline: 3px solid var(--stand-black, #1a1a1a);
+    outline-offset: 2px;
+  }
+  @media (max-width: 520px) {
+    .cookie-notice { flex-direction: column; align-items: stretch; text-align: center; }
+    .cookie-notice__btn { width: 100%; }
+  }
+</style>
+
+<script>
+  // Show once per visitor. Stored separately from PostHog so dismissing the
+  // notice never affects analytics, and clearing analytics never re-shows it.
+  // Prefer localStorage (persists across visits); fall back to sessionStorage
+  // so a private-mode / storage-blocked visitor isn't re-nagged every page in
+  // the same session.
+  const KEY = "stand_cookie_notice_dismissed";
+
+  function isDismissed() {
+    for (const store of [window.localStorage, window.sessionStorage]) {
+      try {
+        if (store && store.getItem(KEY) === "1") return true;
+      } catch {
+        // storage blocked for this backend — try the next
+      }
+    }
+    return false;
+  }
+  function rememberDismiss() {
+    for (const store of [window.localStorage, window.sessionStorage]) {
+      try {
+        store?.setItem(KEY, "1");
+      } catch {
+        // best-effort across both backends
+      }
+    }
+  }
+
+  const el = document.getElementById("cookie-notice");
+  if (el) {
+    if (!isDismissed()) el.hidden = false;
+    document.getElementById("cookie-notice__dismiss")?.addEventListener("click", () => {
+      el.hidden = true;
+      rememberDismiss();
+    });
+  }
+</script>

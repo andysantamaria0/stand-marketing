@@ -80,7 +80,7 @@ const { signup = true } = Astro.props;
             </span>
           </div>
         </div>
-        <a href="https://app.standkids.com" class="signup-btn">Sign Up &rarr;</a>
+        <a href="/enroll" class="signup-btn">Sign Up &rarr;</a>
       </form>
       <p class="signup-status" id="signup-status" role="status" aria-live="polite"></p>
     </div>
@@ -114,12 +114,13 @@ const { signup = true } = Astro.props;
   input?.addEventListener('focus', () => { if (input) input.placeholder = ''; });
   input?.addEventListener('blur', () => { if (input && !input.value) input.placeholder = 'hello@standkids.com'; });
 
-  // The footer no longer captures emails — the "Sign Up →" control is a plain
-  // link to the app (same destination as the "Start Building" link). Pressing
-  // Enter in the email field should follow that same path, not POST anywhere.
+  // The footer doesn't capture emails itself — "Sign Up →" routes to /enroll,
+  // the marketing site's own capture surface (per the 8/18 decision; it used
+  // to hand off to the app). Pressing Enter in the email field follows the
+  // same path, not a POST.
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    window.location.href = 'https://app.standkids.com';
+    window.location.href = '/enroll';
   });
 
   // Logo hop gag (brand-only footer): the "t" jumps once, the first time the
