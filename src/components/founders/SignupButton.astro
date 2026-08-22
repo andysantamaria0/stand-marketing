@@ -1,7 +1,9 @@
 ---
-// Shared "sign up now" CTA — Faye's paper-tag rectangle (border, skew, and
-// hard shadow baked into the PNG) stretched under Pie Pie type. Used by
-// IntroPitch, WhatsIncluded, and TheOffer.
+// Shared sign-up CTA — the /enroll page's skewed-sticker button, ported so
+// the landing page and the form speak the same language: white face drawn
+// as a ::before layer (2px black border, hard offset shadow, -5deg skew),
+// Pie Pie lowercase label, lift-on-hover / slam-on-press. Replaces the
+// baked-PNG paper tag. Used by ProgramFacts and Closing.
 interface Props {
   label?: string;
   href?: string;
@@ -14,35 +16,65 @@ const { label = 'sign up now', href = '/enroll' } = Astro.props;
 
 <style>
   .signup {
+    position: relative;
+    isolation: isolate;
     align-self: center;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: min(536px, 100%);
-    min-height: 78px;
-    /* The tag art stretches with the label; 100% 100% keeps the baked border
-       and shadow pinned to the button's own edges. */
-    background: url('/brand/signup-tag.png') no-repeat center / 100% 100%;
-    /* The baked shadow occupies the bottom sliver — nudge the label up so it
-       centers on the white face, not the full image box. */
-    padding: 10px 64px 16px;
+    min-height: 64px;
+    padding: 2px 48px 6px;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 22px;
+    text-transform: lowercase;
     letter-spacing: 0.04em;
     color: var(--stand-black);
-    transition: transform 120ms ease;
+    transition: transform 150ms ease-out;
   }
 
+  /* The sticker is a layer, not a wrapper — keeps the label a single text
+     node and the skew off the type. */
+  .signup::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 5px 5px 0 var(--stand-black);
+    transform: skewX(-5deg);
+    transition: box-shadow 150ms ease-out;
+  }
+
+  /* Lift on hover, slam back on press — the sticker physically moves. */
   .signup:hover {
-    transform: translate(2px, 3px);
+    transform: translate(-3px, -3px);
+  }
+
+  .signup:hover::before {
+    box-shadow: 8px 8px 0 var(--stand-black);
+  }
+
+  .signup:active {
+    transform: translate(2px, 2px);
+  }
+
+  .signup:active::before {
+    box-shadow: 2px 2px 0 var(--stand-black);
+  }
+
+  .signup:focus-visible {
+    outline: 3px solid var(--stand-green);
+    outline-offset: 4px;
   }
 
   @media (max-width: 768px) {
     .signup {
       align-self: stretch;
       min-width: 0;
-      padding: 10px 24px 16px;
+      padding: 2px 24px 6px;
     }
   }
 </style>
