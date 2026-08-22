@@ -100,6 +100,28 @@ const FILM_SRC =
     height: 24px;
   }
 
+  /* Phones: the headline lives inside the 16:9 film, so a portrait cover
+     crop cuts it off. The hero takes the film's own ratio instead — full
+     frame visible, no crop. */
+  @media (max-width: 768px) {
+    .fc-hero {
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .sound {
+      right: 12px;
+      bottom: 12px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .sound .icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   .sound[data-muted='true'] .icon-on,
   .sound[data-muted='false'] .icon-off {
     display: none;
