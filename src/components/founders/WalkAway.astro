@@ -11,6 +11,7 @@
   <div class="kids" aria-hidden="true">
     <img
       class="boy"
+      style="--drift: 40px"
       src="/brand/cutout-boy-tote.png"
       alt=""
       loading="lazy"
@@ -19,6 +20,7 @@
     />
     <img
       class="girl"
+      style="--drift: 90px"
       src="/brand/cutout-girl-bracelets.png"
       alt=""
       loading="lazy"
@@ -27,6 +29,7 @@
     />
     <img
       class="pair"
+      style="--drift: 140px"
       src="/brand/cutout-kids-dancing.png"
       alt=""
       loading="lazy"
@@ -53,6 +56,29 @@
   .kids img {
     position: absolute;
     height: auto;
+  }
+
+  /* Scroll-scrubbed drift — each kid settles at a different speed as the
+     band scrolls in (view-timeline; reverses on scroll-up). Browsers
+     without support render static. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .kids img {
+        animation: fc-wa-drift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+    }
+  }
+
+  @keyframes fc-wa-drift {
+    from {
+      transform: translateY(var(--drift, 60px));
+    }
+
+    to {
+      transform: none;
+    }
   }
 
   .boy {

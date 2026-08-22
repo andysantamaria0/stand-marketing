@@ -16,9 +16,9 @@ const FACTS = [
 
 <section class="fc-facts" id="program" aria-labelledby="facts-title">
   <div class="inner">
-    <h2 id="facts-title">what a kid walks away with</h2>
+    <h2 id="facts-title" data-rv style="--rvi: 0">what a kid walks away with</h2>
 
-    <p class="pitch">
+    <p class="pitch" data-rv style="--rvi: 1">
       Every kid takes an idea, one they came in with or one they find here,
       and builds it into a real business: a brand, a product, a plan. On pitch
       night they get up and present it. Kids get a Founder&rsquo;s grab bag
@@ -29,8 +29,8 @@ const FACTS = [
 
     <dl class="facts">
       {
-        FACTS.map((f) => (
-          <div class="row">
+        FACTS.map((f, i) => (
+          <div class="row" data-rv style={`--rvi: ${2 + i}`}>
             <dt>{f.k}</dt>
             <dd>{f.v}</dd>
           </div>
@@ -38,7 +38,7 @@ const FACTS = [
       }
     </dl>
 
-    <div class="cta">
+    <div class="cta" data-rv style="--rvi: 5">
       <SignupButton />
     </div>
   </div>

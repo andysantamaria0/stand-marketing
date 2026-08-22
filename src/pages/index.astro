@@ -67,6 +67,32 @@ import Marquee from '@/components/Marquee.astro';
   .founders-page [id] {
     scroll-margin-top: var(--space-4);
   }
+
+  /* Shared chunk-reveal (same recipe the About slide established): sections
+     mark chunks with data-rv / --rvi, the script below arms them (.rv-ready)
+     and fires once ~25% visible (.rv-shown). No JS → static render. */
+  .rv-ready [data-rv] {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--rvi, 0) * 180ms);
+  }
+
+  .rv-shown [data-rv] {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv-ready [data-rv] {
+      transition: none !important;
+    }
+  }
 </style>
 
 <script>
@@ -87,5 +113,24 @@ import Marquee from '@/components/Marquee.astro';
       requestAnimationFrame(raf);
     };
     requestAnimationFrame(raf);
+  }
+
+  // Arm the shared chunk-reveals (see is:global style above). One observer
+  // per section, one-shot.
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.founders-page section').forEach((sec) => {
+      if (!sec.querySelector('[data-rv]')) return;
+      sec.classList.add('rv-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            sec.classList.add('rv-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(sec);
+    });
   }
 </script>

@@ -122,4 +122,23 @@ const FAQS = [
       padding: 18px 0;
     }
   }
+
+  /* <details> snaps open with no bridge; a short entrance settles the
+     answer in. Entrance-only — collapse stays instant. */
+  details[open] .desc {
+    animation: fc-faq-reveal 220ms ease-out;
+  }
+
+  @keyframes fc-faq-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    details[open] .desc {
+      animation: none;
+    }
+  }
 </style>

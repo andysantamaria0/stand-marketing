@@ -9,11 +9,13 @@ import SignupButton from './SignupButton.astro';
 ---
 
 <section class="fc-closing" aria-label="Sign up">
-  <div class="wordmark" role="img" aria-label="stand"></div>
-  <SignupButton />
-  <p class="seats">Up to 20 seats this fall. First come.</p>
+  <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
+  <div class="cta-wrap" data-rv style="--rvi: 1">
+    <SignupButton />
+  </div>
+  <p class="seats" data-rv style="--rvi: 2">Up to 20 seats this fall. First come.</p>
 
-  <div class="social">
+  <div class="social" data-rv style="--rvi: 3">
     <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
       <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="2" y="2" width="20" height="20" rx="5"></rect>
@@ -48,6 +50,13 @@ import SignupButton from './SignupButton.astro';
     background: var(--stand-cream);
     -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
     mask: url('/brand/logo.svg') no-repeat center / contain;
+  }
+
+  /* Keeps the button centered like its old direct-child self. */
+  .cta-wrap {
+    display: flex;
+    justify-content: center;
+    align-self: stretch;
   }
 
   .seats {

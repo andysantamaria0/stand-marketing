@@ -40,6 +40,19 @@
     font-family: var(--font-sans, inherit);
   }
   .cookie-notice[hidden] { display: none; }
+  /* Rises in on first paint after [hidden] drops (@starting-style);
+     browsers without support just show it instantly, as before. */
+  @media (prefers-reduced-motion: no-preference) {
+    .cookie-notice {
+      transition: opacity 400ms ease-out, transform 400ms ease-out;
+    }
+    @starting-style {
+      .cookie-notice {
+        opacity: 0;
+        transform: translateX(-50%) translateY(16px);
+      }
+    }
+  }
   .cookie-notice__text {
     margin: 0;
     font-size: 15px;
