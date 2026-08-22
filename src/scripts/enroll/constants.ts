@@ -73,12 +73,6 @@ export const COPY = {
     lede: "Register to get started and updates about our LA space and program.",
   },
 
-  waitlist: {
-    eyebrow: PROGRAM_NAME,
-    headline: "This fall is full — join the waitlist.",
-    lede: "Same one-minute form. If a spot opens you're first to hear, and you're at the front of the line for next semester.",
-  },
-
   form: {
     emailLabel: "Your email",
     emailPlaceholder: "you@example.com",
@@ -125,15 +119,6 @@ export const COPY = {
     open: {
       headline: "Good, you're on the list!",
       body: "",
-    },
-    waitlist: {
-      headline: "You Joined the Waitlist!",
-      body: "We'll get back to you with any updates. If a spot opens this fall you're first to hear, and you're at the front of the line for next semester.",
-    },
-    /** Submitted in open mode, came back waitlisted. Explain, don't confuse. */
-    flipped: {
-      headline: "You Joined the Waitlist!",
-      body: "Heads up — this fall filled up just now. You joined the waitlist, and you're first in line.",
     },
   },
 

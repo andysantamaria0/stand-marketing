@@ -34,8 +34,6 @@ type EnrollEvents = {
   enroll_day_selected: { day: string; kid_index: number };
   enroll_step_completed: { step: 1 | 2 };
   enroll_details_skipped: Record<string, never>;
-  /** Waitlist mode rendered — either on load or after a mid-session flip. */
-  enroll_full_seen: Record<string, never>;
   enroll_cta_clicked: { cta_location: string };
 };
 
