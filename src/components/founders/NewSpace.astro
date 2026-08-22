@@ -121,8 +121,11 @@
   }
 
   @media (max-width: 768px) {
+    /* Phones skip the full-viewport treatment — content-height with normal
+       section padding, no centering gaps above and below. */
     .fc-newspace {
-      padding: var(--space-7) 20px;
+      min-height: 0;
+      padding: var(--space-5) 20px;
     }
   }
 </style>
