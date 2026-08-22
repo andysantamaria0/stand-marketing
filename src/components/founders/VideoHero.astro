@@ -107,18 +107,52 @@ const FILM_SRC =
 </style>
 
 <script>
-  // Muted flag flips directly on the <video>; the button mirrors it for the
-  // icon swap and assistive tech. Unmuting also nudges play() in case the
-  // browser paused the film when audio was requested.
+  // Sound toggles with a volume ramp: unmute starts silent and eases up;
+  // mute eases down, then flips the muted flag. Intent lives on the button's
+  // data-muted (not the video), so a mid-fade re-click cancels cleanly and
+  // reverses from wherever the ramp got to. The icon swaps immediately —
+  // feedback tracks intent, audio follows. (iOS ignores scripted volume;
+  // there the flag flip still works, just without the glide.)
   const hero = document.querySelector('.fc-hero');
   const film = hero?.querySelector('video');
   const toggle = document.getElementById('fc-hero-sound');
   if (film && toggle) {
+    const FADE_MS = 700;
+    let timerId = 0;
+
+    // Timer-driven, not rAF: Chrome freezes rAF entirely while the window
+    // is occluded, which would leave the fade (and the end-of-fade mute)
+    // hanging. An interval keeps ticking, and because progress is computed
+    // from wall time, even a throttled tick completes the ramp. Writes are
+    // clamped — volume outside [0,1] throws.
+    const fadeTo = (target, done) => {
+      clearInterval(timerId);
+      const start = film.volume;
+      const t0 = performance.now();
+      timerId = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0) / FADE_MS);
+        film.volume = Math.min(1, Math.max(0, start + (target - start) * k));
+        if (k >= 1) {
+          clearInterval(timerId);
+          done?.();
+        }
+      }, 30);
+    };
+
     toggle.addEventListener('click', () => {
-      film.muted = !film.muted;
-      if (!film.muted) film.play()?.catch(() => {});
-      toggle.dataset.muted = String(film.muted);
-      toggle.setAttribute('aria-label', film.muted ? 'Turn sound on' : 'Turn sound off');
+      const turningOn = toggle.dataset.muted === 'true';
+      if (turningOn) {
+        if (film.muted) film.volume = 0;
+        film.muted = false;
+        film.play()?.catch(() => {});
+        fadeTo(1);
+      } else {
+        fadeTo(0, () => {
+          film.muted = true;
+        });
+      }
+      toggle.dataset.muted = String(!turningOn);
+      toggle.setAttribute('aria-label', turningOn ? 'Turn sound off' : 'Turn sound on');
     });
   }
 </script>
