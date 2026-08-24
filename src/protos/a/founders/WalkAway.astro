@@ -103,14 +103,18 @@
   }
 
   .seatedboy {
-    left: 31%;
-    top: 24%;
-    width: 32%;
+    left: 15%;
+    top: auto;
+    /* Canvas keeps ~15% transparent padding under the boy — the negative
+       bottom cancels it so he sits ON the section floor. */
+    bottom: -10%;
+    width: 64%;
   }
 
   .poloboy {
     left: 66%;
-    top: 4%;
+    top: auto;
+    bottom: 0;
     width: 34%;
   }
 </style>
