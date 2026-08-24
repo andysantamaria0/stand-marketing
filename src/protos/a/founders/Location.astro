@@ -37,7 +37,7 @@ const BEATS = [
           }
         </div>
         <div class="ticks" aria-hidden="true">
-          {BEATS.map(() => <span class="tick" />)}
+          {BEATS.map((_, i) => <span class="tick">{i + 1}</span>)}
         </div>
       </div>
     </div>
@@ -157,31 +157,66 @@ const BEATS = [
     text-wrap: pretty;
   }
 
-  /* Receipt-tick stepper — hidden in the static fallback. */
+  /* Dial stepper — hidden in the static fallback. Same sticker language as
+     the sign-up button: white face, 2px border, hard black lift, Pie Pie
+     numeral. Current step wears red and pops in; played steps keep a post-it
+     yellow stamp. */
   .ticks {
     display: none;
   }
 
   .sw-ready .ticks {
     display: flex;
-    gap: 10px;
+    gap: 12px;
   }
 
   .tick {
-    width: 34px;
-    height: 4px;
-    background: rgb(0 0 0 / 15%);
-    transition: background-color 0.3s ease;
+    display: grid;
+    place-items: center;
+    width: clamp(36px, 3vw, 44px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 3px 3px 0 var(--stand-black);
+    font-family: var(--font-display);
+    font-size: clamp(15px, 1.3vw, 18px);
+    color: var(--stand-black);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .tick.done {
+    background: var(--stand-postit);
   }
 
   .tick.on {
     background: var(--stand-red);
+    color: var(--stand-white);
+    animation: tick-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes tick-pop {
+    0% {
+      transform: scale(0.8);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .sw-ready .beat {
       transition: none !important;
       filter: none !important;
+    }
+
+    .tick.on {
+      animation: none;
     }
   }
 
@@ -228,7 +263,10 @@ const BEATS = [
         b.classList.toggle('is-current', i === idx);
         b.classList.toggle('is-before', i < idx);
       });
-      ticks.forEach((t, i) => t.classList.toggle('on', i <= idx));
+      ticks.forEach((t, i) => {
+        t.classList.toggle('on', i === idx);
+        t.classList.toggle('done', i < idx);
+      });
     };
 
     onScroll();
