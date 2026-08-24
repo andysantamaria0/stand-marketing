@@ -13,9 +13,7 @@ import SignupButton from './SignupButton.astro';
   <div class="cta-wrap" data-rv style="--rvi: 1">
     <SignupButton />
   </div>
-  <p class="seats" data-rv style="--rvi: 2">Up to 20 seats this fall. First come.</p>
-
-  <div class="social" data-rv style="--rvi: 3">
+  <div class="social" data-rv style="--rvi: 2">
     <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
       <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="2" y="2" width="20" height="20" rx="5"></rect>
@@ -29,6 +27,8 @@ import SignupButton from './SignupButton.astro';
       </svg>
     </a>
   </div>
+
+  <a class="email" href="mailto:hello@standkids.com" data-rv style="--rvi: 3">hello@standkids.com</a>
 </section>
 
 <style>
@@ -59,13 +59,6 @@ import SignupButton from './SignupButton.astro';
     align-self: stretch;
   }
 
-  .seats {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: 16px;
-  }
-
   /* Cream marks on the red ground; 32px glyphs padded to 44px targets. */
   .social {
     display: flex;
@@ -80,6 +73,18 @@ import SignupButton from './SignupButton.astro';
     min-width: 44px;
     min-height: 44px;
     color: var(--stand-cream);
+  }
+
+  .email {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--stand-cream);
+    text-underline-offset: 3px;
+  }
+
+  .email:hover {
+    text-decoration-thickness: 2px;
   }
 
   @media (max-width: 768px) {

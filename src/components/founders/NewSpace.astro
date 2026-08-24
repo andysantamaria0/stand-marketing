@@ -1,92 +1,100 @@
 ---
-// About statement slide: cream ground. The lemonade-stand line opens small
-// in the editorial serif, then the wordmark sentence and the "A new space"
-// beat speak in the display sans. The red wordmark is the only other
-// accent. The floating product art was cut once the type went
-// display-scale (Aug 21 review): the beats need the full column.
+// About statement slide — Proto A layout (Aug 24 reference: emonee's
+// "THE SECRET FORMULA?" section). Giant stacked centered headline, then
+// centered body paragraphs that re-speak the headline phrase with bolded
+// key beats, then the updates CTA. Copy per the Aug 24 web-copy doc
+// ("About us" section).
+import SignupButton from './SignupButton.astro';
 ---
 
 <section class="fc-newspace" id="about" aria-labelledby="newspace-title">
-  <p class="eyebrow-line chunk" style="--i: 0">
-    The modern lemonade stand for the next generation.
-  </p>
-
-  <h2 class="statement" id="newspace-title">
-    <span class="line line-1 chunk" style="--i: 1">
-      <!-- Brand wordmark in red stands in for the word "Stand" (same paths as
-           the footer logo); the sr-only span keeps the sentence readable to
-           assistive tech. -->
-      <span class="visually-hidden">Stand</span>
-      <svg class="logo-word" viewBox="0 0 199.29 47.33" aria-hidden="true">
-        <path d="M36.3,10.69l-.47,11.15c-.03.78-.85,1.27-1.56.94-2.01-.92-4.96-1.5-8.23-1.5h-.11c-1.36,0-1.48,2-.13,2.16,7.93.96,11.84,4.52,11.84,10.86,0,9.71-5.39,13.02-20.78,13.02-4.49,0-9.68-.43-15.67-1.33-.55-.08-.95-.57-.93-1.12l.48-11.77c.03-.77.83-1.26,1.53-.94,2.37,1.07,5.91,1.73,9.61,1.73.4,0,.77,0,1.12-.02,1.36-.04,1.41-2.05.06-2.16C4.32,30.94,0,27.53,0,21.28c0-9.71,5.39-13.02,20.78-13.02,4.73,0,9.63.42,14.63,1.31.54.1.92.57.9,1.12h0Z" />
-        <path d="M56.66,8.75l5.08-.55c.6-.07,1.13.37,1.2.96l1.32,12.08c.07.6-.37,1.13-.96,1.2l-5.08.55c-.6.07-1.03.6-.96,1.2l.28,2.57c.19,1.71.96,2.28,3.2,2.03.94-.1,1.9-.32,2.89-.7.67-.26,1.4.18,1.47.89l1.6,14.73c.06.5-.25.98-.73,1.15-3.13,1.08-5.2,1.56-8.35,1.9-12.83,1.4-18.05-2.26-19.25-13.32l-3.18-29.03c-.07-.6.37-1.13.96-1.2l17.5-1.9c.6-.07,1.13.36,1.2.96l.61,5.54c.07.6.6,1.03,1.2.96h0Z" />
-        <path d="M107.42,26.67v11.37c0,2.94.12,4.91.4,6.87.09.65-.42,1.24-1.07,1.24h-16.52c-.51,0-.94-.35-1.06-.84l-.57-2.47h-.12c-2.37,2.96-6.27,4.5-11.42,4.5-7.64,0-11.37-3.37-11.37-10.3s3.97-10.54,12.13-10.54c3.73,0,7.34.71,9.65,1.89h.12v-.12c0-3.02-2.66-4.38-8.58-4.38-3.93,0-7.7.61-10.29,1.67-.69.28-1.46-.22-1.49-.97l-.5-13.9c-.02-.54.36-1.02.9-1.11,4.89-.84,10.55-1.31,16.11-1.31,17.64,0,23.68,4.68,23.68,18.41h0ZM83.63,36.08c0,2.31.59,3.02,2.25,3.02.33,0,.62-.02.88-.09.49-.11.84-.56.84-1.06v-3.74c0-.5-.35-.95-.84-1.06-.26-.06-.55-.09-.88-.09-1.66,0-2.25.71-2.25,3.02Z" />
-        <path d="M152.73,23.06v22c0,.6-.49,1.09-1.09,1.09h-17.6c-.6,0-1.09-.49-1.09-1.09v-18.98c0-2.37-.53-3.2-2.07-3.2-.38,0-.76.06-1.12.18-.43.15-.72.57-.72,1.03v20.97c0,.6-.49,1.09-1.09,1.09h-17.6c-.6,0-1.09-.49-1.09-1.09V10.53c0-.6.49-1.09,1.09-1.09h16.8c.56,0,1.03.43,1.08.99l.33,3.86h.12c2.6-4.2,6.33-6.04,12.13-6.04,8.64,0,11.9,4.08,11.9,14.8h0Z" />
-        <path d="M198.88,38.04c0,2.94.12,4.91.4,6.87.09.65-.42,1.24-1.07,1.24h-17.21c-.56,0-1.03-.43-1.08-.99l-.33-3.86h-.12c-2.43,4.08-6.16,6.04-11.25,6.04-9.35,0-14.03-6.57-14.03-19.24s5.15-19.83,15.57-19.83c3.85,0,6.87.89,9.23,2.72h.12V1.09c0-.6.49-1.09,1.09-1.09h17.6c.6,0,1.09.49,1.09,1.09v36.95h0ZM174.85,27.8c0,3.61.65,4.91,2.49,4.91.38,0,.72-.05,1.03-.15.45-.14.75-.57.75-1.03v-7.46c0-.47-.3-.89-.75-1.03-.31-.1-.65-.15-1.03-.15-1.83,0-2.49,1.3-2.49,4.91h0Z" />
-      </svg>
-      is where kids create,
-    </span>
-    <span class="line line-2 chunk" style="--i: 2">build and grow real businesses.</span>
+  <h2 class="mega" id="newspace-title">
+    <span class="line chunk" style="--i: 0">The modern day</span>
+    <span class="line chunk" style="--i: 1">lemonade stand</span>
   </h2>
 
-  <p class="tagline">
-    <span class="line chunk" style="--i: 3">
-      A new space for learning entrepreneurial skills.
-    </span>
-    <span class="line chunk" style="--i: 4">Designed for kids with big ideas.</span>
-  </p>
+  <div class="body">
+    <p class="chunk" style="--i: 2">
+      <strong>STAND</strong> is a new kind of
+      <strong>entrepreneurship program</strong> for kids ages 8&ndash;13. Where kids build
+      <strong>real businesses and real-life skills</strong>.
+    </p>
+
+    <p class="chunk" style="--i: 3">
+      Through STAND, kids learn to
+      <strong>create, problem-solve, communicate</strong>, and turn ideas into
+      <strong>something real</strong>.
+    </p>
+  </div>
+
+  <div class="cta chunk" style="--i: 4">
+    <SignupButton label="sign up for updates" />
+  </div>
 </section>
 
 <style>
   .fc-newspace {
     position: relative;
-    min-height: 100svh;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    text-align: left;
-    gap: var(--space-4);
-    /* Same 1132px column + 48px gutters as the manifesto above. */
-    padding: var(--space-6) 48px;
+    align-items: center;
+    text-align: center;
+    gap: clamp(32px, 4vw, 56px);
+    /* Content-height with the same section rhythm as Location — the old
+       100svh centering left a screen of dead cream above and below. */
+    padding: clamp(56px, 6.1vw, 88px) 48px;
     max-width: calc(1132px + 2 * 48px);
     margin: 0 auto;
+    color: var(--stand-black);
     /* Cream is the page ground — the slide rides on it, no band color. */
   }
 
-  /* The serif opener, small and quiet. */
-  .eyebrow-line {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    /* Same serif eyebrow step as the manifesto's hook line. */
-    font-size: clamp(20px, 2.2vw, 32px);
-    line-height: 1.3;
-    color: var(--stand-black);
-  }
-
-  /* The two display beats share one voice, left-aligned. */
-  .tagline,
-  .statement {
+  /* The giant stacked announcement — each line its own row, tight leading so
+     the block reads as one mass (reference: emonee hero-scale type). */
+  .mega {
     margin: 0;
     width: 100%;
-    font-family: var(--font-sans);
-    /* Same voice as the manifesto statement: Authentic Sans 90 (400). */
+    /* Pie Pie — the sticker/display voice (same as the sign-up buttons),
+       lowercase like everywhere else it appears. */
+    font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(32px, 4.4vw, 72px);
-    line-height: 1.12;
-    letter-spacing: -0.02em;
-    color: var(--stand-black);
+    /* 1/3 of the column-spanning size (Aug 24 review) — the stack reads as a
+       title, not a wall. */
+    font-size: clamp(24px, 5.2vw, 75px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
   }
 
-  .line {
+  .mega .line {
     display: block;
   }
 
-  /* Chunk-by-chunk reveal: each beat rises in sequence once the section is
-     ~30% in view. Time-based after the trigger (not scroll-scrubbed), so the
-     rise always completes. .is-ready arms the hidden state only when JS
-     runs — no JS renders static. */
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 2vw, 28px);
+    /* Same measure as the Location body copy. */
+    max-width: 62ch;
+  }
+
+  .body p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .body strong {
+    font-weight: 700;
+  }
+
+  /* Chunk-by-chunk reveal: same recipe as before — headline lines rise first,
+     then the paragraphs, then the CTA. .is-ready arms the hidden state only
+     when JS runs — no JS renders static. */
   .fc-newspace.is-ready .chunk {
     opacity: 0;
     transform: translateY(28px);
@@ -95,7 +103,7 @@
       opacity 0.5s ease,
       transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
       filter 0.5s ease;
-    transition-delay: calc(var(--i) * 180ms);
+    transition-delay: calc(var(--i) * 140ms);
   }
 
   .fc-newspace.is-shown .chunk {
@@ -110,21 +118,8 @@
     }
   }
 
-  /* Red wordmark inline with the sentence, scaled to the type's cap height. */
-  .logo-word {
-    display: inline-block;
-    height: 0.74em;
-    width: auto;
-    fill: var(--stand-red);
-    vertical-align: baseline;
-    transform: translateY(0.02em);
-  }
-
   @media (max-width: 768px) {
-    /* Phones skip the full-viewport treatment — content-height with normal
-       section padding, no centering gaps above and below. */
     .fc-newspace {
-      min-height: 0;
       padding: var(--space-5) 20px;
     }
   }

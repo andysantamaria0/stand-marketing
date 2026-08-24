@@ -1,31 +1,69 @@
 ---
 // Parent FAQ — native <details>/<summary> accordion (zero JS, keyboard
-// accessible for free). Questions are decided; answers are Lauren's to write
-// (plain, reassuring, parent-voiced) so they ship as placeholder tokens.
-const FAQS = [
-  'Who is it for?',
-  'What will my kid actually build?',
-  'Where is it held, and when?',
-  'What does the $500 cover?',
-  'What happens on pitch night?',
-  'Does my kid need an idea already?',
-  'What do they keep after the semester?',
+// accessible for free). Questions + answers per the Aug 24 web-copy doc.
+const FAQS: { q: string; a: string[] }[] = [
+  {
+    q: 'Where is STAND?',
+    a: [
+      'STAND is opening in West Los Angeles this fall. More details on our first space soon — and more cities to come. Sign up for updates.',
+    ],
+  },
+  {
+    q: 'Who is STAND for?',
+    a: [
+      'STAND is designed for kids ages 8–13 who want to make, build, create, and try something of their own. No business idea required.',
+    ],
+  },
+  {
+    q: 'What can I expect?',
+    a: [
+      'Eight weeks of building a real business from the ground up. Kids go from idea to brand, product, pricing, marketing, and a real pitch — learning by doing every step of the way.',
+      'STAND is built to feel more like a studio, workshop, and startup than a classroom. Kids are making, testing, talking, solving problems, and building something that’s actually theirs.',
+    ],
+  },
+  {
+    q: 'What will my kid leave with?',
+    a: [
+      'A business they built themselves — plus a much bigger sense of what they’re capable of. They’ll also leave with their brand, business plan, pitch, and a STAND login so they can keep building on our platform.',
+    ],
+  },
+  {
+    q: 'What kinds of skills will they learn?',
+    a: [
+      'The business is the vehicle. Along the way, kids practice creativity, communication, money, problem-solving, decision-making, resilience, and how to take something from an idea to reality.',
+    ],
+  },
+  {
+    q: 'Who teaches STAND?',
+    a: [
+      'People who know what it means to build something in the real world. STAND brings together entrepreneurs, makers, creatives, and mentors to help kids build their own thing.',
+    ],
+  },
+  {
+    q: 'When does it start?',
+    a: [
+      'Our first Los Angeles cohorts launch this fall. Sign up to be the first to hear about dates, enrollment, and our new space.',
+    ],
+  },
 ];
 ---
 
 <section class="fc-faq" id="faq" aria-labelledby="faq-title">
-  <p class="eyebrow">FAQ</p>
-  <h2 id="faq-title" class="headline-xl">Questions, answered.</h2>
+  <h2 id="faq-title" class="headline-xl">FAQ</h2>
 
   <div class="list">
     {
-      FAQS.map((q) => (
+      FAQS.map(({ q, a }) => (
         <details>
           <summary>
             <span>{q}</span>
             <span class="mark" aria-hidden="true">+</span>
           </summary>
-          <p class="desc">&lt;Answer &mdash; plain, reassuring, parent-voiced. Lauren to write.&gt;</p>
+          <div class="desc">
+            {a.map((para) => (
+              <p>{para}</p>
+            ))}
+          </div>
         </details>
       ))
     }
@@ -43,20 +81,14 @@ const FAQS = [
     padding: var(--space-7) 48px;
   }
 
-  .eyebrow {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    color: var(--stand-red);
-  }
-
   .headline-xl {
     margin: 0 0 var(--space-2);
-    font-family: var(--font-sans);
-    font-weight: 900;
+    font-family: var(--font-display);
+    font-weight: 400;
     font-size: clamp(30px, 3.6vw, 52px);
     line-height: 1.04;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .list {
@@ -110,6 +142,14 @@ const FAQS = [
     margin: 0;
     padding: 0 0 22px;
     max-width: 62ch;
+  }
+
+  details .desc p {
+    margin: 0;
+  }
+
+  details .desc p + p {
+    margin-top: 12px;
   }
 
   @media (max-width: 768px) {
