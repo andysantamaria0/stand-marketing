@@ -1,0 +1,101 @@
+---
+// Pink kid collage (Figma frame "4") — hot-pink band, kid cutouts bleeding
+// off the top and side edges. Replaces the blue/green striped "what a kid
+// walks away with" section; the copy was cut per the Aug 19 review, leaving
+// the collage as a purely visual beat. Cutouts are positioned in % of the
+// fixed-aspect .kids frame (same technique as BrandCollage) so the collage
+// scales as one piece.
+---
+
+<section class="fc-walkaway" aria-label="STAND kids">
+  <div class="kids" aria-hidden="true">
+    <img
+      class="boy"
+      style="--drift: 40px"
+      src="/brand/cutout-boy-tote.png"
+      alt=""
+      loading="lazy"
+      width="579"
+      height="1022"
+    />
+    <img
+      class="girl"
+      style="--drift: 90px"
+      src="/brand/cutout-girl-bracelets.png"
+      alt=""
+      loading="lazy"
+      width="823"
+      height="1039"
+    />
+    <img
+      class="pair"
+      style="--drift: 140px"
+      src="/brand/cutout-kids-dancing.png"
+      alt=""
+      loading="lazy"
+      width="1014"
+      height="1039"
+    />
+  </div>
+</section>
+
+<style>
+  .fc-walkaway {
+    position: relative;
+    background: var(--stand-green);
+  }
+
+  /* Shorter than the comp's 1437×1022 frame — with the copy cut, the band
+     ends just under the cutouts instead of trailing empty pink. */
+  .kids {
+    position: relative;
+    aspect-ratio: 1437 / 860;
+    overflow: hidden;
+  }
+
+  .kids img {
+    position: absolute;
+    height: auto;
+  }
+
+  /* Scroll-scrubbed drift — each kid settles at a different speed as the
+     band scrolls in (view-timeline; reverses on scroll-up). Browsers
+     without support render static. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .kids img {
+        animation: fc-wa-drift linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 45%;
+      }
+    }
+  }
+
+  @keyframes fc-wa-drift {
+    from {
+      transform: translateY(var(--drift, 60px));
+    }
+
+    to {
+      transform: none;
+    }
+  }
+
+  .boy {
+    left: -4%;
+    top: -3%;
+    width: 42%;
+  }
+
+  .girl {
+    left: 13%;
+    top: 3%;
+    width: 57%;
+  }
+
+  .pair {
+    left: 42%;
+    top: -13%;
+    width: 58%;
+  }
+</style>

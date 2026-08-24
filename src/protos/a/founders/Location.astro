@@ -1,0 +1,238 @@
+---
+// Location — Proto A: pinned step-swap (Aug 24 review). The whole section
+// pins as a stage for a ~3-viewport scroll track; the rail holds still while
+// the three program beats SWAP in place — the outgoing one lifts away, the
+// next rises in — and a tick stepper marks progress. Sibling of C's
+// treatment: C scrolls a river past a pinned rail, A holds the stage still
+// and changes the scene.
+import SignupButton from './SignupButton.astro';
+
+const BEATS = [
+  'For eight weeks, kids ages 8–13 will take an idea and build it into a real business.',
+  'They can come in knowing what they want to make. Or with no idea at all. They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.',
+  'They’ll meet in person and move through the full process of taking an idea and turning it into a real business — with hands-on mentorship, a community of other kids building alongside them, and digital tools that support them along the way.',
+];
+---
+
+<section class="fc-location" id="location" aria-labelledby="location-title">
+  <div class="track">
+    <div class="stage">
+      <header class="rail">
+        <h2 id="location-title" data-rv style="--rvi: 0">
+          This fall, we&rsquo;re opening our first STAND location in West&nbsp;<span class="keep-case">LA</span>!
+        </h2>
+        <div class="cta" data-rv style="--rvi: 1">
+          <SignupButton label="get first access" />
+        </div>
+      </header>
+
+      <div class="swap">
+        <div class="beatstack">
+          {
+            BEATS.map((text, i) => (
+              <p class="beat" data-i={i}>
+                {text}
+              </p>
+            ))
+          }
+        </div>
+        <div class="ticks" aria-hidden="true">
+          {BEATS.map(() => <span class="tick" />)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-location {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  /* Static fallback (no JS): a normal split section, all beats stacked and
+     visible. .sw-ready arms the pin + swap. */
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 5vw, 72px);
+    align-items: center;
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+  }
+
+  /* The scroll runway: tall track, sticky full-viewport stage inside it.
+     Scroll position within the track drives which beat is on stage. */
+  .sw-ready .track {
+    height: 320svh;
+  }
+
+  .sw-ready .stage {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+    padding-top: 0;
+    padding-bottom: 0;
+    box-sizing: border-box;
+  }
+
+  .rail {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 1.7vw, 24px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+  }
+
+  /* "LA" stays caps inside the lowercased Pie Pie headline. */
+  h2 .keep-case {
+    text-transform: none;
+  }
+
+  .cta {
+    margin-top: clamp(8px, 1vw, 16px);
+  }
+
+  .cta :global(.signup) {
+    min-width: 0;
+    align-self: flex-start;
+  }
+
+  .swap {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 2.2vw, 32px);
+  }
+
+  .beatstack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.5vw, 22px);
+  }
+
+  /* Armed: beats occupy the same grid cell and trade places. */
+  .sw-ready .beatstack {
+    display: grid;
+  }
+
+  .sw-ready .beat {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.45s ease;
+  }
+
+  /* The one on stage. */
+  .sw-ready .beat.is-current {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  /* Already played — lifts up and away instead of sinking back. */
+  .sw-ready .beat.is-before {
+    transform: translateY(-28px);
+  }
+
+  .beat {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  /* Receipt-tick stepper — hidden in the static fallback. */
+  .ticks {
+    display: none;
+  }
+
+  .sw-ready .ticks {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tick {
+    width: 34px;
+    height: 4px;
+    background: rgb(0 0 0 / 15%);
+    transition: background-color 0.3s ease;
+  }
+
+  .tick.on {
+    background: var(--stand-red);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sw-ready .beat {
+      transition: none !important;
+      filter: none !important;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .stage {
+      grid-template-columns: 1fr;
+      align-items: start;
+      align-content: center;
+      row-gap: 32px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .sw-ready .track {
+      height: 280svh;
+    }
+  }
+</style>
+
+<script>
+  // Scroll progress through the track picks the beat on stage: thirds of the
+  // runway map to beats 0/1/2. Runs on the scroll event (Lenis eases the
+  // real scroll position, so this ticks on the same rAF cadence as the
+  // smoothing) — the work per tick is one getBoundingClientRect and, only on
+  // step change, a few class toggles.
+  const section = document.querySelector('.fc-location');
+  const track = document.querySelector('.fc-location .track');
+  const beats = Array.from(document.querySelectorAll('.fc-location .beat'));
+  const ticks = Array.from(document.querySelectorAll('.fc-location .tick'));
+
+  if (section && track && beats.length) {
+    section.classList.add('sw-ready');
+    let current = -1;
+
+    const onScroll = () => {
+      const rect = track.getBoundingClientRect();
+      const runway = track.offsetHeight - window.innerHeight;
+      const progressed = Math.min(Math.max(-rect.top, 0), runway);
+      const p = runway > 0 ? progressed / runway : 0;
+      const idx = Math.min(beats.length - 1, Math.floor(p * beats.length));
+      if (idx === current) return;
+      current = idx;
+      beats.forEach((b, i) => {
+        b.classList.toggle('is-current', i === idx);
+        b.classList.toggle('is-before', i < idx);
+      });
+      ticks.forEach((t, i) => t.classList.toggle('on', i <= idx));
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+</script>
