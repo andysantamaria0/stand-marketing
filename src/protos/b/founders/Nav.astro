@@ -145,9 +145,9 @@ const TABS = [
   // cadence as the smoothing) — four getBoundingClientRect calls per frame
   // is well under a millisecond.
   const nav = document.querySelector<HTMLElement>('.fc-nav');
-  const creamSections = document.querySelectorAll(
-    '.fc-newspace, .fc-location, .fc-faq',
-  );
+  // Location is a green slide in this proto — only the About slide and FAQ
+  // ride on cream.
+  const creamSections = document.querySelectorAll('.fc-newspace, .fc-faq');
   const onScroll = () => {
     if (!nav) return;
     const probe = nav.offsetHeight;

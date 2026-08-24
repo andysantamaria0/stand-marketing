@@ -10,7 +10,7 @@ import SignupButton from './SignupButton.astro';
   <div class="grid">
     <header class="rail">
       <h2 id="location-title" data-rv style="--rvi: 0">
-        This fall, we&rsquo;re opening our first STAND location in West&nbsp;LA!
+        This fall, we&rsquo;re opening our first STAND location in West&nbsp;<span class="keep-case">LA</span>!
       </h2>
       <div class="cta" data-rv style="--rvi: 1">
         <SignupButton label="get first access" />
@@ -38,8 +38,8 @@ import SignupButton from './SignupButton.astro';
 
 <style>
   .fc-location {
-    background: var(--stand-cream);
-    color: var(--stand-black);
+    background: var(--stand-green);
+    color: var(--stand-white);
   }
 
   .grid {
@@ -70,6 +70,11 @@ import SignupButton from './SignupButton.astro';
     line-height: 1.04;
     letter-spacing: 0.02em;
     text-transform: lowercase;
+  }
+
+  /* "LA" stays caps inside the lowercased Pie Pie headline. */
+  h2 .keep-case {
+    text-transform: none;
   }
 
 
