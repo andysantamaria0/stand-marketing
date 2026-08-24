@@ -1,0 +1,104 @@
+---
+// Closing enrollment CTA — red ground, big cream stand wordmark, paper-tag
+// sign-up, scarcity line, and the Instagram / TikTok marks as the page's
+// sign-off (this section doubles as the footer). The wordmark replaced the "Build your own thing.
+// For Real." headline (Aug 20 review: the kid-moment section already says
+// it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
+// as a CSS mask, same technique as the nav and manifesto.
+import SignupButton from './SignupButton.astro';
+---
+
+<section class="fc-closing" aria-label="Sign up">
+  <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
+  <div class="cta-wrap" data-rv style="--rvi: 1">
+    <SignupButton />
+  </div>
+  <p class="seats" data-rv style="--rvi: 2">Up to 20 seats this fall. First come.</p>
+
+  <div class="social" data-rv style="--rvi: 3">
+    <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+        <circle cx="12" cy="12" r="4"></circle>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </a>
+    <a href="https://www.tiktok.com/@buildwithstand" aria-label="TikTok">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+        <path d="M16 3v3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2V3h3z"></path>
+      </svg>
+    </a>
+  </div>
+
+  <a class="email" href="mailto:hello@standkids.com" data-rv style="--rvi: 4">hello@standkids.com</a>
+</section>
+
+<style>
+  .fc-closing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    /* Tight top/bottom — the band sits at ~2/3 of its old height. */
+    padding: var(--space-6) var(--space-3) var(--space-3);
+    background: var(--stand-red);
+    color: var(--stand-cream);
+  }
+
+  .wordmark {
+    width: min(520px, 70%);
+    aspect-ratio: 199.29 / 47.33;
+    background: var(--stand-cream);
+    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
+    mask: url('/brand/logo.svg') no-repeat center / contain;
+  }
+
+  /* Keeps the button centered like its old direct-child self. */
+  .cta-wrap {
+    display: flex;
+    justify-content: center;
+    align-self: stretch;
+  }
+
+  .seats {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+  }
+
+  /* Cream marks on the red ground; 32px glyphs padded to 44px targets. */
+  .social {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: var(--space-2);
+  }
+
+  .social a {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--stand-cream);
+  }
+
+  .email {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--stand-cream);
+    text-underline-offset: 3px;
+  }
+
+  .email:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .fc-closing {
+      padding: var(--space-5) var(--space-3) var(--space-2);
+    }
+  }
+</style>

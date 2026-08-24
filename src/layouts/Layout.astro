@@ -33,7 +33,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.c
 // Belt-and-braces: the matching Klaviyo dashboard change (exclude /enroll from
 // onsite form targeting) should land too, so a future enrollment URL does not
 // re-arm the same trap. This guard is what makes launch not depend on it.
-const skipKlaviyoOnsite = Astro.url.pathname.replace(/\/+$/, '') === '/enroll';
+// Also skipped on the design-proto pages (/proto, /proto/a…c): the popup
+// would fire inside every compare-deck iframe and pollute the subscriber
+// list with internal design reviews.
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, '');
+const skipKlaviyoOnsite =
+  normalizedPath === '/enroll' || normalizedPath === '/proto' || normalizedPath.startsWith('/proto/');
 
 // Klaviyo's own init shim, verbatim. It lives here as a string and is emitted
 // with `set:html` because Astro renders the children of an `is:inline` script

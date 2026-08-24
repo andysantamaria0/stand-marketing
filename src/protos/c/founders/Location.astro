@@ -1,0 +1,121 @@
+---
+// Location — Proto C: Proto B's split layout on a green ground (Aug 24
+// review). Sticky headline rail at left (white PiePie announcement, post-it
+// lede, CTA); the program copy at right as one continuous paragraph.
+// Copy per the Aug 24 web-copy doc.
+// Chunks use the page-level data-rv reveal (armed by the index script).
+import SignupButton from './SignupButton.astro';
+---
+
+<section class="fc-location" id="location" aria-labelledby="location-title">
+  <div class="grid">
+    <header class="rail">
+      <h2 id="location-title" data-rv style="--rvi: 0">
+        STAND is coming to Los&nbsp;Angeles
+      </h2>
+      <p class="lede" data-rv style="--rvi: 1">
+        This fall, we&rsquo;re opening our first STAND location in West&nbsp;LA!
+      </p>
+      <div class="cta" data-rv style="--rvi: 2">
+        <SignupButton label="get first access" />
+      </div>
+    </header>
+
+    <div class="steps">
+      <div class="beats" data-rv style="--rvi: 3">
+        <p>For eight weeks, kids ages 8&ndash;13 will take an idea and build it into a real business.</p>
+        <p>They can come in knowing what they want to make. Or with no idea at all.</p>
+        <p>They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.</p>
+        <p>Along the way, they&rsquo;ll figure things out by doing them. Make decisions. Be creative. Talk to people. Understand money. Use the same tools people use to build businesses every day.</p>
+        <p>Because some things you only learn by actually doing them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-location {
+    background: var(--stand-green);
+    color: var(--stand-white);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 5vw, 72px);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+  }
+
+  /* The rail rides along while the beats scroll — classic editorial split.
+     top clears the fixed nav. */
+  .rail {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 1.7vw, 24px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+  }
+
+  .lede {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    font-size: clamp(20px, 2.2vw, 30px);
+    line-height: 1.3;
+    /* Post-it yellow — the warm accent on green (red disappears here). */
+    color: var(--stand-postit);
+  }
+
+  .cta {
+    margin-top: clamp(8px, 1vw, 16px);
+  }
+
+  /* The rail's button shouldn't span the whole column like the shared
+     min-width wants. */
+  .cta :global(.signup) {
+    min-width: 0;
+    align-self: flex-start;
+  }
+
+  .beats {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.5vw, 22px);
+  }
+
+  .beats p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .rail {
+      position: static;
+    }
+  }
+</style>
