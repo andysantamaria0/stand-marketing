@@ -1,16 +1,11 @@
 ---
-// Proto compare deck — renders /proto/a, /proto/b, /proto/c side by side in
-// scaled iframes (A reborn Aug 24 as the pinned step-swap Location variant).
-// Each pane is the REAL page at true device width (1440 or 390 CSS px),
-// scaled down with a transform so media queries and fluid type behave
-// exactly as production would — this is not a squished responsive view.
+// Proto viewer — Proto A won the Aug 24 A/B/C review (B and C retired;
+// recover them from git history). Single pane rendering the REAL page in a
+// scaled iframe at true device width (1440 or 390 CSS px) so media queries
+// and fluid type behave exactly as production would.
 // Standalone document on purpose: no Layout means no analytics, font preloads,
-// or Klaviyo in the chrome; the iframes carry the real thing.
-const VARIANTS = [
-  { id: 'a', label: 'Proto A', href: '/proto/a' },
-  { id: 'b', label: 'Proto B', href: '/proto/b' },
-  { id: 'c', label: 'Proto C', href: '/proto/c' },
-];
+// or Klaviyo in the chrome; the iframe carries the real thing.
+const VARIANTS = [{ id: 'a', label: 'Proto A', href: '/proto/a' }];
 ---
 
 <!doctype html>
@@ -19,7 +14,7 @@ const VARIANTS = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Proto A / B / C — compare</title>
+    <title>Proto A — viewer</title>
   </head>
   <body>
     <header class="bar">
@@ -120,7 +115,7 @@ const VARIANTS = [
       .deck {
         flex: 1;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
         gap: 10px;
         padding: 10px;
         min-height: 0;
