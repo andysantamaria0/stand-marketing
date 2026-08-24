@@ -131,11 +131,34 @@ const WEEKS = [
     text-wrap: pretty;
   }
 
-  /* Rule under the intro, then the scannable week table. */
+  /* The scannable week table lives in its own dashed box. Hand-drawn dash
+     rhythm (10px dash / 6px gap) via repeating gradients — border: dashed
+     cannot control dash length. */
   .weeks {
     margin: clamp(18px, 2vw, 28px) 0 0;
-    padding-top: clamp(18px, 2vw, 28px);
-    border-top: 2px solid var(--stand-black);
+    padding: clamp(18px, 2vw, 28px) clamp(20px, 2.2vw, 32px);
+    --dash-h: repeating-linear-gradient(
+      to right,
+      var(--stand-black) 0 10px,
+      transparent 10px 16px
+    );
+    --dash-v: repeating-linear-gradient(
+      to bottom,
+      var(--stand-black) 0 10px,
+      transparent 10px 16px
+    );
+    background-image: var(--dash-h), var(--dash-h), var(--dash-v), var(--dash-v);
+    background-repeat: no-repeat;
+    background-position:
+      left top,
+      left bottom,
+      left top,
+      right top;
+    background-size:
+      100% 2px,
+      100% 2px,
+      2px 100%,
+      2px 100%;
     display: flex;
     flex-direction: column;
     gap: clamp(14px, 1.5vw, 22px);
