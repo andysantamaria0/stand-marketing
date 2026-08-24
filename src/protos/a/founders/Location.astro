@@ -59,18 +59,19 @@ const BEATS = [
     padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
   }
 
-  /* The scroll runway: tall track, sticky full-viewport stage inside it.
-     Scroll position within the track drives which beat is on stage. */
+  /* The scroll runway: tall track, sticky stage inside it. Scroll position
+     within the track drives which beat is on stage. The stage is
+     content-height pinned just under the nav — a full-viewport centered
+     stage read as acres of dead cream (Aug 24 review). */
   .sw-ready .track {
-    height: 320svh;
+    height: 280svh;
   }
 
   .sw-ready .stage {
     position: sticky;
     top: 0;
-    min-height: 100svh;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: clamp(110px, 14vh, 160px);
+    padding-bottom: clamp(40px, 6vh, 72px);
     box-sizing: border-box;
   }
 
@@ -172,7 +173,7 @@ const BEATS = [
     }
 
     .sw-ready .track {
-      height: 280svh;
+      height: 240svh;
     }
   }
 </style>
