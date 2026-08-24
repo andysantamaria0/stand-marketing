@@ -28,15 +28,6 @@
       height="1039"
     />
     <img
-      class="seatedboy"
-      style="--drift: 140px"
-      src="/brand/cutout-boy-seated.png"
-      alt=""
-      loading="lazy"
-      width="887"
-      height="1108"
-    />
-    <img
       class="poloboy"
       style="--drift: 110px"
       src="/brand/cutout-boy-football.png"
@@ -45,7 +36,18 @@
       width="887"
       height="1108"
     />
-  </div>
+  <!-- Outside .kids on purpose: the frame clips at the section edge, but
+       his sneaker should ride ON the seam — he overhangs into the next
+       section instead of being cut by it. -->
+  <img
+    class="seatedboy"
+    style="--drift: 140px"
+    src="/brand/cutout-boy-seated.png"
+    alt=""
+    loading="lazy"
+    width="887"
+    height="1108"
+  />
 </section>
 
 <style>
@@ -72,7 +74,8 @@
      without support render static. */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .kids img {
+      .kids img,
+      .seatedboy {
         animation: fc-wa-drift linear both;
         animation-timeline: view();
         animation-range: entry 0% cover 45%;
@@ -103,12 +106,13 @@
   }
 
   .seatedboy {
+    position: absolute;
     left: 21%;
-    top: auto;
-    /* Cancels the canvas padding under the boy plus a bit more — his jeans
-       sit right on the section floor. */
-    bottom: -22%;
+    /* Overhangs the section seam so the sneaker sits ON the border. */
+    bottom: -20%;
     width: 51%;
+    height: auto;
+    z-index: 2;
   }
 
   .poloboy {
