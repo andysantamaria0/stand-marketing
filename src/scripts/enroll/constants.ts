@@ -117,13 +117,13 @@ export const COPY = {
   success: {
     /** Empty body = the island hides the line; the headline says it all. */
     open: {
-      headline: "Good, you're on the list!",
+      headline: "You're on the list!",
       body: "",
     },
   },
 
   details: {
-    intro: "A few optional questions for you, you can skip no hard feelings!",
+    intro: "Few more quick questions for you!",
     locationLabel: "Where in LA works best for you?",
     locationPlaceholder: "Neighborhood or area",
     timeLabel: "What time of day usually works?",
