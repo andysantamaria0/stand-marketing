@@ -1,0 +1,37 @@
+---
+// Review page — the three Location-section ideas for Proto C, stacked with
+// labels (Aug 24). Pick one and it replaces Location.astro in the C fork;
+// this page and the unused options get deleted after the call.
+// No reveal script on purpose: every option renders static and fully
+// visible for side-by-side judging.
+import Layout from '@/layouts/Layout.astro';
+import LocationZine from '@/protos/c/founders/LocationZine.astro';
+import LocationCards from '@/protos/c/founders/LocationCards.astro';
+import LocationStepper from '@/protos/c/founders/LocationStepper.astro';
+---
+
+<Layout noindex title="Proto C — Location options">
+  <main class="founders-page">
+    <div class="opt-label">Option 1 — zine grid: ruled rows + micro-headers</div>
+    <LocationZine />
+
+    <div class="opt-label">Option 2 — card stagger: brutalist white cards</div>
+    <LocationCards />
+
+    <div class="opt-label">Option 3 — centered hero + numbered stepper</div>
+    <LocationStepper />
+  </main>
+</Layout>
+
+<style>
+  .opt-label {
+    padding: 14px 24px;
+    background: var(--stand-black);
+    color: var(--stand-cream);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>

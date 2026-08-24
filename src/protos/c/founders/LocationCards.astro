@@ -1,0 +1,132 @@
+---
+// Location option 2 — "card stagger" (Aug 24 review): massive headline at
+// left, the three beats as brutalist white cards at right — hard black
+// shadows, slight offsets and tilts so the stack reads organic and tactile.
+import SignupButton from './SignupButton.astro';
+
+const BEATS = [
+  'For eight weeks, kids ages 8–13 will take an idea and build it into a real business.',
+  'They can come in knowing what they want to make. Or with no idea at all. They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.',
+  'They’ll meet in person and move through the full process of taking an idea and turning it into a real business — with hands-on mentorship, a community of other kids building alongside them, and digital tools that support them along the way.',
+];
+---
+
+<section class="loc-cards" aria-labelledby="cards-title">
+  <div class="grid">
+    <header class="rail">
+      <h2 id="cards-title">
+        This fall, we&rsquo;re opening our first STAND location in West&nbsp;<span class="keep-case">LA</span>!
+      </h2>
+      <div class="cta">
+        <SignupButton label="get first access" />
+      </div>
+    </header>
+
+    <div class="stack">
+      {
+        BEATS.map((text) => (
+          <article class="card">
+            <p>{text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .loc-cards {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 5vw, 72px);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+  }
+
+  .rail {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 2.2vw, 32px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 3.6vw, 52px);
+    line-height: 1.04;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+  }
+
+  h2 .keep-case {
+    text-transform: none;
+  }
+
+  .cta :global(.signup) {
+    min-width: 0;
+    align-self: flex-start;
+  }
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 2.8vw, 40px);
+  }
+
+  /* Brutalist paper: white face, 2px border, hard black lift. Each card
+     sits a little off-axis so the stack reads hand-placed, not templated. */
+  .card {
+    padding: clamp(20px, 2.2vw, 32px);
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    box-shadow: 8px 8px 0 var(--stand-black);
+  }
+
+  .card:nth-child(1) {
+    transform: rotate(-0.6deg);
+  }
+
+  .card:nth-child(2) {
+    transform: translateX(clamp(12px, 2.6vw, 40px)) rotate(0.5deg);
+  }
+
+  .card:nth-child(3) {
+    transform: translateX(-6px) rotate(-0.4deg);
+  }
+
+  .card p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.7vw, 22px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .rail {
+      position: static;
+    }
+
+    .card:nth-child(2) {
+      transform: translateX(8px) rotate(0.5deg);
+    }
+  }
+</style>
