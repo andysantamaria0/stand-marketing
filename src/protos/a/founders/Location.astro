@@ -34,14 +34,16 @@ const WEEKS = [
       </p>
 
       <dl class="weeks" data-rv style="--rvi: 4">
-        {
-          WEEKS.map((w) => (
-            <div class="week">
-              <dt>{w.label}</dt>
-              <dd>{w.text}</dd>
-            </div>
-          ))
-        }
+        <div class="rows">
+          {
+            WEEKS.map((w) => (
+              <div class="week">
+                <dt>{w.label}</dt>
+                <dd>{w.text}</dd>
+              </div>
+            ))
+          }
+        </div>
       </dl>
 
       <p class="para" data-rv style="--rvi: 5">
@@ -147,6 +149,13 @@ const WEEKS = [
       left top,
       left bottom;
     background-size: 100% 0.5px;
+  }
+
+  /* The row block centers within the ruled box; the text inside keeps its
+     left justification. fit-content + auto margins do the centering. */
+  .weeks .rows {
+    width: fit-content;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: clamp(14px, 1.5vw, 22px);
@@ -154,7 +163,7 @@ const WEEKS = [
 
   .week {
     display: grid;
-    grid-template-columns: clamp(96px, 10vw, 140px) minmax(0, 1fr);
+    grid-template-columns: clamp(96px, 10vw, 140px) auto;
     gap: clamp(16px, 2vw, 32px);
     align-items: baseline;
   }
@@ -170,6 +179,7 @@ const WEEKS = [
 
   dd {
     margin: 0;
+    max-width: 28ch;
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: clamp(17px, 1.8vw, 24px);
