@@ -1,9 +1,16 @@
 ---
-// Location — Proto C: same split layout as B. Sticky rail at left (Pie Pie West-LA
-// announcement + CTA); the program copy at right as spaced beats.
-// Copy per the Aug 24 web-copy doc.
-// Chunks use the page-level data-rv reveal (armed by the index script).
+// Location — Proto C: scrollytelling split (Aug 24 review). The rail (Pie Pie
+// West-LA announcement + CTA) stays pinned while the right column scrolls;
+// each program beat owns its own scroll slot and rises in as it reaches the
+// reading band, with off-band beats dimmed so one paragraph reads at a time.
+// B keeps the static split — this scroll behavior is C's divergence.
 import SignupButton from './SignupButton.astro';
+
+const BEATS = [
+  'For eight weeks, kids ages 8–13 will take an idea and build it into a real business.',
+  'They can come in knowing what they want to make. Or with no idea at all. They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.',
+  'They’ll meet in person and move through the full process of taking an idea and turning it into a real business — with hands-on mentorship, a community of other kids building alongside them, and digital tools that support them along the way.',
+];
 ---
 
 <section class="fc-location" id="location" aria-labelledby="location-title">
@@ -17,21 +24,14 @@ import SignupButton from './SignupButton.astro';
       </div>
     </header>
 
-    <div class="steps">
-      <div class="beats" data-rv style="--rvi: 3">
-        <p>For eight weeks, kids ages 8&ndash;13 will take an idea and build it into a real business.</p>
-        <p>
-          They can come in knowing what they want to make. Or with no idea at
-          all. They build a brand, a product, a plan and a pitch they deliver
-          in front of a room at the end of the semester.
-        </p>
-        <p>
-          They&rsquo;ll meet in person and move through the full process of
-          taking an idea and turning it into a real business &mdash; with
-          hands-on mentorship, a community of other kids building alongside
-          them, and digital tools that support them along the way.
-        </p>
-      </div>
+    <div class="beats">
+      {
+        BEATS.map((text) => (
+          <div class="beat">
+            <p>{text}</p>
+          </div>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -51,11 +51,10 @@ import SignupButton from './SignupButton.astro';
     padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
   }
 
-  /* The rail rides along while the beats scroll — classic editorial split.
-     top clears the fixed nav. */
+  /* The rail holds its position for the whole scroll of the beats column. */
   .rail {
     position: sticky;
-    top: 96px;
+    top: clamp(96px, 24vh, 220px);
     align-self: start;
     display: flex;
     flex-direction: column;
@@ -77,25 +76,24 @@ import SignupButton from './SignupButton.astro';
     text-transform: none;
   }
 
-
   .cta {
     margin-top: clamp(8px, 1vw, 16px);
   }
 
-  /* The rail's button shouldn't span the whole column like the shared
-     min-width wants. */
   .cta :global(.signup) {
     min-width: 0;
     align-self: flex-start;
   }
 
-  .beats {
+  /* Each beat owns a viewport-scaled scroll slot — that spacing is what makes
+     "one paragraph at a time" true; the observer only directs attention. */
+  .beat {
+    min-height: 58svh;
     display: flex;
-    flex-direction: column;
-    gap: clamp(14px, 1.5vw, 22px);
+    align-items: center;
   }
 
-  .beats p {
+  .beat p {
     margin: 0;
     font-family: var(--font-sans);
     font-weight: 400;
@@ -103,6 +101,38 @@ import SignupButton from './SignupButton.astro';
     line-height: 1.5;
     letter-spacing: -0.01em;
     text-wrap: pretty;
+  }
+
+  /* Armed only when JS runs (.sc-ready) — no JS renders everything static.
+     A beat rises in once (.is-in), then full contrast belongs to whichever
+     beat sits in the reading band (.is-active); the rest hold at a whisper. */
+  .fc-location.sc-ready .beat {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(2px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.45s ease;
+  }
+
+  .fc-location.sc-ready .beat.is-in {
+    opacity: 0.16;
+    transform: none;
+    filter: blur(0);
+  }
+
+  .fc-location.sc-ready .beat.is-active {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-location.sc-ready .beat {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      transition: none !important;
+    }
   }
 
   @media (max-width: 900px) {
@@ -115,5 +145,49 @@ import SignupButton from './SignupButton.astro';
     .rail {
       position: static;
     }
+
+    .beat {
+      min-height: 48svh;
+    }
   }
 </style>
+
+<script>
+  // Two observers, two jobs: `enter` fires once per beat for the rise-in;
+  // `focus` toggles live as beats cross a center band (rootMargin shaves 35%
+  // off the top and bottom of the viewport, so the band is the middle ~30%),
+  // which is what keeps exactly one paragraph at full contrast. Works under
+  // Lenis because Lenis eases the REAL scroll position — IO sees it natively.
+  const section = document.querySelector('.fc-location');
+  const beats = Array.from(document.querySelectorAll('.fc-location .beat'));
+
+  if (section && beats.length && 'IntersectionObserver' in window) {
+    section.classList.add('sc-ready');
+
+    const enter = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            enter.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+
+    const focus = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          e.target.classList.toggle('is-active', e.isIntersecting);
+        });
+      },
+      { rootMargin: '-35% 0px -35% 0px' },
+    );
+
+    beats.forEach((b) => {
+      enter.observe(b);
+      focus.observe(b);
+    });
+  }
+</script>
