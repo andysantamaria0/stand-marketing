@@ -1,7 +1,6 @@
 ---
-// Location — Proto B: split layout. Sticky headline rail at left
-// (announcement, red lede, CTA); the program copy at right as one continuous
-// paragraph, uniform size (Aug 24 review: no per-beat line breaks).
+// Location — Proto B: split layout. Sticky rail at left (Pie Pie West-LA
+// announcement + CTA); the program copy at right as spaced beats.
 // Copy per the Aug 24 web-copy doc.
 // Chunks use the page-level data-rv reveal (armed by the index script).
 import SignupButton from './SignupButton.astro';
@@ -11,12 +10,9 @@ import SignupButton from './SignupButton.astro';
   <div class="grid">
     <header class="rail">
       <h2 id="location-title" data-rv style="--rvi: 0">
-        STAND is coming to Los&nbsp;Angeles
-      </h2>
-      <p class="lede" data-rv style="--rvi: 1">
         This fall, we&rsquo;re opening our first STAND location in West&nbsp;LA!
-      </p>
-      <div class="cta" data-rv style="--rvi: 2">
+      </h2>
+      <div class="cta" data-rv style="--rvi: 1">
         <SignupButton label="get first access" />
       </div>
     </header>
@@ -76,15 +72,6 @@ import SignupButton from './SignupButton.astro';
     text-transform: lowercase;
   }
 
-  .lede {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    font-size: clamp(20px, 2.2vw, 30px);
-    line-height: 1.3;
-    color: var(--stand-red);
-  }
 
   .cta {
     margin-top: clamp(8px, 1vw, 16px);
