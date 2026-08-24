@@ -1,42 +1,57 @@
 ---
-// Location — Proto A: pinned step-swap (Aug 24 review). The whole section
-// pins as a stage for a ~3-viewport scroll track; the rail holds still while
-// the three program beats SWAP in place — the outgoing one lifts away, the
-// next rises in. (Stepper dials tried and cut per review.) Sibling of C's
-// treatment: C scrolls a river past a pinned rail, A holds the stage still
-// and changes the scene.
+// Location — shared (A/B/C): "week-by-week, scannable" (comp 1E, Aug 24). Heavy
+// sans announcement + red lede + CTA in the left rail; right column runs the
+// eight-week intro over a rule, the week table with red week labels, the
+// mentorship paragraph, and the learn-by-doing closer.
+// Chunks use the page-level data-rv reveal (armed by the index script).
 import SignupButton from './SignupButton.astro';
 
-const BEATS = [
-  'For eight weeks, kids ages 8–13 will take an idea and build it into a real business.',
-  'They can come in knowing what they want to make. Or with no idea at all. They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.',
-  'They’ll meet in person and move through the full process of taking an idea and turning it into a real business — with hands-on mentorship, a community of other kids building alongside them, and digital tools that support them along the way.',
+const WEEKS = [
+  { label: 'Week 1–2', text: 'Find the idea.' },
+  { label: 'Week 3–7', text: 'Build the brand, the product and the plan.' },
+  { label: 'Week 8', text: 'Pitch it live in front of a room.' },
 ];
 ---
 
 <section class="fc-location" id="location" aria-labelledby="location-title">
-  <div class="track">
-    <div class="stage">
-      <header class="rail">
-        <h2 id="location-title" data-rv style="--rvi: 0">
-          This fall, we&rsquo;re opening our first STAND location in West&nbsp;<span class="keep-case">LA</span>!
-        </h2>
-        <div class="cta" data-rv style="--rvi: 1">
-          <SignupButton label="get first access" />
-        </div>
-      </header>
-
-      <div class="swap">
-        <div class="beatstack">
-          {
-            BEATS.map((text, i) => (
-              <p class="beat" data-i={i}>
-                {text}
-              </p>
-            ))
-          }
-        </div>
+  <div class="grid">
+    <header class="rail">
+      <h2 id="location-title" data-rv style="--rvi: 0">
+        <span class="keep-case">STAND</span> is coming to Los&nbsp;Angeles!
+      </h2>
+      <p class="lede" data-rv style="--rvi: 1">
+        Our first location opens this fall in West&nbsp;LA.
+      </p>
+      <div class="cta" data-rv style="--rvi: 2">
+        <SignupButton label="get first access" />
       </div>
+    </header>
+
+    <div class="detail">
+      <p class="intro" data-rv style="--rvi: 3">
+        For eight weeks, kids ages 8&ndash;13 take an idea and turn it into a
+        real business.
+      </p>
+
+      <dl class="weeks" data-rv style="--rvi: 4">
+        {
+          WEEKS.map((w) => (
+            <div class="week">
+              <dt>{w.label}</dt>
+              <dd>{w.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="para" data-rv style="--rvi: 5">
+        Along the way, they&rsquo;ll get hands-on mentorship, build alongside
+        other kids, and use digital tools to help bring their ideas to life.
+      </p>
+
+      <p class="para" data-rv style="--rvi: 6">
+        Because some things you only learn by doing them.
+      </p>
     </div>
   </div>
 </section>
@@ -47,53 +62,48 @@ const BEATS = [
     color: var(--stand-black);
   }
 
-  /* Static fallback (no JS): a normal split section, all beats stacked and
-     visible. .sw-ready arms the pin + swap. */
-  .stage {
+  .grid {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     gap: clamp(40px, 5vw, 72px);
-    align-items: center;
     max-width: calc(1132px + 2 * 48px);
     margin: 0 auto;
     padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
   }
 
-  /* The scroll runway: tall track, sticky stage inside it. Scroll position
-     within the track drives which beat is on stage. The stage is
-     content-height pinned just under the nav — a full-viewport centered
-     stage read as acres of dead cream (Aug 24 review). */
-  .sw-ready .track {
-    height: 280svh;
-  }
-
-  .sw-ready .stage {
-    position: sticky;
-    top: 0;
-    padding-top: clamp(110px, 14vh, 160px);
-    padding-bottom: clamp(40px, 6vh, 72px);
-    box-sizing: border-box;
-  }
-
   .rail {
+    position: sticky;
+    top: 96px;
+    align-self: start;
     display: flex;
     flex-direction: column;
     gap: clamp(16px, 1.7vw, 24px);
   }
 
+  /* Pie Pie announcement (Aug 24 review), lowercase like the About stack. */
   h2 {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(30px, 3.6vw, 52px);
-    line-height: 1.04;
+    font-size: clamp(32px, 3.8vw, 56px);
+    line-height: 1.02;
     letter-spacing: 0.02em;
     text-transform: lowercase;
   }
 
-  /* "LA" stays caps inside the lowercased Pie Pie headline. */
+  /* "STAND" and "LA" keep caps inside the lowercased headline. */
   h2 .keep-case {
     text-transform: none;
+  }
+
+  .lede {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--stand-red);
   }
 
   .cta {
@@ -105,109 +115,71 @@ const BEATS = [
     align-self: flex-start;
   }
 
-  .swap {
+  .detail {
     display: flex;
     flex-direction: column;
-    gap: clamp(20px, 2.2vw, 32px);
   }
 
-  .beatstack {
+  .intro,
+  .para {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  /* Rule under the intro, then the scannable week table. */
+  .weeks {
+    margin: clamp(18px, 2vw, 28px) 0 0;
+    padding-top: clamp(18px, 2vw, 28px);
+    border-top: 2px solid var(--stand-black);
     display: flex;
     flex-direction: column;
     gap: clamp(14px, 1.5vw, 22px);
   }
 
-  /* Armed: beats occupy the same grid cell and trade places. */
-  .sw-ready .beatstack {
+  .week {
     display: grid;
+    grid-template-columns: clamp(96px, 10vw, 140px) minmax(0, 1fr);
+    gap: clamp(16px, 2vw, 32px);
+    align-items: baseline;
   }
 
-  .sw-ready .beat {
-    grid-area: 1 / 1;
-    opacity: 0;
-    transform: translateY(28px);
-    filter: blur(2px);
-    transition:
-      opacity 0.45s ease,
-      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.45s ease;
+  dt {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(12px, 1.1vw, 15px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stand-red);
   }
 
-  /* The one on stage. */
-  .sw-ready .beat.is-current {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
-
-  /* Already played — lifts up and away instead of sinking back. */
-  .sw-ready .beat.is-before {
-    transform: translateY(-28px);
-  }
-
-  .beat {
+  dd {
     margin: 0;
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: clamp(17px, 1.8vw, 24px);
-    line-height: 1.5;
+    line-height: 1.4;
     letter-spacing: -0.01em;
     text-wrap: pretty;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .sw-ready .beat {
-      transition: none !important;
-      filter: none !important;
-    }
+  .para {
+    margin-top: clamp(18px, 2vw, 28px);
   }
 
   @media (max-width: 900px) {
-    .stage {
+    .grid {
       grid-template-columns: 1fr;
-      align-items: start;
-      align-content: center;
-      row-gap: 32px;
       padding-left: 20px;
       padding-right: 20px;
     }
 
-    .sw-ready .track {
-      height: 240svh;
+    .rail {
+      position: static;
     }
   }
 </style>
-
-<script>
-  // Scroll progress through the track picks the beat on stage: thirds of the
-  // runway map to beats 0/1/2. Runs on the scroll event (Lenis eases the
-  // real scroll position, so this ticks on the same rAF cadence as the
-  // smoothing) — the work per tick is one getBoundingClientRect and, only on
-  // step change, a few class toggles.
-  const section = document.querySelector('.fc-location');
-  const track = document.querySelector('.fc-location .track');
-  const beats = Array.from(document.querySelectorAll('.fc-location .beat'));
-
-  if (section && track && beats.length) {
-    section.classList.add('sw-ready');
-    let current = -1;
-
-    const onScroll = () => {
-      const rect = track.getBoundingClientRect();
-      const runway = track.offsetHeight - window.innerHeight;
-      const progressed = Math.min(Math.max(-rect.top, 0), runway);
-      const p = runway > 0 ? progressed / runway : 0;
-      const idx = Math.min(beats.length - 1, Math.floor(p * beats.length));
-      if (idx === current) return;
-      current = idx;
-      beats.forEach((b, i) => {
-        b.classList.toggle('is-current', i === idx);
-        b.classList.toggle('is-before', i < idx);
-      });
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-  }
-</script>

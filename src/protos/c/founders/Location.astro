@@ -1,15 +1,15 @@
 ---
-// Location — Proto C: scrollytelling split (Aug 24 review). The rail (Pie Pie
-// West-LA announcement + CTA) stays pinned while the right column scrolls;
-// each program beat owns its own scroll slot and rises in as it reaches the
-// reading band, with off-band beats dimmed so one paragraph reads at a time.
-// B keeps the static split — this scroll behavior is C's divergence.
+// Location — shared (A/B/C): "week-by-week, scannable" (comp 1E, Aug 24). Heavy
+// sans announcement + red lede + CTA in the left rail; right column runs the
+// eight-week intro over a rule, the week table with red week labels, the
+// mentorship paragraph, and the learn-by-doing closer.
+// Chunks use the page-level data-rv reveal (armed by the index script).
 import SignupButton from './SignupButton.astro';
 
-const BEATS = [
-  'For eight weeks, kids ages 8–13 will take an idea and build it into a real business.',
-  'They can come in knowing what they want to make. Or with no idea at all. They build a brand, a product, a plan and a pitch they deliver in front of a room at the end of the semester.',
-  'They’ll meet in person and move through the full process of taking an idea and turning it into a real business — with hands-on mentorship, a community of other kids building alongside them, and digital tools that support them along the way.',
+const WEEKS = [
+  { label: 'Week 1–2', text: 'Find the idea.' },
+  { label: 'Week 3–7', text: 'Build the brand, the product and the plan.' },
+  { label: 'Week 8', text: 'Pitch it live in front of a room.' },
 ];
 ---
 
@@ -17,21 +17,41 @@ const BEATS = [
   <div class="grid">
     <header class="rail">
       <h2 id="location-title" data-rv style="--rvi: 0">
-        This fall, we&rsquo;re opening our first STAND location in West&nbsp;<span class="keep-case">LA</span>!
+        <span class="keep-case">STAND</span> is coming to Los&nbsp;Angeles!
       </h2>
-      <div class="cta" data-rv style="--rvi: 1">
+      <p class="lede" data-rv style="--rvi: 1">
+        Our first location opens this fall in West&nbsp;LA.
+      </p>
+      <div class="cta" data-rv style="--rvi: 2">
         <SignupButton label="get first access" />
       </div>
     </header>
 
-    <div class="beats">
-      {
-        BEATS.map((text) => (
-          <div class="beat">
-            <p>{text}</p>
-          </div>
-        ))
-      }
+    <div class="detail">
+      <p class="intro" data-rv style="--rvi: 3">
+        For eight weeks, kids ages 8&ndash;13 take an idea and turn it into a
+        real business.
+      </p>
+
+      <dl class="weeks" data-rv style="--rvi: 4">
+        {
+          WEEKS.map((w) => (
+            <div class="week">
+              <dt>{w.label}</dt>
+              <dd>{w.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="para" data-rv style="--rvi: 5">
+        Along the way, they&rsquo;ll get hands-on mentorship, build alongside
+        other kids, and use digital tools to help bring their ideas to life.
+      </p>
+
+      <p class="para" data-rv style="--rvi: 6">
+        Because some things you only learn by doing them.
+      </p>
     </div>
   </div>
 </section>
@@ -51,29 +71,39 @@ const BEATS = [
     padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
   }
 
-  /* The rail holds its position for the whole scroll of the beats column. */
   .rail {
     position: sticky;
-    top: clamp(96px, 24vh, 220px);
+    top: 96px;
     align-self: start;
     display: flex;
     flex-direction: column;
     gap: clamp(16px, 1.7vw, 24px);
   }
 
+  /* Pie Pie announcement (Aug 24 review), lowercase like the About stack. */
   h2 {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(30px, 3.6vw, 52px);
-    line-height: 1.04;
+    font-size: clamp(32px, 3.8vw, 56px);
+    line-height: 1.02;
     letter-spacing: 0.02em;
     text-transform: lowercase;
   }
 
-  /* "LA" stays caps inside the lowercased Pie Pie headline. */
+  /* "STAND" and "LA" keep caps inside the lowercased headline. */
   h2 .keep-case {
     text-transform: none;
+  }
+
+  .lede {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--stand-red);
   }
 
   .cta {
@@ -85,54 +115,60 @@ const BEATS = [
     align-self: flex-start;
   }
 
-  /* Each beat owns a viewport-scaled scroll slot — that spacing is what makes
-     "one paragraph at a time" true; the observer only directs attention. */
-  .beat {
-    min-height: 58svh;
+  .detail {
     display: flex;
-    align-items: center;
+    flex-direction: column;
   }
 
-  .beat p {
+  .intro,
+  .para {
     margin: 0;
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: clamp(17px, 1.8vw, 24px);
-    line-height: 1.5;
+    line-height: 1.4;
     letter-spacing: -0.01em;
     text-wrap: pretty;
   }
 
-  /* Armed only when JS runs (.sc-ready) — no JS renders everything static.
-     A beat rises in once (.is-in), then full contrast belongs to whichever
-     beat sits in the reading band (.is-active); the rest hold at a whisper. */
-  .fc-location.sc-ready .beat {
-    opacity: 0;
-    transform: translateY(32px);
-    filter: blur(2px);
-    transition:
-      opacity 0.45s ease,
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.45s ease;
+  /* Rule under the intro, then the scannable week table. */
+  .weeks {
+    margin: clamp(18px, 2vw, 28px) 0 0;
+    padding-top: clamp(18px, 2vw, 28px);
+    border-top: 2px solid var(--stand-black);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.5vw, 22px);
   }
 
-  .fc-location.sc-ready .beat.is-in {
-    opacity: 0.16;
-    transform: none;
-    filter: blur(0);
+  .week {
+    display: grid;
+    grid-template-columns: clamp(96px, 10vw, 140px) minmax(0, 1fr);
+    gap: clamp(16px, 2vw, 32px);
+    align-items: baseline;
   }
 
-  .fc-location.sc-ready .beat.is-active {
-    opacity: 1;
+  dt {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(12px, 1.1vw, 15px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stand-red);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .fc-location.sc-ready .beat {
-      opacity: 1 !important;
-      transform: none !important;
-      filter: none !important;
-      transition: none !important;
-    }
+  dd {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .para {
+    margin-top: clamp(18px, 2vw, 28px);
   }
 
   @media (max-width: 900px) {
@@ -145,49 +181,5 @@ const BEATS = [
     .rail {
       position: static;
     }
-
-    .beat {
-      min-height: 48svh;
-    }
   }
 </style>
-
-<script>
-  // Two observers, two jobs: `enter` fires once per beat for the rise-in;
-  // `focus` toggles live as beats cross a center band (rootMargin shaves 35%
-  // off the top and bottom of the viewport, so the band is the middle ~30%),
-  // which is what keeps exactly one paragraph at full contrast. Works under
-  // Lenis because Lenis eases the REAL scroll position — IO sees it natively.
-  const section = document.querySelector('.fc-location');
-  const beats = Array.from(document.querySelectorAll('.fc-location .beat'));
-
-  if (section && beats.length && 'IntersectionObserver' in window) {
-    section.classList.add('sc-ready');
-
-    const enter = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-in');
-            enter.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.3 },
-    );
-
-    const focus = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          e.target.classList.toggle('is-active', e.isIntersecting);
-        });
-      },
-      { rootMargin: '-35% 0px -35% 0px' },
-    );
-
-    beats.forEach((b) => {
-      enter.observe(b);
-      focus.observe(b);
-    });
-  }
-</script>
