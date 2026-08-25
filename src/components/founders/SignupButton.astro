@@ -2,7 +2,7 @@
 // Shared sign-up CTA — the /enroll page's skewed-sticker button, ported so
 // the landing page and the form speak the same language: white face drawn
 // as a ::before layer (2px black border, hard offset shadow, -5deg skew),
-// Pie Pie lowercase label, lift-on-hover / slam-on-press. Replaces the
+// Pie Pie Title Case label, lift-on-hover / slam-on-press. Replaces the
 // baked-PNG paper tag. Used by ProgramFacts and Closing.
 interface Props {
   label?: string;
@@ -28,7 +28,7 @@ const { label = 'sign up now', href = '/enroll' } = Astro.props;
     font-family: var(--font-display);
     font-weight: 400;
     font-size: 22px;
-    text-transform: lowercase;
+    text-transform: capitalize;
     letter-spacing: 0.04em;
     color: var(--stand-black);
     transition: transform 150ms ease-out;

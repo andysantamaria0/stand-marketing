@@ -53,8 +53,8 @@ import SignupButton from './SignupButton.astro';
   .mega {
     margin: 0;
     width: 100%;
-    /* Pie Pie — the sticker/display voice (same as the sign-up buttons),
-       lowercase like everywhere else it appears. */
+    /* Pie Pie — the sticker/display voice (same as the sign-up buttons).
+       Title Case everywhere display type appears (JY, Aug 25). */
     font-family: var(--font-display);
     font-weight: 400;
     /* 1/3 of the column-spanning size (Aug 24 review) — the stack reads as a
@@ -62,7 +62,7 @@ import SignupButton from './SignupButton.astro';
     font-size: clamp(24px, 5.2vw, 75px);
     line-height: 0.95;
     letter-spacing: 0.02em;
-    text-transform: lowercase;
+    text-transform: capitalize;
   }
 
   .mega .line {
