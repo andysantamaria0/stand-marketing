@@ -63,8 +63,11 @@ export const UTM_KEYS = [
 
 export const COPY = {
   meta: {
-    title: `Enroll — ${PROGRAM_NAME} | Stand`,
-    description: `Save your kid's spot in ${PROGRAM_NAME}. Tell us who's coming and which days work — it takes about a minute.`,
+    // Deliberately NOT interpolating PROGRAM_NAME: its bracketed working
+    // value would land verbatim in search results and link previews.
+    title: 'Enroll — Stand | In-person program for kids in LA',
+    description:
+      "Save your kid's spot in Stand's 8-week in-person program in LA. Tell us who's coming and which days work — it takes about a minute.",
   },
 
   open: {
