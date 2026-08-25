@@ -5,11 +5,14 @@
 // funnel (/enroll keeps its own sticker CTAs). Colors ride on currentColor
 // so the bar inherits the closing band's cream-on-red.
 //
-// CONTRACT (pending on the app side): POST `${API_BASE}/api/subscribe` with
-// { email, source, utm } → { ok: true }. Verified 404 on 8/25 — Andy needs to
-// stand this up (mirror of /api/enroll/start's shape; should fire the
-// general-interest Klaviyo profile, not email_captured). Until then the bar
-// shows the retry error on submit.
+// SAVE PATH (Aug 25): tries POST `${API_BASE}/api/subscribe` first
+// ({ email, source, utm } → { ok: true }; still 404 — Andy's contract, should
+// mirror /api/enroll/start's shape and NOT fire email_captured). While the
+// endpoint is missing, the bar saves DIRECTLY to Klaviyo via the onsite
+// script (identify + "General Interest Signup" event) — profiles land in the
+// same Klaviyo account the launch flows run on; segment on that event.
+// Caveat: identify() creates the profile but not "subscribed" consent status —
+// if Celestine needs formal consent, swap to a Klaviyo form/list subscribe.
 ---
 
 <div class="subwrap">
@@ -202,19 +205,49 @@
     }
 
     try {
-      const res = await fetch(`${API_BASE}/api/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'landing_updates', utm }),
-      });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      // Path 1: the app's endpoint (the eventual system of record). Still
+      // 404 as of Aug 25 — Andy's contract is in the header comment.
+      let saved = false;
+      try {
+        const res = await fetch(`${API_BASE}/api/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'landing_updates', utm }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (res.status === 400 && data.error) {
+          // The server rejected the email itself — surface it, don't fall back.
+          showError(data.error);
+          return;
+        }
+        saved = res.ok && data.ok === true;
+      } catch {
+        /* network/404 — fall through to Klaviyo */
+      }
 
-      if (!res.ok || !data.ok) {
-        showError(
-          res.status === 400 && data.error
-            ? data.error
-            : 'Something hiccuped on our end — your email is still here, try again.',
-        );
+      // Path 2: Klaviyo direct (the subscriber DB the email flows already
+      // run on; onsite script ships site-wide with company_id RqafrJ).
+      // identify() writes the profile; the event makes the cohort
+      // segmentable in the dashboard. Raced against a timeout so an ad
+      // blocker can't leave the button stuck on "Sending…".
+      if (!saved) {
+        const kl = (window as { klaviyo?: { identify: (p: object) => Promise<unknown>; push: (a: unknown[]) => void } }).klaviyo;
+        if (kl) {
+          try {
+            await Promise.race([
+              kl.identify({ $email: email }),
+              new Promise((_, reject) => setTimeout(reject, 5000)),
+            ]);
+            kl.push(['track', 'General Interest Signup', { source: 'landing_updates', ...utm }]);
+            saved = true;
+          } catch {
+            /* blocked or timed out */
+          }
+        }
+      }
+
+      if (!saved) {
+        showError('Something hiccuped on our end — your email is still here, try again.');
         return;
       }
 
@@ -237,8 +270,6 @@
         if (doneEl) doneEl.hidden = true;
         form.hidden = false;
       }, 1200);
-    } catch {
-      showError('Something hiccuped on our end — your email is still here, try again.');
     } finally {
       submitting = false;
       if (go) {

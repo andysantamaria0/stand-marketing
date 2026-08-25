@@ -17,8 +17,9 @@ import SubscribeBar from './SubscribeBar.astro';
       <SubscribeBar />
     </div>
   </div>
-  <!-- Bottom line: one ruled row, contact left, socials right — everything
-       on the same grid as the capture row instead of floating centered. -->
+  <!-- Bottom line: full-bleed rule (JY, Aug 25), then contact left /
+       socials right on the same grid as the capture row. -->
+  <hr class="rule" aria-hidden="true" />
   <div class="foot" data-rv style="--rvi: 2">
     <a class="email" href="mailto:hello@standkids.com">hello@standkids.com</a>
     <div class="social">
@@ -95,17 +96,25 @@ import SubscribeBar from './SubscribeBar.astro';
     }
   }
 
-  /* The sign-off line: hairline rule, contact left, socials right — same
-     content width and gutters as the capture row above. */
+  /* Full-bleed hairline — negative margins escape the section's side
+     padding so the rule runs edge to edge (JY, Aug 25). */
+  .rule {
+    width: calc(100% + 2 * var(--space-3));
+    margin: var(--space-2) calc(-1 * var(--space-3)) 0;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--stand-cream) 35%, transparent);
+  }
+
+  /* The sign-off row: contact left, socials right — same content width and
+     gutters as the capture row above. */
   .foot {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     max-width: calc(1132px + 2 * 48px);
-    margin: var(--space-2) auto 0;
-    padding: 20px 48px 0;
-    border-top: 1px solid color-mix(in srgb, var(--stand-cream) 35%, transparent);
+    margin: 0 auto;
+    padding: 0 48px;
   }
 
   /* Cream marks; 24px glyphs padded to 44px targets. */
@@ -142,7 +151,7 @@ import SubscribeBar from './SubscribeBar.astro';
     .foot {
       flex-direction: column;
       gap: var(--space-1);
-      padding: 16px 20px 0;
+      padding: 0 20px;
     }
   }
 </style>
