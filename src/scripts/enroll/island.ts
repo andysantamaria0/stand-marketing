@@ -21,10 +21,13 @@
 
 import { track, identifyFamily, currentDistinctId } from "./analytics";
 import {
-  ANY_DAY,
   API_BASE,
   COPY,
+  DAYS,
+  MAX_AGE,
+  MAX_DAYS,
   MAX_KIDS,
+  MIN_AGE,
   PROGRAM_MAX_AGE,
   PROGRAM_MIN_AGE,
   UTM_KEYS,
@@ -96,6 +99,66 @@ function clearErrorsWithin(scope: ParentNode): void {
   scope.querySelectorAll<HTMLElement>("[data-error]").forEach((el) => setError(el, ""));
 }
 
+/**
+ * Writes the headline's sentence WITHOUT disturbing the wordmark beside it.
+ *
+ * #enroll-headline holds two children: the STAND wordmark and this span. Both
+ * showSuccess() and showPage1() rewrite the sentence, and setting textContent
+ * on the h1 itself replaces EVERY child — so the logo would vanish on the
+ * success swap and would NOT come back on the browser back button, leaving a
+ * parent on page 1 with a sentence missing its subject. Silent, and only
+ * reachable by walking forward then back.
+ *
+ * innerHTML is not the alternative. See the rendering rule in the file header:
+ * kid names reach this area on a public page.
+ */
+function setHeadlineText(text: string): void {
+  const el = $<HTMLElement>("enroll-headline-text");
+  if (el) el.textContent = text;
+}
+
+/**
+ * Shows or hides the STAND wordmark in the headline.
+ *
+ * It stands in for the first word of the page-1 sentence, so it belongs to that
+ * sentence and not to the confirmation that replaces it — "STAND You're on the
+ * list!" reads as decoration rather than as a heading. Hiding it also drops
+ * "STAND" from the h1's accessible name, so the announced heading matches what
+ * is on screen.
+ *
+ * Relies on `.title-logo[hidden]` in enroll.astro: the author `display` rule
+ * would otherwise beat the UA's [hidden] and this would silently do nothing.
+ */
+function setHeadlineLogo(visible: boolean): void {
+  const logo = $<HTMLElement>("enroll-headline-logo");
+  if (logo) logo.hidden = !visible;
+}
+
+/**
+ * Shows or hides the corner X.
+ *
+ * The done screen carries its own "back home" button, so the X there is a
+ * second control doing the same job in a different idiom, in the opposite
+ * corner. Every earlier step keeps it — it is the only way out of the form.
+ *
+ * Relies on `.close[hidden]` in enroll.astro for the same reason as the
+ * wordmark: the author `display` rule would otherwise beat the UA's [hidden].
+ */
+function setCloseVisible(visible: boolean): void {
+  const close = $<HTMLElement>("enroll-close");
+  if (close) close.hidden = !visible;
+}
+
+/**
+ * Writes a message into the page's polite live region (#enroll-live in
+ * enroll.astro) so screen readers announce state the DOM changed out from
+ * under the user — today, the rolling day-chip cap evicting an earlier pick.
+ */
+function announce(text: string): void {
+  const region = $<HTMLElement>("enroll-live");
+  if (region) region.textContent = text;
+}
+
 /* ── kid blocks ──────────────────────────────────────────────────────────── */
 
 function kidBlocks(): HTMLElement[] {
@@ -131,11 +194,37 @@ function selectedDays(block: HTMLElement): string[] {
 }
 
 /**
+ * Newest-last tap order per kid block, so the cap knows which pick is oldest.
+ *
+ * A WeakMap rather than a data-* attribute: this is eviction bookkeeping, not
+ * state the server or a screen reader has any business seeing, and a removed
+ * kid block should take its entry with it.
+ */
+const dayOrder = new WeakMap<HTMLElement, string[]>();
+
+/**
+ * The block's tap order, reconciled against what is actually pressed.
+ *
+ * The DOM stays authoritative. Anything pressed that the order never saw (a
+ * server-rendered selection, a bfcache restore) is treated as oldest, so it is
+ * evicted before a day the parent just tapped.
+ */
+function orderedSelection(block: HTMLElement): string[] {
+  const pressed = new Set(selectedDays(block));
+  const order = (dayOrder.get(block) ?? []).filter((day) => pressed.has(day));
+  for (const day of pressed) if (!order.includes(day)) order.unshift(day);
+  dayOrder.set(block, order);
+  return order;
+}
+
+/**
  * Wires one kid block's chips, age notice and remove control.
  *
- * "Any day works" and specific days are mutually exclusive: picking one clears
- * the other. They are genuinely different demand signals — "flexible" is not
- * the same answer as "all six days" — so the value is never expanded.
+ * The chips are a ROLLING WINDOW of MAX_DAYS, not a hard refusal: with two days
+ * picked, tapping a third drops whichever was picked first. Chosen over
+ * refusing the third tap so the chips never dead-end — a parent who changes
+ * their mind just taps, rather than having to work out which day to release
+ * first. Tapping a selected day still deselects it, so a straight swap works.
  */
 function wireKidBlock(block: HTMLElement): void {
   block.querySelectorAll<HTMLButtonElement>("[data-day]").forEach((chip) => {
@@ -144,20 +233,35 @@ function wireKidBlock(block: HTMLElement): void {
       const day = chip.dataset.day as string;
       const pressed = chip.getAttribute("aria-pressed") === "true";
 
-      if (day === ANY_DAY.value) {
-        block.querySelectorAll<HTMLButtonElement>("[data-day]").forEach((other) => {
-          other.setAttribute("aria-pressed", "false");
-        });
-        chip.setAttribute("aria-pressed", pressed ? "false" : "true");
+      if (pressed) {
+        chip.setAttribute("aria-pressed", "false");
+        orderedSelection(block);
       } else {
-        const anyChip = block.querySelector<HTMLButtonElement>(`[data-day="${ANY_DAY.value}"]`);
-        anyChip?.setAttribute("aria-pressed", "false");
-        chip.setAttribute("aria-pressed", pressed ? "false" : "true");
-      }
-
-      if (!pressed) {
+        const order = orderedSelection(block);
+        const evicted: string[] = [];
+        while (order.length >= MAX_DAYS) {
+          const oldest = order.shift() as string;
+          evicted.push(oldest);
+          block
+            .querySelector<HTMLButtonElement>(`[data-day="${oldest}"]`)
+            ?.setAttribute("aria-pressed", "false");
+        }
+        chip.setAttribute("aria-pressed", "true");
+        order.push(day);
+        dayOrder.set(block, order);
+        // The eviction flips aria-pressed on a chip the user is NOT focused
+        // on, which no screen reader announces on its own — without this a
+        // third tap silently drops an earlier day and the parent can submit
+        // days they never chose.
+        if (evicted.length > 0) {
+          const labels = evicted.map(
+            (value) => DAYS.find((d) => d.value === value)?.label ?? value
+          );
+          announce(`${labels.join(" and ")} removed. You can pick up to two days.`);
+        }
         track("enroll_day_selected", { day, kid_index: kidBlocks().indexOf(block) });
       }
+
       setError(block.querySelector<HTMLElement>("[data-error='days']"), "");
     });
   });
@@ -266,10 +370,13 @@ function collectPayload(): {
     if (name.length === 0 || name.length > 64) {
       fail(block.querySelector<HTMLElement>("[data-error='name']"), nameInput, COPY.errors.kidName);
     }
-    if (!Number.isInteger(age) || age < 5 || age > 17) {
+    if (!Number.isInteger(age) || age < MIN_AGE || age > MAX_AGE) {
       fail(block.querySelector<HTMLElement>("[data-error='age']"), ageInput, COPY.errors.kidAge);
     }
-    if (days.length === 0) {
+    // The upper bound is unreachable through the chips, which roll at
+    // MAX_DAYS. It exists so a tampered DOM fails here rather than at the
+    // server, which answers a third day with a 400 either way.
+    if (days.length === 0 || days.length > MAX_DAYS) {
       fail(block.querySelector<HTMLElement>("[data-error='days']"), null, COPY.errors.kidDays);
     }
     kids.push({ name, age, days });
@@ -284,6 +391,97 @@ function collectPayload(): {
   return { email, phone: phone as string, kids, smsOptIn };
 }
 
+/* ── step URLs ─────────────────────────────────────────────────────────────
+   The flow is one document, so each step gets a history entry rather than a
+   navigation: the back button behaves the way a parent expects mid-form.
+
+   These URLs do NOT produce PostHog pageviews — posthog-js with
+   `capture_pageview: true` never instruments pushState, and its history mode
+   dedupes on pathname, which `?step=` does not change. Step drop-off is
+   measured by the `enroll_step_completed` events, not by URL. Do not build a
+   funnel on these URLs.
+
+   `step` is deliberately NOT the DEV-only `preview` param in enroll.astro.
+   They are independent and must not be merged. */
+
+const STEP_PARAM = "step";
+const STEP_QUESTIONS = "questions";
+const STEP_DONE = "done";
+
+/**
+ * Rewrites the `step` query param, preserving every other param.
+ *
+ * Built from a fresh `URL` rather than by assigning `location.search`, and that
+ * is load-bearing: the ad click's UTMs live in the query string and
+ * `readUtm()` reads them off `location.search` at submit time, so a transition
+ * that flattened the query would silently drop attribution on every signup
+ * that arrived from a campaign.
+ */
+function writeStep(step: string | null, mode: "push" | "replace"): void {
+  try {
+    const url = new URL(window.location.href);
+    if (step === null) url.searchParams.delete(STEP_PARAM);
+    else url.searchParams.set(STEP_PARAM, step);
+    const next = url.toString();
+    if (mode === "replace") window.history.replaceState({ step }, "", next);
+    else window.history.pushState({ step }, "", next);
+  } catch {
+    // History is not the product. Never let it break the flow.
+  }
+}
+
+/**
+ * The reverse of {@link showSuccess} and {@link showDone}.
+ *
+ * Un-hiding page 1 is not enough. `showSuccess` overwrites the persistent
+ * headline, adds the choreography class and hides the lede; `showDone` hides
+ * the headline outright. Miss any one of those on the way back and the parent
+ * is looking at the signup form under a confirmation headline.
+ */
+function showPage1(): void {
+  const headline = $<HTMLElement>("enroll-headline");
+  setHeadlineText(COPY.open.headline);
+  setHeadlineLogo(true);
+  setCloseVisible(true);
+  if (headline) {
+    headline.classList.remove("is-confirmed");
+    headline.hidden = false;
+  }
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = false;
+
+  const page1 = $<HTMLElement>("enroll-page1");
+  const success = $<HTMLElement>("enroll-success");
+  const done = $<HTMLElement>("enroll-done");
+  if (success) success.hidden = true;
+  if (done) done.hidden = true;
+  if (page1) page1.hidden = false;
+}
+
+/**
+ * Maps the URL back onto the visible step.
+ *
+ * THE NO-TOKEN BRANCH IS THE POINT. `resumeToken` is module state and does not
+ * survive a page load, so a parent who reloads on `?step=questions`, opens a
+ * shared link or bookmarks one gets the optional-questions form with a SEND
+ * button that early-returns and shows nothing. Rendering page 1 instead is the
+ * only honest answer, and the URL is corrected in the same breath so the
+ * address bar and the screen never disagree.
+ */
+function syncStepFromUrl(): void {
+  const step = new URLSearchParams(window.location.search).get(STEP_PARAM);
+  if (resumeToken && step === STEP_DONE) {
+    showDone();
+    return;
+  }
+  if (resumeToken && step === STEP_QUESTIONS) {
+    showSuccess();
+    return;
+  }
+  showPage1();
+  if (step !== null) writeStep(null, "replace");
+}
+
 /** Renders the success screen. One outcome now: the family is enrolled. */
 function showSuccess(): void {
   const copy = COPY.success.open;
@@ -292,11 +490,16 @@ function showSuccess(): void {
   // list now!") — the success card carries only the body line.
   const headline = $<HTMLElement>("enroll-headline");
   const body = $<HTMLElement>("success-body");
+  setHeadlineText(copy.headline);
+  setHeadlineLogo(false);
+  setCloseVisible(true);
   if (headline) {
-    headline.textContent = copy.headline;
     // Triggers the success choreography (headline pops, card follows) —
     // defined in enroll.astro's styles.
     headline.classList.add("is-confirmed");
+    // showDone() hides this element. Arriving here from a BACK navigation has
+    // to undo that, or the success screen renders with no headline above it.
+    headline.hidden = false;
   }
   // The lede is the sign-up pitch; under a confirmation headline it's stale.
   const lede = $<HTMLElement>("enroll-lede");
@@ -309,7 +512,13 @@ function showSuccess(): void {
 
   const page1 = $<HTMLElement>("enroll-page1");
   const success = $<HTMLElement>("enroll-success");
+  const done = $<HTMLElement>("enroll-done");
   if (page1) page1.hidden = true;
+  // Reached by a BACK navigation from the done screen as well as forward from
+  // page 1, so this has to be a complete state-setter: leave the done panel
+  // showing and the parent gets the questions form and the thank-you card at
+  // the same time.
+  if (done) done.hidden = true;
   if (success) success.hidden = false;
   // Focusing the headline announces the new state and scrolls it into view —
   // it sits above the card, so no separate scrollIntoView is needed.
@@ -361,6 +570,7 @@ async function submitPage1(): Promise<void> {
     identifyFamily(data.id, payload.email);
     track("enroll_step_completed", { step: 1 });
     showSuccess();
+    writeStep(STEP_QUESTIONS, "push");
   } catch {
     setError(formError, COPY.errors.submit);
   } finally {
@@ -375,10 +585,19 @@ async function submitPage1(): Promise<void> {
 /* ── page 2 ──────────────────────────────────────────────────────────────── */
 
 function showDone(): void {
+  setCloseVisible(false);
   const success = $<HTMLElement>("enroll-success");
   const done = $<HTMLElement>("enroll-done");
   if (success) success.hidden = true;
   if (done) done.hidden = false;
+  // Reached from ARBITRARY prior state, not just forward from success: a
+  // back-navigation while SEND is in flight lands on page 1 before the
+  // resumed submit calls this. Like showSuccess(), it must be a complete
+  // state-setter or the signup form renders under the thank-you.
+  const page1 = $<HTMLElement>("enroll-page1");
+  if (page1) page1.hidden = true;
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = true;
   // The final screen is just "We'll be in touch." — no headline above it.
   const headline = $<HTMLElement>("enroll-headline");
   if (headline) headline.hidden = true;
@@ -401,15 +620,13 @@ async function submitDetails(): Promise<void> {
     // key present but blank means "clear it" (see optionalText in the API's
     // validate.ts). Sending every field unconditionally collapses that, so a
     // returning parent — the PRD's headline flow, back to add a sibling — who
-    // taps SEND on the empty optional form would erase the location and time
-    // they gave last visit. Tapping SKIP would have preserved them, so the
-    // more engaged parent lost more data, silently.
+    // taps SEND on the empty optional form would erase the location they
+    // gave last visit. Tapping SKIP would have preserved it, so the more
+    // engaged parent lost more data, silently.
     const body: Record<string, string> = { token: resumeToken };
     const location = $<HTMLInputElement>("details-location")?.value.trim() ?? "";
-    const time = $<HTMLSelectElement>("details-time")?.value ?? "";
     const otherCity = $<HTMLInputElement>("details-other")?.value.trim() ?? "";
     if (location) body.locationPreference = location;
-    if (time) body.timePreference = time;
     if (otherCity) body.otherCity = otherCity;
 
     const res = await fetch(`${API_BASE}/api/enroll/details`, {
@@ -426,6 +643,7 @@ async function submitDetails(): Promise<void> {
     }
     track("enroll_step_completed", { step: 2 });
     showDone();
+    writeStep(STEP_DONE, "push");
   } catch {
     setError(detailsError, COPY.errors.details);
   } finally {
@@ -497,7 +715,17 @@ function init(): void {
     if (submitting) return;
     track("enroll_details_skipped", {});
     showDone();
+    writeStep(STEP_DONE, "push");
   });
+
+  // A reload, a bookmark or a shared link can arrive carrying ?step= from a
+  // previous visit. A fresh document has no resume token, so correct both the
+  // DOM and the URL rather than rendering a form that cannot submit.
+  if (new URLSearchParams(window.location.search).has(STEP_PARAM)) {
+    showPage1();
+    writeStep(null, "replace");
+  }
+  window.addEventListener("popstate", syncStepFromUrl);
 }
 
 if (document.readyState === "loading") {

@@ -28,7 +28,7 @@
  * same glance as the submit button.
  */
 import Layout from '@/layouts/Layout.astro';
-import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
+import { COPY, DAYS, MAX_AGE, MIN_AGE } from '@/scripts/enroll/constants';
 ---
 
 <Layout title={COPY.meta.title} description={COPY.meta.description}>
@@ -36,14 +36,20 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     <!-- Enrollment is uncapped (8/21): no waitlist mode, no availability
          check. The page renders open and stays open. -->
     <div id="enroll-root">
+      <!-- Screen-reader-only live region. The island writes into it when the
+           rolling day-chip cap evicts an earlier pick — a state change on a
+           chip the user is not focused on, which no AT announces by itself. -->
+      <p class="visually-hidden" id="enroll-live" aria-live="polite"></p>
       <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
       <header class="hero">
-        <a class="back" href="/" aria-label="Stand — back to home"></a>
-        <a class="close" href="/" aria-label="Close and return to the homepage">&times;</a>
+        <a class="close" id="enroll-close" href="/" aria-label="Close and return to the homepage">&times;</a>
         <div class="wrap">
           {/* tabindex=-1: the island focuses this h1 on the success swap so
               screen readers announce the confirmation it then carries. */}
-          <h1 class="title" id="enroll-headline" tabindex="-1">{COPY.open.headline}</h1>
+          <h1 class="title" id="enroll-headline" tabindex="-1">
+            <span class="title-logo" id="enroll-headline-logo" role="img" aria-label="STAND"></span>
+            <span id="enroll-headline-text">{COPY.open.headline}</span>
+          </h1>
           <!-- Hidden by the island on the success swap: once the headline
                carries the confirmation, the sign-up pitch under it is stale. -->
           <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
@@ -127,8 +133,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                         class="input"
                         type="number"
                         data-kid-age
-                        min="5"
-                        max="17"
+                        min={MIN_AGE}
+                        max={MAX_AGE}
                         step="1"
                         inputmode="numeric"
                         placeholder={COPY.form.kidAgePlaceholder}
@@ -153,14 +159,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                           </button>
                         ))
                       }
-                      <button
-                        type="button"
-                        class="chip chip-any"
-                        data-day={ANY_DAY.value}
-                        aria-pressed="false"
-                      >
-                        {ANY_DAY.label}
-                      </button>
                     </div>
                     <p class="error" data-error="days" role="alert" hidden></p>
                   </div>
@@ -207,14 +205,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                   maxlength="200"
                   placeholder={COPY.details.locationPlaceholder}
                 />
-              </div>
-
-              <div class="field">
-                <label class="label" for="details-time">{COPY.details.timeLabel}</label>
-                <select class="input" id="details-time">
-                  <option value="">{COPY.details.timePlaceholder}</option>
-                  {TIMES.map((time) => <option value={time.value}>{time.label}</option>)}
-                </select>
               </div>
 
               <div class="field">
@@ -271,8 +261,8 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
               class="input"
               type="number"
               data-kid-age
-              min="5"
-              max="17"
+              min={MIN_AGE}
+              max={MAX_AGE}
               step="1"
               inputmode="numeric"
               placeholder={COPY.form.kidAgePlaceholder}
@@ -295,14 +285,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                 </button>
               ))
             }
-            <button
-              type="button"
-              class="chip chip-any"
-              data-day={ANY_DAY.value}
-              aria-pressed="false"
-            >
-              {ANY_DAY.label}
-            </button>
           </div>
           <p class="error" data-error="days" role="alert" hidden></p>
         </div>
@@ -400,13 +382,22 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
         if (done) done.hidden = false;
         const headline = document.getElementById('enroll-headline');
         if (headline) headline.hidden = true;
+        // The done screen carries its own "back home" button.
+        const closeBtn = document.getElementById('enroll-close');
+        if (closeBtn) closeBtn.hidden = true;
       } else if (success) {
         success.hidden = false;
         const copy = COPY.success.open;
         const headline = document.getElementById('enroll-headline');
         const body = document.getElementById('success-body');
         if (headline) {
-          headline.textContent = copy.headline;
+          // Same rule as the island: write the SPAN, never the h1, or the
+          // wordmark beside it is deleted. See setHeadlineText() in island.ts.
+          const headlineText = document.getElementById('enroll-headline-text');
+          if (headlineText) headlineText.textContent = copy.headline;
+          // The wordmark belongs to the page-1 sentence, not the confirmation.
+          const headlineLogo = document.getElementById('enroll-headline-logo');
+          if (headlineLogo) headlineLogo.hidden = true;
           // Replays the real success choreography so the preview matches.
           headline.classList.add('is-confirmed');
         }
@@ -443,27 +434,25 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     padding: 0 20px;
   }
 
+  /* Screen-reader-only: rendered, announceable, invisible. Used by the
+     #enroll-live region the island writes chip-eviction notices into. */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   /* ── Header ────────────────────────────────────────────────────────── */
   .hero {
     position: relative;
     background: var(--stand-cream);
     padding: 20px 0 8px;
-  }
-
-  /* The real wordmark (same asset as Footer/FAQ) doubles as the back link.
-     The SVG ships with a black fill, so it's painted via a mask: the element's
-     background-color shows through the logo's shape without needing a
-     recolored asset. Sits OUTSIDE .wrap, flush to the viewport's left edge. */
-  /* Fluid display sizing: phones scale between the clamp bounds, desktop
-     rides the cap — no per-breakpoint font-size overrides needed. */
-  .back {
-    display: block;
-    width: clamp(64px, 20vw, 90px);
-    aspect-ratio: 199.29 / 47.33;
-    background-color: var(--stand-red);
-    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
-    mask: url('/brand/logo.svg') no-repeat left center / contain;
-    margin: 0 0 20px 20px;
   }
 
   /* Corner escape hatch — mirrors the wordmark back-link, for visitors who
@@ -492,6 +481,62 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     outline-offset: 2px;
   }
 
+  /* `display: grid` above is an author rule and beats the UA's
+     [hidden] { display: none }, so the done screen needs this to hide the X. */
+  .close[hidden] {
+    display: none;
+  }
+
+  /* The word STAND in the headline IS the wordmark, in brand red. Masked
+     rather than an <img> so the colour is a CSS token rather than baked into
+     the asset, and sized in `em` so it tracks the clamped title size at every
+     breakpoint without its own media queries. 3.5em wide lands its height
+     just proud of the sentence's cap height.
+
+     It is a SIBLING of #enroll-headline-text and never a child, because the
+     island rewrites that span's textContent on every step change. See
+     setHeadlineText() in island.ts for why that distinction is load-bearing. */
+  .title-logo {
+    display: inline-block;
+    /* 3.5em wide -> 0.83em tall against Editorial New Light's 0.80em cap
+       height (the face the sentence beside it is set in), so the mark reads a
+       touch larger than the text's capitals — tuned optically. The viewBox is
+       tight to the artwork, so height here IS letterform height, not a
+       padded box. */
+    width: 3.5em;
+    aspect-ratio: 199.29 / 47.33;
+    /* Brand red, the colour the wordmark carried as the old home link — not
+       currentColor, so it stays red against the black headline type. */
+    background-color: var(--stand-red);
+    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
+    mask: url('/brand/logo.svg') no-repeat left center / contain;
+    /* An inline-block with no in-flow content takes its bottom margin edge as
+       its baseline, and the viewBox is tight to the letterforms — so the
+       wordmark's feet land on the text baseline with no nudge. An earlier
+       translateY here assumed padding in the asset that does not exist. */
+    vertical-align: baseline;
+  }
+
+  /* Author `display` beats the UA's [hidden] { display: none }, so hiding the
+     wordmark needs this explicit rule or `logo.hidden = true` does nothing at
+     all. Same reason .error[hidden] exists below. */
+  .title-logo[hidden] {
+    display: none;
+  }
+
+  /* The sentence beside the wordmark is Editorial New, the serif. Set on the
+     span rather than on .title so the rule reads as "the text" — the wordmark
+     is a masked image that font-family cannot reach either way. Applies to the
+     confirmation too, since the island rewrites this same span.
+
+     Weight 300 because that is the only Editorial New face loaded
+     (tokens.css:3-9); .title's 400 would leave the browser synthesising a
+     heavier one rather than using the real Light. */
+  #enroll-headline-text {
+    font-family: var(--font-serif);
+    font-weight: 300;
+  }
+
   .title {
     font-family: var(--font-display);
     font-weight: 400;
@@ -500,6 +545,18 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     letter-spacing: -0.5px;
     color: var(--stand-black);
     margin: 0;
+  }
+
+  /* The corner X is absolutely positioned against the VIEWPORT (right: 14px,
+     44px wide) and reserves no width, while .wrap is full-width below its
+     640px cap — so on phone widths the headline's first line can run under
+     the X's box, putting a tappable home link on top of heading text.
+     Reserve the X's footprint so the line wraps short of it. At >= 768px the
+     centered .wrap plus its 20px inner padding already clears the X. */
+  @media (max-width: 767px) {
+    .title {
+      padding-right: 48px;
+    }
   }
 
   .lede {
@@ -582,29 +639,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   /* Focus = the sticker pop: a hard ink shadow, not a soft glow. */
   .input:focus-visible {
     box-shadow: 3px 3px 0 var(--stand-black);
-  }
-
-  /* While the empty placeholder option is selected, render the select's text
-     in placeholder gray so it reads as a prompt, not a chosen answer. The
-     dropdown's real options stay ink. */
-  select.input:has(option[value='']:checked) {
-    color: #757575;
-  }
-
-  select.input option {
-    color: var(--stand-black);
-  }
-
-  select.input {
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--stand-black) 50%),
-      linear-gradient(135deg, var(--stand-black) 50%, transparent 50%);
-    background-position:
-      calc(100% - 20px) calc(50% + 2px),
-      calc(100% - 14px) calc(50% + 2px);
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
-    padding-right: 40px;
   }
 
   .error {
@@ -946,18 +980,29 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     }
   }
 
-  /* Desktop: compact vertical rhythm so the fully unfolded form (kid block,
-     consent, submit) fits a single viewport — email + phone go side by side,
-     the headline stays modest, paddings stay tight. */
+  /* Desktop: compact vertical rhythm — email + phone go side by side, the
+     headline stays modest, paddings stay tight.
+
+     This block used to say the compact rhythm made the unfolded form "fit a
+     single viewport", and that assumption is why the cookie-notice reserve
+     above was scoped to max-width 767px only. It is wrong. What matters is
+     VIEWPORT height, not screen resolution: a 1366x768 laptop loses 90-130px
+     to browser chrome, so the real viewport is ~640-680, and the form
+     overflows well before that. Measured at 1366 wide, scrolled to the
+     bottom as a first-time visitor, every height from 720 down to 600 put
+     the notice over SUBMIT — elementFromPoint at the button's centre
+     returned the banner and the tap was silently swallowed. */
   @media (min-width: 768px) {
     .hero {
       padding: 24px 0 12px;
     }
-    .back {
-      margin: 0 0 24px 24px;
-    }
+    /* Same reserve the mobile branch gets, sized for the row layout: the
+       notice is ~80px tall (14px padding twice, 2px border twice, a ~45px
+       button) and sits 16px off the bottom, so ~96px is occupied. 120px
+       leaves clearance for the text wrapping to two lines. The safe-area
+       inset is for tablets in landscape, which land in this branch. */
     .sheet {
-      padding: 20px 0 60px;
+      padding: 20px 0 calc(120px + env(safe-area-inset-bottom, 0px));
     }
     .contact {
       display: grid;
@@ -976,11 +1021,13 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     }
     .submit,
     .submit::before,
-    .input {
+    .input,
+    .close {
       transition: none;
     }
     .submit:hover,
-    .submit:active {
+    .submit:active,
+    .close:hover {
       transform: none;
     }
     .submit:hover::before,
