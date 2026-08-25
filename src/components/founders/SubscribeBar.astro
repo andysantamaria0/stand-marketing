@@ -14,8 +14,12 @@
 // "General Interest Signup" event to segment on. Deliberately NOT the onsite
 // klaviyo.js script: main removed it (#48) because its dashboard popup
 // rendered full-screen, and a raw fetch has no popup surface at all.
-// Caveat: this creates the profile but not "subscribed" consent status —
-// if Celestine needs formal consent, swap to a Klaviyo form/list subscribe.
+// CONSENT (fixed Aug 25): the client-events call alone created the profile
+// but left it `NEVER_SUBSCRIBED` on no list — visible in Klaviyo, impossible
+// to email. A `/client/subscriptions/` call now runs FIRST and subscribes to
+// "Stand Subscriber List" (V3TNVF) with a real consent timestamp and method;
+// the event call still runs after it for the source + UTM attribution a
+// subscribe cannot carry.
 ---
 
 <div class="subwrap">
@@ -228,10 +232,57 @@
         /* network/404 — fall through to Klaviyo */
       }
 
-      // Path 2: Klaviyo's public client-events API (the subscriber DB the
-      // email flows already run on). Creates/updates the profile by email
-      // and stamps the event in one call; 202 = accepted.
+      // Path 2a: SUBSCRIBE, which is the half that makes these addresses
+      // usable. The client-events call below creates a profile and records
+      // what happened, but it does not set marketing consent — a profile
+      // captured that way reads `NEVER_SUBSCRIBED` with a null consent
+      // timestamp, sits on no list, and cannot be sent a campaign. Verified
+      // against the two live signups on 2026-08-25 before this shipped.
+      //
+      // Ordered FIRST because it is the load-bearing one. If exactly one of
+      // these two calls survives, it should be the one that records consent.
+      //
+      // `V3TNVF` is "Stand Subscriber List" (single opt-in, so this subscribes
+      // outright with no confirmation step). It is the same id the app pins as
+      // KLAVIYO_SUBSCRIBER_LIST_ID, so both properties land people in one place.
       if (!saved) {
+        try {
+          const sres = await fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RqafrJ', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+            body: JSON.stringify({
+              data: {
+                type: 'subscription',
+                attributes: {
+                  // Shows up as the consent METHOD DETAIL in Klaviyo, so an
+                  // audit of why this address is subscribed points back here
+                  // rather than at "API".
+                  custom_source: 'landing_updates',
+                  profile: {
+                    data: {
+                      type: 'profile',
+                      attributes: {
+                        email,
+                        subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } },
+                      },
+                    },
+                  },
+                },
+                relationships: { list: { data: { type: 'list', id: 'V3TNVF' } } },
+              },
+            }),
+          });
+          saved = sres.ok;
+        } catch {
+          /* blocked or offline — the event call below still captures them */
+        }
+      }
+
+      // Path 2b: the client-events API, for the ANALYTICS the subscribe call
+      // cannot carry — `source` and the UTM set. Still runs when 2a already
+      // succeeded, because a subscription with no attribution answers "who"
+      // but never "where from"; 202 = accepted.
+      {
         try {
           const kres = await fetch('https://a.klaviyo.com/client/events/?company_id=RqafrJ', {
             method: 'POST',
@@ -247,7 +298,10 @@
               },
             }),
           });
-          saved = kres.ok;
+          // OR, not assignment: 2a may already have saved them, and a failed
+          // analytics call must not downgrade a successful subscribe into an
+          // error message for the parent.
+          saved = saved || kres.ok;
         } catch {
           /* blocked or offline */
         }
