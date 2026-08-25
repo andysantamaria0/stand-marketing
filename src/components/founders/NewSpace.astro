@@ -54,8 +54,7 @@ import SignupButton from './SignupButton.astro';
     margin: 0;
     width: 100%;
     /* Pie Pie — the sticker/display voice (same as the sign-up buttons).
-       Headlines render sentence case as written; Title Case is buttons-only
-       (JY, Aug 25). */
+       Title Case via capitalize (JY, Aug 25) — markup stays sentence case. */
     font-family: var(--font-display);
     font-weight: 400;
     /* 1/3 of the column-spanning size (Aug 24 review) — the stack reads as a
@@ -63,7 +62,7 @@ import SignupButton from './SignupButton.astro';
     font-size: clamp(24px, 5.2vw, 75px);
     line-height: 0.95;
     letter-spacing: 0.02em;
-    text-transform: none;
+    text-transform: capitalize;
   }
 
   .mega .line {
