@@ -114,6 +114,38 @@ function setHeadlineText(text: string): void {
   if (el) el.textContent = text;
 }
 
+/**
+ * Shows or hides the STAND wordmark in the headline.
+ *
+ * It stands in for the first word of the page-1 sentence, so it belongs to that
+ * sentence and not to the confirmation that replaces it — "STAND You're on the
+ * list!" reads as decoration rather than as a heading. Hiding it also drops
+ * "STAND" from the h1's accessible name, so the announced heading matches what
+ * is on screen.
+ *
+ * Relies on `.title-logo[hidden]` in enroll.astro: the author `display` rule
+ * would otherwise beat the UA's [hidden] and this would silently do nothing.
+ */
+function setHeadlineLogo(visible: boolean): void {
+  const logo = $<HTMLElement>("enroll-headline-logo");
+  if (logo) logo.hidden = !visible;
+}
+
+/**
+ * Shows or hides the corner X.
+ *
+ * The done screen carries its own "back home" button, so the X there is a
+ * second control doing the same job in a different idiom, in the opposite
+ * corner. Every earlier step keeps it — it is the only way out of the form.
+ *
+ * Relies on `.close[hidden]` in enroll.astro for the same reason as the
+ * wordmark: the author `display` rule would otherwise beat the UA's [hidden].
+ */
+function setCloseVisible(visible: boolean): void {
+  const close = $<HTMLElement>("enroll-close");
+  if (close) close.hidden = !visible;
+}
+
 /* ── kid blocks ──────────────────────────────────────────────────────────── */
 
 function kidBlocks(): HTMLElement[] {
@@ -380,6 +412,8 @@ function writeStep(step: string | null, mode: "push" | "replace"): void {
 function showPage1(): void {
   const headline = $<HTMLElement>("enroll-headline");
   setHeadlineText(COPY.open.headline);
+  setHeadlineLogo(true);
+  setCloseVisible(true);
   if (headline) {
     headline.classList.remove("is-confirmed");
     headline.hidden = false;
@@ -428,6 +462,8 @@ function showSuccess(): void {
   const headline = $<HTMLElement>("enroll-headline");
   const body = $<HTMLElement>("success-body");
   setHeadlineText(copy.headline);
+  setHeadlineLogo(false);
+  setCloseVisible(true);
   if (headline) {
     // Triggers the success choreography (headline pops, card follows) —
     // defined in enroll.astro's styles.
@@ -520,6 +556,7 @@ async function submitPage1(): Promise<void> {
 /* ── page 2 ──────────────────────────────────────────────────────────────── */
 
 function showDone(): void {
+  setCloseVisible(false);
   const success = $<HTMLElement>("enroll-success");
   const done = $<HTMLElement>("enroll-done");
   if (success) success.hidden = true;

@@ -38,12 +38,12 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     <div id="enroll-root">
       <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
       <header class="hero">
-        <a class="close" href="/" aria-label="Close and return to the homepage">&times;</a>
+        <a class="close" id="enroll-close" href="/" aria-label="Close and return to the homepage">&times;</a>
         <div class="wrap">
           {/* tabindex=-1: the island focuses this h1 on the success swap so
               screen readers announce the confirmation it then carries. */}
           <h1 class="title" id="enroll-headline" tabindex="-1">
-            <span class="title-logo" role="img" aria-label="STAND"></span>
+            <span class="title-logo" id="enroll-headline-logo" role="img" aria-label="STAND"></span>
             <span id="enroll-headline-text">{COPY.open.headline}</span>
           </h1>
           <!-- Hidden by the island on the success swap: once the headline
@@ -378,6 +378,9 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
         if (done) done.hidden = false;
         const headline = document.getElementById('enroll-headline');
         if (headline) headline.hidden = true;
+        // The done screen carries its own "back home" button.
+        const closeBtn = document.getElementById('enroll-close');
+        if (closeBtn) closeBtn.hidden = true;
       } else if (success) {
         success.hidden = false;
         const copy = COPY.success.open;
@@ -388,6 +391,9 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
           // wordmark beside it is deleted. See setHeadlineText() in island.ts.
           const headlineText = document.getElementById('enroll-headline-text');
           if (headlineText) headlineText.textContent = copy.headline;
+          // The wordmark belongs to the page-1 sentence, not the confirmation.
+          const headlineLogo = document.getElementById('enroll-headline-logo');
+          if (headlineLogo) headlineLogo.hidden = true;
           // Replays the real success choreography so the preview matches.
           headline.classList.add('is-confirmed');
         }
@@ -457,6 +463,12 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     outline-offset: 2px;
   }
 
+  /* `display: grid` above is an author rule and beats the UA's
+     [hidden] { display: none }, so the done screen needs this to hide the X. */
+  .close[hidden] {
+    display: none;
+  }
+
   /* The word STAND in the headline IS the wordmark, in brand red. Masked
      rather than an <img> so the colour is a CSS token rather than baked into
      the asset, and sized in `em` so it tracks the clamped title size at every
@@ -483,6 +495,13 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
        wordmark's feet land on the text baseline with no nudge. An earlier
        translateY here assumed padding in the asset that does not exist. */
     vertical-align: baseline;
+  }
+
+  /* Author `display` beats the UA's [hidden] { display: none }, so hiding the
+     wordmark needs this explicit rule or `logo.hidden = true` does nothing at
+     all. Same reason .error[hidden] exists below. */
+  .title-logo[hidden] {
+    display: none;
   }
 
   .title {
