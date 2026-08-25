@@ -401,15 +401,13 @@ async function submitDetails(): Promise<void> {
     // key present but blank means "clear it" (see optionalText in the API's
     // validate.ts). Sending every field unconditionally collapses that, so a
     // returning parent — the PRD's headline flow, back to add a sibling — who
-    // taps SEND on the empty optional form would erase the location and time
-    // they gave last visit. Tapping SKIP would have preserved them, so the
-    // more engaged parent lost more data, silently.
+    // taps SEND on the empty optional form would erase the location they
+    // gave last visit. Tapping SKIP would have preserved it, so the more
+    // engaged parent lost more data, silently.
     const body: Record<string, string> = { token: resumeToken };
     const location = $<HTMLInputElement>("details-location")?.value.trim() ?? "";
-    const time = $<HTMLSelectElement>("details-time")?.value ?? "";
     const otherCity = $<HTMLInputElement>("details-other")?.value.trim() ?? "";
     if (location) body.locationPreference = location;
-    if (time) body.timePreference = time;
     if (otherCity) body.otherCity = otherCity;
 
     const res = await fetch(`${API_BASE}/api/enroll/details`, {

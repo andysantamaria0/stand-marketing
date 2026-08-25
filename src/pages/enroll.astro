@@ -28,7 +28,7 @@
  * same glance as the submit button.
  */
 import Layout from '@/layouts/Layout.astro';
-import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
+import { ANY_DAY, COPY, DAYS } from '@/scripts/enroll/constants';
 ---
 
 <Layout title={COPY.meta.title} description={COPY.meta.description}>
@@ -206,14 +206,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
                   maxlength="200"
                   placeholder={COPY.details.locationPlaceholder}
                 />
-              </div>
-
-              <div class="field">
-                <label class="label" for="details-time">{COPY.details.timeLabel}</label>
-                <select class="input" id="details-time">
-                  <option value="">{COPY.details.timePlaceholder}</option>
-                  {TIMES.map((time) => <option value={time.value}>{time.label}</option>)}
-                </select>
               </div>
 
               <div class="field">
@@ -554,29 +546,6 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
   /* Focus = the sticker pop: a hard ink shadow, not a soft glow. */
   .input:focus-visible {
     box-shadow: 3px 3px 0 var(--stand-black);
-  }
-
-  /* While the empty placeholder option is selected, render the select's text
-     in placeholder gray so it reads as a prompt, not a chosen answer. The
-     dropdown's real options stay ink. */
-  select.input:has(option[value='']:checked) {
-    color: #757575;
-  }
-
-  select.input option {
-    color: var(--stand-black);
-  }
-
-  select.input {
-    appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, var(--stand-black) 50%),
-      linear-gradient(135deg, var(--stand-black) 50%, transparent 50%);
-    background-position:
-      calc(100% - 20px) calc(50% + 2px),
-      calc(100% - 14px) calc(50% + 2px);
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
-    padding-right: 40px;
   }
 
   .error {

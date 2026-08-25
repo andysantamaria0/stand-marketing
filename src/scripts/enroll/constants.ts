@@ -3,7 +3,7 @@
  *
  * This file is JY's to edit at handoff — layout, copy and question wording are
  * his. What is NOT his to change without a registry pass on the app side: the
- * API contract (field names, request/response shapes), the day and time values,
+ * API contract (field names, request/response shapes), the day values,
  * and the analytics event names. Those are a cross-repo contract; the app's
  * `src/lib/posthog/events.ts` and `src/lib/klaviyo/events.ts` are the authority.
  *
@@ -29,21 +29,6 @@ export const DAYS = [
 
 /** The flexible-parent escape hatch. One tap instead of six. */
 export const ANY_DAY = { value: "any", label: "Any day works" } as const;
-
-/**
- * Time-of-day options on the optional questions. Values are the API contract.
- *
- * "Weekend mornings" (`weekend_am`) was removed 8/19: the working class plan is
- * Sat 12-2pm, i.e. midday, so the option was offering a slot we do not intend
- * to run. Removed from the server's TIME_VALUES in the same pass, so the value
- * is refused rather than merely un-offered. Re-adding it means re-adding it in
- * BOTH repos.
- */
-export const TIMES = [
-  { value: "afternoon", label: "Afternoons" },
-  { value: "evening", label: "Evenings" },
-  { value: "flexible", label: "Flexible" },
-] as const;
 
 /** Hard ceiling per family, mirroring the server. */
 export const MAX_KIDS = 4;
@@ -126,8 +111,6 @@ export const COPY = {
     intro: "Few more quick questions for you!",
     locationLabel: "Where in LA works best for you?",
     locationPlaceholder: "Neighborhood or area",
-    timeLabel: "What time of day usually works?",
-    timePlaceholder: "Choose a time of day",
     otherCityLabel: "Not in LA? Tell us where you'd want STAND to open.",
     otherCityPlaceholder: "City",
     submit: "Send",
