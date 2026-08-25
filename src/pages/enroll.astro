@@ -434,20 +434,6 @@ import { COPY, DAYS, MAX_AGE, MIN_AGE } from '@/scripts/enroll/constants';
     padding: 0 20px;
   }
 
-  /* Screen-reader-only: rendered, announceable, invisible. Used by the
-     #enroll-live region the island writes chip-eviction notices into. */
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
   /* ── Header ────────────────────────────────────────────────────────── */
   .hero {
     position: relative;
@@ -455,8 +441,9 @@ import { COPY, DAYS, MAX_AGE, MIN_AGE } from '@/scripts/enroll/constants';
     padding: 20px 0 8px;
   }
 
-  /* Corner escape hatch — mirrors the wordmark back-link, for visitors who
-     scan for an X to leave the form. */
+  /* Corner escape hatch — the form's only exit chrome since the wordmark
+     moved into the headline (it is a masked span now, not a link), for
+     visitors who scan for an X to leave. */
   .close {
     position: absolute;
     top: 14px;
@@ -547,12 +534,14 @@ import { COPY, DAYS, MAX_AGE, MIN_AGE } from '@/scripts/enroll/constants';
     margin: 0;
   }
 
-  /* The corner X is absolutely positioned against the VIEWPORT (right: 14px,
-     44px wide) and reserves no width, while .wrap is full-width below its
-     640px cap — so on phone widths the headline's first line can run under
-     the X's box, putting a tappable home link on top of heading text.
-     Reserve the X's footprint so the line wraps short of it. At >= 768px the
-     centered .wrap plus its 20px inner padding already clears the X. */
+  /* The corner X is absolutely positioned against the full-bleed .hero
+     (right: 14px, 44px wide) and reserves no width, while .wrap is full-width
+     below its 640px cap — so on phone widths the headline's top lines can run
+     under the X's box, putting a tappable home link on top of heading text.
+     Reserve the X's footprint so lines wrap short of it. The overlap actually
+     ends at ~716px (the centered .wrap plus its 20px inner padding clears the
+     X from there up); 767px just rides the existing breakpoint, so 716-767px
+     reserves a little width it does not strictly need. */
   @media (max-width: 767px) {
     .title {
       padding-right: 48px;
