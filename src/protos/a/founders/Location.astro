@@ -17,7 +17,7 @@ const WEEKS = [
   <div class="grid">
     <header class="rail">
       <h2 id="location-title" data-rv style="--rvi: 0">
-        <span class="keep-case">STAND</span> is coming to Los&nbsp;Angeles!
+        <span class="logo-word" role="img" aria-label="Stand"></span> is coming to Los&nbsp;Angeles!
       </h2>
       <p class="lede" data-rv style="--rvi: 1">
         Our first location opens this fall in West&nbsp;LA.
@@ -90,12 +90,19 @@ const WEEKS = [
     font-size: clamp(32px, 3.8vw, 56px);
     line-height: 1.02;
     letter-spacing: 0.02em;
-    text-transform: lowercase;
+    text-transform: none;
   }
 
-  /* "STAND" and "LA" keep caps inside the lowercased headline. */
-  h2 .keep-case {
-    text-transform: none;
+  /* "Stand" set as the actual wordmark — logo.svg as a currentColor mask
+     (same technique as the nav), sized to the headline's cap height so it
+     sits on the baseline like a word, not a badge. */
+  h2 .logo-word {
+    display: inline-block;
+    height: 0.72em;
+    aspect-ratio: 199.29 / 47.33;
+    background: currentColor;
+    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
+    mask: url('/brand/logo.svg') no-repeat center / contain;
   }
 
   .lede {
