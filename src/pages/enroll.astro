@@ -38,7 +38,6 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     <div id="enroll-root">
       <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
       <header class="hero">
-        <a class="back" href="/" aria-label="Stand — back to home"></a>
         <a class="close" href="/" aria-label="Close and return to the homepage">&times;</a>
         <div class="wrap">
           {/* tabindex=-1: the island focuses this h1 on the success swap so
@@ -424,22 +423,6 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     position: relative;
     background: var(--stand-cream);
     padding: 20px 0 8px;
-  }
-
-  /* The real wordmark (same asset as Footer/FAQ) doubles as the back link.
-     The SVG ships with a black fill, so it's painted via a mask: the element's
-     background-color shows through the logo's shape without needing a
-     recolored asset. Sits OUTSIDE .wrap, flush to the viewport's left edge. */
-  /* Fluid display sizing: phones scale between the clamp bounds, desktop
-     rides the cap — no per-breakpoint font-size overrides needed. */
-  .back {
-    display: block;
-    width: clamp(64px, 20vw, 90px);
-    aspect-ratio: 199.29 / 47.33;
-    background-color: var(--stand-red);
-    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
-    mask: url('/brand/logo.svg') no-repeat left center / contain;
-    margin: 0 0 20px 20px;
   }
 
   /* Corner escape hatch — mirrors the wordmark back-link, for visitors who
@@ -914,9 +897,6 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
   @media (min-width: 768px) {
     .hero {
       padding: 24px 0 12px;
-    }
-    .back {
-      margin: 0 0 24px 24px;
     }
     /* Same reserve the mobile branch gets, sized for the row layout: the
        notice is ~80px tall (14px padding twice, 2px border twice, a ~45px
