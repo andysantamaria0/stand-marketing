@@ -5,13 +5,15 @@
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
-import SignupButton from './SignupButton.astro';
+// PROTO B (JY, Aug 25): sticker-style email capture in place of the
+// "Sign up now" button — compare against A's quiet underline bar.
+import SubscribeSticker from './SubscribeSticker.astro';
 ---
 
 <section class="fc-closing" aria-label="Sign up">
   <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
   <div class="cta-wrap" data-rv style="--rvi: 1">
-    <SignupButton />
+    <SubscribeSticker />
   </div>
   <div class="social" data-rv style="--rvi: 2">
     <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
