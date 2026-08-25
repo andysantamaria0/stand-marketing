@@ -1,0 +1,99 @@
+---
+// Tagline strip — Figma nodes 201:2483 (top) / 201:2545 (bottom).
+// Continuous horizontal scroll ticker (redesign: scroll, don't flash). The
+// phrases are joined into one line and rendered in 3 identical copies; the
+// track translates by exactly one copy-width (-33.333%) so the loop is seamless.
+
+interface MarqueeItem {
+  text: string;
+  font?: 'sans' | 'serif';
+}
+
+interface Props {
+  items?: (string | MarqueeItem)[];
+  height?: number;
+  /** Seconds for one full loop of the ticker. */
+  duration?: number;
+  /** Strip background — any CSS color; defaults to the brand red. */
+  bg?: string;
+}
+
+const {
+  items = [
+    { text: 'Dream. Build. Grow.', font: 'sans' },
+    { text: 'What will you build?', font: 'serif' },
+  ],
+  height = 56,
+  duration = 30,
+  bg = 'var(--stand-red)',
+} = Astro.props;
+
+// Normalize: strings default to sans.
+const phrases: MarqueeItem[] = items.map((it) =>
+  typeof it === 'string' ? { text: it, font: 'sans' } : { font: 'sans', ...it }
+);
+
+// Separator: em-space + arrow + em-space. Rendered as its own neutral span
+// between phrases (and trailing, so the seam matches the inner gaps).
+const SEP = '\u2003\u2192\u2003';
+
+const copies = [0, 1, 2];
+---
+
+<div class="marquee" style={{ height: `${height}px`, background: bg }} aria-hidden="true">
+  <div class="track" style={{ animationDuration: `${duration}s` }}>
+    {copies.map(() => (
+      <span class="copy">
+        {phrases.map((p) => (
+          <>
+            <span class={`phrase phrase--${p.font}`}>{p.text}</span>
+            <span class="sep">{SEP}</span>
+          </>
+        ))}
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    color: var(--stand-postit);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    font-weight: 400;
+    font-size: clamp(18px, 2.226vw, 32px);
+    line-height: 1;
+    letter-spacing: -0.75px;
+  }
+
+  .track {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    animation: marquee-scroll linear infinite;
+    will-change: transform;
+  }
+
+  .copy {
+    flex: 0 0 auto;
+  }
+
+  .phrase--sans { font-family: var(--font-sans); }
+  .phrase--serif { font-family: var(--font-serif); font-weight: 300; }
+  .sep { font-family: var(--font-sans); }
+
+  @keyframes marquee-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-33.3333%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; }
+  }
+
+  @media (max-width: 768px) {
+    .marquee { font-size: 18px; }
+  }
+</style>
