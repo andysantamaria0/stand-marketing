@@ -87,7 +87,15 @@ export const COPY = {
       "I would like to receive promotional SMS messages. I can reply STOP to unsubscribe.",
     privacyPrefix: "By submitting this form, you agree to our ",
     privacyLinkText: "Privacy Policy",
-    privacyHref: "/privacy",
+    /**
+     * Absolute on purpose. This repo has no `privacy.astro` — production serves
+     * /privacy from elsewhere on the domain — so a relative href 404s in
+     * `astro dev` and in previews while working fine live. Absolute makes the
+     * link correct in every environment. Points at `www.` because that is what
+     * production answers on; an apex visitor crosses to the subdomain, which is
+     * acceptable for a policy page outside the signup flow.
+     */
+    privacyHref: "https://www.standkids.com/privacy",
     privacySuffix: ".",
     submit: "SUBMIT",
     submitting: "Sending...",
