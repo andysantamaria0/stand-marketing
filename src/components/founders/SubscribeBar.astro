@@ -25,7 +25,7 @@
         required
       />
       <button type="submit" class="go" id="updates-go">
-        sign up<span class="arrow" aria-hidden="true">&rarr;</span>
+        Sign up<span class="arrow" aria-hidden="true">&rarr;</span>
       </button>
     </div>
     <p class="note" id="updates-error" role="alert" hidden></p>
@@ -104,7 +104,6 @@
     font-weight: 400;
     font-size: 22px;
     letter-spacing: 0.04em;
-    text-transform: capitalize;
     color: var(--stand-black);
     cursor: pointer;
     white-space: nowrap;
@@ -142,7 +141,6 @@
     font-weight: 400;
     font-size: clamp(20px, 2.2vw, 28px);
     letter-spacing: 0.04em;
-    text-transform: capitalize;
     color: var(--stand-black);
   }
 
@@ -200,7 +198,7 @@
     submitting = true;
     if (go) {
       go.disabled = true;
-      go.textContent = 'sending…';
+      go.textContent = 'Sending…';
     }
 
     try {
@@ -229,7 +227,7 @@
 
       form.hidden = true;
       if (doneEl) {
-        doneEl.textContent = "good, you're on the list!";
+        doneEl.textContent = "Good, you're on the list!";
         doneEl.hidden = false;
       }
     } catch {
@@ -238,7 +236,7 @@
       submitting = false;
       if (go) {
         go.disabled = false;
-        go.innerHTML = 'sign up<span class="arrow" aria-hidden="true">&rarr;</span>';
+        go.innerHTML = 'Sign up<span class="arrow" aria-hidden="true">&rarr;</span>';
       }
     }
   });
