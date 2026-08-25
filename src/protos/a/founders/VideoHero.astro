@@ -1,0 +1,180 @@
+---
+import Nav from './Nav.astro';
+
+// Hero — full-screen film under the red nav bar: the video fills the rest of
+// the viewport edge-to-edge, lede overlaid upper-left, headline at poster
+// scale overlaid across the bottom. A soft bottom scrim keeps the type
+// readable over moving footage.
+//
+// The film streams from the same Vercel Blob asset the production site uses —
+// video binaries stay out of git. If the blob is ever rotated, grab the new
+// URL from the live site's <video> source.
+const FILM_SRC =
+  'https://mk7xj0szdtkawdqj.public.blob.vercel-storage.com/video/stand-website-v2-RzQBNxWaJiAOJwSAv6dveovpSRwsLH.mp4';
+---
+
+<section class="fc-hero" aria-labelledby="fc-hero-title">
+  <Nav />
+
+  <video autoplay muted loop playsinline preload="metadata" aria-label="Stand — the film">
+    <source src={FILM_SRC} type="video/mp4" />
+  </video>
+
+  <!-- Visually clean film; the h1 stays for the document outline and the
+       section's aria-labelledby, just hidden from view. -->
+  <h1 id="fc-hero-title" class="sr-only">Build your own thing. For Real.</h1>
+
+  <!-- Sound toggle — the film autoplays muted (browser requirement); this
+       lets the visitor opt into audio. Icon pair swaps on data-muted. -->
+  <button type="button" id="fc-hero-sound" class="sound" data-muted="true" aria-label="Turn sound on">
+    <svg class="icon icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none" />
+      <line x1="16" y1="9" x2="21" y2="14" />
+      <line x1="21" y1="9" x2="16" y2="14" />
+    </svg>
+    <svg class="icon icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M18.5 5.5a9 9 0 0 1 0 13" />
+    </svg>
+  </button>
+</section>
+
+<style>
+  .fc-hero {
+    position: relative;
+    /* Full screen minus the fixed red bar — the film starts under it. */
+    margin-top: var(--header-h);
+    height: calc(100svh - var(--header-h));
+    overflow: hidden;
+    /* Dark ground doubles as the placeholder until the film loads. */
+    background: #191512;
+  }
+
+  .fc-hero video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sound {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--stand-cream);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--stand-cream);
+    cursor: pointer;
+    transition: transform 120ms ease, background-color 120ms ease;
+  }
+
+  .sound:hover {
+    transform: scale(1.08);
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .sound:focus-visible {
+    outline: 3px solid var(--stand-postit);
+    outline-offset: 2px;
+  }
+
+  .sound .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Phones: the headline lives inside the 16:9 film, so a portrait cover
+     crop cuts it off. The hero takes the film's own ratio instead — full
+     frame visible, no crop. */
+  @media (max-width: 768px) {
+    .fc-hero {
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .sound {
+      right: 12px;
+      bottom: 12px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .sound .icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .sound[data-muted='true'] .icon-on,
+  .sound[data-muted='false'] .icon-off {
+    display: none;
+  }
+</style>
+
+<script>
+  // Sound toggles with a volume ramp: unmute starts silent and eases up;
+  // mute eases down, then flips the muted flag. Intent lives on the button's
+  // data-muted (not the video), so a mid-fade re-click cancels cleanly and
+  // reverses from wherever the ramp got to. The icon swaps immediately —
+  // feedback tracks intent, audio follows. (iOS ignores scripted volume;
+  // there the flag flip still works, just without the glide.)
+  const hero = document.querySelector('.fc-hero');
+  const film = hero?.querySelector('video');
+  const toggle = document.getElementById('fc-hero-sound');
+  if (film && toggle) {
+    const FADE_MS = 700;
+    let timerId = 0;
+
+    // Timer-driven, not rAF: Chrome freezes rAF entirely while the window
+    // is occluded, which would leave the fade (and the end-of-fade mute)
+    // hanging. An interval keeps ticking, and because progress is computed
+    // from wall time, even a throttled tick completes the ramp. Writes are
+    // clamped — volume outside [0,1] throws.
+    const fadeTo = (target, done) => {
+      clearInterval(timerId);
+      const start = film.volume;
+      const t0 = performance.now();
+      timerId = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0) / FADE_MS);
+        film.volume = Math.min(1, Math.max(0, start + (target - start) * k));
+        if (k >= 1) {
+          clearInterval(timerId);
+          done?.();
+        }
+      }, 30);
+    };
+
+    toggle.addEventListener('click', () => {
+      const turningOn = toggle.dataset.muted === 'true';
+      if (turningOn) {
+        if (film.muted) film.volume = 0;
+        film.muted = false;
+        film.play()?.catch(() => {});
+        fadeTo(1);
+      } else {
+        fadeTo(0, () => {
+          film.muted = true;
+        });
+      }
+      toggle.dataset.muted = String(!turningOn);
+      toggle.setAttribute('aria-label', turningOn ? 'Turn sound off' : 'Turn sound on');
+    });
+  }
+</script>

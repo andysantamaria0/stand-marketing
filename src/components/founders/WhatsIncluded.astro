@@ -1,0 +1,130 @@
+---
+// "What's included" — mustard band with the cream scribble sprawling behind,
+// Pie Pie red title, five numbered columns (serif numerals in rotating brand
+// colors), and the paper-tag signup CTA.
+import SignupButton from './SignupButton.astro';
+const ITEMS = [
+  { n: 1, color: 'var(--stand-red)', text: 'Founder based curriculum specifically created for kids.' },
+  { n: 2, color: 'var(--stand-pink)', text: 'STAND login for saved progress.' },
+  { n: 3, color: 'var(--stand-blue)', text: 'Guest speakers from well known brands you know and love.' },
+  { n: 4, color: 'var(--stand-green)', text: 'Welcome packet and member card.' },
+  { n: 5, color: 'var(--stand-blue)', text: 'Pitch night.' },
+];
+---
+
+<section class="fc-included" aria-labelledby="included-title">
+  <img
+    class="scribble"
+    src="/brand/scribble-cream.png"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    width="1381"
+    height="653"
+  />
+
+  <div class="inner">
+    <h2 id="included-title">what&rsquo;s included</h2>
+
+    <ol class="items">
+      {
+        ITEMS.map((item) => (
+          <li>
+            <span class="num" style={`color: ${item.color}`} aria-hidden="true">{item.n}</span>
+            <span class="text">{item.text}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    <SignupButton />
+  </div>
+</section>
+
+<style>
+  .fc-included {
+    position: relative;
+    background: var(--stand-mustard);
+    overflow: hidden;
+  }
+
+  .scribble {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left center;
+    pointer-events: none;
+  }
+
+  .inner {
+    position: relative;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: clamp(56px, 8vh, 96px) 48px clamp(48px, 7vh, 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(24px, 2.4vw, 36px);
+    color: var(--stand-red);
+    text-align: center;
+  }
+
+  .items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-4);
+    width: 100%;
+  }
+
+  .items li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+  }
+
+  .num {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 22px;
+  }
+
+  .text {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.6vw, 24px);
+    line-height: 1.25;
+    color: var(--stand-red);
+    max-width: 16ch;
+  }
+
+  @media (max-width: 900px) {
+    .items {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .inner {
+      padding: 48px 20px;
+    }
+
+    .items {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+  }
+</style>

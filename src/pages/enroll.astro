@@ -39,6 +39,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
       <!-- ── GREEN HEADER BAND ──────────────────────────────────────────── -->
       <header class="hero">
         <a class="back" href="/" aria-label="Stand — back to home"></a>
+        <a class="close" href="/" aria-label="Close and return to the homepage">&times;</a>
         <div class="wrap">
           {/* tabindex=-1: the island focuses this h1 on the success swap so
               screen readers announce the confirmation it then carries. */}
@@ -444,6 +445,7 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
 
   /* ── Header ────────────────────────────────────────────────────────── */
   .hero {
+    position: relative;
     background: var(--stand-cream);
     padding: 20px 0 8px;
   }
@@ -462,6 +464,32 @@ import { ANY_DAY, COPY, DAYS, TIMES } from '@/scripts/enroll/constants';
     -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
     mask: url('/brand/logo.svg') no-repeat left center / contain;
     margin: 0 0 20px 20px;
+  }
+
+  /* Corner escape hatch — mirrors the wordmark back-link, for visitors who
+     scan for an X to leave the form. */
+  .close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    font-family: var(--font-sans);
+    font-size: 30px;
+    line-height: 1;
+    color: var(--stand-black);
+    transition: transform 120ms ease;
+  }
+
+  .close:hover {
+    transform: scale(1.15);
+  }
+
+  .close:focus-visible {
+    outline: 3px solid var(--stand-green);
+    outline-offset: 2px;
   }
 
   .title {

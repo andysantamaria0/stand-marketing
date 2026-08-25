@@ -1,0 +1,1579 @@
+---
+// /masterclass — "Kickstart Your Business Builder" landing page (45-day sprint).
+//
+// Skeleton created 2026-08-03 per planning meeting. This is a WIREFRAME:
+// every piece of narrative copy is a visible <placeholder> token that Lauren /
+// Celestine replace before the Aug 5 announcement. Functional microcopy (form
+// labels, validation messages) is real and stays.
+//
+// Launch checklist:
+//   [ ] Curriculum beats + time splits from Lauren's one-pager (section: minutes)
+//   [ ] Founder bio copy + photo (section: founder) — photo at /brand/lauren.webp
+//   [ ] FAQ answers reviewed by Lauren (section: faq)
+//   [ ] Signup endpoint live on app.standkids.com (contract below)
+//   [ ] Remove `noindex` from <Layout> at announcement
+//   [ ] OG image for the announcement post (og:image currently site default)
+//
+// ── Signup capture contract (app-side work, owned by Andy) ────────────────────
+// This repo is a static site with no backend, so the form POSTs JSON to the app
+// origin, which already owns Supabase + Resend:
+//
+//   POST https://app.standkids.com/api/masterclass-signup
+//   Content-Type: application/json
+//   { parentName: string, parentEmail: string, kidFirstName: string,
+//     kidAge: string, source: "masterclass-landing", utm: Record<string,string> }
+//
+//   → 200 { status: "confirmed" }   seat secured (send confirmation email +
+//                                   calendar invite via Resend; reminders T-24h/T-1h)
+//   → 200 { status: "waitlist" }    the 12 seats are gone; store on the
+//                                   "August cohort first dibs" list
+//   → 4xx/5xx                       page shows the mailto fallback
+//
+// CORS: allow origin https://standkids.com. De-dupe by parentEmail (idempotent
+// re-submits, same as the waitlist table).
+import Layout from '@/layouts/Layout.astro';
+import Footer from '@/components/Footer.astro';
+
+// Real decided data (meeting notes): countdown target for the urgency widget.
+const EVENT_START_ISO = '2026-08-24T16:30:00-07:00';
+
+const EVENT = {
+  weekday: 'Monday',
+  date: 'August 24',
+  time: '4:30 PM PT / 7:30 PM ET',
+  length: '90 minutes',
+  lengthAdj: '90-minute',
+  where: 'Live on Zoom',
+  seats: 12,
+  ages: '10–16',
+};
+
+// Hero sticker fan — five products spread in an overlapping row like a fanned
+// hand of stamps. x/y are offsets in % of a sticker's own size (64% step ≈
+// one-third overlap), rot alternates outward, z peaks at the center so the
+// smiley sits on top and neighbors tuck under it symmetrically.
+const STACK = [
+  { file: 'STAND_PNG_YellowPlushie', x: -128, y: 6, rot: -14, z: 1 },
+  { file: 'STAND_PNG_PinkHoodie', x: -64, y: -4, rot: -7, z: 3 },
+  { file: 'STAND_PNG_YellowSticker', x: 0, y: 0, rot: -3, z: 5 },
+  { file: 'STAND_PNG_BlueHat', x: 64, y: -6, rot: 8, z: 4 },
+  { file: 'STAND_PNG_RedCupcake', x: 128, y: 8, rot: 14, z: 2 },
+];
+
+// Promise cards — one product sticker per outcome, tracing the arc the page
+// sells: the idea (lightbulb) → opening up (open sign) → real sales (receipt).
+// None of these repeat the hero fan's five.
+const PROMISE_CARDS = [
+  { icon: 'STAND_PNG_YellowLightbulb', rot: -6 },
+  { icon: 'STAND_PNG_RedOpenSign', rot: 4 },
+  { icon: 'STAND_PNG_BlueReceipt', rot: -4 },
+];
+
+// Wireframe slots — Lauren's one-pager fills these (4 beats, ~90 min total).
+const beats = Array.from({ length: 4 }, (_, i) => ({
+  minutes: '<min>',
+  title: `<Step ${i + 1} title>`,
+  body: '<Body text — what happens in this step, what the kid produces>',
+}));
+
+// Wireframe slots — parent FAQ, Lauren to write (format, age range, what the
+// kid needs, what happens after, free?, safety).
+const faqs = Array.from({ length: 6 }, (_, i) => ({
+  q: `<Question ${i + 1}>`,
+  a: '<Answer — plain, reassuring, parent-voiced>',
+}));
+---
+
+<Layout
+  title="Stand — Kickstart Your Business Builder · A live masterclass for kids"
+  description={`A free, live 90-minute masterclass for kids ${EVENT.ages}. ${EVENT.weekday}, ${EVENT.date} — every kid leaves with a real business idea and a path to launching it on Stand. ${EVENT.seats} spots only.`}
+  noindex
+>
+  <main class="mc">
+    <!-- ── Nav (same lightweight pattern as /faq) ─────────────────────────── -->
+    <nav class="mc-nav">
+      <a href="/" class="back-link" aria-label="Stand — home">
+        <span class="nav-logo" aria-hidden="true"></span>
+      </a>
+      <a href="#signup" class="nav-cta">&lt;CTA&gt; &rarr;</a>
+    </nav>
+
+    <!-- ── 1 · Hero — giant type IS the poster (poster structure:
+         program name as a viewport-filling wordmark with a fan of product
+         stickers spread beneath it, stamp-collection style). Sticky: the
+         sections that follow slide up over it. ─────────────────────────────── -->
+    <section class="hero" aria-labelledby="mc-title">
+      <h1 id="mc-title" class="hero-title">&lt;Masterclass title&gt;</h1>
+
+      <div class="sticker-stack" aria-hidden="true">
+        {
+          STACK.map((s) => (
+            <img
+              class="stack-item"
+              src={`/brand/${s.file}.webp`}
+              alt=""
+              draggable="false"
+              style={{
+                '--x': `${s.x}%`,
+                '--y': `${s.y}%`,
+                '--rot': `${s.rot}deg`,
+                'z-index': s.z,
+              }}
+            />
+          ))
+        }
+      </div>
+
+      <p class="hero-sub">
+        &lt;One-line value prop &mdash; who it&rsquo;s for,
+        <em>what they walk out with&gt;</em>
+      </p>
+
+      <ul class="event-facts" aria-label="Event details">
+        <li>&lt;Date&gt;</li>
+        <li>&lt;Time&gt;</li>
+        <li>&lt;Platform&gt;</li>
+      </ul>
+
+      <a href="#signup" class="cta-btn">
+        <span class="cta-label">
+          <span class="cta-text">&lt;CTA&gt; &rarr;</span>
+          <span class="cta-text cta-text-copy" aria-hidden="true">&lt;CTA&gt; &rarr;</span>
+        </span>
+      </a>
+    </section>
+
+    <div class="mc-rest">
+    <!-- ── 1b · Poster — full-bleed red statement section that slides over the
+         pinned hero, carrying the scarcity story in giant type. ───────────── -->
+    <section class="poster" aria-labelledby="poster-title">
+      <h2 id="poster-title" class="poster-title">&lt;Scarcity statement&gt;</h2>
+      <p class="poster-sub">&lt;Event details &middot; urgency line&gt;</p>
+      <a href="#signup" class="cta-btn cta-btn-postit">
+        <span class="cta-label">
+          <span class="cta-text">&lt;CTA&gt; &rarr;</span>
+          <span class="cta-text cta-text-copy" aria-hidden="true">&lt;CTA&gt; &rarr;</span>
+        </span>
+      </a>
+    </section>
+
+    <!-- ── 1c · Social proof marquee — continuous ticker (3 copies, track
+         slides one copy-width for a seamless loop, same technique as the
+         homepage Marquee). ───────────────────────────────────────────────── -->
+    <section class="proof" aria-label="Credibility">
+      <p class="visually-hidden">
+        Social proof: founder credential, press, testimonials.
+      </p>
+      <div class="proof-track" aria-hidden="true">
+        {
+          [0, 1, 2].map(() => (
+            <span class="proof-copy">
+              <strong>&lt;Founder credential&gt;</strong>
+              <em>&rarr;</em>
+              <span>&lt;Press logos&gt;</span>
+              <em>&rarr;</em>
+              <span>&lt;Testimonial quote&gt;</span>
+              <em>&rarr;</em>
+            </span>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ── 2 · The promise, made tangible ─────────────────────────────────── -->
+    <section class="promise" aria-labelledby="promise-title">
+      <h2 id="promise-title" class="headline section-title">
+        &lt;Section title &mdash; the promise&gt;
+      </h2>
+      <div class="promise-grid">
+        {
+          PROMISE_CARDS.map((c, i) => (
+            <article class="promise-card">
+              <img
+                class="promise-icon"
+                src={`/brand/${c.icon}.webp`}
+                alt=""
+                loading="lazy"
+                style={{ '--rot': `${c.rot}deg` }}
+              />
+              <h3 class="name">&lt;Outcome {i + 1} title&gt;</h3>
+              <p class="desc">
+                &lt;Body text &mdash; the tangible thing every kid leaves with&gt;
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ── 3 · The 90 minutes (placeholder until Lauren's one-pager) ──────── -->
+    <section class="minutes" aria-labelledby="minutes-title">
+      <h2 id="minutes-title" class="headline section-title">
+        &lt;Section title &mdash; curriculum&gt;
+      </h2>
+      <ol class="beats">
+        {
+          beats.map((b) => (
+            <li class="beat">
+              <div class="beat-body">
+                <h3 class="name">
+                  {b.title} <span class="beat-minutes">{b.minutes}</span>
+                </h3>
+                <p class="desc">{b.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ── 4 · The founder — where the announcement traffic lands ─────────── -->
+    <section class="founder" aria-labelledby="founder-title">
+      <div class="founder-photo" aria-hidden="true">
+        <!-- TODO(asset): founder photo → /brand/lauren.webp, then replace this frame. -->
+        <span class="photo-placeholder">Photo</span>
+      </div>
+      <div class="founder-copy">
+        <h2 id="founder-title" class="headline">&lt;Founder headline&gt;</h2>
+        <p class="lede founder-cred">&lt;Credential line&gt;</p>
+        <p class="desc">
+          &lt;Founder bio &mdash; the trust transfer: who Lauren is, why she
+          built Stand, why she&rsquo;s teaching this class herself&gt;
+        </p>
+      </div>
+    </section>
+
+    <!-- ── 5 · Parent FAQ ─────────────────────────────────────────────────── -->
+    <!-- Full-bleed wavy divider introducing the FAQ. -->
+    <div class="wave-divider" aria-hidden="true"></div>
+
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="headline section-title">FAQ</h2>
+      <div class="faq-list">
+        {
+          faqs.map((item) => (
+            <details class="faq-item">
+              <summary class="q">{item.q}</summary>
+              <p class="a desc">{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ── 6 · Signup ─────────────────────────────────────────────────────── -->
+    <section class="signup" id="signup" aria-labelledby="signup-title">
+      <div class="signup-grid">
+        <div class="signup-copy">
+          <h2 id="signup-title" class="signup-title">&lt;Form title&gt;</h2>
+          <p class="signup-when">&lt;Event details &middot; price&gt;</p>
+          <p class="signup-blurb">
+            &lt;Post-signup expectations &mdash; confirmation email, calendar
+            invite, reminders, what happens when spots run out&gt;
+          </p>
+        </div>
+
+        <div class="signup-form-col">
+        <form id="mc-form" novalidate>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">Kid&rsquo;s first name</span>
+              <input type="text" name="kidFirstName" autocomplete="off" required />
+            </label>
+            <label class="field field-age">
+              <span class="field-label">Kid&rsquo;s age</span>
+              <select name="kidAge" required>
+                <option value="" selected disabled>&nbsp;</option>
+                {Array.from({ length: 7 }, (_, i) => 10 + i).map((age) => (
+                  <option value={String(age)}>{age}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span class="field-label">Your name</span>
+            <input type="text" name="parentName" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span class="field-label">Your email</span>
+            <input type="email" name="parentEmail" autocomplete="email" required />
+          </label>
+
+          <!-- Honeypot: hidden from humans; bots that fill it are dropped
+               client-side (and the endpoint should drop it server-side too). -->
+          <label class="hp" aria-hidden="true">
+            Company
+            <input type="text" name="company" tabindex="-1" autocomplete="off" />
+          </label>
+
+          <button type="submit" class="cta-btn cta-btn-postit submit-btn">
+            <span class="cta-label">
+              <span class="cta-text">&lt;CTA&gt; &rarr;</span>
+              <span class="cta-text cta-text-copy" aria-hidden="true">&lt;CTA&gt; &rarr;</span>
+            </span>
+          </button>
+          <p class="form-status" id="mc-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Post-submit states: swapped in by the script below. -->
+        <div class="confirm confirm-seat" hidden>
+          <p class="confirm-big">&lt;Confirmed headline&gt;</p>
+          <p class="desc">
+            &lt;Confirmed body &mdash; check email, calendar invite, reminders&gt;
+          </p>
+        </div>
+        <div class="confirm confirm-waitlist" hidden>
+          <p class="confirm-big">&lt;Waitlist headline&gt;</p>
+          <p class="desc">
+            &lt;Waitlist body &mdash; spots full, first in line for the next
+            session&gt;
+          </p>
+        </div>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <!-- ── Countdown — sticky urgency widget. Ticks to
+         the real event start; clicking jumps to the signup form; hides itself
+         once the class has begun. ─────────────────────────────────────────── -->
+    <a
+      href="#signup"
+      id="mc-countdown"
+      class="countdown"
+      data-target={EVENT_START_ISO}
+      aria-label="Time left until the masterclass — jump to signup"
+    >
+      <span class="countdown-label">&lt;Urgency label&gt;</span>
+      <span class="countdown-cells" role="timer">
+        <span class="cell"><b data-cd="d">00</b><i>days</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="h">00</b><i>hrs</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="m">00</b><i>min</i></span>
+        <em aria-hidden="true">:</em>
+        <span class="cell"><b data-cd="s">00</b><i>sec</i></span>
+      </span>
+    </a>
+  </main>
+  <Footer signup={false} />
+</Layout>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const ENDPOINT = 'https://app.standkids.com/api/masterclass-signup';
+
+  const form = document.getElementById('mc-form') as HTMLFormElement | null;
+  const status = document.getElementById('mc-status');
+  const seatConfirm = document.querySelector<HTMLElement>('.confirm-seat');
+  const waitlistConfirm = document.querySelector<HTMLElement>('.confirm-waitlist');
+
+  // Analytics is best-effort — an ad blocker must never affect the form.
+  const track = (event: string, props?: Record<string, unknown>) => {
+    try { posthog.capture(event, props); } catch { /* non-critical */ }
+  };
+
+  // Forward the visitor's campaign params into the signup payload so each of
+  // the 12 seats is attributable to a channel (LinkedIn vs email vs IG) — the
+  // sprint's KPI is signups per channel, and the static site has no other way
+  // to join a signup back to its source.
+  const utm: Record<string, string> = {};
+  new URLSearchParams(window.location.search).forEach((v, k) => {
+    if (k.startsWith('utm_')) utm[k] = v;
+  });
+
+  let submitting = false;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (submitting) return; // double-click guard — one seat request per visitor
+
+    const data = new FormData(form);
+    const payload = {
+      parentName: String(data.get('parentName') ?? '').trim(),
+      parentEmail: String(data.get('parentEmail') ?? '').trim(),
+      kidFirstName: String(data.get('kidFirstName') ?? '').trim(),
+      kidAge: String(data.get('kidAge') ?? ''),
+      source: 'masterclass-landing',
+      utm,
+    };
+
+    // Honeypot tripped → silently succeed so the bot learns nothing.
+    if (String(data.get('company') ?? '') !== '') {
+      form.hidden = true;
+      if (seatConfirm) seatConfirm.hidden = false;
+      return;
+    }
+
+    // On validation failure, focus the first offending field — the status line
+    // renders below the submit button, so focus is what actually points the
+    // parent at the problem.
+    const firstEmpty = (['kidFirstName', 'kidAge', 'parentName', 'parentEmail'] as const).find(
+      (name) => !String(data.get(name) ?? '').trim(),
+    );
+    if (firstEmpty) {
+      if (status) status.textContent = 'Please fill in every field — it takes 30 seconds.';
+      const el = form.elements.namedItem(firstEmpty);
+      if (el instanceof HTMLElement) el.focus();
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.parentEmail)) {
+      if (status) status.textContent = 'That email doesn’t look right — mind checking it?';
+      (form.elements.namedItem('parentEmail') as HTMLElement | null)?.focus();
+      return;
+    }
+
+    submitting = true;
+    if (status) status.textContent = 'Saving your spot…';
+    track('masterclass_signup_submitted', { kid_age: payload.kidAge, ...utm });
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const body = await res.json().catch(() => ({ status: 'confirmed' }));
+
+      form.hidden = true;
+      const waitlisted = body.status === 'waitlist';
+      if (waitlisted && waitlistConfirm) waitlistConfirm.hidden = false;
+      else if (seatConfirm) seatConfirm.hidden = false;
+      track('masterclass_signup_succeeded', { status: body.status ?? 'confirmed' });
+    } catch {
+      // Endpoint down / not deployed yet / CORS — give the parent a human path
+      // instead of a dead end. hello@ is monitored; a seat is worth an email.
+      submitting = false;
+      if (status) {
+        status.innerHTML =
+          'Hmm, that didn’t go through. Email us at <a href="mailto:hello@standkids.com?subject=Masterclass%20signup">hello@standkids.com</a> and we’ll save the spot by hand.';
+      }
+      track('masterclass_signup_failed');
+    }
+  });
+
+  // Staggered entrances (promise cards + curriculum beats): one-shot reveal
+  // when the group is ~20% visible. is-ready arms the hidden state only when
+  // JS runs (no-JS renders static).
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.promise-grid, .beats').forEach((group) => {
+      group.classList.add('is-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            group.classList.add('is-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.2 },
+      );
+      io.observe(group);
+    });
+  }
+
+  // Countdown to the event start. Cheap DOM writes once a second; the widget
+  // removes itself when the class has started (urgency has no meaning then).
+  const cd = document.getElementById('mc-countdown');
+  if (cd) {
+    const target = new Date(cd.dataset.target ?? '').getTime();
+    const cells: Record<string, HTMLElement | null> = {
+      d: cd.querySelector('[data-cd="d"]'),
+      h: cd.querySelector('[data-cd="h"]'),
+      m: cd.querySelector('[data-cd="m"]'),
+      s: cd.querySelector('[data-cd="s"]'),
+    };
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = () => {
+      const diff = target - Date.now();
+      if (!Number.isFinite(target) || diff <= 0) {
+        cd.remove();
+        window.clearInterval(timer);
+        return;
+      }
+      if (cells.d) cells.d.textContent = pad(Math.floor(diff / 86_400_000));
+      if (cells.h) cells.h.textContent = pad(Math.floor(diff / 3_600_000) % 24);
+      if (cells.m) cells.m.textContent = pad(Math.floor(diff / 60_000) % 60);
+      if (cells.s) cells.s.textContent = pad(Math.floor(diff / 1000) % 60);
+    };
+    const timer = window.setInterval(tick, 1000);
+    tick();
+  }
+
+  // Smooth-scroll the hero/nav CTAs to the form (instant when the visitor
+  // prefers reduced motion — a long animated scroll is exactly the kind of
+  // large-viewport movement that setting exists for).
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#signup"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document
+        .getElementById('signup')
+        ?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      track('masterclass_cta_clicked');
+    });
+  });
+</script>
+
+<style>
+  .mc {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    font-family: var(--font-sans);
+    /* No overflow-x:hidden here — that would make .mc a scroll container,
+       hijacking the panels' view() timelines (they'd resolve against .mc,
+       which never scrolls, and freeze at their end state). The body already
+       clips horizontal overflow and propagates it to the viewport. */
+    /* Colored sections render as inset rounded "cards" (inset-card treatment):
+       page background shows around each panel through this gap. */
+    --band-gap: clamp(12px, 1.8vw, 28px);
+    --band-radius: clamp(20px, 3vw, 44px);
+  }
+
+  .poster,
+  .minutes {
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--band-radius);
+  }
+
+  /* Like the hero: the red poster grows to full-bleed as it scrolls into
+     view. Browsers without scroll-driven animations (and reduced-motion) keep
+     the inset rounded card. The minutes panel opts out (stays an inset,
+     outlined card); the proof marquee is full-bleed from the start. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* Second beat: the red poster peeks at the fold on load, so an
+         entry-based range would run in the same scroll window as the yellow
+         hero's expansion (0–30vh). Starting at cover 30% delays it until the
+         yellow card is already full-bleed. */
+      .poster {
+        animation: band-expand linear both;
+        animation-timeline: view();
+        animation-range: cover 30% cover 65%;
+      }
+    }
+  }
+
+  @keyframes band-expand {
+    from {
+      width: calc(100% - 2 * var(--band-gap));
+      border-radius: var(--band-radius);
+    }
+    to {
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+
+  /* ── Nav ─────────────────────────────────────────────────────────────── */
+  /* Logo centered in the bar (centered-brand nav pattern); the CTA holds
+     the right edge and a mirrored empty column keeps the logo truly centered. */
+  /* Sticky nav bar: cream strip that rides above every panel (hero is z 0,
+     content z 1, countdown z 50). */
+  .mc-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--stand-cream);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 18px 48px;
+    gap: 24px;
+  }
+
+  .mc-nav .back-link {
+    line-height: 0;
+    grid-column: 2;
+  }
+
+  /* Logo drawn as a CSS mask instead of an image tag: a masked box's
+     background IS the glyph color, so scroll can recolor it. At the top of the page it
+     sits red at 1.45×, then settles to black at 1× over the first 30vh —
+     the same window as the yellow card's expansion. Scale (not width) so the
+     sticky nav's height never changes: a layout-affecting animation driven
+     by scroll() would move the very scroll position that drives it. */
+  .nav-logo {
+    display: block;
+    width: 100px;
+    aspect-ratio: 199.29 / 47.33; /* logo.svg viewBox */
+    background-color: var(--stand-black);
+    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
+    mask: url('/brand/logo.svg') no-repeat center / contain;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .nav-logo {
+        animation: nav-logo-settle linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 30vh;
+      }
+    }
+  }
+
+  @keyframes nav-logo-settle {
+    from {
+      background-color: var(--stand-red);
+      transform: scale(1.45);
+    }
+    to {
+      background-color: var(--stand-black);
+      transform: scale(1);
+    }
+  }
+
+  .mc-nav .nav-cta {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .nav-cta {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+    /* The text is ~22px tall — padding grows the tap target past the 44px
+       floor, and the negative margin keeps the nav bar's visual height. */
+    display: inline-block;
+    padding: 12px 8px;
+    margin: -12px -8px;
+  }
+
+  /* ── Shared bits ─────────────────────────────────────────────────────── */
+  section {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(48px, 8vh, 96px) 24px;
+  }
+
+  .section-title {
+    font-weight: 700;
+    margin: 0 0 clamp(24px, 4vh, 44px);
+  }
+
+/* Rounded pill CTA (pill button language). */
+  .cta-btn {
+    display: inline-block;
+    background: var(--stand-red);
+    color: var(--stand-cream);
+    border: 2px solid var(--stand-black);
+    border-radius: 999px;
+    padding: 16px 36px;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(17px, 1.6vw, 21px);
+    line-height: 1;
+    transition: background-color 0.15s ease;
+  }
+
+  .cta-btn:hover {
+    background: var(--stand-black);
+    color: var(--stand-cream);
+  }
+
+  /* Slot-machine label: .cta-label is the clip window (exactly the text's
+     line box); the visible line slides down out of it while an aria-hidden
+     copy, parked one line above, rides in from the top. Both move with one
+     transform, so they can never drift apart mid-roll. */
+  .cta-label {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .cta-text {
+    display: block;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .cta-text-copy {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .cta-btn:hover .cta-text {
+    transform: translateY(100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-btn:hover .cta-text {
+      transform: none;
+    }
+  }
+
+  /* ── Hero ────────────────────────────────────────────────────────────────
+     Poster structure: the event name as a viewport-filling wordmark.
+     The hero is sticky at the top of the stack (z-index 0) so .mc-rest slides
+     up and over it on scroll — position-driven, so it costs nothing and needs
+     no reduced-motion branch. */
+  .hero {
+    position: sticky;
+    /* Pins with a cream gap above, so the card reads as a card even frozen. */
+    top: var(--band-gap);
+    z-index: 0;
+    text-align: center;
+    /* The hero is itself a rounded post-it card on the cream canvas (the
+       page-frame treatment): every colored moment on this page is a card. */
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    margin: 0 auto;
+    background: var(--stand-postit);
+    border-radius: var(--band-radius);
+    /* Everything below the title is svh-capped so the full poster — title,
+       sticker fan, sub, facts, CTA — fits one viewport: the CTA must be
+       visible without scrolling on short/wide laptop windows. */
+    padding-top: clamp(36px, 5svh, 88px);
+    padding-bottom: clamp(24px, 4svh, 64px);
+  }
+
+  /* As the page scrolls, the post-it card grows from inset-rounded to
+     full-bleed (scroll-driven, no JS; browsers without support just keep the
+     inset card). Width/radius here are cheap: the hero repaints alone. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .hero {
+        animation: hero-expand linear both;
+        animation-timeline: scroll(root block);
+        /* First beat of the expansion sequence: the yellow card goes
+           full-bleed in the first 30vh of scroll, well before the red poster
+           starts widening (see .poster's animation-range) — the two cards
+           must never expand in the same moment. */
+        animation-range: 0 30vh;
+      }
+    }
+  }
+
+  @keyframes hero-expand {
+    to {
+      width: 100%;
+      top: 0;
+      border-radius: 0;
+    }
+  }
+
+  /* All post-hero content paints above the pinned hero. The opaque background
+     is load-bearing: without it the hero would show through every section.
+     The top PADDING is the cream gap between the yellow hero card and the red
+     poster card — a margin on .poster would collapse through this paddingless
+     box and the "gap" would show the yellow hero instead of cream. */
+  .mc-rest {
+    position: relative;
+    z-index: 1;
+    background: var(--stand-cream);
+    padding-top: var(--band-gap);
+  }
+
+  .hero-title {
+    position: relative;
+    font-weight: 900;
+    /* Fills the frame like a wordmark: sized to make "Kickstart Your" span
+       the viewport on two lines. The svh term caps it on short viewports so
+       the two-line title doesn't eat the CTA's room. */
+    font-size: clamp(52px, min(9.6vw, 15svh), 150px);
+    line-height: 0.98;
+    letter-spacing: clamp(-4px, -0.03em, -1px);
+    margin: 0 auto clamp(12px, 2svh, 24px);
+    max-width: 12ch;
+  }
+
+  /* ── Sticker fan — five products resting as a loose pile that spreads into
+     an overlapping stamp-collection row on hover. The container is one
+     sticker wide; each sticker fans out via transform (--x/--y/--rot from the
+     STACK data), so the spread never affects layout. Total visual width when
+     open is ~3.6 stickers — comfortably inside the hero card at every
+     breakpoint. */
+  .sticker-stack {
+    position: relative;
+    width: clamp(88px, min(13vw, 17svh), 168px);
+    aspect-ratio: 1;
+    margin: 0 auto clamp(14px, 2.5svh, 28px);
+  }
+
+  .stack-item {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Resting pose: a loose pile — each sticker at a scaled-down fraction of
+       its fan offsets, so the pile's jitter already hints at the spread
+       direction and the hover reads as the pile relaxing open, not a jump. */
+    transform: translate(calc(var(--x) * 0.06), calc(var(--y) * 0.6))
+      rotate(calc(var(--rot) * 0.55));
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Soft paper shadow separates the layers so the fan reads as physically
+       overlapping paper rather than one flat image. */
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.18));
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Hovering anywhere on the pile spreads it into the fan. :hover on the
+     container stays true while the pointer is over any child sticker — even
+     ones transformed outside the container's box — so the fan doesn't snap
+     shut when the cursor follows a sticker outward. */
+  .sticker-stack:hover .stack-item {
+    transform: translate(var(--x), var(--y)) rotate(var(--rot));
+  }
+
+  /* No hover on touch devices: show the fan open so the composition never
+     hides four of the five products. */
+  @media (hover: none) {
+    .stack-item {
+      transform: translate(var(--x), var(--y)) rotate(var(--rot));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack-item {
+      transition: none;
+    }
+  }
+
+  .hero-sub {
+    font-weight: 700;
+    /* 19px floor: red-on-postit passes contrast as large text only, and
+       bold text qualifies as "large" from 18.66px up. */
+    font-size: clamp(19px, 2vw, 28px);
+    line-height: 1.25;
+    max-width: 30ch;
+    margin: 0 auto clamp(12px, 2svh, 24px);
+  }
+
+  .hero-sub em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  /* ── Poster — rounded red card that slides over the hero ───────────────── */
+  .poster {
+    background: var(--stand-red);
+    text-align: center;
+    padding-top: clamp(64px, 12vh, 140px);
+    padding-bottom: clamp(64px, 12vh, 140px);
+  }
+
+  .poster-title {
+    color: var(--stand-cream);
+    font-weight: 900;
+    font-size: clamp(44px, 8.4vw, 130px);
+    line-height: 0.98;
+    letter-spacing: clamp(-3px, -0.025em, -1px);
+    margin: 0 auto 20px;
+    max-width: 11ch;
+  }
+
+  .poster-sub {
+    /* White, not cream: red/cream only passes contrast as large text and this
+       line is body-sized — red/white is a full 4.5:1 pass per the brand guide. */
+    color: var(--stand-white);
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.8vw, 24px);
+    margin: 0 0 36px;
+  }
+
+  /* Post-it CTA reads loudest on the red field (black-on-postit passes AA). */
+  .cta-btn-postit {
+    background: var(--stand-postit);
+    color: var(--stand-black);
+  }
+
+  .cta-btn-postit:hover {
+    background: var(--stand-mustard);
+    color: var(--stand-black);
+  }
+
+  /* ── Social proof marquee — thin black strip, continuous ticker. Butts
+     flush against the poster above (no gap). Full-bleed from the start (no
+     expand animation): max-width overrides the global section cap. ───────── */
+  .proof {
+    background: var(--stand-black);
+    width: 100%;
+    max-width: none;
+    padding: 18px 0;
+    overflow: hidden;
+  }
+
+  .proof-track {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    width: max-content;
+    animation: proof-scroll 28s linear infinite;
+    will-change: transform;
+    color: var(--stand-cream);
+    font-family: var(--font-serif);
+    font-size: clamp(15px, 1.6vw, 21px);
+    letter-spacing: -0.2px;
+  }
+
+  .proof-copy {
+    flex: 0 0 auto;
+  }
+
+  .proof-copy strong {
+    font-family: var(--font-sans);
+    font-weight: 700;
+  }
+
+  .proof-copy em {
+    font-style: normal;
+    font-family: var(--font-sans);
+    margin: 0 1.2em;
+    opacity: 0.7;
+  }
+
+  @keyframes proof-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-33.3333%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proof-track { animation: none; }
+  }
+
+
+  .event-facts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 0;
+    padding: 0;
+    margin: 0 0 clamp(18px, 3svh, 36px);
+    font-family: var(--font-serif);
+    font-size: clamp(16px, 1.6vw, 20px);
+  }
+
+  .event-facts li {
+    display: flex;
+    align-items: center;
+  }
+
+  .event-facts li + li::before {
+    content: '\00B7';
+    margin: 0 14px;
+    font-weight: 700;
+  }
+
+/* ── Promise ─────────────────────────────────────────────────────────── */
+  .promise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* Color-block cards: each with its own brand color, rounded corners,
+     thin black outline — no offset shadow, no tilt. All three pairs pass the
+     brand guide's ADA table with black text. */
+  .promise-card {
+    border: 2px solid var(--stand-black);
+    border-radius: clamp(18px, 2vw, 28px);
+    padding: 28px 24px;
+  }
+
+  .promise-card:nth-child(1) { background: var(--stand-white); }
+  .promise-card:nth-child(2) { background: var(--stand-postit); }
+  .promise-card:nth-child(3) { background: var(--stand-pink); }
+
+  /* Staggered entrance — transitions.dev "texts reveal" (t-stagger) pattern.
+     Time-based once triggered (IntersectionObserver adds .is-shown), so the
+     rise always plays in full — unlike scroll-scrubbing, cards can't freeze
+     half-risen when scrolling pauses. .is-ready is set by JS before
+     observing: no JS, no hidden state — cards just render. */
+  .promise-grid {
+    --stagger-dur: 500ms;
+    /* Deep enough travel to read as a slide-up, not a fade. */
+    --stagger-distance: 44px;
+    --stagger-stagger: 80ms;
+    --stagger-blur: 2px;
+    --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .promise-grid.is-ready .promise-card {
+    opacity: 0;
+    transform: translateY(var(--stagger-distance));
+    filter: blur(var(--stagger-blur));
+    transition:
+      opacity var(--stagger-dur) var(--stagger-ease),
+      transform var(--stagger-dur) var(--stagger-ease),
+      filter var(--stagger-dur) var(--stagger-ease);
+    will-change: transform, opacity, filter;
+  }
+
+  .promise-grid.is-ready .promise-card:nth-child(2) {
+    transition-delay: var(--stagger-stagger);
+  }
+
+  .promise-grid.is-ready .promise-card:nth-child(3) {
+    transition-delay: calc(var(--stagger-stagger) * 2);
+  }
+
+  .promise-grid.is-shown .promise-card {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .promise-grid.is-ready .promise-card {
+      transition: none !important;
+    }
+  }
+
+  /* Sticker sits above the title with a slight hand-placed tilt (per-card
+     angle from PROMISE_CARDS data), matching the hero fan's jitter language. */
+  .promise-card .promise-icon {
+    display: block;
+    width: clamp(72px, 7vw, 104px);
+    height: auto;
+    margin: 0 auto 18px;
+    transform: rotate(var(--rot));
+  }
+
+  .promise-card .name {
+    font-weight: 700;
+    margin: 0 0 10px;
+    line-height: 1.15;
+  }
+
+  .promise-card .desc {
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  /* ── The 90 minutes ──────────────────────────────────────────────────────
+     Rounded mustard card (black-on-mustard passes AA 4.5+ per the brand
+     guide). The card spans nearly the full viewport; padding re-centers the
+     original 832px content column inside it. */
+  .minutes {
+    background: var(--stand-mustard);
+    padding-left: max(24px, calc((100% - 832px) / 2));
+    padding-right: max(24px, calc((100% - 832px) / 2));
+  }
+
+  .beats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 4vh, 40px);
+  }
+
+  /* Beats reveal strictly one-by-one: each step owns a 450ms slot — its
+     title rises first, its body follows 150ms behind — before the next step
+     begins. Unmistakably sequential even with all four steps in view. */
+  .beats {
+    --stagger-dur: 400ms;
+    --stagger-distance: 24px;
+    --step-gap: 450ms;
+    --body-lag: 150ms;
+    --stagger-blur: 2px;
+    --stagger-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .beats.is-ready .beat .name,
+  .beats.is-ready .beat .desc {
+    opacity: 0;
+    transform: translateY(var(--stagger-distance));
+    filter: blur(var(--stagger-blur));
+    transition:
+      opacity var(--stagger-dur) var(--stagger-ease),
+      transform var(--stagger-dur) var(--stagger-ease),
+      filter var(--stagger-dur) var(--stagger-ease);
+    will-change: transform, opacity, filter;
+  }
+
+  .beats.is-ready .beat:nth-child(1) .desc { transition-delay: var(--body-lag); }
+  .beats.is-ready .beat:nth-child(2) .name { transition-delay: var(--step-gap); }
+  .beats.is-ready .beat:nth-child(2) .desc { transition-delay: calc(var(--step-gap) + var(--body-lag)); }
+  .beats.is-ready .beat:nth-child(3) .name { transition-delay: calc(var(--step-gap) * 2); }
+  .beats.is-ready .beat:nth-child(3) .desc { transition-delay: calc(var(--step-gap) * 2 + var(--body-lag)); }
+  .beats.is-ready .beat:nth-child(4) .name { transition-delay: calc(var(--step-gap) * 3); }
+  .beats.is-ready .beat:nth-child(4) .desc { transition-delay: calc(var(--step-gap) * 3 + var(--body-lag)); }
+
+  .beats.is-shown .beat .name,
+  .beats.is-shown .beat .desc {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beats.is-ready .beat .name,
+    .beats.is-ready .beat .desc {
+      transition: none !important;
+    }
+  }
+
+  .beat-body .name {
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  .beat-minutes {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 0.6em;
+    letter-spacing: -0.2px;
+    margin-left: 10px;
+    opacity: 0.7;
+  }
+
+  .beat-body .desc {
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* ── Founder ─────────────────────────────────────────────────────────── */
+  .founder {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .founder-photo {
+    aspect-ratio: 4 / 5;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    border-radius: clamp(18px, 2vw, 28px);
+    display: grid;
+    place-items: center;
+  }
+
+  .photo-placeholder {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    opacity: 0.4;
+  }
+
+  .founder-copy .headline {
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .founder-cred {
+    font-family: var(--font-serif);
+    margin: 0 0 16px;
+    color: var(--stand-red);
+  }
+
+  .founder-copy .desc {
+    margin: 0;
+    max-width: 58ch;
+  }
+
+  /* ── Wavy divider — edge-to-edge sine line drawn as a repeating SVG tile
+     (24px period, seamless), stroke-matched to the 2px border language. ──── */
+  .wave-divider {
+    width: 100%;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'%3E%3Cpath d='M0 20 Q 15 2 30 20 T 60 20 T 90 20 T 120 20' fill='none' stroke='%23000' stroke-width='2.5'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 120px 40px;
+    margin-top: clamp(24px, 4vh, 48px);
+  }
+
+  /* The wave rolls sideways as it crosses the viewport — scroll-scrubbed
+     background-position on its own view() timeline (the tile repeats, so the
+     travel is seamless). Static line for no-support / reduced-motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .wave-divider {
+        animation: wave-roll linear both;
+        animation-timeline: view();
+      }
+    }
+  }
+
+  @keyframes wave-roll {
+    from {
+      background-position-x: 0;
+    }
+    to {
+      background-position-x: 480px;
+    }
+  }
+
+  /* ── FAQ — giant heading, near-full-width rows ──────────── */
+  .faq {
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    margin: 0 auto;
+  }
+
+  .faq .section-title {
+    font-weight: 900;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  .faq-list {
+    border-top: 2px solid var(--stand-black);
+  }
+
+  .faq-item {
+    border-bottom: 2px solid var(--stand-black);
+  }
+
+  .faq-item .q {
+    cursor: pointer;
+    list-style: none;
+    padding: 28px 64px 28px 4px;
+    font-weight: 700;
+    font-size: clamp(20px, 2.4vw, 34px);
+    position: relative;
+  }
+
+  .faq-item .q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item .q::after {
+    content: '+';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(30px, 3vw, 44px);
+  }
+
+  .faq-item[open] .q::after {
+    content: '\2212';
+  }
+
+  .faq-item .a {
+    margin: 0;
+    padding: 0 4px 20px;
+    max-width: 64ch;
+  }
+
+  /* <details> snaps open with no feedback; a short ease-out fade/settle makes
+     the reveal read as intentional. Entrance-only — collapse stays instant. */
+  .faq-item[open] .a {
+    animation: faq-reveal 0.22s ease-out;
+  }
+
+  @keyframes faq-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item[open] .a {
+      animation: none;
+    }
+  }
+
+  /* ── Signup — split panel: dark rounded panel, copy left, fields right */
+  .signup {
+    width: calc(100% - 2 * var(--band-gap));
+    max-width: none;
+    /* Cream breathing room before the footer. */
+    margin: 0 auto clamp(32px, 6vh, 72px);
+    background: var(--stand-black);
+    border-radius: var(--band-radius);
+    color: var(--stand-cream);
+    padding: clamp(40px, 6vw, 96px) clamp(24px, 5vw, 96px);
+  }
+
+  .signup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+  }
+
+  .signup-title {
+    color: var(--stand-postit);
+    font-weight: 900;
+    font-size: clamp(40px, 4.8vw, 72px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+    margin: 0 0 18px;
+  }
+
+  .signup-when {
+    font-family: var(--font-serif);
+    font-size: clamp(17px, 1.6vw, 22px);
+    margin: 0 0 20px;
+  }
+
+  .signup-blurb {
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.5;
+    opacity: 0.85;
+    max-width: 44ch;
+    margin: 0;
+  }
+
+  #mc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 16px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field-label {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    color: var(--stand-cream);
+  }
+
+  /* Oversized pill fields: stadium radius, generous
+     padding, borderless white on the dark panel. */
+  .field input,
+  .field select {
+    border: 0;
+    background: var(--stand-white);
+    padding: 20px 26px;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    color: var(--stand-black);
+    border-radius: 999px;
+    outline: none;
+    width: 100%;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    outline: 3px solid var(--stand-postit);
+    outline-offset: 2px;
+  }
+
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 22px center;
+  }
+
+  /* Honeypot — visually gone but still in the accessibility-invisible DOM. */
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /* Full-width pill submit, same block shape as the fields above it. */
+  .submit-btn {
+    margin-top: 8px;
+    align-self: stretch;
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .form-status {
+    min-height: 1.3em;
+    margin: 0;
+    font-size: 15px;
+    text-align: center;
+    color: var(--stand-postit);
+  }
+
+  .form-status :global(a) {
+    text-decoration: underline;
+  }
+
+  .confirm-big {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.6vw, 44px);
+    margin: 8px 0 12px;
+  }
+
+  .confirm .desc {
+    margin: 0 auto;
+    max-width: 44ch;
+  }
+
+  /* ── Countdown — sticky bottom-right urgency card ──────────────────────── */
+  .countdown {
+    position: fixed;
+    right: var(--band-gap);
+    bottom: var(--band-gap);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: var(--stand-white);
+    border: 2px solid var(--stand-black);
+    border-radius: 18px;
+    padding: 10px 18px 12px;
+    color: var(--stand-black);
+    text-align: center;
+  }
+
+  .countdown-label {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    letter-spacing: -0.2px;
+  }
+
+  .countdown-cells {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .countdown .cell {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 2.2ch;
+  }
+
+  .countdown .cell b {
+    font-weight: 900;
+    font-size: 26px;
+    line-height: 1;
+    /* Equal-width digits so the card doesn't jitter every second. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown .cell i {
+    font-style: normal;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 3px;
+    opacity: 0.6;
+  }
+
+  .countdown em {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1;
+    align-self: flex-start;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .mc-nav {
+      padding: 18px 20px;
+    }
+
+    .nav-logo {
+      width: 80px;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+    }
+
+    section {
+      padding: 44px 20px;
+    }
+
+    .hero {
+      /* On short phone viewports the pinned hero can outlast a screen of
+         scroll; static keeps the page calm where the effect is cramped. */
+      position: static;
+    }
+
+    .hero-title {
+      letter-spacing: -1.5px;
+    }
+
+    .poster-title {
+      letter-spacing: -1.5px;
+    }
+
+    .event-facts {
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .event-facts li {
+      justify-content: center;
+    }
+
+    .event-facts li + li::before {
+      content: none;
+    }
+
+    .promise-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .founder {
+      grid-template-columns: 1fr;
+    }
+
+    .founder-photo {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
+    .founder-copy {
+      text-align: center;
+    }
+
+    /* Red on cream only passes contrast as LARGE text (brand guide: 3:1
+       pairing). The .lede scale drops to 18px regular here, below the WCAG
+       large-text threshold, so the credential goes black on mobile. */
+    .founder-cred {
+      color: var(--stand-black);
+    }
+
+    .founder-copy .desc {
+      margin: 0 auto;
+    }
+
+    .section-title,
+    .founder-copy .headline {
+      text-align: center;
+    }
+
+    .field-row {
+      grid-template-columns: 1fr 96px;
+    }
+
+    .signup-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .countdown {
+      padding: 8px 14px 10px;
+    }
+
+    .countdown .cell b {
+      font-size: 20px;
+    }
+  }
+</style>

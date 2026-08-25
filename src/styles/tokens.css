@@ -98,7 +98,7 @@
 
   /* Layout */
   --container-max: 1437px;
-  --header-h: 98px;
+  --header-h: 69px; /* red nav bar: 41px tag + 2 × 14px padding */
 }
 
 *,

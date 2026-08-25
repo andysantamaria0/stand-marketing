@@ -6,3 +6,11 @@ dist
 .env.local
 .DS_Store
 .env*
+
+# Local AI-agent tooling (per-developer, not shared)
+.agents/
+.claude/
+.codex/
+.github/hooks/
+.github/skills/
+skills-lock.json
