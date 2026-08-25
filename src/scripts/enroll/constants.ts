@@ -45,6 +45,15 @@ export const MAX_KIDS = 4;
  */
 export const MAX_DAYS = 2;
 
+/**
+ * The hard accept band, mirroring the server's MIN/MAX_ACCEPTED_AGE. Outside
+ * it the server answers 400, so the client blocks first with the SAME bounds —
+ * a mismatch here shows a parent an error the server would not have given (or
+ * a 400 the client should have caught).
+ */
+export const MIN_AGE = 5;
+export const MAX_AGE = 17;
+
 /** The program's age band. Outside it shows a soft notice and never blocks. */
 export const PROGRAM_MIN_AGE = 8;
 export const PROGRAM_MAX_AGE = 13;

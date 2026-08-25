@@ -23,8 +23,11 @@ import { track, identifyFamily, currentDistinctId } from "./analytics";
 import {
   API_BASE,
   COPY,
+  DAYS,
+  MAX_AGE,
   MAX_DAYS,
   MAX_KIDS,
+  MIN_AGE,
   PROGRAM_MAX_AGE,
   PROGRAM_MIN_AGE,
   UTM_KEYS,
@@ -146,6 +149,16 @@ function setCloseVisible(visible: boolean): void {
   if (close) close.hidden = !visible;
 }
 
+/**
+ * Writes a message into the page's polite live region (#enroll-live in
+ * enroll.astro) so screen readers announce state the DOM changed out from
+ * under the user — today, the rolling day-chip cap evicting an earlier pick.
+ */
+function announce(text: string): void {
+  const region = $<HTMLElement>("enroll-live");
+  if (region) region.textContent = text;
+}
+
 /* ── kid blocks ──────────────────────────────────────────────────────────── */
 
 function kidBlocks(): HTMLElement[] {
@@ -225,8 +238,10 @@ function wireKidBlock(block: HTMLElement): void {
         orderedSelection(block);
       } else {
         const order = orderedSelection(block);
+        const evicted: string[] = [];
         while (order.length >= MAX_DAYS) {
           const oldest = order.shift() as string;
+          evicted.push(oldest);
           block
             .querySelector<HTMLButtonElement>(`[data-day="${oldest}"]`)
             ?.setAttribute("aria-pressed", "false");
@@ -234,6 +249,16 @@ function wireKidBlock(block: HTMLElement): void {
         chip.setAttribute("aria-pressed", "true");
         order.push(day);
         dayOrder.set(block, order);
+        // The eviction flips aria-pressed on a chip the user is NOT focused
+        // on, which no screen reader announces on its own — without this a
+        // third tap silently drops an earlier day and the parent can submit
+        // days they never chose.
+        if (evicted.length > 0) {
+          const labels = evicted.map(
+            (value) => DAYS.find((d) => d.value === value)?.label ?? value
+          );
+          announce(`${labels.join(" and ")} removed. You can pick up to two days.`);
+        }
         track("enroll_day_selected", { day, kid_index: kidBlocks().indexOf(block) });
       }
 
@@ -345,7 +370,7 @@ function collectPayload(): {
     if (name.length === 0 || name.length > 64) {
       fail(block.querySelector<HTMLElement>("[data-error='name']"), nameInput, COPY.errors.kidName);
     }
-    if (!Number.isInteger(age) || age < 5 || age > 17) {
+    if (!Number.isInteger(age) || age < MIN_AGE || age > MAX_AGE) {
       fail(block.querySelector<HTMLElement>("[data-error='age']"), ageInput, COPY.errors.kidAge);
     }
     // The upper bound is unreachable through the chips, which roll at
@@ -368,9 +393,13 @@ function collectPayload(): {
 
 /* ── step URLs ─────────────────────────────────────────────────────────────
    The flow is one document, so each step gets a history entry rather than a
-   navigation. Two reasons: the back button behaves the way a parent expects
-   mid-form, and analytics sees three distinct URLs instead of one, which is
-   what makes step drop-off legible without relying on a custom event.
+   navigation: the back button behaves the way a parent expects mid-form.
+
+   These URLs do NOT produce PostHog pageviews — posthog-js with
+   `capture_pageview: true` never instruments pushState, and its history mode
+   dedupes on pathname, which `?step=` does not change. Step drop-off is
+   measured by the `enroll_step_completed` events, not by URL. Do not build a
+   funnel on these URLs.
 
    `step` is deliberately NOT the DEV-only `preview` param in enroll.astro.
    They are independent and must not be merged. */
@@ -561,6 +590,14 @@ function showDone(): void {
   const done = $<HTMLElement>("enroll-done");
   if (success) success.hidden = true;
   if (done) done.hidden = false;
+  // Reached from ARBITRARY prior state, not just forward from success: a
+  // back-navigation while SEND is in flight lands on page 1 before the
+  // resumed submit calls this. Like showSuccess(), it must be a complete
+  // state-setter or the signup form renders under the thank-you.
+  const page1 = $<HTMLElement>("enroll-page1");
+  if (page1) page1.hidden = true;
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = true;
   // The final screen is just "We'll be in touch." — no headline above it.
   const headline = $<HTMLElement>("enroll-headline");
   if (headline) headline.hidden = true;
