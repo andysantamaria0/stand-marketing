@@ -5,30 +5,37 @@
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
-import SignupButton from './SignupButton.astro';
+// Aug 25 (Proto B promoted): the general-interest email bar sits in the
+// footer, wordmark left / bar right, ruled sign-off row underneath.
+import SubscribeBar from './SubscribeBar.astro';
 ---
 
 <section class="fc-closing" aria-label="Sign up">
-  <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
-  <div class="cta-wrap" data-rv style="--rvi: 1">
-    <SignupButton />
+  <div class="cols">
+    <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
+    <div class="cta-wrap" data-rv style="--rvi: 1">
+      <SubscribeBar />
+    </div>
   </div>
-  <div class="social" data-rv style="--rvi: 2">
-    <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="2" y="2" width="20" height="20" rx="5"></rect>
-        <circle cx="12" cy="12" r="4"></circle>
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
-      </svg>
-    </a>
-    <a href="https://www.tiktok.com/@buildwithstand" aria-label="TikTok">
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-        <path d="M16 3v3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2V3h3z"></path>
-      </svg>
-    </a>
+  <!-- Bottom line: one ruled row, contact left, socials right — everything
+       on the same grid as the capture row instead of floating centered. -->
+  <div class="foot" data-rv style="--rvi: 2">
+    <a class="email" href="mailto:hello@standkids.com">hello@standkids.com</a>
+    <div class="social">
+      <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </a>
+      <a href="https://www.tiktok.com/@buildwithstand" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M16 3v3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V16a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2V3h3z"></path>
+        </svg>
+      </a>
+    </div>
   </div>
-
-  <a class="email" href="mailto:hello@standkids.com" data-rv style="--rvi: 3">hello@standkids.com</a>
 </section>
 
 <style>
@@ -44,27 +51,67 @@ import SignupButton from './SignupButton.astro';
     color: var(--stand-cream);
   }
 
+  /* Two columns on the page's content width — wordmark left, email
+     capture right. */
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 72px);
+    width: 100%;
+    max-width: calc(1132px + 2 * 48px);
+    margin-inline: auto;
+    padding-inline: 48px;
+    text-align: left;
+  }
+
   .wordmark {
-    width: min(520px, 70%);
+    width: min(400px, 100%);
     aspect-ratio: 199.29 / 47.33;
     background: var(--stand-cream);
-    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
-    mask: url('/brand/logo.svg') no-repeat center / contain;
+    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
+    mask: url('/brand/logo.svg') no-repeat left center / contain;
   }
 
-  /* Keeps the button centered like its old direct-child self. */
   .cta-wrap {
     display: flex;
-    justify-content: center;
-    align-self: stretch;
+    justify-content: flex-end;
+    min-width: 0;
   }
 
-  /* Cream marks on the red ground; 32px glyphs padded to 44px targets. */
+  @media (max-width: 900px) {
+    .cols {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: var(--space-3);
+      padding-inline: 20px;
+      text-align: center;
+    }
+
+    .wordmark {
+      width: min(520px, 70%);
+      -webkit-mask-position: center;
+      mask-position: center;
+    }
+  }
+
+  /* The sign-off line: hairline rule, contact left, socials right — same
+     content width and gutters as the capture row above. */
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: calc(1132px + 2 * 48px);
+    margin: var(--space-2) auto 0;
+    padding: 20px 48px 0;
+    border-top: 1px solid color-mix(in srgb, var(--stand-cream) 35%, transparent);
+  }
+
+  /* Cream marks; 24px glyphs padded to 44px targets. */
   .social {
     display: flex;
-    justify-content: center;
-    gap: 28px;
-    margin-top: var(--space-2);
+    gap: 16px;
   }
 
   .social a {
@@ -90,6 +137,12 @@ import SignupButton from './SignupButton.astro';
   @media (max-width: 768px) {
     .fc-closing {
       padding: var(--space-5) var(--space-3) var(--space-2);
+    }
+
+    .foot {
+      flex-direction: column;
+      gap: var(--space-1);
+      padding: 16px 20px 0;
     }
   }
 </style>
