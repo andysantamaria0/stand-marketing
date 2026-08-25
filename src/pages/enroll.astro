@@ -871,9 +871,18 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     }
   }
 
-  /* Desktop: compact vertical rhythm so the fully unfolded form (kid block,
-     consent, submit) fits a single viewport — email + phone go side by side,
-     the headline stays modest, paddings stay tight. */
+  /* Desktop: compact vertical rhythm — email + phone go side by side, the
+     headline stays modest, paddings stay tight.
+
+     This block used to say the compact rhythm made the unfolded form "fit a
+     single viewport", and that assumption is why the cookie-notice reserve
+     above was scoped to max-width 767px only. It is wrong. What matters is
+     VIEWPORT height, not screen resolution: a 1366x768 laptop loses 90-130px
+     to browser chrome, so the real viewport is ~640-680, and the form
+     overflows well before that. Measured at 1366 wide, scrolled to the
+     bottom as a first-time visitor, every height from 720 down to 600 put
+     the notice over SUBMIT — elementFromPoint at the button's centre
+     returned the banner and the tap was silently swallowed. */
   @media (min-width: 768px) {
     .hero {
       padding: 24px 0 12px;
@@ -881,8 +890,13 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     .back {
       margin: 0 0 24px 24px;
     }
+    /* Same reserve the mobile branch gets, sized for the row layout: the
+       notice is ~80px tall (14px padding twice, 2px border twice, a ~45px
+       button) and sits 16px off the bottom, so ~96px is occupied. 120px
+       leaves clearance for the text wrapping to two lines. The safe-area
+       inset is for tablets in landscape, which land in this branch. */
     .sheet {
-      padding: 20px 0 60px;
+      padding: 20px 0 calc(120px + env(safe-area-inset-bottom, 0px));
     }
     .contact {
       display: grid;
