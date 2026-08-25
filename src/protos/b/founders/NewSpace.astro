@@ -53,16 +53,15 @@ import SignupButton from './SignupButton.astro';
   .mega {
     margin: 0;
     width: 100%;
-    /* Pie Pie — the sticker/display voice (same as the sign-up buttons).
-       Headlines render sentence case as written; Title Case is buttons-only
-       (JY, Aug 25). */
-    font-family: var(--font-display);
-    font-weight: 400;
-    /* 1/3 of the column-spanning size (Aug 24 review) — the stack reads as a
-       title, not a wall. */
+    /* PROTO B font test (JY, Aug 25): Editorial New Light instead of Pie
+       Pie — the serif "magazine masthead" voice from the design brief.
+       Slightly tighter tracking and taller leading than the Pie Pie stack;
+       size unchanged for a like-for-like compare against A. */
+    font-family: var(--font-serif);
+    font-weight: 300;
     font-size: clamp(24px, 5.2vw, 75px);
-    line-height: 0.95;
-    letter-spacing: 0.02em;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
     text-transform: none;
   }
 
