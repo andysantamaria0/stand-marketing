@@ -316,6 +316,91 @@ function collectPayload(): {
   return { email, phone: phone as string, kids, smsOptIn };
 }
 
+/* ── step URLs ─────────────────────────────────────────────────────────────
+   The flow is one document, so each step gets a history entry rather than a
+   navigation. Two reasons: the back button behaves the way a parent expects
+   mid-form, and analytics sees three distinct URLs instead of one, which is
+   what makes step drop-off legible without relying on a custom event.
+
+   `step` is deliberately NOT the DEV-only `preview` param in enroll.astro.
+   They are independent and must not be merged. */
+
+const STEP_PARAM = "step";
+const STEP_QUESTIONS = "questions";
+const STEP_DONE = "done";
+
+/**
+ * Rewrites the `step` query param, preserving every other param.
+ *
+ * Built from a fresh `URL` rather than by assigning `location.search`, and that
+ * is load-bearing: the ad click's UTMs live in the query string and
+ * `readUtm()` reads them off `location.search` at submit time, so a transition
+ * that flattened the query would silently drop attribution on every signup
+ * that arrived from a campaign.
+ */
+function writeStep(step: string | null, mode: "push" | "replace"): void {
+  try {
+    const url = new URL(window.location.href);
+    if (step === null) url.searchParams.delete(STEP_PARAM);
+    else url.searchParams.set(STEP_PARAM, step);
+    const next = url.toString();
+    if (mode === "replace") window.history.replaceState({ step }, "", next);
+    else window.history.pushState({ step }, "", next);
+  } catch {
+    // History is not the product. Never let it break the flow.
+  }
+}
+
+/**
+ * The reverse of {@link showSuccess} and {@link showDone}.
+ *
+ * Un-hiding page 1 is not enough. `showSuccess` overwrites the persistent
+ * headline, adds the choreography class and hides the lede; `showDone` hides
+ * the headline outright. Miss any one of those on the way back and the parent
+ * is looking at the signup form under a confirmation headline.
+ */
+function showPage1(): void {
+  const headline = $<HTMLElement>("enroll-headline");
+  if (headline) {
+    headline.textContent = COPY.open.headline;
+    headline.classList.remove("is-confirmed");
+    headline.hidden = false;
+  }
+  const lede = $<HTMLElement>("enroll-lede");
+  if (lede) lede.hidden = false;
+
+  const page1 = $<HTMLElement>("enroll-page1");
+  const success = $<HTMLElement>("enroll-success");
+  const done = $<HTMLElement>("enroll-done");
+  if (success) success.hidden = true;
+  if (done) done.hidden = true;
+  if (page1) page1.hidden = false;
+}
+
+/**
+ * Maps the URL back onto the visible step.
+ *
+ * THE NO-TOKEN BRANCH IS THE POINT. `resumeToken` is module state and does not
+ * survive a page load, so a parent who reloads on `?step=questions`, opens a
+ * shared link or bookmarks one gets the optional-questions form with a SEND
+ * button that early-returns and shows nothing. Rendering page 1 instead is the
+ * only honest answer, and the URL is corrected in the same breath so the
+ * address bar and the screen never disagree.
+ */
+function syncStepFromUrl(): void {
+  const step = new URLSearchParams(window.location.search).get(STEP_PARAM);
+  if (resumeToken && step === STEP_DONE) {
+    showDone();
+    return;
+  }
+  if (resumeToken && step === STEP_QUESTIONS) {
+    showSuccess();
+    return;
+  }
+  showPage1();
+  if (step !== null) writeStep(null, "replace");
+}
+
 /** Renders the success screen. One outcome now: the family is enrolled. */
 function showSuccess(): void {
   const copy = COPY.success.open;
@@ -329,6 +414,9 @@ function showSuccess(): void {
     // Triggers the success choreography (headline pops, card follows) —
     // defined in enroll.astro's styles.
     headline.classList.add("is-confirmed");
+    // showDone() hides this element. Arriving here from a BACK navigation has
+    // to undo that, or the success screen renders with no headline above it.
+    headline.hidden = false;
   }
   // The lede is the sign-up pitch; under a confirmation headline it's stale.
   const lede = $<HTMLElement>("enroll-lede");
@@ -341,7 +429,13 @@ function showSuccess(): void {
 
   const page1 = $<HTMLElement>("enroll-page1");
   const success = $<HTMLElement>("enroll-success");
+  const done = $<HTMLElement>("enroll-done");
   if (page1) page1.hidden = true;
+  // Reached by a BACK navigation from the done screen as well as forward from
+  // page 1, so this has to be a complete state-setter: leave the done panel
+  // showing and the parent gets the questions form and the thank-you card at
+  // the same time.
+  if (done) done.hidden = true;
   if (success) success.hidden = false;
   // Focusing the headline announces the new state and scrolls it into view —
   // it sits above the card, so no separate scrollIntoView is needed.
@@ -393,6 +487,7 @@ async function submitPage1(): Promise<void> {
     identifyFamily(data.id, payload.email);
     track("enroll_step_completed", { step: 1 });
     showSuccess();
+    writeStep(STEP_QUESTIONS, "push");
   } catch {
     setError(formError, COPY.errors.submit);
   } finally {
@@ -456,6 +551,7 @@ async function submitDetails(): Promise<void> {
     }
     track("enroll_step_completed", { step: 2 });
     showDone();
+    writeStep(STEP_DONE, "push");
   } catch {
     setError(detailsError, COPY.errors.details);
   } finally {
@@ -527,7 +623,17 @@ function init(): void {
     if (submitting) return;
     track("enroll_details_skipped", {});
     showDone();
+    writeStep(STEP_DONE, "push");
   });
+
+  // A reload, a bookmark or a shared link can arrive carrying ?step= from a
+  // previous visit. A fresh document has no resume token, so correct both the
+  // DOM and the URL rather than rendering a form that cannot submit.
+  if (new URLSearchParams(window.location.search).has(STEP_PARAM)) {
+    showPage1();
+    writeStep(null, "replace");
+  }
+  window.addEventListener("popstate", syncStepFromUrl);
 }
 
 if (document.readyState === "loading") {
