@@ -21,9 +21,9 @@
 
 import { track, identifyFamily, currentDistinctId } from "./analytics";
 import {
-  ANY_DAY,
   API_BASE,
   COPY,
+  MAX_DAYS,
   MAX_KIDS,
   PROGRAM_MAX_AGE,
   PROGRAM_MIN_AGE,
@@ -131,11 +131,37 @@ function selectedDays(block: HTMLElement): string[] {
 }
 
 /**
+ * Newest-last tap order per kid block, so the cap knows which pick is oldest.
+ *
+ * A WeakMap rather than a data-* attribute: this is eviction bookkeeping, not
+ * state the server or a screen reader has any business seeing, and a removed
+ * kid block should take its entry with it.
+ */
+const dayOrder = new WeakMap<HTMLElement, string[]>();
+
+/**
+ * The block's tap order, reconciled against what is actually pressed.
+ *
+ * The DOM stays authoritative. Anything pressed that the order never saw (a
+ * server-rendered selection, a bfcache restore) is treated as oldest, so it is
+ * evicted before a day the parent just tapped.
+ */
+function orderedSelection(block: HTMLElement): string[] {
+  const pressed = new Set(selectedDays(block));
+  const order = (dayOrder.get(block) ?? []).filter((day) => pressed.has(day));
+  for (const day of pressed) if (!order.includes(day)) order.unshift(day);
+  dayOrder.set(block, order);
+  return order;
+}
+
+/**
  * Wires one kid block's chips, age notice and remove control.
  *
- * "Any day works" and specific days are mutually exclusive: picking one clears
- * the other. They are genuinely different demand signals — "flexible" is not
- * the same answer as "all six days" — so the value is never expanded.
+ * The chips are a ROLLING WINDOW of MAX_DAYS, not a hard refusal: with two days
+ * picked, tapping a third drops whichever was picked first. Chosen over
+ * refusing the third tap so the chips never dead-end — a parent who changes
+ * their mind just taps, rather than having to work out which day to release
+ * first. Tapping a selected day still deselects it, so a straight swap works.
  */
 function wireKidBlock(block: HTMLElement): void {
   block.querySelectorAll<HTMLButtonElement>("[data-day]").forEach((chip) => {
@@ -144,20 +170,23 @@ function wireKidBlock(block: HTMLElement): void {
       const day = chip.dataset.day as string;
       const pressed = chip.getAttribute("aria-pressed") === "true";
 
-      if (day === ANY_DAY.value) {
-        block.querySelectorAll<HTMLButtonElement>("[data-day]").forEach((other) => {
-          other.setAttribute("aria-pressed", "false");
-        });
-        chip.setAttribute("aria-pressed", pressed ? "false" : "true");
+      if (pressed) {
+        chip.setAttribute("aria-pressed", "false");
+        orderedSelection(block);
       } else {
-        const anyChip = block.querySelector<HTMLButtonElement>(`[data-day="${ANY_DAY.value}"]`);
-        anyChip?.setAttribute("aria-pressed", "false");
-        chip.setAttribute("aria-pressed", pressed ? "false" : "true");
-      }
-
-      if (!pressed) {
+        const order = orderedSelection(block);
+        while (order.length >= MAX_DAYS) {
+          const oldest = order.shift() as string;
+          block
+            .querySelector<HTMLButtonElement>(`[data-day="${oldest}"]`)
+            ?.setAttribute("aria-pressed", "false");
+        }
+        chip.setAttribute("aria-pressed", "true");
+        order.push(day);
+        dayOrder.set(block, order);
         track("enroll_day_selected", { day, kid_index: kidBlocks().indexOf(block) });
       }
+
       setError(block.querySelector<HTMLElement>("[data-error='days']"), "");
     });
   });
@@ -269,7 +298,10 @@ function collectPayload(): {
     if (!Number.isInteger(age) || age < 5 || age > 17) {
       fail(block.querySelector<HTMLElement>("[data-error='age']"), ageInput, COPY.errors.kidAge);
     }
-    if (days.length === 0) {
+    // The upper bound is unreachable through the chips, which roll at
+    // MAX_DAYS. It exists so a tampered DOM fails here rather than at the
+    // server, which answers a third day with a 400 either way.
+    if (days.length === 0 || days.length > MAX_DAYS) {
       fail(block.querySelector<HTMLElement>("[data-error='days']"), null, COPY.errors.kidDays);
     }
     kids.push({ name, age, days });

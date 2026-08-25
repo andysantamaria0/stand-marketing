@@ -28,7 +28,7 @@
  * same glance as the submit button.
  */
 import Layout from '@/layouts/Layout.astro';
-import { ANY_DAY, COPY, DAYS } from '@/scripts/enroll/constants';
+import { COPY, DAYS } from '@/scripts/enroll/constants';
 ---
 
 <Layout title={COPY.meta.title} description={COPY.meta.description}>
@@ -152,14 +152,6 @@ import { ANY_DAY, COPY, DAYS } from '@/scripts/enroll/constants';
                           </button>
                         ))
                       }
-                      <button
-                        type="button"
-                        class="chip chip-any"
-                        data-day={ANY_DAY.value}
-                        aria-pressed="false"
-                      >
-                        {ANY_DAY.label}
-                      </button>
                     </div>
                     <p class="error" data-error="days" role="alert" hidden></p>
                   </div>
@@ -286,14 +278,6 @@ import { ANY_DAY, COPY, DAYS } from '@/scripts/enroll/constants';
                 </button>
               ))
             }
-            <button
-              type="button"
-              class="chip chip-any"
-              data-day={ANY_DAY.value}
-              aria-pressed="false"
-            >
-              {ANY_DAY.label}
-            </button>
           </div>
           <p class="error" data-error="days" role="alert" hidden></p>
         </div>

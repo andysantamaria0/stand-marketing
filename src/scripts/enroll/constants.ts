@@ -17,7 +17,15 @@ export const PROGRAM_NAME = "[Founders Program]";
 /** Where the API lives. Env so localhost and previews are testable without a code edit. */
 export const API_BASE = import.meta.env.PUBLIC_ENROLL_API_BASE || "https://app.standkids.com";
 
-/** Selectable days, in render order. Values are the API contract. */
+/**
+ * Selectable days, in render order. Values are the API contract.
+ *
+ * "Any day works" (`any`) was removed 8/25: too ambiguous to schedule against,
+ * and this question exists to tell us which specific days to run. The server's
+ * DAY_VALUES drops it in a paired pass, HELD until this page is live - a
+ * tightened page against a permissive server is safe, the reverse breaks the
+ * live form. Re-adding it means re-adding it in BOTH repos.
+ */
 export const DAYS = [
   { value: "mon", label: "Mon" },
   { value: "tue", label: "Tue" },
@@ -27,11 +35,15 @@ export const DAYS = [
   { value: "sat", label: "Sat" },
 ] as const;
 
-/** The flexible-parent escape hatch. One tap instead of six. */
-export const ANY_DAY = { value: "any", label: "Any day works" } as const;
-
 /** Hard ceiling per family, mirroring the server. */
 export const MAX_KIDS = 4;
+
+/**
+ * Days one kid may pick, mirroring the server. The chips roll rather than
+ * refuse: a third pick evicts the oldest. The server answers a third day with
+ * a 400, so this is a floor on the parent's behalf, not the only gate.
+ */
+export const MAX_DAYS = 2;
 
 /** The program's age band. Outside it shows a soft notice and never blocks. */
 export const PROGRAM_MIN_AGE = 8;
@@ -87,7 +99,7 @@ export const COPY = {
     phoneNotTextable: "That number can't receive texts - please update it or untick the box.",
     kidName: "Please be sure to include their first name.",
     kidAge: "Be sure to include their age.",
-    kidDays: "Pick at least one day that could work (or 'Any day works').",
+    kidDays: "Pick at least one day.",
     submit: "Something hiccuped on our end — your info is still here, try again.",
     details: "That didn't save - please try again.",
   },
