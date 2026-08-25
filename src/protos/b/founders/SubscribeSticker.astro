@@ -44,8 +44,8 @@
     white-space: nowrap;
   }
 
-  /* The white face is a ::before layer (the SignupButton recipe) so the
-     skew stays off the type and the form keeps a straight hit area. */
+  /* The white face is a ::before layer (the SignupButton recipe). Straight,
+     no tilt (JY, Aug 25) — the hard ink shadow alone does the sticker read. */
   .sticker {
     position: relative;
     isolation: isolate;
@@ -65,7 +65,6 @@
     background: var(--stand-white);
     border: 2px solid var(--stand-black);
     box-shadow: 9px 9px 0 var(--stand-black);
-    transform: skewX(-3deg) rotate(-0.6deg);
   }
 
   .sticker input {
