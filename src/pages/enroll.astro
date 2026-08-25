@@ -504,6 +504,19 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
     display: none;
   }
 
+  /* The sentence beside the wordmark is Editorial New, the serif. Set on the
+     span rather than on .title so the rule reads as "the text" — the wordmark
+     is a masked image that font-family cannot reach either way. Applies to the
+     confirmation too, since the island rewrites this same span.
+
+     Weight 300 because that is the only Editorial New face loaded
+     (tokens.css:3-9); .title's 400 would leave the browser synthesising a
+     heavier one rather than using the real Light. */
+  #enroll-headline-text {
+    font-family: var(--font-serif);
+    font-weight: 300;
+  }
+
   .title {
     font-family: var(--font-display);
     font-weight: 400;
