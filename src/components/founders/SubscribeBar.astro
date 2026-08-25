@@ -5,17 +5,19 @@
 // funnel (/enroll keeps its own sticker CTAs). Colors ride on currentColor
 // so the bar inherits the closing band's cream-on-red.
 //
-// SAVE PATH (Aug 25): tries POST `${API_BASE}/api/subscribe` first
-// ({ email, source, utm } → { ok: true }; still 404 — Andy's contract, should
-// mirror /api/enroll/start's shape and NOT fire email_captured). While the
-// endpoint is missing, the bar saves DIRECTLY to Klaviyo via the public
-// client-events API (plain fetch, company_id in the URL) — profiles land in
-// the same Klaviyo account the launch flows run on, stamped with a
-// "General Interest Signup" event to segment on. Deliberately NOT the onsite
-// klaviyo.js script: main removed it (#48) because its dashboard popup
-// rendered full-screen, and a raw fetch has no popup surface at all.
-// Caveat: this creates the profile but not "subscribed" consent status —
-// if Celestine needs formal consent, swap to a Klaviyo form/list subscribe.
+// SAVE PATH (Aug 25): POST `${API_BASE}/api/waitlist` with
+// { email, source, marketingOptIn: true } — the app's EXISTING endpoint
+// (verified live 8/25, {ok:true}): writes the Supabase waitlist table
+// (unique-email dedupe, idempotent) and, because marketingOptIn is true,
+// subscribes the address to the Klaviyo list server-side — real consent
+// status included. `source: 'landing_updates'` separates this cohort from
+// the old platform-waitlist rows in the same table.
+// NOTE FOR ANDY: the marketing footer depends on this route staying up —
+// if the retired waitlist ever gets cleaned up server-side, keep (or
+// rename+redirect) this endpoint.
+// Fallback if the app is unreachable: Klaviyo's public client-events API
+// (plain fetch — deliberately NOT klaviyo.js, which main removed in #48
+// over the full-screen popup; a raw fetch has no popup surface).
 ---
 
 <div class="subwrap">
@@ -208,14 +210,15 @@
     }
 
     try {
-      // Path 1: the app's endpoint (the eventual system of record). Still
-      // 404 as of Aug 25 — Andy's contract is in the header comment.
+      // Path 1: the app's waitlist endpoint — Supabase row + Klaviyo list
+      // subscribe, both server-side (see header). Payload is the exact
+      // historical contract; no extra fields.
       let saved = false;
       try {
-        const res = await fetch(`${API_BASE}/api/subscribe`, {
+        const res = await fetch(`${API_BASE}/api/waitlist`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, source: 'landing_updates', utm }),
+          body: JSON.stringify({ email, source: 'landing_updates', marketingOptIn: true }),
         });
         const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (res.status === 400 && data.error) {
@@ -225,7 +228,7 @@
         }
         saved = res.ok && data.ok === true;
       } catch {
-        /* network/404 — fall through to Klaviyo */
+        /* app unreachable — fall through to Klaviyo */
       }
 
       // Path 2: Klaviyo's public client-events API (the subscriber DB the
