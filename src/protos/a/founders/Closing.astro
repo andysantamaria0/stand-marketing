@@ -5,14 +5,18 @@
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
-// PROTO A: general-interest email bar in place of the sticker (JY, Aug 25).
+// PROTO A (JY, Aug 25): two-column footer — wordmark left, general-interest
+// email bar right (replaces the sticker); socials + email stay as the
+// centered sign-off row underneath.
 import SubscribeBar from './SubscribeBar.astro';
 ---
 
 <section class="fc-closing" aria-label="Sign up">
-  <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
-  <div class="cta-wrap" data-rv style="--rvi: 1">
-    <SubscribeBar />
+  <div class="cols">
+    <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
+    <div class="cta-wrap" data-rv style="--rvi: 1">
+      <SubscribeBar />
+    </div>
   </div>
   <div class="social" data-rv style="--rvi: 2">
     <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
@@ -45,19 +49,48 @@ import SubscribeBar from './SubscribeBar.astro';
     color: var(--stand-cream);
   }
 
-  .wordmark {
-    width: min(520px, 70%);
-    aspect-ratio: 199.29 / 47.33;
-    background: var(--stand-cream);
-    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
-    mask: url('/brand/logo.svg') no-repeat center / contain;
+  /* Two columns on the same content width as the page sections: wordmark
+     left, email bar right, optically centered on each other. */
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 72px);
+    width: 100%;
+    max-width: calc(1132px + 2 * 48px);
+    margin-inline: auto;
+    padding-inline: 48px;
+    text-align: left;
   }
 
-  /* Keeps the button centered like its old direct-child self. */
+  .wordmark {
+    width: min(400px, 100%);
+    aspect-ratio: 199.29 / 47.33;
+    background: var(--stand-cream);
+    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
+    mask: url('/brand/logo.svg') no-repeat left center / contain;
+  }
+
   .cta-wrap {
     display: flex;
-    justify-content: center;
-    align-self: stretch;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  @media (max-width: 900px) {
+    .cols {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      gap: var(--space-3);
+      padding-inline: 20px;
+      text-align: center;
+    }
+
+    .wordmark {
+      width: min(520px, 70%);
+      -webkit-mask-position: center;
+      mask-position: center;
+    }
   }
 
   /* Cream marks on the red ground; 32px glyphs padded to 44px targets. */
