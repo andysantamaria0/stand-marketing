@@ -17,13 +17,13 @@ const WEEKS = [
   <div class="grid">
     <header class="rail">
       <h2 id="location-title" data-rv style="--rvi: 0">
-        <span class="logo-word" role="img" aria-label="Stand"></span> is coming to Los&nbsp;Angeles!
+        Stand is coming to Los&nbsp;Angeles!
       </h2>
       <p class="lede" data-rv style="--rvi: 1">
-        Our first location opens this fall in West&nbsp;LA.
+        Our first location opens this fall in&nbsp;LA!
       </p>
       <div class="cta" data-rv style="--rvi: 2">
-        <SignupButton label="get first access" />
+        <SignupButton label="Get first access" />
       </div>
     </header>
 
@@ -82,7 +82,9 @@ const WEEKS = [
     gap: clamp(16px, 1.7vw, 24px);
   }
 
-  /* Pie Pie announcement (Aug 24 review), lowercase like the About stack. */
+  /* Pie Pie announcement (Aug 24 review). Sentence case as written (JY,
+     Aug 25: "is coming to" stays lowercase) — no transform; the markup's
+     own casing renders. */
   h2 {
     margin: 0;
     font-family: var(--font-display);
@@ -91,18 +93,6 @@ const WEEKS = [
     line-height: 1.02;
     letter-spacing: 0.02em;
     text-transform: none;
-  }
-
-  /* "Stand" set as the actual wordmark — logo.svg as a currentColor mask
-     (same technique as the nav), sized to the headline's cap height so it
-     sits on the baseline like a word, not a badge. */
-  h2 .logo-word {
-    display: inline-block;
-    height: 0.72em;
-    aspect-ratio: 199.29 / 47.33;
-    background: currentColor;
-    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
-    mask: url('/brand/logo.svg') no-repeat center / contain;
   }
 
   .lede {
