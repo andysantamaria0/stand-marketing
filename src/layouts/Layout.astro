@@ -16,20 +16,28 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://standkids.com');
 
-// Klaviyo's onsite script renders a full-screen signup popup ~5s after load
-// that covers EVERY control on /enroll (email, phone, day chips, add-kid, the
-// SMS checkbox, submit) and locks body scroll until it is dismissed. On the
-// enrollment page that popup is also a COMPETING signup ask: a parent who
-// hands it their email joins the general subscriber list and never enrolls —
-// no kid, no phone, no days — while still looking like a successful capture.
-// /enroll runs its own PostHog analytics and its Klaviyo profile + metric
-// writes happen server-side in /api/enroll/start, so skipping the onsite
-// loader here costs no tracking we rely on.
+// OFF EVERYWHERE (2026-08-25, founder call). Klaviyo form `V4RWT7`
+// ("Email & SMS Homepage Pop Up") is a FULL-SCREEN takeover: it fires 5s after
+// load, covers the whole viewport, has click-outside-to-close disabled, has no
+// page targeting at all, and re-shows every 3 days after a dismissal. On
+// /enroll it covered every control on the form; on the rest of the site it is
+// a full-page interstitial in front of the first thing a visitor came to read.
 //
-// Belt-and-braces: the matching Klaviyo dashboard change (exclude /enroll from
-// onsite form targeting) should land too, so a future enrollment URL does not
-// re-arm the same trap. This guard is what makes launch not depend on it.
-const skipKlaviyoOnsite = Astro.url.pathname.replace(/\/+$/, '') === '/enroll';
+// This is the ONLY off switch that does not require the Klaviyo dashboard.
+// Klaviyo serves tracking and forms from the same `klaviyo.js`, so there is no
+// supported way to keep one and drop the other — not loading the script is the
+// whole lever. The cost is onsite (browse) tracking on standkids.com, which is
+// what Klaviyo's "confirm onsite tracking is enabled" check pings. Nothing we
+// rely on rides on it: the marketing site has no cart or catalogue, page
+// analytics are PostHog, and every profile/metric write happens server-side
+// (`/api/enroll/start`, `/api/waitlist`) rather than through this snippet.
+//
+// TO NARROW RATHER THAN REVERT, put the paths back in the condition:
+//   const SKIP = ['/enroll', '/masterclass'];
+//   const skipKlaviyoOnsite = SKIP.includes(Astro.url.pathname.replace(/\/+$/, ''));
+// TO RESTORE THE POPUP, set this to `false` — but disable form V4RWT7 in the
+// dashboard first, or the takeover comes straight back.
+const skipKlaviyoOnsite = true;
 
 // Klaviyo's own init shim, verbatim. It lives here as a string and is emitted
 // with `set:html` because Astro renders the children of an `is:inline` script
