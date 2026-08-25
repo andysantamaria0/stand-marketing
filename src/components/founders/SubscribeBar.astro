@@ -225,11 +225,18 @@
         /* noop */
       }
 
+      // "Thanks!" flashes for a beat, then the field comes back cleared —
+      // the footer stays usable for the next email (JY, Aug 25).
       form.hidden = true;
+      input.value = '';
       if (doneEl) {
-        doneEl.textContent = "Good, you're on the list!";
+        doneEl.textContent = 'Thanks!';
         doneEl.hidden = false;
       }
+      setTimeout(() => {
+        if (doneEl) doneEl.hidden = true;
+        form.hidden = false;
+      }, 1200);
     } catch {
       showError('Something hiccuped on our end — your email is still here, try again.');
     } finally {
