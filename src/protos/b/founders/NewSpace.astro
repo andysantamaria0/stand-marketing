@@ -9,8 +9,8 @@ import SignupButton from './SignupButton.astro';
 
 <section class="fc-newspace" id="about" aria-labelledby="newspace-title">
   <h2 class="mega" id="newspace-title">
-    <span class="line chunk" style="--i: 0">A new kind of</span>
-    <span class="line chunk" style="--i: 1">entrepreneurial program</span>
+    <span class="line chunk" style="--i: 0">A New Kind of</span>
+    <span class="line chunk" style="--i: 1">Entrepreneurial Program</span>
   </h2>
 
   <div class="body">
@@ -62,7 +62,9 @@ import SignupButton from './SignupButton.astro';
     font-size: clamp(24px, 5.2vw, 75px);
     line-height: 1.02;
     letter-spacing: -0.01em;
-    text-transform: capitalize;
+    /* Cased in the markup — "of" stays lower (JY, Aug 25), which
+       capitalize cannot do. */
+    text-transform: none;
   }
 
   .mega .line {
