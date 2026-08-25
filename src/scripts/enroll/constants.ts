@@ -69,8 +69,8 @@ export const COPY = {
 
   open: {
     eyebrow: PROGRAM_NAME,
-    headline: "STAND IS OPENING IN LOS ANGELES!",
-    lede: "Register to get started and updates about our LA space and program.",
+    headline: "STAND is opening in Los Angeles!",
+    lede: "Register to get updates about our LA space and program.",
   },
 
   form: {
@@ -83,7 +83,7 @@ export const COPY = {
     kidNamePlaceholder: "Their first name",
     kidAgeLabel: "Age",
     kidAgePlaceholder: "10",
-    kidDaysLabel: "What days would you be interested in?",
+    kidDaysLabel: "Pick up to two days that you would be interested in:",
     addKid: "+ Add another kid",
     removeKid: "Remove",
     smsConsent:
@@ -99,16 +99,16 @@ export const COPY = {
   errors: {
     email: "Enter a valid email address.",
     phone: "That number doesn't look right — 10 digits, or start with + for non-US.",
-    phoneNotTextable: "That number can't receive texts — fix it or untick the box.",
-    kidName: "Each kid needs a first name.",
-    kidAge: "Each kid needs an age between 5 and 17.",
+    phoneNotTextable: "That number can't receive texts - please update it or untick the box.",
+    kidName: "Please be sure to include their first name.",
+    kidAge: "Be sure to include their age.",
     kidDays: "Pick at least one day that could work (or 'Any day works').",
     submit: "Something hiccuped on our end — your info is still here, try again.",
-    details: "Couldn't save that — tap to retry.",
+    details: "That didn't save - please try again.",
   },
 
   /** Shown, never blocking, when an age falls outside the program band. */
-  ageNotice: `${PROGRAM_NAME} is built for ages ${PROGRAM_MIN_AGE}-${PROGRAM_MAX_AGE} — if your kid is close, we'll make it work.`,
+  ageNotice: `Our first cohort is built for ages ${PROGRAM_MIN_AGE}-${PROGRAM_MAX_AGE}. If your kid is close, we'll do our best to make it work!`,
 
   /**
    * On success the page's persistent headline (#enroll-headline) becomes the
@@ -132,6 +132,6 @@ export const COPY = {
     otherCityPlaceholder: "City",
     submit: "Send",
     skip: "Skip",
-    done: "Thanks! We'll be in touch.",
+    done: "Thanks! We'll be in touch soon.",
   },
 } as const;
