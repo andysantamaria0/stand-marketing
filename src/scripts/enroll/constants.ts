@@ -117,6 +117,13 @@ export const COPY = {
     privacySuffix: ".",
     submit: "SUBMIT",
     submitting: "Sending...",
+    /**
+     * Suffix of the screen-reader eviction announcement — the island prefixes
+     * the kid label and the evicted day: "Kid 1: Mon removed. ...". The "two"
+     * mirrors {@link MAX_DAYS}; if that cap changes, reword this in the same
+     * edit (this repo has no test runner to trip on the mismatch).
+     */
+    dayEvicted: "removed. You can pick up to two days.",
   },
 
   errors: {

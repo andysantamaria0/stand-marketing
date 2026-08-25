@@ -252,12 +252,18 @@ function wireKidBlock(block: HTMLElement): void {
         // The eviction flips aria-pressed on a chip the user is NOT focused
         // on, which no screen reader announces on its own — without this a
         // third tap silently drops an earlier day and the parent can submit
-        // days they never chose.
+        // days they never chose. The kid label prefix ("Kid 1") says WHICH
+        // kid lost a day in a sibling flow, and keeps two kids evicting the
+        // same day from producing byte-identical consecutive writes, which
+        // VoiceOver can skip as unchanged text.
         if (evicted.length > 0) {
           const labels = evicted.map(
             (value) => DAYS.find((d) => d.value === value)?.label ?? value
           );
-          announce(`${labels.join(" and ")} removed. You can pick up to two days.`);
+          const kidLabel = block.getAttribute("aria-label");
+          announce(
+            `${kidLabel ? `${kidLabel}: ` : ""}${labels.join(" and ")} ${COPY.form.dayEvicted}`
+          );
         }
         track("enroll_day_selected", { day, kid_index: kidBlocks().indexOf(block) });
       }
