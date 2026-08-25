@@ -42,7 +42,10 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
         <div class="wrap">
           {/* tabindex=-1: the island focuses this h1 on the success swap so
               screen readers announce the confirmation it then carries. */}
-          <h1 class="title" id="enroll-headline" tabindex="-1">{COPY.open.headline}</h1>
+          <h1 class="title" id="enroll-headline" tabindex="-1">
+            <span class="title-logo" role="img" aria-label="STAND"></span>
+            <span id="enroll-headline-text">{COPY.open.headline}</span>
+          </h1>
           <!-- Hidden by the island on the success swap: once the headline
                carries the confirmation, the sign-up pitch under it is stale. -->
           <p class="lede" id="enroll-lede">{COPY.open.lede}</p>
@@ -381,7 +384,10 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
         const headline = document.getElementById('enroll-headline');
         const body = document.getElementById('success-body');
         if (headline) {
-          headline.textContent = copy.headline;
+          // Same rule as the island: write the SPAN, never the h1, or the
+          // wordmark beside it is deleted. See setHeadlineText() in island.ts.
+          const headlineText = document.getElementById('enroll-headline-text');
+          if (headlineText) headlineText.textContent = copy.headline;
           // Replays the real success choreography so the preview matches.
           headline.classList.add('is-confirmed');
         }
@@ -449,6 +455,34 @@ import { COPY, DAYS } from '@/scripts/enroll/constants';
   .close:focus-visible {
     outline: 3px solid var(--stand-green);
     outline-offset: 2px;
+  }
+
+  /* The word STAND in the headline IS the wordmark, in brand red. Masked
+     rather than an <img> so the colour is a CSS token rather than baked into
+     the asset, and sized in `em` so it tracks the clamped title size at every
+     breakpoint without its own media queries. 3em wide lands its height on the
+     display face's cap height.
+
+     It is a SIBLING of #enroll-headline-text and never a child, because the
+     island rewrites that span's textContent on every step change. See
+     setHeadlineText() in island.ts for why that distinction is load-bearing. */
+  .title-logo {
+    display: inline-block;
+    /* 3.5em wide -> 0.83em tall, matching Pie Pie's cap height so the mark
+       reads at the same size as the capitals beside it. The viewBox is tight
+       to the artwork, so height here IS letterform height, not a padded box. */
+    width: 3.5em;
+    aspect-ratio: 199.29 / 47.33;
+    /* Brand red, the colour the wordmark carried as the old home link — not
+       currentColor, so it stays red against the black headline type. */
+    background-color: var(--stand-red);
+    -webkit-mask: url('/brand/logo.svg') no-repeat left center / contain;
+    mask: url('/brand/logo.svg') no-repeat left center / contain;
+    /* An inline-block with no in-flow content takes its bottom margin edge as
+       its baseline, and the viewBox is tight to the letterforms — so the
+       wordmark's feet land on the text baseline with no nudge. An earlier
+       translateY here assumed padding in the asset that does not exist. */
+    vertical-align: baseline;
   }
 
   .title {

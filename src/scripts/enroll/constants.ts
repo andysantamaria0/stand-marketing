@@ -66,7 +66,13 @@ export const COPY = {
 
   open: {
     eyebrow: PROGRAM_NAME,
-    headline: "STAND is opening in Los Angeles!",
+    /**
+     * The leading "STAND" is deliberately NOT in this string: the h1 renders
+     * the wordmark in its place (`.title-logo` in enroll.astro), and this is
+     * the rest of the sentence. It is written into #enroll-headline-text and
+     * never into the h1 itself — see setHeadlineText() in island.ts.
+     */
+    headline: "is opening in Los Angeles!",
     lede: "Register to get updates about our LA space and program.",
   },
 

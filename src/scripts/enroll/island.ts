@@ -96,6 +96,24 @@ function clearErrorsWithin(scope: ParentNode): void {
   scope.querySelectorAll<HTMLElement>("[data-error]").forEach((el) => setError(el, ""));
 }
 
+/**
+ * Writes the headline's sentence WITHOUT disturbing the wordmark beside it.
+ *
+ * #enroll-headline holds two children: the STAND wordmark and this span. Both
+ * showSuccess() and showPage1() rewrite the sentence, and setting textContent
+ * on the h1 itself replaces EVERY child — so the logo would vanish on the
+ * success swap and would NOT come back on the browser back button, leaving a
+ * parent on page 1 with a sentence missing its subject. Silent, and only
+ * reachable by walking forward then back.
+ *
+ * innerHTML is not the alternative. See the rendering rule in the file header:
+ * kid names reach this area on a public page.
+ */
+function setHeadlineText(text: string): void {
+  const el = $<HTMLElement>("enroll-headline-text");
+  if (el) el.textContent = text;
+}
+
 /* ── kid blocks ──────────────────────────────────────────────────────────── */
 
 function kidBlocks(): HTMLElement[] {
@@ -361,8 +379,8 @@ function writeStep(step: string | null, mode: "push" | "replace"): void {
  */
 function showPage1(): void {
   const headline = $<HTMLElement>("enroll-headline");
+  setHeadlineText(COPY.open.headline);
   if (headline) {
-    headline.textContent = COPY.open.headline;
     headline.classList.remove("is-confirmed");
     headline.hidden = false;
   }
@@ -409,8 +427,8 @@ function showSuccess(): void {
   // list now!") — the success card carries only the body line.
   const headline = $<HTMLElement>("enroll-headline");
   const body = $<HTMLElement>("success-body");
+  setHeadlineText(copy.headline);
   if (headline) {
-    headline.textContent = copy.headline;
     // Triggers the success choreography (headline pops, card follows) —
     // defined in enroll.astro's styles.
     headline.classList.add("is-confirmed");
