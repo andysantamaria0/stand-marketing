@@ -5,16 +5,16 @@
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
-// PROTO B (JY, Aug 25): sticker-style email capture in place of the
-// "Sign up now" button — compare against A's quiet underline bar.
-import SubscribeSticker from './SubscribeSticker.astro';
+// PROTO B (JY, Aug 25): same underline email bar as A in the footer
+// (sticker capture retired — recover at 90688a2).
+import SubscribeBar from './SubscribeBar.astro';
 ---
 
 <section class="fc-closing" aria-label="Sign up">
   <div class="cols">
     <div class="wordmark" role="img" aria-label="stand" data-rv style="--rvi: 0"></div>
     <div class="cta-wrap" data-rv style="--rvi: 1">
-      <SubscribeSticker />
+      <SubscribeBar />
     </div>
   </div>
   <!-- Bottom line: one ruled row, contact left, socials right — everything
