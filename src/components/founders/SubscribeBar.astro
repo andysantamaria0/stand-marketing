@@ -8,10 +8,13 @@
 // SAVE PATH (Aug 25): tries POST `${API_BASE}/api/subscribe` first
 // ({ email, source, utm } → { ok: true }; still 404 — Andy's contract, should
 // mirror /api/enroll/start's shape and NOT fire email_captured). While the
-// endpoint is missing, the bar saves DIRECTLY to Klaviyo via the onsite
-// script (identify + "General Interest Signup" event) — profiles land in the
-// same Klaviyo account the launch flows run on; segment on that event.
-// Caveat: identify() creates the profile but not "subscribed" consent status —
+// endpoint is missing, the bar saves DIRECTLY to Klaviyo via the public
+// client-events API (plain fetch, company_id in the URL) — profiles land in
+// the same Klaviyo account the launch flows run on, stamped with a
+// "General Interest Signup" event to segment on. Deliberately NOT the onsite
+// klaviyo.js script: main removed it (#48) because its dashboard popup
+// rendered full-screen, and a raw fetch has no popup surface at all.
+// Caveat: this creates the profile but not "subscribed" consent status —
 // if Celestine needs formal consent, swap to a Klaviyo form/list subscribe.
 ---
 
@@ -225,24 +228,28 @@
         /* network/404 — fall through to Klaviyo */
       }
 
-      // Path 2: Klaviyo direct (the subscriber DB the email flows already
-      // run on; onsite script ships site-wide with company_id RqafrJ).
-      // identify() writes the profile; the event makes the cohort
-      // segmentable in the dashboard. Raced against a timeout so an ad
-      // blocker can't leave the button stuck on "Sending…".
+      // Path 2: Klaviyo's public client-events API (the subscriber DB the
+      // email flows already run on). Creates/updates the profile by email
+      // and stamps the event in one call; 202 = accepted.
       if (!saved) {
-        const kl = (window as { klaviyo?: { identify: (p: object) => Promise<unknown>; push: (a: unknown[]) => void } }).klaviyo;
-        if (kl) {
-          try {
-            await Promise.race([
-              kl.identify({ $email: email }),
-              new Promise((_, reject) => setTimeout(reject, 5000)),
-            ]);
-            kl.push(['track', 'General Interest Signup', { source: 'landing_updates', ...utm }]);
-            saved = true;
-          } catch {
-            /* blocked or timed out */
-          }
+        try {
+          const kres = await fetch('https://a.klaviyo.com/client/events/?company_id=RqafrJ', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+            body: JSON.stringify({
+              data: {
+                type: 'event',
+                attributes: {
+                  properties: { source: 'landing_updates', ...utm },
+                  metric: { data: { type: 'metric', attributes: { name: 'General Interest Signup' } } },
+                  profile: { data: { type: 'profile', attributes: { email } } },
+                },
+              },
+            }),
+          });
+          saved = kres.ok;
+        } catch {
+          /* blocked or offline */
         }
       }
 
