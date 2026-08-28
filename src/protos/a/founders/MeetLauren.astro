@@ -23,6 +23,14 @@
           width="1280"
           height="720"
         />
+        <img
+          class="frame"
+          src="/brand/polaroid-frame.png"
+          alt=""
+          loading="lazy"
+          width="892"
+          height="1082"
+        />
       </figure>
 
       <div class="copy">
@@ -79,24 +87,31 @@
     margin-top: clamp(36px, 4.2vw, 64px);
   }
 
-  /* Polaroid frame: white mat, thin sides/top, the classic deep bottom
-     chin, near-square window. Percentages keep the chin proportional as
-     the figure scales. */
+  /* Polaroid: JY's actual frame asset (window punched transparent) layered
+     over the photo. The photo fills the measured window (6.05/6.84% offset,
+     87.22 x 72.83% of the frame) so the frame's inner bevel stays on top. */
   .figure {
     position: relative;
     justify-self: center;
     width: min(100%, 400px);
     margin: 0;
-    padding: 5.5% 5.5% 18%;
-    background: #fff;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.14));
   }
 
-  .photo {
+  .frame {
+    position: relative;
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1.05;
+    pointer-events: none;
+  }
+
+  .photo {
+    position: absolute;
+    left: 6.05%;
+    top: 6.84%;
+    width: 87.22%;
+    height: 72.83%;
     object-fit: cover;
     /* Keep Lauren (just left of frame center) and her face in the crop. */
     object-position: 47% 12%;
