@@ -86,9 +86,11 @@ const WORDS = BIO.split(' ');
   }
 
   /* Scroll runway: the extra viewports of height are what the reader scrolls
-     through while the sticky stage plays the swap, then the word reveal. */
+     through while the sticky stage plays the swap, then the word reveal.
+     (This is why the section looks tall in the /proto compare iframes —
+     it's runway, not padding; full-page it's always one filled viewport.) */
   .scrolly {
-    height: 280vh;
+    height: 240vh;
   }
 
   .stage {
