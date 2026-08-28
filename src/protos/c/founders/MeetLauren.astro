@@ -1,115 +1,153 @@
 ---
-// Meet Lauren — PROTO C: "poster" (Aug 28 reference #2: choose-yourself-first
-// editorial poster — the photo IS the frame, the quote overlays mid-frame,
-// and a small credits paragraph sits bottom-right over the image). Layout
-// follows the reference; styling stays STAND: the KidMoment recipe carries
-// the text (black ground + dimmed photo, cream Editorial New quote).
-// The business-school line is lifted from the one-pager's approved copy.
+// Meet Lauren — PROTO A: "masthead profile" (Aug 28 reference: Meet Amanda
+// layout — giant centered headline, small caps subline, then photo left /
+// statement + small body + caps kicker right). Layout and type scale follow
+// the reference; the styling stays STAND (Editorial New, cream/red, matted
+// print, doodle arrow). Bio facts supplied by JY (Aug 28); the
+// business-school line is lifted from the one-pager's approved copy.
 ---
 
-<section class="fc-lauren-c" id="meet-lauren" aria-labelledby="lauren-title-c">
-  <img
-    class="photo"
-    src="/brand/lauren.webp"
-    alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
-    loading="lazy"
-    width="1280"
-    height="720"
-  />
+<section class="fc-lauren" id="meet-lauren" aria-labelledby="lauren-title">
+  <div class="inner">
+    <header class="masthead">
+      <h2 id="lauren-title" data-rv style="--rvi: 0">Meet Lauren</h2>
+    </header>
 
-  <blockquote class="quote" data-rv style="--rvi: 0">
-    <p id="lauren-title-c">
-      &ldquo;I didn&rsquo;t go to
-      <span class="line2">business school.</span>
-      <span class="line3">I just did business.&rdquo;</span>
-    </p>
-  </blockquote>
+    <div class="cols">
+      <figure class="figure" data-rv style="--rvi: 1">
+        <img
+          class="photo"
+          src="/brand/lauren.webp"
+          alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
+          loading="lazy"
+          width="1280"
+          height="720"
+        />
+      </figure>
 
-  <p class="caption" data-rv style="--rvi: 1">
-    Meet Lauren, founder &amp; CEO of STAND. She co-founded The Wing, led
-    business development at ClassPass, and was the first employee at the
-    fitness brand SLT &mdash; a career of building consumer businesses from
-    zero to scale.
-  </p>
+      <div class="copy">
+        <p class="statement" data-rv style="--rvi: 2">
+          &ldquo;I didn&rsquo;t go to business school.
+          <em>I just did business.&rdquo;</em>
+        </p>
+
+        <p class="body" data-rv style="--rvi: 3">
+          Before STAND, Lauren co-founded The Wing, a groundbreaking
+          membership network built across women-focused workspaces. She led
+          business development at ClassPass and was the first employee at the
+          fitness brand SLT &mdash; a career of building consumer businesses
+          and community-driven platforms from zero to scale.
+        </p>
+
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
-  /* The poster frame: black ground + dimmed photo keeps the overlaid type
-     legible over the bright bookshelf (the KidMoment scrim recipe). */
-  .fc-lauren-c {
-    position: relative;
-    height: clamp(560px, 92vh, 920px);
-    background: var(--stand-black);
+  .fc-lauren {
+    background: var(--stand-cream);
+    color: var(--stand-black);
   }
 
-  .photo {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Keep Lauren (just left of frame center) and her face in the crop. */
-    object-position: 47% 20%;
-    opacity: 0.72;
+  .inner {
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(40px, 4.5vw, 64px) 48px clamp(56px, 6.3vw, 90px);
   }
 
-  .quote {
-    position: absolute;
-    left: clamp(24px, 6vw, 96px);
-    top: 34%;
-    margin: 0;
+  /* Masthead: the reference's full-width display headline + tiny centered
+     caps subline. Editorial New Light, much larger than the section h2s. */
+  .masthead {
+    text-align: center;
   }
 
-  .quote p {
+  h2 {
     margin: 0;
     font-family: var(--font-serif);
     font-weight: 300;
-    font-size: clamp(40px, 5.4vw, 84px);
-    line-height: 1.06;
-    letter-spacing: -0.01em;
-    color: var(--stand-cream);
+    font-size: clamp(56px, 8.2vw, 120px);
+    line-height: 1;
+    letter-spacing: -0.015em;
   }
 
-  /* Stepped lines, like the reference's ragged left block. */
-  .line2 {
-    display: block;
-    padding-left: clamp(20px, 2.6vw, 44px);
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(36px, 4.5vw, 64px);
+    align-items: center;
+    margin-top: clamp(36px, 4.2vw, 64px);
   }
 
-  .line3 {
-    display: block;
-  }
-
-  .caption {
-    position: absolute;
-    right: clamp(24px, 5vw, 72px);
-    bottom: clamp(28px, 4.5vw, 64px);
+  .figure {
+    position: relative;
+    justify-self: center;
+    width: min(100%, 400px);
     margin: 0;
-    max-width: 38ch;
+  }
+
+  .photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    /* Keep Lauren (just left of frame center) and her face in the crop. */
+    object-position: 47% 20%;
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .statement {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(26px, 2.6vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .statement em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  /* The reference's small dense paragraph — a full type step down from the
+     section body elsewhere on the page. */
+  .body {
+    margin: clamp(16px, 1.8vw, 26px) 0 0;
+    max-width: 52ch;
     font-family: var(--font-sans);
     font-weight: 400;
-    font-size: clamp(12px, 1vw, 14px);
-    line-height: 1.55;
+    /* Same size as the Location week-table rows. */
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.5;
     letter-spacing: -0.005em;
-    color: var(--stand-cream);
     text-wrap: pretty;
   }
 
   @media (max-width: 900px) {
-    .fc-lauren-c {
-      height: auto;
-      min-height: 640px;
-      aspect-ratio: 3 / 4;
+    .inner {
+      padding-left: 20px;
+      padding-right: 20px;
     }
 
-    .quote {
-      top: 28%;
+    .cols {
+      grid-template-columns: 1fr;
+      gap: 40px;
     }
 
-    .caption {
-      left: 20px;
-      right: 20px;
-      max-width: none;
+    .figure {
+      width: min(78%, 320px);
+    }
+
+    .arrow {
+      display: none;
     }
   }
 </style>
