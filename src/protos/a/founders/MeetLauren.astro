@@ -31,6 +31,7 @@
           width="892"
           height="1082"
         />
+        <figcaption class="caption">Lauren Kassan, STAND instructor</figcaption>
       </figure>
 
       <div class="copy">
@@ -87,15 +88,27 @@
     margin-top: clamp(36px, 4.2vw, 64px);
   }
 
+  /* Handwriting for the polaroid caption — proto-only face, so declared
+     here rather than in tokens.css. */
+  @font-face {
+    font-family: 'Mayonice';
+    src: url('/fonts/Mayonice.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   /* Polaroid: JY's actual frame asset (window punched transparent) layered
      over the photo. The photo fills the measured window (6.05/6.84% offset,
-     87.22 x 72.83% of the frame) so the frame's inner bevel stays on top. */
+     87.22 x 72.83% of the frame) so the frame's inner bevel stays on top.
+     container-type lets the caption size in cqw, tracking the frame. */
   .figure {
     position: relative;
     justify-self: center;
     width: min(100%, 400px);
     margin: 0;
     filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.14));
+    container-type: inline-size;
   }
 
   .frame {
@@ -115,6 +128,24 @@
     object-fit: cover;
     /* Keep Lauren (just left of frame center) and her face in the crop. */
     object-position: 47% 12%;
+  }
+
+  /* Handwritten on the chin (the frame band under the photo window). */
+  .caption {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 79.7%;
+    height: 20.3%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Mayonice', cursive;
+    font-size: 4.6cqw;
+    line-height: 1;
+    color: var(--stand-black);
+    transform: rotate(-2deg);
+    white-space: nowrap;
   }
 
   .copy {
