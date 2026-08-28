@@ -1,7 +1,7 @@
 ---
 // Meet Lauren — PROTO C: "scroll split + word reveal" (JY, Aug 28 eve).
-// Masthead + centered quote, then a pinned stage: the long-oval portrait
-// starts centered; at the halfway point of the runway it glides left and the
+// Masthead + centered quote, then a pinned stage: the portrait starts
+// centered; at the halfway point of the runway it glides left and the
 // bio — Authentic Sans, per JY — appears on the right word by word as the
 // reader keeps scrolling (each word's opacity trips at its own progress
 // threshold). The business-school line is the one-pager's approved copy.
@@ -98,9 +98,8 @@ const WORDS = BIO.split(' ');
     overflow: hidden;
   }
 
-  /* The long-oval portrait: starts dead center, glides to the left quarter
-     once .split lands. left+transform both transition so the glide is one
-     move. */
+  /* The portrait: starts dead center, glides to the left quarter once
+     .split lands. left+transform both transition so the glide is one move. */
   .photo {
     position: absolute;
     top: 50%;
@@ -108,11 +107,10 @@ const WORDS = BIO.split(' ');
     transform: translate(-50%, -50%);
     width: min(56vw, 340px);
     height: auto;
-    aspect-ratio: 3 / 5;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
     /* Keep Lauren (just left of frame center) and her face in the crop. */
     object-position: 47% 20%;
-    border-radius: 50%;
     transition:
       left 0.7s cubic-bezier(0.22, 1, 0.36, 1),
       transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
