@@ -79,21 +79,27 @@
     margin-top: clamp(36px, 4.2vw, 64px);
   }
 
+  /* Polaroid frame: white mat, thin sides/top, the classic deep bottom
+     chin, near-square window. Percentages keep the chin proportional as
+     the figure scales. */
   .figure {
     position: relative;
     justify-self: center;
     width: min(100%, 400px);
     margin: 0;
+    padding: 5.5% 5.5% 18%;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
   }
 
   .photo {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 1 / 1.05;
     object-fit: cover;
     /* Keep Lauren (just left of frame center) and her face in the crop. */
-    object-position: 47% 20%;
+    object-position: 47% 12%;
   }
 
   .copy {
