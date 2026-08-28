@@ -21,12 +21,16 @@
       </p>
     </blockquote>
 
-    <p class="credits" data-rv style="--rvi: 2">
-      Lauren &mdash; Founder &amp; CEO of STAND &middot; co-founded The Wing
-      &middot; ClassPass &middot; SLT &middot; Forbes 30 Under 30 &middot;
-      Fast Company 100 Most Creative &middot; Goldman Sachs 100 Most
-      Intriguing
-    </p>
+    <img
+      class="portrait"
+      src="/brand/lauren.webp"
+      alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
+      loading="lazy"
+      width="1280"
+      height="720"
+      data-rv
+      style="--rvi: 2"
+    />
   </div>
 </section>
 
@@ -77,16 +81,18 @@
     text-wrap: balance;
   }
 
-  .credits {
-    margin: clamp(28px, 3.2vw, 48px) auto 0;
-    max-width: 72ch;
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: clamp(10px, 0.95vw, 13px);
-    line-height: 1.8;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--stand-red);
+  /* Centered matted print under the quote — same straight treatment as A. */
+  .portrait {
+    display: block;
+    width: min(100%, 620px);
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    /* Keep Lauren (just left of frame center) and her face in the crop. */
+    object-position: 47% 20%;
+    margin: clamp(32px, 3.8vw, 56px) auto 0;
+    border: 10px solid var(--stand-cream);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
   }
 
   @media (max-width: 900px) {
