@@ -1,10 +1,17 @@
 ---
-// Meet Lauren — PROTO C: A's masthead profile, diverged (JY, Aug 28 eve):
-// the portrait crops to a long oval, and the bio sentence leaves the column
-// to become its own full-height screen set at the NewSpace mega size
-// ("A Modern Day Lemonade Stand" — Editorial New Light, clamp 24/5.2vw/75).
-// Two <section>s so each screen arms its own chunk-reveal observer.
-// The business-school line is lifted from the one-pager's approved copy.
+// Meet Lauren — PROTO C: "scroll split + word reveal" (JY, Aug 28 eve).
+// Masthead + centered quote, then a pinned stage: the long-oval portrait
+// starts centered; at the halfway point of the runway it glides left and the
+// bio — Authentic Sans, per JY — appears on the right word by word as the
+// reader keeps scrolling (each word's opacity trips at its own progress
+// threshold). The business-school line is the one-pager's approved copy.
+const BIO =
+  'Before STAND, Lauren co-founded The Wing, a groundbreaking membership ' +
+  'network built across women-focused workspaces. She led business ' +
+  'development at ClassPass and was the first employee at the fitness brand ' +
+  'SLT — a career of building consumer businesses and community-driven ' +
+  'platforms from zero to scale.';
+const WORDS = BIO.split(' ');
 ---
 
 <section class="fc-lauren" id="meet-lauren" aria-labelledby="lauren-title">
@@ -13,36 +20,28 @@
       <h2 id="lauren-title" data-rv style="--rvi: 0">Meet Lauren</h2>
     </header>
 
-    <div class="cols">
-      <figure class="figure" data-rv style="--rvi: 1">
-        <img
-          class="photo"
-          src="/brand/lauren.webp"
-          alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
-          loading="lazy"
-          width="1280"
-          height="720"
-        />
-      </figure>
+    <p class="statement" data-rv style="--rvi: 1">
+      &ldquo;I didn&rsquo;t go to business school.
+      <em>I just did business.&rdquo;</em>
+    </p>
+  </div>
 
-      <div class="copy">
-        <p class="statement" data-rv style="--rvi: 2">
-          &ldquo;I didn&rsquo;t go to business school.
-          <em>I just did business.&rdquo;</em>
-        </p>
-      </div>
+  <div class="scrolly" data-lauren-scrolly>
+    <div class="stage">
+      <img
+        class="photo"
+        src="/brand/lauren.webp"
+        alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
+        loading="lazy"
+        width="1280"
+        height="720"
+      />
+
+      <p class="bio">
+        {WORDS.map((w) => <span class="w">{w} </span>)}
+      </p>
     </div>
   </div>
-</section>
-
-<section class="fc-lauren-bio" aria-label="About Lauren">
-  <p class="bio" data-rv style="--rvi: 0">
-    Before STAND, Lauren co-founded The Wing, a groundbreaking membership
-    network built across women-focused workspaces. She led business
-    development at ClassPass and was the first employee at the fitness brand
-    SLT &mdash; a career of building consumer businesses and community-driven
-    platforms from zero to scale.
-  </p>
 </section>
 
 <style>
@@ -54,7 +53,7 @@
   .inner {
     max-width: calc(1132px + 2 * 48px);
     margin: 0 auto;
-    padding: clamp(40px, 4.5vw, 64px) 48px clamp(56px, 6.3vw, 90px);
+    padding: clamp(40px, 4.5vw, 64px) 48px 0;
   }
 
   .masthead {
@@ -70,46 +69,14 @@
     letter-spacing: -0.015em;
   }
 
-  .cols {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(36px, 4.5vw, 64px);
-    align-items: center;
-    margin-top: clamp(36px, 4.2vw, 64px);
-  }
-
-  .figure {
-    position: relative;
-    justify-self: center;
-    width: min(100%, 380px);
-    margin: 0;
-  }
-
-  /* Long oval crop — tall ellipse, the editorial arch. */
-  .photo {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 5;
-    object-fit: cover;
-    /* Keep Lauren (just left of frame center) and her face in the crop. */
-    object-position: 47% 20%;
-    border-radius: 50%;
-  }
-
-  .copy {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .statement {
-    margin: 0;
+    margin: clamp(16px, 1.8vw, 28px) auto 0;
     font-family: var(--font-serif);
     font-weight: 300;
     font-size: clamp(26px, 2.6vw, 38px);
     line-height: 1.15;
     letter-spacing: -0.01em;
+    text-align: center;
     text-wrap: balance;
   }
 
@@ -118,26 +85,83 @@
     color: var(--stand-red);
   }
 
-  /* The bio takes its own screen, set at the NewSpace mega size. */
-  .fc-lauren-bio {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: clamp(520px, 92vh, 920px);
-    background: var(--stand-cream);
-    color: var(--stand-black);
+  /* Scroll runway: the extra viewports of height are what the reader scrolls
+     through while the sticky stage plays the swap, then the word reveal. */
+  .scrolly {
+    height: 280vh;
+  }
+
+  .stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* The oval portrait: starts dead center, glides to the left quarter once
+     .split lands. left+transform both transition so the glide is one move. */
+  .photo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(56vw, 340px);
+    height: auto;
+    aspect-ratio: 3 / 5;
+    object-fit: cover;
+    /* Keep Lauren (just left of frame center) and her face in the crop. */
+    object-position: 47% 20%;
+    border-radius: 50%;
+    transition:
+      left 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .bio {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(24px, -50%);
     margin: 0;
-    max-width: calc(1132px + 2 * 48px);
-    padding: clamp(48px, 5.5vw, 88px) 48px;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(24px, 5.2vw, 75px);
-    line-height: 1.08;
+    max-width: min(44vw, 30ch);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(20px, 2.4vw, 38px);
+    line-height: 1.3;
     letter-spacing: -0.01em;
     text-wrap: pretty;
+    opacity: 0;
+    transition:
+      opacity 0.5s ease,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Word reveal: every word sits at a whisper until the scroll progress
+     trips its threshold (JS adds .on). */
+  .bio .w {
+    opacity: 0.12;
+    transition: opacity 0.3s ease;
+  }
+
+  .bio .w.on {
+    opacity: 1;
+  }
+
+  .stage.split .photo {
+    left: 26%;
+  }
+
+  .stage.split .bio {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo,
+    .bio,
+    .bio .w {
+      transition: none;
+    }
   }
 
   @media (max-width: 900px) {
@@ -146,18 +170,59 @@
       padding-right: 20px;
     }
 
-    .cols {
-      grid-template-columns: 1fr;
-      gap: 40px;
+    .photo {
+      width: min(52vw, 250px);
     }
 
-    .figure {
-      width: min(70%, 300px);
+    .stage.split .photo {
+      left: 27%;
     }
 
     .bio {
-      padding-left: 20px;
-      padding-right: 20px;
+      left: 48%;
+      max-width: 48vw;
+      font-size: clamp(14px, 2.4vw, 20px);
     }
   }
 </style>
+
+<script>
+  // Scroll-driven stage: past ~half the runway the photo glides left and the
+  // bio pane fades in; the remaining runway feeds the word-by-word reveal.
+  // rAF-throttled — scroll events outpace frames, so sample once per paint.
+  const scrolly = document.querySelector<HTMLElement>('[data-lauren-scrolly]');
+  const stage = scrolly?.querySelector<HTMLElement>('.stage');
+  const words = stage ? [...stage.querySelectorAll<HTMLElement>('.bio .w')] : [];
+
+  if (scrolly && stage) {
+    const SPLIT_AT = 0.45; // photo starts its glide just before halfway
+    const WORDS_FROM = 0.5; // word reveal rides the back half of the runway
+    const WORDS_TO = 0.95;
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const rect = scrolly.getBoundingClientRect();
+      const runway = rect.height - window.innerHeight;
+      const progress = runway > 0 ? -rect.top / runway : 1;
+
+      stage.classList.toggle('split', progress >= SPLIT_AT);
+
+      const t = (progress - WORDS_FROM) / (WORDS_TO - WORDS_FROM);
+      const lit = Math.floor(Math.min(Math.max(t, 0), 1) * words.length);
+      words.forEach((w, i) => w.classList.toggle('on', i < lit));
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+  }
+</script>
