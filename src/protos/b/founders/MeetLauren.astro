@@ -16,12 +16,7 @@ import SignupButton from './SignupButton.astro';
       <span class="line2">Lauren</span>
     </h2>
 
-    <p class="subline" data-rv style="--rvi: 1">
-      Founder &amp; CEO of STAND, and the founder in the room &mdash; every
-      weekday cohort.
-    </p>
-
-    <p class="body" data-rv style="--rvi: 2">
+    <p class="body" data-rv style="--rvi: 1">
       Before STAND, Lauren co-founded The Wing, a groundbreaking membership
       network built across women-focused workspaces. She led business
       development at ClassPass and was the first employee at the fitness brand
@@ -29,7 +24,7 @@ import SignupButton from './SignupButton.astro';
       community-driven platforms from zero to scale.
     </p>
 
-    <p class="body" data-rv style="--rvi: 3">
+    <p class="body" data-rv style="--rvi: 2">
       When people ask where she went to business school:
       <em>&ldquo;I didn&rsquo;t. I just did business.&rdquo;</em> Along the
       way she&rsquo;s been named to Forbes 30 Under 30, Fast Company&rsquo;s
@@ -37,7 +32,7 @@ import SignupButton from './SignupButton.astro';
       Intriguing Entrepreneurs.
     </p>
 
-    <div class="cta" data-rv style="--rvi: 4">
+    <div class="cta" data-rv style="--rvi: 3">
       <SignupButton label="Get first access" />
     </div>
   </div>
@@ -88,21 +83,10 @@ import SignupButton from './SignupButton.astro';
     display: block;
   }
 
-  .subline {
-    margin: clamp(18px, 2vw, 28px) 0 0;
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: clamp(11px, 1vw, 14px);
-    line-height: 1.6;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--stand-red);
-  }
-
   /* The reference's small dense paragraphs — a full step down from the
      page's usual body size. */
   .body {
-    margin: clamp(14px, 1.6vw, 22px) 0 0;
+    margin: clamp(18px, 2vw, 28px) 0 0;
     max-width: 48ch;
     font-family: var(--font-sans);
     font-weight: 400;
