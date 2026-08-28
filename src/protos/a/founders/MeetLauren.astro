@@ -21,10 +21,16 @@ const HONORS = [
     </header>
 
     <div class="detail">
-      <!-- TODO(asset): portrait → /brand/lauren.webp -->
-      <div class="portrait frame-ph" data-rv style="--rvi: 2">
-        <span>&lt;Portrait &mdash; Lauren&gt;</span>
-      </div>
+      <img
+        class="portrait"
+        src="/brand/lauren.webp"
+        alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
+        loading="lazy"
+        width="1280"
+        height="720"
+        data-rv
+        style="--rvi: 2"
+      />
 
       <p class="para" data-rv style="--rvi: 3">
         Lauren co-founded The Wing, a groundbreaking membership network built
@@ -102,26 +108,14 @@ const HONORS = [
   }
 
   .portrait {
+    width: 100%;
+    height: auto;
     aspect-ratio: 4 / 3;
-    margin-bottom: clamp(20px, 2.2vw, 32px);
-  }
-
-  .frame-ph {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 16px;
-    border: 2px dashed rgba(0, 0, 0, 0.35);
+    object-fit: cover;
+    /* Keep Lauren (just left of frame center) and her face in the crop. */
+    object-position: 47% 20%;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.04);
-  }
-
-  .frame-ph span {
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: 18px;
-    opacity: 0.65;
+    margin-bottom: clamp(20px, 2.2vw, 32px);
   }
 
   .para {
