@@ -1,0 +1,142 @@
+---
+// About statement slide — Proto A layout (Aug 24 reference: emonee's
+// "THE SECRET FORMULA?" section). Giant stacked centered headline, then
+// centered body paragraphs, then the updates CTA. Copy per JY, Aug 27:
+// the headline is the "A Modern Day Lemonade Stand" tagline.
+import SignupButton from './SignupButton.astro';
+---
+
+<section class="fc-newspace" id="about" aria-labelledby="newspace-title">
+  <h2 class="mega" id="newspace-title">
+    <span class="line chunk" style="--i: 0">A Modern Day</span>
+    <span class="line chunk" style="--i: 1">Lemonade Stand</span>
+  </h2>
+
+  <div class="body">
+    <p class="chunk" style="--i: 2">
+      Where kids build
+      <strong>real businesses and real-life skills</strong>.
+    </p>
+
+    <p class="chunk" style="--i: 3">
+      <strong>STAND</strong> is an <strong>IRL space</strong> where kids learn to
+      <strong>create, problem-solve, communicate</strong>, and turn ideas into
+      <strong>something real</strong>.
+    </p>
+  </div>
+
+  <div class="cta chunk" style="--i: 4">
+    <SignupButton label="Sign up for updates" />
+  </div>
+</section>
+
+<style>
+  .fc-newspace {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(32px, 4vw, 56px);
+    /* Content-height with the same section rhythm as Location — the old
+       100svh centering left a screen of dead cream above and below. */
+    padding: clamp(56px, 6.1vw, 88px) 48px;
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    color: var(--stand-black);
+    /* Cream is the page ground — the slide rides on it, no band color. */
+  }
+
+  /* The giant stacked announcement — each line its own row, tight leading so
+     the block reads as one mass (reference: emonee hero-scale type). */
+  .mega {
+    margin: 0;
+    width: 100%;
+    /* Editorial New Light — the serif "magazine masthead" voice from the
+       design brief (Proto B won the Aug 25 A/B review). */
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(24px, 5.2vw, 75px);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    /* Cased in the markup — "of" stays lower (JY, Aug 25), which
+       capitalize cannot do. */
+    text-transform: none;
+  }
+
+  .mega .line {
+    display: block;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 2vw, 28px);
+    /* Same measure as the Location body copy. */
+    max-width: 62ch;
+  }
+
+  .body p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .body strong {
+    font-weight: 700;
+  }
+
+  /* Chunk-by-chunk reveal: same recipe as before — headline lines rise first,
+     then the paragraphs, then the CTA. .is-ready arms the hidden state only
+     when JS runs — no JS renders static. */
+  .fc-newspace.is-ready .chunk {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--i) * 140ms);
+  }
+
+  .fc-newspace.is-shown .chunk {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-newspace.is-ready .chunk {
+      transition: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .fc-newspace {
+      padding: var(--space-5) 20px;
+    }
+  }
+</style>
+
+<script>
+  // One-shot reveal trigger for the chunk stagger above.
+  const section = document.querySelector('.fc-newspace');
+  if (section && 'IntersectionObserver' in window) {
+    section.classList.add('is-ready');
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          section.classList.add('is-shown');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(section);
+  }
+</script>

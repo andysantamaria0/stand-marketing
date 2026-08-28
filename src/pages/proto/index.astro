@@ -8,9 +8,11 @@
 // Standalone document on purpose: no Layout means no analytics, font preloads,
 // or Klaviyo in the chrome; the iframe carries the real thing.
 const VARIANTS = [
-  { id: 'a', label: 'A — editorial profile', href: '/proto/a' },
-  { id: 'b', label: 'B — pull-quote billboard', href: '/proto/b' },
-  { id: 'c', label: 'C — founder’s file', href: '/proto/c' },
+  { id: 'a', label: 'A — masthead profile', href: '/proto/a' },
+  { id: 'b', label: 'B — split panel', href: '/proto/b' },
+  { id: 'c', label: 'C — poster', href: '/proto/c' },
+  { id: 'd', label: 'D — magazine cutout', href: '/proto/d' },
+  { id: 'e', label: 'E — zine full-bleed', href: '/proto/e' },
 ];
 ---
 
@@ -20,7 +22,7 @@ const VARIANTS = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Proto A/B/C — Meet Lauren</title>
+    <title>Proto A–E — Meet Lauren</title>
   </head>
   <body>
     <header class="bar">
@@ -121,7 +123,7 @@ const VARIANTS = [
       .deck {
         flex: 1;
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 10px;
         padding: 10px;
         min-height: 0;

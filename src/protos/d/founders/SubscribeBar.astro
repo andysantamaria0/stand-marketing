@@ -1,0 +1,291 @@
+---
+// General-interest email capture (JY, Aug 25) — lives in the Closing
+// footer's right column (Proto B won the Aug 25 review). One field, one
+// tap: email goes to the general subscriber list, NOT the LA enrollment
+// funnel (/enroll keeps its own sticker CTAs). Colors ride on currentColor
+// so the bar inherits the closing band's cream-on-red.
+//
+// SAVE PATH (Aug 25): POST `${API_BASE}/api/waitlist` with
+// { email, source, marketingOptIn: true } — the app's EXISTING endpoint
+// (verified live 8/25, {ok:true}): writes the Supabase waitlist table
+// (unique-email dedupe, idempotent) and, because marketingOptIn is true,
+// subscribes the address to the Klaviyo list server-side — real consent
+// status included. `source: 'landing_updates'` separates this cohort from
+// the old platform-waitlist rows in the same table.
+// NOTE FOR ANDY: the marketing footer depends on this route staying up —
+// if the retired waitlist ever gets cleaned up server-side, keep (or
+// rename+redirect) this endpoint.
+// Fallback if the app is unreachable: Klaviyo's public client-events API
+// (plain fetch — deliberately NOT klaviyo.js, which main removed in #48
+// over the full-screen popup; a raw fetch has no popup surface).
+---
+
+<div class="subwrap">
+  <form class="subscribe" id="updates-form" novalidate aria-label="Sign up for updates">
+    <div class="row">
+      <label class="sr-only" for="updates-email">Your email</label>
+      <input
+        id="updates-email"
+        name="email"
+        type="email"
+        placeholder="enter your email"
+        autocomplete="email"
+        required
+      />
+      <button type="submit" class="go" id="updates-go">
+        Sign up<span class="arrow" aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+    <p class="note" id="updates-error" role="alert" hidden></p>
+  </form>
+  <p class="done" id="updates-done" role="status" hidden></p>
+</div>
+
+<style>
+  .subwrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .subscribe {
+    width: min(720px, 100%);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Input and button share one 2px rule so the row reads as a single
+     drawn line, not a boxed field. */
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 10px;
+  }
+
+  .row:focus-within {
+    /* Focus the brand way: the rule underlines in post-it yellow (green
+       vanishes on the red band). Shadow, not border, so height is stable. */
+    box-shadow: 0 3px 0 0 var(--stand-postit);
+  }
+
+  .subscribe input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    /* A notch under the old clamp(20px, 2.6vw, 34px) — at full size the
+       input dwarfed the 22px Pie Pie "Sign up" (JY, Aug 25). */
+    font-size: clamp(18px, 2vw, 26px);
+    line-height: 1.3;
+    color: currentColor;
+    text-align: left;
+  }
+
+  .subscribe input::placeholder {
+    color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+
+  .subscribe input:focus {
+    outline: none; /* the row's yellow rule is the focus indicator */
+  }
+
+  .go {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    background: none;
+    padding: 0 0 2px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: currentColor;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .go .arrow {
+    transition: transform 150ms ease-out;
+  }
+
+  .go:hover .arrow {
+    transform: translateX(4px);
+  }
+
+  .go:focus-visible {
+    outline: 3px solid var(--stand-postit);
+    outline-offset: 4px;
+  }
+
+  .go:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .note {
+    margin: 10px 0 0;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    text-align: left;
+    color: var(--stand-postit);
+  }
+
+  .done {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(20px, 2.2vw, 28px);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 768px) {
+    .row {
+      gap: 12px;
+    }
+
+    .go {
+      font-size: 18px;
+    }
+  }
+</style>
+
+<script>
+  import { API_BASE, UTM_KEYS } from '@/scripts/enroll/constants';
+  import posthog from 'posthog-js';
+
+  const form = document.getElementById('updates-form') as HTMLFormElement | null;
+  const input = document.getElementById('updates-email') as HTMLInputElement | null;
+  const go = document.getElementById('updates-go') as HTMLButtonElement | null;
+  const errorEl = document.getElementById('updates-error');
+  const doneEl = document.getElementById('updates-done');
+
+  // Same permissive shape /enroll accepts — the server is the real validator.
+  const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  const showError = (message: string) => {
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  };
+
+  let submitting = false;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (submitting || !input) return;
+
+    if (errorEl) errorEl.hidden = true;
+    const email = input.value.trim().toLowerCase();
+    if (!looksLikeEmail(email)) {
+      showError('Enter a valid email address.');
+      input.focus();
+      return;
+    }
+
+    const utm: Record<string, string> = {};
+    const qs = new URLSearchParams(location.search);
+    for (const key of UTM_KEYS) {
+      const v = qs.get(key);
+      if (v) utm[key] = v;
+    }
+
+    submitting = true;
+    if (go) {
+      go.disabled = true;
+      go.textContent = 'Sending…';
+    }
+
+    try {
+      // Path 1: the app's waitlist endpoint — Supabase row + Klaviyo list
+      // subscribe, both server-side (see header). Payload is the exact
+      // historical contract; no extra fields.
+      let saved = false;
+      try {
+        const res = await fetch(`${API_BASE}/api/waitlist`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: 'landing_updates', marketingOptIn: true }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+        if (res.status === 400 && data.error) {
+          // The server rejected the email itself — surface it, don't fall back.
+          showError(data.error);
+          return;
+        }
+        saved = res.ok && data.ok === true;
+      } catch {
+        /* app unreachable — fall through to Klaviyo */
+      }
+
+      // Path 2: Klaviyo's public client-events API (the subscriber DB the
+      // email flows already run on). Creates/updates the profile by email
+      // and stamps the event in one call; 202 = accepted.
+      if (!saved) {
+        try {
+          const kres = await fetch('https://a.klaviyo.com/client/events/?company_id=RqafrJ', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', revision: '2024-10-15' },
+            body: JSON.stringify({
+              data: {
+                type: 'event',
+                attributes: {
+                  properties: { source: 'landing_updates', ...utm },
+                  metric: { data: { type: 'metric', attributes: { name: 'General Interest Signup' } } },
+                  profile: { data: { type: 'profile', attributes: { email } } },
+                },
+              },
+            }),
+          });
+          saved = kres.ok;
+        } catch {
+          /* blocked or offline */
+        }
+      }
+
+      if (!saved) {
+        showError('Something hiccuped on our end — your email is still here, try again.');
+        return;
+      }
+
+      // Analytics is non-critical; an ad blocker must never break the form.
+      try {
+        posthog.capture('updates_subscribed', { source: 'landing_updates' });
+      } catch {
+        /* noop */
+      }
+
+      // "Thanks!" flashes for a beat, then the field comes back cleared —
+      // the footer stays usable for the next email (JY, Aug 25).
+      form.hidden = true;
+      input.value = '';
+      if (doneEl) {
+        doneEl.textContent = 'Thanks!';
+        doneEl.hidden = false;
+      }
+      setTimeout(() => {
+        if (doneEl) doneEl.hidden = true;
+        form.hidden = false;
+      }, 1200);
+    } finally {
+      submitting = false;
+      if (go) {
+        go.disabled = false;
+        go.innerHTML = 'Sign up<span class="arrow" aria-hidden="true">&rarr;</span>';
+      }
+    }
+  });
+</script>

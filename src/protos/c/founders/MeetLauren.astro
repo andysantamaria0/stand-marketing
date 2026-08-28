@@ -1,102 +1,115 @@
 ---
-// Meet Lauren — PROTO C: "billboard quote" (Aug 28 reference: Meet Emonee
-// layout — giant centered display headline, then one oversized centered
-// quote spanning the width; no photo in the frame). Layout and type scale
-// follow the reference; the styling stays STAND (heavy sans masthead,
-// Editorial New quote, cream/red). The business-school line is lifted from
-// the one-pager's approved copy; credentials compress to one caps line.
+// Meet Lauren — PROTO C: "poster" (Aug 28 reference #2: choose-yourself-first
+// editorial poster — the photo IS the frame, the quote overlays mid-frame,
+// and a small credits paragraph sits bottom-right over the image). Layout
+// follows the reference; styling stays STAND: the KidMoment recipe carries
+// the text (black ground + dimmed photo, cream Editorial New quote).
+// The business-school line is lifted from the one-pager's approved copy.
 ---
 
 <section class="fc-lauren-c" id="meet-lauren" aria-labelledby="lauren-title-c">
-  <div class="inner">
-    <h2 id="lauren-title-c" data-rv style="--rvi: 0">
-      Meet
-      <span class="line2">Lauren!</span>
-    </h2>
+  <img
+    class="photo"
+    src="/brand/lauren.webp"
+    alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
+    loading="lazy"
+    width="1280"
+    height="720"
+  />
 
-    <blockquote class="quote" data-rv style="--rvi: 1">
-      <p>
-        &ldquo;I didn&rsquo;t go to business school.
-        I&nbsp;just did business.&rdquo;
-      </p>
-    </blockquote>
+  <blockquote class="quote" data-rv style="--rvi: 0">
+    <p id="lauren-title-c">
+      &ldquo;I didn&rsquo;t go to
+      <span class="line2">business school.</span>
+      <span class="line3">I just did business.&rdquo;</span>
+    </p>
+  </blockquote>
 
-    <img
-      class="portrait"
-      src="/brand/lauren.webp"
-      alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
-      loading="lazy"
-      width="1280"
-      height="720"
-      data-rv
-      style="--rvi: 2"
-    />
-  </div>
+  <p class="caption" data-rv style="--rvi: 1">
+    Meet Lauren, founder &amp; CEO of STAND. She co-founded The Wing, led
+    business development at ClassPass, and was the first employee at the
+    fitness brand SLT &mdash; a career of building consumer businesses from
+    zero to scale.
+  </p>
 </section>
 
 <style>
+  /* The poster frame: black ground + dimmed photo keeps the overlaid type
+     legible over the bright bookshelf (the KidMoment scrim recipe). */
   .fc-lauren-c {
-    background: var(--stand-cream);
-    color: var(--stand-black);
+    position: relative;
+    height: clamp(560px, 92vh, 920px);
+    background: var(--stand-black);
   }
 
-  .inner {
-    max-width: calc(1132px + 2 * 48px);
-    margin: 0 auto;
-    padding: clamp(48px, 5.5vw, 88px) 48px clamp(56px, 6.3vw, 90px);
-    text-align: center;
-  }
-
-  /* Giant two-line masthead — the reference's chunky centered display. */
-  h2 {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-weight: 900;
-    font-size: clamp(56px, 9vw, 140px);
-    line-height: 0.94;
-    letter-spacing: -0.015em;
-    text-transform: uppercase;
-    color: var(--stand-red);
-  }
-
-  .line2 {
-    display: block;
-  }
-
-  /* One oversized centered quote carrying the whole section. */
-  .quote {
-    margin: clamp(32px, 3.8vw, 56px) auto 0;
-  }
-
-  .quote p {
-    /* ch here resolves against the quote's own display size — on the
-       blockquote it inherits the 16px base and collapses to ~220px. */
-    max-width: 22ch;
-    margin: 0 auto;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(34px, 4.6vw, 68px);
-    line-height: 1.12;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-  }
-
-  /* Centered photo under the quote. */
-  .portrait {
-    display: block;
-    width: min(100%, 620px);
-    height: auto;
-    aspect-ratio: 4 / 3;
+  .photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     /* Keep Lauren (just left of frame center) and her face in the crop. */
     object-position: 47% 20%;
-    margin: clamp(32px, 3.8vw, 56px) auto 0;
+    opacity: 0.72;
+  }
+
+  .quote {
+    position: absolute;
+    left: clamp(24px, 6vw, 96px);
+    top: 34%;
+    margin: 0;
+  }
+
+  .quote p {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5.4vw, 84px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    color: var(--stand-cream);
+  }
+
+  /* Stepped lines, like the reference's ragged left block. */
+  .line2 {
+    display: block;
+    padding-left: clamp(20px, 2.6vw, 44px);
+  }
+
+  .line3 {
+    display: block;
+  }
+
+  .caption {
+    position: absolute;
+    right: clamp(24px, 5vw, 72px);
+    bottom: clamp(28px, 4.5vw, 64px);
+    margin: 0;
+    max-width: 38ch;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(12px, 1vw, 14px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    color: var(--stand-cream);
+    text-wrap: pretty;
   }
 
   @media (max-width: 900px) {
-    .inner {
-      padding-left: 20px;
-      padding-right: 20px;
+    .fc-lauren-c {
+      height: auto;
+      min-height: 640px;
+      aspect-ratio: 3 / 4;
+    }
+
+    .quote {
+      top: 28%;
+    }
+
+    .caption {
+      left: 20px;
+      right: 20px;
+      max-width: none;
     }
   }
 </style>

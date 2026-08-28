@@ -1,0 +1,142 @@
+---
+// Meet Lauren — PROTO D: "magazine feature" (Aug 28 reference: Q-magazine
+// Q&A page — big display name top-left, dek beneath, multi-column article
+// text, and a full-height CUTOUT of the subject standing on the right).
+// Layout follows the reference; styling stays STAND (Editorial New red
+// display, cream page, small dense sans columns). Cutout generated from
+// lauren.webp via the Vision foreground mask (lauren-cutout.webp, alpha).
+---
+
+<section class="fc-lauren-d" id="meet-lauren" aria-labelledby="lauren-title-d">
+  <div class="grid">
+    <div class="article">
+      <h2 id="lauren-title-d" data-rv style="--rvi: 0">Meet Lauren</h2>
+
+      <p class="dek" data-rv style="--rvi: 1">
+        &ldquo;I didn&rsquo;t go to business school.
+        <em>I just did business.&rdquo;</em>
+      </p>
+
+      <div class="cols" data-rv style="--rvi: 2">
+        <p>
+          Lauren is the founder and CEO of STAND. Before this she co-founded
+          The Wing, a groundbreaking membership network built across
+          women-focused workspaces &mdash; a company that redefined what a
+          shared space could mean for the people inside it.
+        </p>
+        <p>
+          Earlier she led business development at ClassPass and was the first
+          employee at the fitness brand SLT, building consumer businesses and
+          community-driven platforms from zero to scale. Along the way
+          she&rsquo;s been named to Forbes 30 Under 30, Fast Company&rsquo;s
+          100 Most Creative People in Business, and Goldman Sachs&rsquo; 100
+          Most Intriguing Entrepreneurs.
+        </p>
+      </div>
+    </div>
+
+    <img
+      class="cutout"
+      src="/brand/lauren-cutout.webp"
+      alt="Lauren, founder and CEO of STAND"
+      loading="lazy"
+      width="406"
+      height="713"
+      data-rv
+      style="--rvi: 3"
+    />
+  </div>
+</section>
+
+<style>
+  .fc-lauren-d {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: clamp(32px, 4vw, 56px);
+    align-items: end;
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(48px, 5.5vw, 88px) 48px 0;
+  }
+
+  .article {
+    padding-bottom: clamp(48px, 5.5vw, 88px);
+  }
+
+  /* The reference's big display name, top-left. */
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(48px, 6.4vw, 100px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-red);
+  }
+
+  .dek {
+    margin: clamp(16px, 1.8vw, 26px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(20px, 2vw, 30px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .dek em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  /* Magazine columns: small dense article text. */
+  .cols {
+    margin-top: clamp(20px, 2.2vw, 32px);
+    columns: 2;
+    column-gap: clamp(24px, 2.6vw, 40px);
+  }
+
+  .cols p {
+    margin: 0 0 1em;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(13px, 1.05vw, 15px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+
+  /* Full-height cutout standing on the section's bottom edge. */
+  .cutout {
+    display: block;
+    width: min(100%, 380px);
+    height: auto;
+    justify-self: center;
+    align-self: end;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .article {
+      padding-bottom: 0;
+    }
+
+    .cols {
+      columns: 1;
+    }
+
+    .cutout {
+      width: min(70%, 300px);
+    }
+  }
+</style>
