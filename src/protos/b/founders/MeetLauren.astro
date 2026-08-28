@@ -13,12 +13,6 @@ import SignupButton from './SignupButton.astro';
   <div class="panel">
     <h2 id="lauren-title-b" data-rv style="--rvi: 0">
       Meet
-      <img
-        class="doodle"
-        src="/brand/STAND_PNG_YellowLightbulb.webp"
-        alt=""
-        loading="lazy"
-      />
       <span class="line2">Lauren</span>
     </h2>
 
@@ -78,8 +72,7 @@ import SignupButton from './SignupButton.astro';
     width: 100%;
   }
 
-  /* Chunky two-line display headline with the brand prop inline — the
-     reference's mascot-in-the-masthead move, played with a STAND object. */
+  /* Chunky two-line display headline. */
   h2 {
     margin: 0;
     font-family: var(--font-sans);
@@ -89,14 +82,6 @@ import SignupButton from './SignupButton.astro';
     letter-spacing: -0.01em;
     text-transform: uppercase;
     color: var(--stand-red);
-  }
-
-  .doodle {
-    display: inline-block;
-    width: clamp(44px, 4.6vw, 68px);
-    height: auto;
-    vertical-align: -0.08em;
-    transform: rotate(8deg);
   }
 
   .line2 {
