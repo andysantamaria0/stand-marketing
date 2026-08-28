@@ -1,16 +1,15 @@
 ---
 // About statement slide — Proto A layout (Aug 24 reference: emonee's
 // "THE SECRET FORMULA?" section). Giant stacked centered headline, then
-// centered body paragraphs, then the updates CTA. Copy per JY, Aug 25:
-// the film already closes on the lemonade-stand tagline, so the headline
-// is "A new kind of entrepreneurial program" instead of repeating it.
+// centered body paragraphs, then the updates CTA. Copy per JY, Aug 27:
+// the headline is the "A Modern Day Lemonade Stand" tagline.
 import SignupButton from './SignupButton.astro';
 ---
 
 <section class="fc-newspace" id="about" aria-labelledby="newspace-title">
   <h2 class="mega" id="newspace-title">
-    <span class="line chunk" style="--i: 0">A New Kind of</span>
-    <span class="line chunk" style="--i: 1">Entrepreneurial Program</span>
+    <span class="line chunk" style="--i: 0">A Modern Day</span>
+    <span class="line chunk" style="--i: 1">Lemonade Stand</span>
   </h2>
 
   <div class="body">
@@ -53,10 +52,8 @@ import SignupButton from './SignupButton.astro';
   .mega {
     margin: 0;
     width: 100%;
-    /* PROTO B font test (JY, Aug 25): Editorial New Light instead of Pie
-       Pie — the serif "magazine masthead" voice from the design brief.
-       Slightly tighter tracking and taller leading than the Pie Pie stack;
-       size unchanged for a like-for-like compare against A. */
+    /* Editorial New Light — the serif "magazine masthead" voice from the
+       design brief (Proto B won the Aug 25 A/B review). */
     font-family: var(--font-serif);
     font-weight: 300;
     font-size: clamp(24px, 5.2vw, 75px);

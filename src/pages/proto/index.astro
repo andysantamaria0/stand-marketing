@@ -1,14 +1,16 @@
 ---
-// Proto viewer — two panes rendering the REAL pages in scaled iframes at
+// Proto viewer — three panes rendering the REAL pages in scaled iframes at
 // true device width (1440 or 390 CSS px) so media queries and fluid type
-// behave exactly as production would. A is the live tweak fork; B is the
-// frozen Aug 25 baseline snapshot to compare against (the original Aug 24
-// A/B/C lab is recoverable at 38f2c27).
+// behave exactly as production would. Aug 28 lab: all three forks are the
+// live homepage + a different "Meet Lauren" bio section under Location —
+// A editorial profile, B red pull-quote billboard, C founder's-file card.
+// (Aug 25 A/B lab retired; the Aug 24 one recoverable at 38f2c27.)
 // Standalone document on purpose: no Layout means no analytics, font preloads,
 // or Klaviyo in the chrome; the iframe carries the real thing.
 const VARIANTS = [
-  { id: 'a', label: 'Proto A', href: '/proto/a' },
-  { id: 'b', label: 'Proto B', href: '/proto/b' },
+  { id: 'a', label: 'A — editorial profile', href: '/proto/a' },
+  { id: 'b', label: 'B — pull-quote billboard', href: '/proto/b' },
+  { id: 'c', label: 'C — founder’s file', href: '/proto/c' },
 ];
 ---
 
@@ -18,7 +20,7 @@ const VARIANTS = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Proto A/B — viewer</title>
+    <title>Proto A/B/C — Meet Lauren</title>
   </head>
   <body>
     <header class="bar">
@@ -119,7 +121,7 @@ const VARIANTS = [
       .deck {
         flex: 1;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 10px;
         padding: 10px;
         min-height: 0;

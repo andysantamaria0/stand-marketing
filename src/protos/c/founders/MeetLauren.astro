@@ -1,0 +1,214 @@
+---
+// Meet Lauren — PROTO C: "founder's file". Tween-artifact energy: a taped
+// portrait cutout over a pink scribble on the left, and a receipt-style
+// fact card ("the founder's file") on the right — the same dashed-rule
+// furniture as the week table and member-card world, but played louder.
+// Bio facts supplied by JY (Aug 28).
+const FACTS = [
+  { k: 'Now', v: 'Founder & CEO, STAND' },
+  { k: 'Before', v: 'Co-founded The Wing' },
+  { k: 'Before that', v: 'Business development, ClassPass' },
+  { k: 'First job', v: 'Employee #1 at SLT' },
+  { k: 'Named', v: 'Forbes 30 Under 30 · Fast Company Most Creative · Goldman Sachs Most Intriguing' },
+  { k: 'Business school', v: '“Didn’t go. Just did business.”' },
+];
+---
+
+<section class="fc-lauren-c" id="meet-lauren" aria-labelledby="lauren-title-c">
+  <div class="grid">
+    <div class="figure" data-rv style="--rvi: 0">
+      <img class="scribble" src="/brand/scribble-pink.png" alt="" loading="lazy" />
+      <!-- TODO(asset): portrait cutout → /brand/lauren-cutout.webp -->
+      <div class="cutout frame-ph">
+        <span>&lt;Portrait cutout &mdash; Lauren&gt;</span>
+      </div>
+      <span class="tape" aria-hidden="true"></span>
+    </div>
+
+    <div class="copy">
+      <p class="eyebrow" data-rv style="--rvi: 1">The founder&rsquo;s file</p>
+      <h2 id="lauren-title-c" data-rv style="--rvi: 2">Meet Lauren</h2>
+      <p class="lede" data-rv style="--rvi: 3">
+        She&rsquo;s built consumer businesses from zero to scale &mdash; and
+        she&rsquo;s in the room for every weekday cohort.
+      </p>
+
+      <dl class="facts" data-rv style="--rvi: 4">
+        {
+          FACTS.map((f) => (
+            <div class="fact">
+              <dt>{f.k}</dt>
+              <dd>{f.v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-lauren-c {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 5vw, 72px);
+    align-items: center;
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+  }
+
+  /* Portrait cutout floats over the pink scribble, held by a tape strip —
+     the collage grammar the WalkAway section established. */
+  .figure {
+    position: relative;
+    justify-self: center;
+    width: min(100%, 380px);
+  }
+
+  .scribble {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 118%;
+    transform: translate(-50%, -50%) rotate(-6deg);
+    pointer-events: none;
+  }
+
+  .cutout {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    transform: rotate(2deg);
+  }
+
+  .frame-ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    border: 2px dashed rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    background: rgba(250, 243, 214, 0.92);
+  }
+
+  .frame-ph span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+    opacity: 0.65;
+  }
+
+  .tape {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    width: 110px;
+    height: 30px;
+    transform: translateX(-50%) rotate(-4deg);
+    background: rgba(219, 31, 38, 0.85);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    margin: 0 0 clamp(10px, 1.1vw, 16px);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(12px, 1.1vw, 15px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stand-red);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(32px, 3.8vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+
+  .lede {
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  /* The fact receipt: fine-dash rules between rows, red keys — the week
+     table's grammar, one notch denser. */
+  .facts {
+    margin: clamp(20px, 2.2vw, 32px) 0 0;
+    --dash: repeating-linear-gradient(
+      to right,
+      var(--stand-black) 0 6px,
+      transparent 6px 11px
+    );
+  }
+
+  .fact {
+    display: grid;
+    grid-template-columns: clamp(120px, 12vw, 160px) minmax(0, 1fr);
+    gap: clamp(12px, 1.4vw, 20px);
+    align-items: baseline;
+    padding: 11px 0;
+    background-image: var(--dash);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 0.5px;
+  }
+
+  .fact:first-child {
+    background-image: var(--dash), var(--dash);
+    background-position:
+      left bottom,
+      left top;
+    background-size: 100% 0.5px;
+  }
+
+  dt {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(12px, 1.1vw, 15px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stand-red);
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .figure {
+      width: min(80%, 300px);
+    }
+  }
+</style>

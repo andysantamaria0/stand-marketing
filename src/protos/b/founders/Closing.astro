@@ -5,8 +5,8 @@
 // For Real." headline (Aug 20 review: the kid-moment section already says
 // it, and cream-on-red avoids the red/yellow pairing). Wordmark is logo.svg
 // as a CSS mask, same technique as the nav and manifesto.
-// PROTO B (JY, Aug 25): same underline email bar as A in the footer
-// (sticker capture retired — recover at 90688a2).
+// Aug 25 (Proto B promoted): the general-interest email bar sits in the
+// footer, wordmark left / bar right, ruled sign-off row underneath.
 import SubscribeBar from './SubscribeBar.astro';
 ---
 
@@ -52,8 +52,8 @@ import SubscribeBar from './SubscribeBar.astro';
     color: var(--stand-cream);
   }
 
-  /* PROTO B: two columns on the page's content width — wordmark left,
-     sticker capture right (mirrors A's footer split). */
+  /* Two columns on the page's content width — wordmark left, email
+     capture right. */
   .cols {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);

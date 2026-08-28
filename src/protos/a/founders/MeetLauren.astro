@@ -1,0 +1,203 @@
+---
+// Meet Lauren — PROTO A: "editorial profile". Quiet continuation of the
+// promoted Location look: same 5/7 grid, sticky Editorial New Light rail,
+// portrait + bio + receipt-dash honors rows in the detail column.
+// Bio facts supplied by JY (Aug 28); the business-school line is lifted
+// verbatim from the one-pager's approved copy.
+const HONORS = [
+  { org: 'Forbes', award: '30 Under 30' },
+  { org: 'Fast Company', award: '100 Most Creative People in Business' },
+  { org: 'Goldman Sachs', award: '100 Most Intriguing Entrepreneurs' },
+];
+---
+
+<section class="fc-lauren" id="meet-lauren" aria-labelledby="lauren-title">
+  <div class="grid">
+    <header class="rail">
+      <h2 id="lauren-title" data-rv style="--rvi: 0">Meet Lauren</h2>
+      <p class="lede" data-rv style="--rvi: 1">
+        Founder &amp; CEO of STAND &mdash; and the founder in the room.
+      </p>
+    </header>
+
+    <div class="detail">
+      <!-- TODO(asset): portrait → /brand/lauren.webp -->
+      <div class="portrait frame-ph" data-rv style="--rvi: 2">
+        <span>&lt;Portrait &mdash; Lauren&gt;</span>
+      </div>
+
+      <p class="para" data-rv style="--rvi: 3">
+        Lauren co-founded The Wing, a groundbreaking membership network built
+        across women-focused workspaces. Before that she led business
+        development at ClassPass and was the first employee at the fitness
+        brand SLT &mdash; building consumer businesses and community-driven
+        platforms from zero to scale.
+      </p>
+
+      <p class="para" data-rv style="--rvi: 4">
+        When people ask where she went to business school:
+        <em>&ldquo;I didn&rsquo;t. I just did business.&rdquo;</em>
+      </p>
+
+      <ul class="honors" data-rv style="--rvi: 5">
+        {
+          HONORS.map((h) => (
+            <li>
+              <strong>{h.org}</strong>
+              <span>{h.award}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-lauren {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  /* Same grid metrics as Location so the two sections read as one system. */
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 5vw, 72px);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: 0 48px clamp(56px, 6.3vw, 90px);
+  }
+
+  .rail {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 1.7vw, 24px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(32px, 3.8vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+
+  .lede {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(18px, 1.8vw, 26px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .detail {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .portrait {
+    aspect-ratio: 4 / 3;
+    margin-bottom: clamp(20px, 2.2vw, 32px);
+  }
+
+  .frame-ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    border: 2px dashed rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  .frame-ph span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 18px;
+    opacity: 0.65;
+  }
+
+  .para {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.8vw, 24px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .para + .para {
+    margin-top: clamp(14px, 1.6vw, 22px);
+  }
+
+  .para em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  /* Receipt-dash honors rows — same fine-dash recipe as the week table. */
+  .honors {
+    list-style: none;
+    margin: clamp(22px, 2.4vw, 34px) 0 0;
+    padding: 0;
+    --dash: repeating-linear-gradient(
+      to right,
+      var(--stand-black) 0 6px,
+      transparent 6px 11px
+    );
+  }
+
+  .honors li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 12px 0;
+    background-image: var(--dash);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 0.5px;
+  }
+
+  .honors li:first-child {
+    background-image: var(--dash), var(--dash);
+    background-position:
+      left bottom,
+      left top;
+    background-size: 100% 0.5px;
+  }
+
+  .honors strong {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(15px, 1.4vw, 19px);
+  }
+
+  .honors span {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(15px, 1.3vw, 18px);
+    text-align: right;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .rail {
+      position: static;
+    }
+  }
+</style>
