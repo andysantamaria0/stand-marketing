@@ -1,53 +1,32 @@
 ---
-// Meet Lauren — PROTO C: "founder's file". Tween-artifact energy: a taped
-// portrait cutout over a pink scribble on the left, and a receipt-style
-// fact card ("the founder's file") on the right — the same dashed-rule
-// furniture as the week table and member-card world, but played louder.
-// Bio facts supplied by JY (Aug 28).
-const FACTS = [
-  { k: 'Now', v: 'Founder & CEO, STAND' },
-  { k: 'Before', v: 'Co-founded The Wing' },
-  { k: 'Before that', v: 'Business development, ClassPass' },
-  { k: 'First job', v: 'Employee #1 at SLT' },
-  { k: 'Named', v: 'Forbes 30 Under 30 · Fast Company Most Creative · Goldman Sachs Most Intriguing' },
-  { k: 'Business school', v: '“Didn’t go. Just did business.”' },
-];
+// Meet Lauren — PROTO C: "billboard quote" (Aug 28 reference: Meet Emonee
+// layout — giant centered display headline, then one oversized centered
+// quote spanning the width; no photo in the frame). Layout and type scale
+// follow the reference; the styling stays STAND (heavy sans masthead,
+// Editorial New quote, cream/red). The business-school line is lifted from
+// the one-pager's approved copy; credentials compress to one caps line.
 ---
 
 <section class="fc-lauren-c" id="meet-lauren" aria-labelledby="lauren-title-c">
-  <div class="grid">
-    <div class="figure" data-rv style="--rvi: 0">
-      <img class="scribble" src="/brand/scribble-pink.png" alt="" loading="lazy" />
-      <img
-        class="cutout"
-        src="/brand/lauren.webp"
-        alt="Lauren, founder and CEO of STAND, in front of a bookshelf"
-        loading="lazy"
-        width="1280"
-        height="720"
-      />
-      <span class="tape" aria-hidden="true"></span>
-    </div>
+  <div class="inner">
+    <h2 id="lauren-title-c" data-rv style="--rvi: 0">
+      Meet
+      <span class="line2">Lauren!</span>
+    </h2>
 
-    <div class="copy">
-      <p class="eyebrow" data-rv style="--rvi: 1">The founder&rsquo;s file</p>
-      <h2 id="lauren-title-c" data-rv style="--rvi: 2">Meet Lauren</h2>
-      <p class="lede" data-rv style="--rvi: 3">
-        She&rsquo;s built consumer businesses from zero to scale &mdash; and
-        she&rsquo;s in the room for every weekday cohort.
+    <blockquote class="quote" data-rv style="--rvi: 1">
+      <p>
+        &ldquo;I didn&rsquo;t go to business school.
+        I&nbsp;just did business.&rdquo;
       </p>
+    </blockquote>
 
-      <dl class="facts" data-rv style="--rvi: 4">
-        {
-          FACTS.map((f) => (
-            <div class="fact">
-              <dt>{f.k}</dt>
-              <dd>{f.v}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
+    <p class="credits" data-rv style="--rvi: 2">
+      Lauren &mdash; Founder &amp; CEO of STAND &middot; co-founded The Wing
+      &middot; ClassPass &middot; SLT &middot; Forbes 30 Under 30 &middot;
+      Fast Company 100 Most Creative &middot; Goldman Sachs 100 Most
+      Intriguing
+    </p>
   </div>
 </section>
 
@@ -57,153 +36,63 @@ const FACTS = [
     color: var(--stand-black);
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: clamp(40px, 5vw, 72px);
-    align-items: center;
+  .inner {
     max-width: calc(1132px + 2 * 48px);
     margin: 0 auto;
-    padding: clamp(56px, 6.1vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+    padding: clamp(48px, 5.5vw, 88px) 48px clamp(56px, 6.3vw, 90px);
+    text-align: center;
   }
 
-  /* Portrait cutout floats over the pink scribble, held by a tape strip —
-     the collage grammar the WalkAway section established. */
-  .figure {
-    position: relative;
-    justify-self: center;
-    width: min(100%, 380px);
-  }
-
-  .scribble {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 118%;
-    transform: translate(-50%, -50%) rotate(-6deg);
-    pointer-events: none;
-  }
-
-  .cutout {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    /* Vertical crop of a landscape frame: hold on Lauren, face near top. */
-    object-position: 47% 20%;
-    transform: rotate(2deg);
-    /* Cream mat, like a print taped into the file. */
-    border: 8px solid var(--stand-cream);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
-  }
-
-  .tape {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    width: 110px;
-    height: 30px;
-    transform: translateX(-50%) rotate(-4deg);
-    background: rgba(219, 31, 38, 0.85);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  }
-
-  .copy {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .eyebrow {
-    margin: 0 0 clamp(10px, 1.1vw, 16px);
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: clamp(12px, 1.1vw, 15px);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--stand-red);
-  }
-
+  /* Giant two-line masthead — the reference's chunky centered display. */
   h2 {
     margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(32px, 3.8vw, 56px);
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-  }
-
-  .lede {
-    margin: clamp(12px, 1.4vw, 20px) 0 0;
     font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: clamp(17px, 1.8vw, 24px);
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    text-wrap: pretty;
-  }
-
-  /* The fact receipt: fine-dash rules between rows, red keys — the week
-     table's grammar, one notch denser. */
-  .facts {
-    margin: clamp(20px, 2.2vw, 32px) 0 0;
-    --dash: repeating-linear-gradient(
-      to right,
-      var(--stand-black) 0 6px,
-      transparent 6px 11px
-    );
-  }
-
-  .fact {
-    display: grid;
-    grid-template-columns: clamp(120px, 12vw, 160px) minmax(0, 1fr);
-    gap: clamp(12px, 1.4vw, 20px);
-    align-items: baseline;
-    padding: 11px 0;
-    background-image: var(--dash);
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    background-size: 100% 0.5px;
-  }
-
-  .fact:first-child {
-    background-image: var(--dash), var(--dash);
-    background-position:
-      left bottom,
-      left top;
-    background-size: 100% 0.5px;
-  }
-
-  dt {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: clamp(12px, 1.1vw, 15px);
-    letter-spacing: 0.08em;
+    font-weight: 900;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.94;
+    letter-spacing: -0.015em;
     text-transform: uppercase;
     color: var(--stand-red);
   }
 
-  dd {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: clamp(15px, 1.4vw, 19px);
-    line-height: 1.4;
+  .line2 {
+    display: block;
+  }
+
+  /* One oversized centered quote carrying the whole section. */
+  .quote {
+    margin: clamp(32px, 3.8vw, 56px) auto 0;
+  }
+
+  .quote p {
+    /* ch here resolves against the quote's own display size — on the
+       blockquote it inherits the 16px base and collapses to ~220px. */
+    max-width: 22ch;
+    margin: 0 auto;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(34px, 4.6vw, 68px);
+    line-height: 1.12;
     letter-spacing: -0.01em;
-    text-wrap: pretty;
+    text-wrap: balance;
+  }
+
+  .credits {
+    margin: clamp(28px, 3.2vw, 48px) auto 0;
+    max-width: 72ch;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(10px, 0.95vw, 13px);
+    line-height: 1.8;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--stand-red);
   }
 
   @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: 1fr;
-      gap: 48px;
+    .inner {
       padding-left: 20px;
       padding-right: 20px;
-    }
-
-    .figure {
-      width: min(80%, 300px);
     }
   }
 </style>
