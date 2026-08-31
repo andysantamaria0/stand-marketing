@@ -4,11 +4,11 @@
 // entrepreneurship as the vehicle) + Who We Are (founder story / why STAND
 // exists), all in D's magazine world.
 //
-// Page rhythm: nav → masthead (cream) → Our approach (cream, receipt list)
-// → GREEN credential ticker → Meet Lauren magazine feature → red closing.
+// Page rhythm: nav → Our approach (cream checkerboard, opens the page —
+// masthead removed Aug 31) → GREEN credential ticker → Meet Lauren magazine
+// feature → red closing.
 import Layout from '@/layouts/Layout.astro';
 import Nav from '@/protos/d/founders/Nav.astro';
-import Masthead from '@/protos/d/about/Masthead.astro';
 import Approach from '@/protos/d/about/Approach.astro';
 import MeetLauren from '@/protos/d/founders/MeetLauren.astro';
 import Closing from '@/protos/d/founders/Closing.astro';
@@ -27,7 +27,6 @@ import Marquee from '@/protos/d/Marquee.astro';
         { label: 'Location', href: '/proto/d#location' },
       ]}
     />
-    <Masthead />
     <Approach />
     {/* Credential ticker — introduces the founder feature below; same
         grammar as the red strip. The track moves one copy-width per loop,
