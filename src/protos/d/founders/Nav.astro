@@ -6,10 +6,21 @@
 // and white links so it never blends in; over every other ground (video,
 // green, photo, pink, red) it stays cream (.is-scrolled, toggled by the
 // script at the bottom).
-const TABS = [
-  { label: 'About', href: '#about' },
-  { label: 'Location', href: '#location' },
-];
+// About is a real page now (Aug 31 review note), so the tabs are a prop:
+// the homepage uses the default (page link + local anchor), /proto/d/about
+// passes cross-page hrefs and marks itself current.
+interface Tab {
+  label: string;
+  href: string;
+  current?: boolean;
+}
+
+const {
+  tabs = [
+    { label: 'About', href: '/proto/d/about' },
+    { label: 'Location', href: '#location' },
+  ],
+} = Astro.props as { tabs?: Tab[] };
 ---
 
 <nav class="fc-nav" aria-label="Main">
@@ -36,7 +47,11 @@ const TABS = [
   </div>
 
   <div class="tabs">
-    {TABS.map((t) => <a href={t.href}>{t.label}</a>)}
+    {tabs.map((t) => (
+      <a href={t.href} aria-current={t.current ? 'page' : undefined}>
+        {t.label}
+      </a>
+    ))}
   </div>
 
   <a href="/enroll" class="login">
@@ -88,7 +103,8 @@ const TABS = [
     color: var(--stand-white);
   }
 
-  .tabs a:hover {
+  .tabs a:hover,
+  .tabs a[aria-current='page'] {
     text-decoration: underline;
     text-underline-offset: 5px;
   }
@@ -201,7 +217,9 @@ const TABS = [
   // cadence as the smoothing) — four getBoundingClientRect calls per frame
   // is well under a millisecond.
   const nav = document.querySelector<HTMLElement>('.fc-nav');
-  const creamSections = document.querySelectorAll('.fc-newspace, .fc-location, .fc-faq');
+  const creamSections = document.querySelectorAll(
+    '.fc-newspace, .fc-location, .fc-faq, [data-nav-cream]',
+  );
   const onScroll = () => {
     if (!nav) return;
     const probe = nav.offsetHeight;

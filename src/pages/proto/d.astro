@@ -3,14 +3,14 @@
 // Components live in src/protos/a/ and are safe to edit freely; production
 // (src/components/) is untouched.
 //
-// Page rhythm per the Aug 24 web-copy doc:
-//   nav → video hero → About us → marquee → Location → kid moment →
-//   pink collage → FAQ → marquee → closing
+// Page rhythm per the Aug 24 web-copy doc, minus the bio (Aug 31: the
+// founder content lives on /proto/d/about, linked from the nav):
+//   nav → video hero → About us → marquee → kid moment → Location →
+//   pink collage → FAQ → closing
 import Layout from '@/layouts/Layout.astro';
 import VideoHero from '@/protos/d/founders/VideoHero.astro';
 import NewSpace from '@/protos/d/founders/NewSpace.astro';
 import Location from '@/protos/d/founders/Location.astro';
-import MeetLauren from '@/protos/d/founders/MeetLauren.astro';
 import KidMoment from '@/protos/d/founders/KidMoment.astro';
 import WalkAway from '@/protos/d/founders/WalkAway.astro';
 import Faq from '@/protos/d/founders/Faq.astro';
@@ -29,24 +29,8 @@ import Marquee from '@/protos/d/Marquee.astro';
     <Marquee />
     <KidMoment />
     <Location />
-    {/* Credential ticker — same grammar as the red strip (alternating
-        sans/serif phrases, arrow separators). The track moves one copy-width
-        per loop, so duration scales with the much wider copy to keep the
-        same px/s pace as the red marquee's 30s. */}
-    <Marquee
-      bg="var(--stand-green)"
-      duration={110}
-      items={[
-        { text: 'Lauren — Founder & CEO of STAND', font: 'sans' },
-        { text: 'co-founded The Wing', font: 'serif' },
-        { text: 'ClassPass', font: 'sans' },
-        { text: 'SLT', font: 'serif' },
-        { text: 'Forbes 30 Under 30', font: 'sans' },
-        { text: 'Fast Company 100 Most Creative', font: 'serif' },
-        { text: 'Goldman Sachs 100 Most Intriguing', font: 'sans' },
-      ]}
-    />
-    <MeetLauren />
+    {/* Meet Lauren + the green credential ticker moved to /proto/d/about
+        (Aug 31 review note: About is its own nav page now). */}
     <WalkAway />
     <Faq />
     <Closing />

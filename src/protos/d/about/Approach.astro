@@ -1,0 +1,224 @@
+---
+// Our approach — JY's five life skills (Aug 31 direction; copy/naming still
+// evolving). Entrepreneurship is the vehicle, these are what's actually
+// being built. Set as magazine entries on the receipt-rule grammar
+// (Program/AboutTeam dashes): chunky caps skill name + red serif "learn to"
+// dek on the left, dense article body + serif kicker line on the right.
+const VALUES = [
+  {
+    name: 'Take ownership',
+    dek: 'Learn to take an idea and make it happen.',
+    body: [
+      'Kids at STAND aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
+      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
+    ],
+    kicker:
+      'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+  },
+  {
+    name: 'Communicate confidently',
+    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
+    body: [
+      'Kids practice talking about what they think, what they’re making, and why it matters.',
+      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Stand in front of a room and share what they’ve made.',
+    ],
+    kicker:
+      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+  },
+  {
+    name: 'Express yourself creatively',
+    dek: 'Develop your own ideas, taste, and point of view.',
+    body: [
+      'Kids get to decide what they like, what they care about, how something should look, and what they want to put into the world.',
+      'They draw. Build. Write. Design. Experiment.',
+    ],
+    kicker:
+      'They develop a point of view — and the confidence to turn it into something real.',
+  },
+  {
+    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
+    // treat as a conceptual direction, not final copy.
+    name: 'Human first',
+    dek: 'Start analog, then bring in the right digital tools.',
+    body: [
+      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
+      'Then kids use technology and AI where it makes the work stronger.',
+    ],
+    kicker:
+      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+  },
+  {
+    name: 'Problem-solve',
+    dek: 'Learn to make decisions, get unstuck, and keep going.',
+    body: [
+      'Building something real rarely goes exactly according to plan.',
+      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
+    ],
+    kicker:
+      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+  },
+];
+---
+
+<section class="fc-abt-approach" aria-labelledby="approach-title" data-nav-cream>
+  <header class="head">
+    <h2 id="approach-title" data-rv style="--rvi: 0">Our approach</h2>
+    <p class="frame" data-rv style="--rvi: 1">
+      STAND uses entrepreneurship as the vehicle. These are the
+      <em>life skills</em> we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <ul class="values">
+    {
+      VALUES.map((v, i) => (
+        <li data-rv style={`--rvi: ${i + 2}`}>
+          <div class="lede">
+            <h3>{v.name}</h3>
+            <p class="dek">{v.dek}</p>
+          </div>
+          <div class="entry">
+            {v.body.map((p) => (
+              <p>{p}</p>
+            ))}
+            <p class="kicker">{v.kicker}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(40px, 4.4vw, 64px) 48px clamp(56px, 6.1vw, 88px);
+  }
+
+  /* Section mark in the Meet Lauren display voice, one step down. */
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(36px, 4.4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-red);
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+
+  .frame em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--stand-red);
+  }
+
+  .values {
+    list-style: none;
+    margin: clamp(28px, 3.2vw, 48px) 0 0;
+    padding: 0;
+    /* Receipt-style rule shared with the Program fact table: ~6px dashes on
+       an 11px rhythm — `border: dashed` can't control dash length or gap. */
+    --dash: repeating-linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.55) 0 6px,
+      transparent 6px 11px
+    );
+  }
+
+  .values li {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(20px, 2.6vw, 40px);
+    padding: clamp(24px, 2.6vw, 40px) 0;
+    background-image: var(--dash);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 100% 1px;
+  }
+
+  .values li:first-child {
+    background-image: var(--dash), var(--dash);
+    background-position:
+      left bottom,
+      left top;
+    background-size: 100% 1px;
+  }
+
+  /* Skill name in the loud caps voice (B's MEET/LAUREN weight), dek in the
+     red serif — the same two-voice pairing the whole page runs on. */
+  .values h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(22px, 2.4vw, 36px);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    /* No ch cap — 900-weight caps overshoot ch and force mid-word breaks;
+       the grid column is the measure. */
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin: clamp(10px, 1.1vw, 16px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(18px, 1.7vw, 25px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--stand-red);
+    max-width: 24ch;
+    text-wrap: pretty;
+  }
+
+  .entry p {
+    margin: 0 0 1em;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    /* Same dense article step as the Meet Lauren columns. */
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  /* Each entry lands on its punchline — the one line JY wrote to stick. */
+  .entry .kicker {
+    margin: 0.2em 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+  }
+
+  @media (max-width: 768px) {
+    .fc-abt-approach {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .values li {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+</style>
