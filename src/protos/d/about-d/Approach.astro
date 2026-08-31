@@ -1,0 +1,281 @@
+---
+// Our approach — ABOUT D: "the paper stack". Each value is a full sheet of
+// construction paper in a brand color; it pins under the nav and the next
+// sheet scrolls up OVER it, leaving a stack of colored paper lips at the
+// top of the viewport — by the last value the whole palette is peeking.
+// Pure CSS position:sticky with per-card top offsets (no scroll-jacking;
+// Lenis just makes the ride buttery). Black hairline card edges tie to C's
+// black rules; all type black on grounds chosen to hold it (cream, post-it,
+// pink, mustard). Copy is JY's, verbatim. The fifth sheet closes on the
+// red wordmark instead of a photo (four HR1 shots, five values).
+const CARDS = [
+  {
+    name: 'Take ownership',
+    dek: 'Learn to take an idea and make it happen.',
+    body: [
+      'At STAND, kids aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
+      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
+    ],
+    kicker: 'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+    bg: 'var(--stand-cream)',
+    photo: { src: '/brand/about-baker.jpg', alt: 'A kid baker presenting her flour power brand card' },
+  },
+  {
+    name: 'Communicate confidently',
+    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
+    body: [
+      'Kids practice talking about what they think, what they’re making, and why it matters.',
+      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Present their work. Stand in front of a room and share what they’ve made.',
+    ],
+    kicker:
+      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+    bg: 'var(--stand-postit)',
+    photo: { src: '/brand/about-sticker-cheer.jpg', alt: 'Two kids cheering with their arms up as stickers rain down' },
+  },
+  {
+    name: 'Express yourself creatively',
+    dek: 'Develop your own ideas, taste, and point of view.',
+    body: [
+      'Kids get to decide what they like, what they care about, how something should look, what they want to make, and what they want to put into the world.',
+      'They draw. Build. Write. Design. Experiment.',
+    ],
+    kicker: 'They develop a point of view and the confidence to turn it into something real.',
+    bg: 'var(--stand-pink)',
+    photo: { src: '/brand/about-bead-kit.jpg', alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table' },
+  },
+  {
+    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
+    // conceptual direction, not final copy.
+    name: 'Human first',
+    dek: 'Start analog, then bring in the right digital tools.',
+    body: [
+      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
+      'Then kids use technology and AI where it makes the work stronger.',
+    ],
+    kicker:
+      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+    bg: 'var(--stand-mustard)',
+    photo: { src: '/brand/about-sticker-toss.jpg', alt: 'Two kids laughing and tossing stickers in the air' },
+  },
+  {
+    name: 'Problem-solve',
+    dek: 'Learn to make decisions, get unstuck, and keep going.',
+    body: [
+      'Building something real rarely goes exactly according to plan.',
+      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
+    ],
+    kicker:
+      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+    bg: 'var(--stand-cream)',
+    photo: null, // the stack signs off on the wordmark sheet
+  },
+];
+---
+
+<section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  <header class="head">
+    <h2 id="approach-title" data-rv style="--rvi: 0">Our approach</h2>
+    <p class="frame" data-rv style="--rvi: 1">
+      STAND uses entrepreneurship as the vehicle. These are the life skills
+      we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <ul class="stack">
+    {
+      CARDS.map((c, i) => (
+        <li class="sheet" style={`--bg: ${c.bg}; --i: ${i}`}>
+          <div class="text">
+            <h3>{c.name}</h3>
+            <p class="dek">{c.dek}</p>
+            {c.body.map((p) => (
+              <p class="body">{p}</p>
+            ))}
+            <p class="body kicker">{c.kicker}</p>
+          </div>
+          {c.photo ? (
+            <div class="art">
+              <img src={c.photo.src} alt={c.photo.alt} loading="lazy" />
+            </div>
+          ) : (
+            <div class="art wordmark-panel" aria-hidden="true">
+              <span class="wordmark" />
+            </div>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    /* Full-width section: the sheets run edge to edge like paper laid on
+       the page; the header keeps the content column. */
+    padding: clamp(120px, 13vw, 168px) 0 0;
+  }
+
+  .head {
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(36px, 4.4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-black);
+    text-align: center;
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .stack {
+    list-style: none;
+    margin: clamp(32px, 3.6vw, 56px) 0 0;
+    padding: 0;
+  }
+
+  /* The trick: every sheet is sticky with a top offset that grows 16px per
+     index, so each pinned sheet leaves a colored lip visible above the one
+     that covers it — the palette accumulates as you scroll. --nav-clear
+     keeps the first lip just under the fixed bar. */
+  .sheet {
+    --nav-clear: 76px;
+    --lip: 16px;
+    position: sticky;
+    top: calc(var(--nav-clear) + var(--i) * var(--lip));
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    min-height: min(78vh, 720px);
+    background: var(--bg);
+    border-top: 1px solid var(--stand-black);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(28px, 3.4vw, 56px) clamp(24px, 3.4vw, 64px)
+      /* Bottom padding reserves room for the lips of the sheets that will
+         cover this one, so no copy is ever buried under the stack. */
+      calc(clamp(28px, 3.4vw, 56px) + 5 * var(--lip, 16px)) 48px;
+  }
+
+  h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    /* Poster scale — the sheet is the billboard. */
+    font-size: clamp(30px, 3.9vw, 56px);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .body {
+    margin: clamp(10px, 1.1vw, 16px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .kicker {
+    margin-top: auto;
+    padding-top: clamp(12px, 1.4vw, 20px);
+  }
+
+  /* Photo column: full-bleed to the sheet's edge, ruled off from the text. */
+  .art {
+    position: relative;
+    overflow: hidden;
+    border-left: 1px solid var(--stand-black);
+  }
+
+  .art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Final sheet: the red wordmark stands in for a photo — the stack signs
+     off on the brand (logo.svg as a CSS mask, nav/manifesto trick). */
+  .wordmark-panel {
+    display: grid;
+    place-items: center;
+    padding: clamp(24px, 3vw, 48px);
+  }
+
+  .wordmark {
+    display: block;
+    width: min(100%, 360px);
+    aspect-ratio: 199.29 / 47.33;
+    background: var(--stand-red);
+    -webkit-mask: url('/brand/logo.svg') no-repeat center / contain;
+    mask: url('/brand/logo.svg') no-repeat center / contain;
+  }
+
+  @media (max-width: 900px) {
+    .sheet {
+      --nav-clear: 56px;
+      --lip: 12px;
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+
+    /* Photo becomes a band on top of the sheet; text follows. */
+    .art {
+      order: -1;
+      aspect-ratio: 16 / 10;
+      border-left: 0;
+      border-bottom: 1px solid var(--stand-black);
+    }
+
+    .text {
+      padding: 24px 20px calc(24px + 5 * var(--lip)) 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* No pinning theatrics — the sheets read as plain stacked bands. */
+    .sheet {
+      position: static;
+    }
+
+    .text {
+      padding-bottom: clamp(28px, 3.4vw, 56px);
+    }
+  }
+</style>
