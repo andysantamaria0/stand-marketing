@@ -7,14 +7,13 @@
 // (Aug 25 A/B lab retired; the Aug 24 one recoverable at 38f2c27.)
 // Standalone document on purpose: no Layout means no analytics, font preloads,
 // or Klaviyo in the chrome; the iframe carries the real thing.
+// Aug 31: bio lab retired (D won) — old A/B/C panes + forks recoverable at
+// 36f611e. The lab is now the About page: homepage + three About variants.
 const VARIANTS = [
-  { id: 'a', label: 'A — masthead profile', href: '/proto/a' },
-  { id: 'b', label: 'B — split panel', href: '/proto/b' },
-  { id: 'c', label: 'C — scroll split (view full page)', href: '/proto/c' },
-  { id: 'd', label: 'D — homepage (bio moved off)', href: '/proto/d' },
-  { id: 'd-about', label: 'About A — accepted', href: '/proto/d/about' },
+  { id: 'd', label: 'Homepage (bio moved off)', href: '/proto/d' },
+  { id: 'd-about', label: 'About A — 3×3 checker', href: '/proto/d/about' },
   { id: 'd-about-b', label: 'About B — 2×5 rows', href: '/proto/d/about-b' },
-  { id: 'd-about-c', label: 'About C — tweak fork', href: '/proto/d/about-c' },
+  { id: 'd-about-c', label: 'About C — values poster', href: '/proto/d/about-c' },
 ];
 ---
 
@@ -24,7 +23,7 @@ const VARIANTS = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Proto A–D — Meet Lauren</title>
+    <title>Proto — About lab</title>
   </head>
   <body>
     <header class="bar">
@@ -125,7 +124,7 @@ const VARIANTS = [
       .deck {
         flex: 1;
         display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
         padding: 10px;
         min-height: 0;
