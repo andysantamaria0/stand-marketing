@@ -17,7 +17,9 @@ interface Tab {
 
 const {
   tabs = [
-    { label: 'About', href: '/proto/d/about' },
+    // Default About target = D "paper stack" (A retired Aug 31; JY's current
+    // favorite). Repoint on promotion.
+    { label: 'About', href: '/proto/d/about-d' },
     { label: 'Location', href: '#location' },
   ],
 } = Astro.props as { tabs?: Tab[] };
