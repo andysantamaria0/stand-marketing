@@ -1,11 +1,9 @@
 ---
-// Our approach — JY's five life skills (Aug 31 direction; copy/naming still
-// evolving), set per JY's "Our Process" reference (Aug 31 screenshot):
-// centered roman+italic serif masthead, then a bordered 3×3 CHECKERBOARD —
-// numbered text cells alternating with photo cells, thin red rules, cream
-// gutters. Layout + type sizes from the reference; style stays STAND.
-// Five values map cleanly: texts at the checker's corners + center column
-// (T P T / P T P / T P T), photos in the other four.
+// Our approach — ABOUT B: same content as accepted A, reshaped to a tall
+// 2-COLUMN × 5-ROW table (JY, Aug 31): one value per row beside a photo,
+// sides alternating (T P / P T / T P / P T / T _). All four HR1 photos;
+// the tenth cell is an empty ruled cream cell. Flush shared red rules as
+// in A.
 const CELLS = [
   {
     kind: 'value',
@@ -25,6 +23,11 @@ const CELLS = [
     alt: 'A kid baker presenting her flour power brand card',
   },
   {
+    kind: 'photo',
+    src: '/brand/about-bead-kit.jpg',
+    alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table',
+  },
+  {
     kind: 'value',
     n: '02',
     name: 'Communicate confidently',
@@ -35,11 +38,6 @@ const CELLS = [
     ],
     kicker:
       'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
-  },
-  {
-    kind: 'photo',
-    src: '/brand/about-bead-kit.jpg',
-    alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table',
   },
   {
     kind: 'value',
@@ -58,6 +56,11 @@ const CELLS = [
     alt: 'Two kids laughing and tossing stickers in the air',
   },
   {
+    kind: 'photo',
+    src: '/brand/about-sticker-cheer.jpg',
+    alt: 'Two kids cheering with their arms up as stickers rain down',
+  },
+  {
     // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
     // conceptual direction, not final copy.
     kind: 'value',
@@ -72,11 +75,6 @@ const CELLS = [
       'We want them to know how to use powerful tools without handing the entire creative process over to them.',
   },
   {
-    kind: 'photo',
-    src: '/brand/about-sticker-cheer.jpg',
-    alt: 'Two kids cheering with their arms up as stickers rain down',
-  },
-  {
     kind: 'value',
     n: '05',
     name: 'Problem-solve',
@@ -87,6 +85,10 @@ const CELLS = [
     ],
     kicker:
       'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+  },
+  {
+    // Tenth cell — empty ruled cream, closes the checker.
+    kind: 'empty',
   },
 ];
 ---
@@ -104,14 +106,14 @@ const CELLS = [
     {
       CELLS.map((c, i) =>
         c.kind === 'value' ? (
-          <li class="cell value" data-rv style={`--rvi: ${(i % 3) + 2}`}>
+          <li class="cell value" data-rv style={`--rvi: ${(i % 2) + 2}`}>
             <h3>{c.name}</h3>
             <p class="dek">{c.dek}</p>
             {c.body.map((p) => <p class="body">{p}</p>)}
             <p class="kicker">{c.kicker}</p>
           </li>
         ) : c.kind === 'photo' ? (
-          <li class="cell photo" data-rv style={`--rvi: ${(i % 3) + 2}`}>
+          <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}`}>
             <img src={c.src} alt={c.alt} loading="lazy" />
           </li>
         ) : (
@@ -164,7 +166,7 @@ const CELLS = [
     margin: clamp(32px, 3.6vw, 56px) 0 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     border: 1px solid var(--stand-red);
   }
 
@@ -173,12 +175,12 @@ const CELLS = [
     border-bottom: 1px solid var(--stand-red);
   }
 
-  .cell:nth-child(3n) {
+  .cell:nth-child(2n) {
     border-right: 0;
   }
 
   /* Bottom row — the container's edge is its rule. */
-  .cell:nth-child(n + 7) {
+  .cell:nth-child(n + 9) {
     border-bottom: 0;
   }
 
@@ -272,8 +274,8 @@ const CELLS = [
     /* One column: no vertical seams; every visible cell keeps a bottom rule
        except the last, which hands off to the container edge. */
     .cell,
-    .cell:nth-child(3n),
-    .cell:nth-child(n + 7) {
+    .cell:nth-child(2n),
+    .cell:nth-child(n + 9) {
       border-right: 0;
       border-bottom: 1px solid var(--stand-red);
     }
