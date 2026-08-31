@@ -12,7 +12,8 @@ const VARIANTS = [
   { id: 'b', label: 'B — split panel', href: '/proto/b' },
   { id: 'c', label: 'C — scroll split (view full page)', href: '/proto/c' },
   { id: 'd', label: 'D — homepage (bio moved off)', href: '/proto/d' },
-  { id: 'd-about', label: 'D — About page (new)', href: '/proto/d/about' },
+  { id: 'd-about', label: 'About A — accepted', href: '/proto/d/about' },
+  { id: 'd-about-b', label: 'About B — tweak fork', href: '/proto/d/about-b' },
 ];
 ---
 
@@ -123,7 +124,7 @@ const VARIANTS = [
       .deck {
         flex: 1;
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 10px;
         padding: 10px;
         min-height: 0;

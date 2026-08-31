@@ -1,0 +1,120 @@
+---
+// Proto D — ABOUT as its own nav page (Aug 31 review note: move the bio
+// content off the homepage). Combines Our Approach (the life skills, with
+// entrepreneurship as the vehicle) + Who We Are (founder story / why STAND
+// exists), all in D's magazine world.
+//
+// Page rhythm: nav → Our approach (cream checkerboard, opens the page —
+// masthead removed Aug 31) → GREEN credential ticker → Meet Lauren magazine
+// feature → red closing.
+import Layout from '@/layouts/Layout.astro';
+import Nav from '@/protos/d/founders/Nav.astro';
+import Approach from '@/protos/d/about-b/Approach.astro';
+import MeetLauren from '@/protos/d/about-b/MeetLauren.astro';
+import Closing from '@/protos/d/founders/Closing.astro';
+import Marquee from '@/protos/d/Marquee.astro';
+---
+
+<Layout
+  noindex
+  title="Proto — About B"
+  description="STAND uses entrepreneurship as the vehicle to build real-life skills — and it was founded by Lauren Kassan, who learned business by doing business."
+>
+  <main class="founders-page">
+    <Nav
+      tabs={[
+        { label: 'About', href: '/proto/d/about-b', current: true },
+        { label: 'Location', href: '/proto/d#location' },
+      ]}
+    />
+    <Approach />
+    {/* Credential ticker — introduces the founder feature below; same
+        grammar as the red strip. The track moves one copy-width per loop,
+        so duration scales with the wide copy to keep the red marquee's
+        30s px/s pace. */}
+    <Marquee
+      bg="var(--stand-green)"
+      duration={110}
+      items={[
+        { text: 'Lauren — Founder & CEO of STAND', font: 'sans' },
+        { text: 'co-founded The Wing', font: 'serif' },
+        { text: 'ClassPass', font: 'sans' },
+        { text: 'SLT', font: 'serif' },
+        { text: 'Forbes 30 Under 30', font: 'sans' },
+        { text: 'Fast Company 100 Most Creative', font: 'serif' },
+        { text: 'Goldman Sachs 100 Most Intriguing', font: 'sans' },
+      ]}
+    />
+    <MeetLauren />
+    <Closing />
+  </main>
+</Layout>
+
+<style is:global>
+  /* Same shared chunk-reveal recipe as /proto/d — sections mark chunks with
+     data-rv / --rvi, the script below arms them (.rv-ready) and fires once
+     ~25% visible (.rv-shown). No JS → static render. */
+  .founders-page [id] {
+    scroll-margin-top: var(--space-4);
+  }
+
+  .rv-ready [data-rv] {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--rvi, 0) * 180ms);
+  }
+
+  .rv-shown [data-rv] {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv-ready [data-rv] {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Buttery scroll — same Lenis setup as /proto/d.
+  import Lenis from 'lenis';
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      anchors: true,
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }
+
+  // Arm the shared chunk-reveals. The masthead sits at the top of the page,
+  // so its reveal fires on load; deeper sections fire as they enter.
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.founders-page section').forEach((sec) => {
+      if (!sec.querySelector('[data-rv]')) return;
+      sec.classList.add('rv-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            sec.classList.add('rv-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(sec);
+    });
+  }
+</script>

@@ -1,0 +1,285 @@
+---
+// Our approach — JY's five life skills (Aug 31 direction; copy/naming still
+// evolving), set per JY's "Our Process" reference (Aug 31 screenshot):
+// centered roman+italic serif masthead, then a bordered 3×3 CHECKERBOARD —
+// numbered text cells alternating with photo cells, thin red rules, cream
+// gutters. Layout + type sizes from the reference; style stays STAND.
+// Five values map cleanly: texts at the checker's corners + center column
+// (T P T / P T P / T P T), photos in the other four.
+const CELLS = [
+  {
+    kind: 'value',
+    n: '01',
+    name: 'Take ownership',
+    dek: 'Learn to take an idea and make it happen.',
+    body: [
+      'At STAND, kids aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
+      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
+    ],
+    kicker: 'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+  },
+  {
+    // JY's Aug 31 photo drop (HR1 shoot, resized to 1600px JPEGs).
+    kind: 'photo',
+    src: '/brand/about-baker.jpg',
+    alt: 'A kid baker presenting her flour power brand card',
+  },
+  {
+    kind: 'value',
+    n: '02',
+    name: 'Communicate confidently',
+    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
+    body: [
+      'Kids practice talking about what they think, what they’re making, and why it matters.',
+      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Present their work. Stand in front of a room and share what they’ve made.',
+    ],
+    kicker:
+      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+  },
+  {
+    kind: 'photo',
+    src: '/brand/about-bead-kit.jpg',
+    alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table',
+  },
+  {
+    kind: 'value',
+    n: '03',
+    name: 'Express yourself creatively',
+    dek: 'Develop your own ideas, taste, and point of view.',
+    body: [
+      'Kids get to decide what they like, what they care about, how something should look, what they want to make, and what they want to put into the world.',
+      'They draw. Build. Write. Design. Experiment.',
+    ],
+    kicker: 'They develop a point of view and the confidence to turn it into something real.',
+  },
+  {
+    kind: 'photo',
+    src: '/brand/about-sticker-toss.jpg',
+    alt: 'Two kids laughing and tossing stickers in the air',
+  },
+  {
+    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
+    // conceptual direction, not final copy.
+    kind: 'value',
+    n: '04',
+    name: 'Human first',
+    dek: 'Start analog, then bring in the right digital tools.',
+    body: [
+      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
+      'Then kids use technology and AI where it makes the work stronger.',
+    ],
+    kicker:
+      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+  },
+  {
+    kind: 'photo',
+    src: '/brand/about-sticker-cheer.jpg',
+    alt: 'Two kids cheering with their arms up as stickers rain down',
+  },
+  {
+    kind: 'value',
+    n: '05',
+    name: 'Problem-solve',
+    dek: 'Learn to make decisions, get unstuck, and keep going.',
+    body: [
+      'Building something real rarely goes exactly according to plan.',
+      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
+    ],
+    kicker:
+      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+  },
+];
+---
+
+<section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  <header class="head">
+    <h2 id="approach-title" data-rv style="--rvi: 0">Our approach</h2>
+    <p class="frame" data-rv style="--rvi: 1">
+      STAND uses entrepreneurship as the vehicle. These are the life skills
+      we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <ul class="checker">
+    {
+      CELLS.map((c, i) =>
+        c.kind === 'value' ? (
+          <li class="cell value" data-rv style={`--rvi: ${(i % 3) + 2}`}>
+            <h3>{c.name}</h3>
+            <p class="dek">{c.dek}</p>
+            {c.body.map((p) => <p class="body">{p}</p>)}
+            <p class="kicker">{c.kicker}</p>
+          </li>
+        ) : c.kind === 'photo' ? (
+          <li class="cell photo" data-rv style={`--rvi: ${(i % 3) + 2}`}>
+            <img src={c.src} alt={c.alt} loading="lazy" />
+          </li>
+        ) : (
+          <li class="cell empty" aria-hidden="true" />
+        ),
+      )
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    /* Opens the page now — top clears the fixed nav. */
+    padding: clamp(120px, 13vw, 168px) 48px clamp(56px, 6.1vw, 88px);
+  }
+
+  /* Reference masthead: centered serif, roman + italic pairing. */
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5.2vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-red);
+    text-align: center;
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  /* The checkerboard: flush cells sharing single red rules (JY, Aug 31: no
+     gutters). The frame lives on the container; cells draw only their right
+     and bottom edges so shared lines never double to 2px. */
+  .checker {
+    list-style: none;
+    margin: clamp(32px, 3.6vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 1px solid var(--stand-red);
+  }
+
+  .cell {
+    border-right: 1px solid var(--stand-red);
+    border-bottom: 1px solid var(--stand-red);
+  }
+
+  .cell:nth-child(3n) {
+    border-right: 0;
+  }
+
+  /* Bottom row — the container's edge is its rule. */
+  .cell:nth-child(n + 7) {
+    border-bottom: 0;
+  }
+
+  .value {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 2.4vw, 36px);
+  }
+
+  .value h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(17px, 1.5vw, 22px);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin: clamp(8px, 0.9vw, 13px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(16px, 1.4vw, 20px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--stand-red);
+    text-wrap: pretty;
+  }
+
+  .body {
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+
+  /* Each value lands on its punchline — the line JY wrote to stick. */
+  /* Last paragraph in Authentic Sans like the body (JY, Aug 31) — still
+     bottom-aligned so every cell lands on its closing line. */
+  .kicker {
+    margin: auto 0 0;
+    padding-top: clamp(12px, 1.4vw, 20px);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+
+  /* Photo cells: the image fills whatever height the row's text sets, so
+     the checker's rows stay ruled by copy, not crops. */
+  .photo {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .fc-abt-approach {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    /* One column: DOM order already alternates text / photo the whole way
+       down (T P T / P T P / T A T reads T,P,T,P,T,P,T,A,T stacked). */
+    .checker {
+      grid-template-columns: 1fr;
+    }
+
+    .photo {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* Stacked single-column: an empty bordered box is dead space, not air. */
+    .empty {
+      display: none;
+    }
+
+    /* One column: no vertical seams; every visible cell keeps a bottom rule
+       except the last, which hands off to the container edge. */
+    .cell,
+    .cell:nth-child(3n),
+    .cell:nth-child(n + 7) {
+      border-right: 0;
+      border-bottom: 1px solid var(--stand-red);
+    }
+
+    .cell:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>
