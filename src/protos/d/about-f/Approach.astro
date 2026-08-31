@@ -1,0 +1,332 @@
+---
+// Our approach — ABOUT F: "the assembly line". The stage pins for one
+// viewport and the five values ride HORIZONTALLY through it as you scroll
+// — products moving down a conveyor, which is what STAND kids actually do.
+// A black progress rule fills along the bottom as the line advances.
+//
+// Pure CSS scroll-driven animation: the runway (520vh) carries a named
+// view-timeline; the train animates translateX across `contain 0% 100%`,
+// exactly the pinned stretch. No JS, no scroll-jacking — Lenis just
+// smooths the ride. Browsers without animation-timeline, phones, and
+// reduced-motion all get the DEFAULT layout: stacked full-width color
+// bands (the enhancement layers on inside @supports + @media).
+// All type black on grounds that hold it; verbatim JY copy.
+const PANELS = [
+  {
+    name: 'Take ownership',
+    dek: 'Learn to take an idea and make it happen.',
+    body: [
+      'At STAND, kids aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
+      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
+    ],
+    kicker: 'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+    bg: 'var(--stand-cream)',
+    photo: { src: '/brand/about-baker.jpg', alt: 'A kid baker presenting her flour power brand card' },
+  },
+  {
+    name: 'Communicate confidently',
+    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
+    body: [
+      'Kids practice talking about what they think, what they’re making, and why it matters.',
+      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Present their work. Stand in front of a room and share what they’ve made.',
+    ],
+    kicker:
+      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+    bg: 'var(--stand-pink)',
+    photo: { src: '/brand/about-sticker-cheer.jpg', alt: 'Two kids cheering with their arms up as stickers rain down' },
+  },
+  {
+    name: 'Express yourself creatively',
+    dek: 'Develop your own ideas, taste, and point of view.',
+    body: [
+      'Kids get to decide what they like, what they care about, how something should look, what they want to make, and what they want to put into the world.',
+      'They draw. Build. Write. Design. Experiment.',
+    ],
+    kicker: 'They develop a point of view and the confidence to turn it into something real.',
+    bg: 'var(--stand-postit)',
+    photo: { src: '/brand/about-bead-kit.jpg', alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table' },
+  },
+  {
+    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
+    // conceptual direction, not final copy.
+    name: 'Human first',
+    dek: 'Start analog, then bring in the right digital tools.',
+    body: [
+      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
+      'Then kids use technology and AI where it makes the work stronger.',
+    ],
+    kicker:
+      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+    bg: 'var(--stand-mustard)',
+    photo: { src: '/brand/about-sticker-toss.jpg', alt: 'Two kids laughing and tossing stickers in the air' },
+  },
+  {
+    name: 'Problem-solve',
+    dek: 'Learn to make decisions, get unstuck, and keep going.',
+    body: [
+      'Building something real rarely goes exactly according to plan.',
+      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
+    ],
+    kicker:
+      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+    bg: 'var(--stand-cream)',
+    photo: null, // end of the line: the copy gets the full panel
+  },
+];
+---
+
+<section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  {/* Static header — tall-section lesson: the shared 25%-of-section reveal
+      can never fire here, so nothing gets armed. */}
+  <header class="head">
+    <h2 id="approach-title">Our approach</h2>
+    <p class="frame">
+      STAND uses entrepreneurship as the vehicle. These are the life skills
+      we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <div class="runway">
+    <div class="stage">
+      <ul class="train">
+        {
+          PANELS.map((p) => (
+            <li class="panel" style={`--bg: ${p.bg}`}>
+              <div class="text">
+                <h3>{p.name}</h3>
+                <p class="dek">{p.dek}</p>
+                {p.body.map((b) => (
+                  <p class="body">{b}</p>
+                ))}
+                <p class="body kicker">{p.kicker}</p>
+              </div>
+              {p.photo && (
+                <div class="art">
+                  <img src={p.photo.src} alt={p.photo.alt} loading="lazy" />
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="progress" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    padding-top: clamp(120px, 13vw, 168px);
+  }
+
+  .head {
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(36px, 4.4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    text-align: center;
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .runway {
+    margin-top: clamp(32px, 3.6vw, 56px);
+  }
+
+  /* ---- DEFAULT LAYOUT (also the fallback): stacked color bands. ---- */
+  .train {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    background: var(--bg);
+    border-top: 1px solid var(--stand-black);
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(28px, 3.4vw, 56px) clamp(24px, 3.4vw, 64px)
+      clamp(28px, 3.4vw, 56px) 48px;
+  }
+
+  h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(30px, 3.9vw, 56px);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(17px, 1.6vw, 23px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .body {
+    margin: clamp(10px, 1.1vw, 16px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .kicker {
+    margin-top: auto;
+    padding-top: clamp(12px, 1.4vw, 20px);
+  }
+
+  .art {
+    position: relative;
+    overflow: hidden;
+    border-left: 1px solid var(--stand-black);
+    min-height: 320px;
+  }
+
+  .art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .progress {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .panel {
+      grid-template-columns: 1fr;
+    }
+
+    .art {
+      order: -1;
+      aspect-ratio: 16 / 10;
+      min-height: 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--stand-black);
+    }
+
+    .text {
+      padding: 24px 20px;
+    }
+  }
+
+  /* ---- THE LINE: pin the stage, ride the train sideways. Desktop with
+     scroll-driven animation support and motion allowed. ---- */
+  @supports (animation-timeline: view()) {
+    @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+      .runway {
+        /* 100vh of stage + ~4 panel-widths of travel, paced 1vh : 1vw. */
+        height: 520vh;
+        view-timeline: --fc-rail block;
+      }
+
+      .stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .train {
+        display: flex;
+        width: max-content;
+        height: 100%;
+        animation: fc-ride linear both;
+        animation-timeline: --fc-rail;
+        /* contain = exactly the stretch where the stage is pinned. */
+        animation-range: contain 0% 100%;
+      }
+
+      .panel {
+        width: 100vw;
+        height: 100%;
+        border-top: 0;
+        border-left: 1px solid var(--stand-black);
+      }
+
+      .panel:first-child {
+        border-left: 0;
+      }
+
+      .text {
+        /* Clear the fixed nav while pinned. */
+        padding-top: 108px;
+        padding-bottom: 56px;
+      }
+
+      .art {
+        min-height: 0;
+      }
+
+      /* The line's progress: a black rule filling left to right on the
+         same timeline the train rides. */
+      .progress {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4px;
+        background: var(--stand-black);
+        transform-origin: left center;
+        animation: fc-fill linear both;
+        animation-timeline: --fc-rail;
+        animation-range: contain 0% 100%;
+      }
+    }
+  }
+
+  @keyframes fc-ride {
+    to {
+      transform: translateX(calc(-100% + 100vw));
+    }
+  }
+
+  @keyframes fc-fill {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+</style>
