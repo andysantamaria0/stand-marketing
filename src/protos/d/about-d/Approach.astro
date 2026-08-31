@@ -73,9 +73,12 @@ const CARDS = [
 ---
 
 <section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  {/* No data-rv here: the stack section is ~4 viewports tall, so the page
+      script's 25%-visible threshold never fires and armed chunks would stay
+      invisible forever. The header renders static. */}
   <header class="head">
-    <h2 id="approach-title" data-rv style="--rvi: 0">Our approach</h2>
-    <p class="frame" data-rv style="--rvi: 1">
+    <h2 id="approach-title">Our approach</h2>
+    <p class="frame">
       STAND uses entrepreneurship as the vehicle. These are the life skills
       we&rsquo;re actually building.
     </p>
