@@ -1,0 +1,106 @@
+---
+// Testimonials — PROTO B "ledger": the About-B winner's grammar carried to
+// the quote section. One red-ruled row per family — the quote runs big in
+// Editorial New Light, the byline signs off in caps sans at the row's foot.
+// Quiet, typographic, all black on cream. Quotes are FPO — see ./quotes.ts.
+import { QUOTES } from './quotes';
+---
+
+<section class="fc-testimonials-b" id="testimonials" aria-labelledby="testimonials-b-title">
+  <h2 id="testimonials-b-title" data-rv style="--rvi: 0">What families are saying</h2>
+
+  <ul class="ledger">
+    {
+      QUOTES.map((q, i) => (
+        <li class="row" data-rv style={`--rvi: ${i + 1}`}>
+          <blockquote>
+            <p class="quote">&ldquo;{q.quote}&rdquo;</p>
+            <footer class="byline">{q.byline}</footer>
+          </blockquote>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-testimonials-b {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(72px, 8vw, 128px);
+  }
+
+  h2 {
+    margin: 0 0 clamp(36px, 4vw, 60px);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5.2vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    text-align: center;
+  }
+
+  /* Red-ruled ledger — the container opens with a rule, each row closes with
+     one (same single-rule discipline as the About checker). */
+  .ledger {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--stand-red);
+  }
+
+  .row {
+    border-bottom: 1px solid var(--stand-red);
+  }
+
+  .row blockquote {
+    margin: 0;
+    padding: clamp(28px, 3.4vw, 52px) 0;
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
+    gap: clamp(20px, 3vw, 48px);
+  }
+
+  .quote {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(24px, 2.7vw, 40px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+    /* Hang the opening quote so the serif column keeps a flush left edge. */
+    text-indent: -0.42ch;
+  }
+
+  .byline {
+    align-self: end;
+    justify-self: end;
+    text-align: right;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(11px, 1vw, 13px);
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .fc-testimonials-b {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .row blockquote {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .byline {
+      justify-self: start;
+      text-align: left;
+    }
+  }
+</style>

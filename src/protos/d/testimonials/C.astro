@@ -1,0 +1,201 @@
+---
+// Testimonials — PROTO C "stage": a full-bleed mustard band between cream
+// Location and the green kid collage — a new color beat for the page. One
+// giant Editorial New quote holds the stage at a time; the long ExtraBio
+// arrows walk between them. No headline — the quote announces itself.
+// Quotes are FPO — see ./quotes.ts.
+import { QUOTES } from './quotes';
+---
+
+<section class="fc-testimonials-c" id="testimonials" aria-labelledby="testimonials-c-title">
+  <h2 id="testimonials-c-title" class="visually-hidden">What families are saying</h2>
+
+  <div class="stage" data-rv style="--rvi: 0">
+    <button class="nav prev" aria-label="Previous quote">
+      <svg
+        viewBox="0 0 64 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="52" y1="8" x2="12" y2="8"></line>
+        <polyline points="20,3 12,8 20,13"></polyline>
+      </svg>
+    </button>
+
+    <div class="slides" aria-live="polite">
+      {
+        QUOTES.map((q, i) => (
+          <blockquote class="slide" data-active={String(i === 0)} aria-hidden={String(i !== 0)}>
+            <p class="quote">&ldquo;{q.quote}&rdquo;</p>
+            <footer class="byline">{q.byline}</footer>
+          </blockquote>
+        ))
+      }
+    </div>
+
+    <button class="nav next" aria-label="Next quote">
+      <svg
+        viewBox="0 0 64 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <line x1="12" y1="8" x2="52" y2="8"></line>
+        <polyline points="44,3 52,8 44,13"></polyline>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<script>
+  // One quote on stage at a time. All slides share a grid cell, so the
+  // tallest quote rules the stage height and the band never reflows on swap.
+  document.querySelectorAll<HTMLElement>('.fc-testimonials-c').forEach((sec) => {
+    const slides = Array.from(sec.querySelectorAll<HTMLElement>('.slide'));
+    let cur = 0;
+
+    const show = (i: number) => {
+      cur = (i + slides.length) % slides.length;
+      slides.forEach((s, j) => {
+        s.dataset.active = String(j === cur);
+        s.setAttribute('aria-hidden', String(j !== cur));
+      });
+    };
+
+    sec.querySelector('.prev')?.addEventListener('click', () => show(cur - 1));
+    sec.querySelector('.next')?.addEventListener('click', () => show(cur + 1));
+  });
+</script>
+
+<style>
+  .fc-testimonials-c {
+    background: var(--stand-mustard);
+    color: var(--stand-black);
+    padding: clamp(88px, 10vw, 148px) 48px;
+  }
+
+  .stage {
+    max-width: 1132px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-areas: 'prev slides next';
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: clamp(24px, 3.5vw, 64px);
+  }
+
+  /* All slides stack in one cell; only the active one is visible. The swap
+     is a crossfade with a small rise — the section's one authored moment. */
+  .slides {
+    grid-area: slides;
+    display: grid;
+  }
+
+  .slide {
+    grid-area: 1 / 1;
+    margin: 0;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.45s;
+  }
+
+  .slide[data-active='true'] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .quote {
+    margin: 0 auto;
+    max-width: 26ch;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(26px, 3.2vw, 48px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .byline {
+    margin-top: clamp(18px, 2vw, 30px);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nav {
+    color: var(--stand-black);
+    width: clamp(56px, 6vw, 84px);
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .nav.prev {
+    grid-area: prev;
+  }
+
+  .nav.next {
+    grid-area: next;
+  }
+
+  .nav:hover {
+    transform: translateX(var(--nudge, 4px));
+  }
+
+  .nav.prev {
+    --nudge: -4px;
+  }
+
+  .nav svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide,
+    .nav {
+      transition: none;
+    }
+  }
+
+  /* Mobile: the quote takes the full band width; the arrows drop below it
+     as a centered pair. */
+  @media (max-width: 768px) {
+    .fc-testimonials-c {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .stage {
+      grid-template-areas:
+        'slides slides'
+        'prev next';
+      grid-template-columns: auto auto;
+      justify-content: center;
+      row-gap: 32px;
+      column-gap: 48px;
+    }
+
+    .nav.prev {
+      justify-self: end;
+    }
+
+    .nav.next {
+      justify-self: start;
+    }
+  }
+</style>

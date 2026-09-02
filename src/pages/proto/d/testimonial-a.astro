@@ -1,0 +1,100 @@
+---
+// Testimonial lab — PROTO A "paper wall" in full homepage context.
+// Same page as /proto/d with the testimonial section slotted after Location
+// (Sep 2 review decision), so the new beat is judged between cream Location
+// and the green kid collage.
+import Layout from '@/layouts/Layout.astro';
+import VideoHero from '@/protos/d/founders/VideoHero.astro';
+import NewSpace from '@/protos/d/founders/NewSpace.astro';
+import Location from '@/protos/d/founders/Location.astro';
+import KidMoment from '@/protos/d/founders/KidMoment.astro';
+import WalkAway from '@/protos/d/founders/WalkAway.astro';
+import Faq from '@/protos/d/founders/Faq.astro';
+import Closing from '@/protos/d/founders/Closing.astro';
+import Marquee from '@/protos/d/Marquee.astro';
+import TestimonialsA from '@/protos/d/testimonials/A.astro';
+---
+
+<Layout
+  noindex
+  title="Proto — Testimonials A (paper wall)"
+  description="An 8-week in-person program in LA where kids 8–13 take an idea and build it into a real business — a brand, a product, a plan, and a pitch night. The modern day lemonade stand."
+>
+  <main class="founders-page">
+    <VideoHero />
+    <NewSpace />
+    <Marquee />
+    <KidMoment />
+    <Location />
+    <TestimonialsA />
+    <WalkAway />
+    <Faq />
+    <Closing />
+  </main>
+</Layout>
+
+<style is:global>
+  /* Same shared chunk-reveal recipe as /proto/d. */
+  .founders-page [id] {
+    scroll-margin-top: var(--space-4);
+  }
+
+  .rv-ready [data-rv] {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--rvi, 0) * 180ms);
+  }
+
+  .rv-shown [data-rv] {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv-ready [data-rv] {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Buttery scroll — same Lenis setup as /proto/d.
+  import Lenis from 'lenis';
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      anchors: true,
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }
+
+  // Arm the shared chunk-reveals.
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.founders-page section').forEach((sec) => {
+      if (!sec.querySelector('[data-rv]')) return;
+      sec.classList.add('rv-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            sec.classList.add('rv-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(sec);
+    });
+  }
+</script>

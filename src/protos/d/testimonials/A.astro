@@ -1,0 +1,173 @@
+---
+// Testimonials — PROTO A "paper wall": the three hand-cut paper scraps
+// (Faye's exported rectangles — real assets, not CSS-drawn shapes) pinned in
+// a row like the sticky-note wall from the HR1 shoot. Each scrap hangs at
+// its own height with a barely-there tilt; the cut edges do the talking.
+// Quotes are FPO — see ./quotes.ts.
+import { QUOTES } from './quotes';
+
+// Per-scrap pin: vertical stagger + subtle tilt. The reveal transform lives
+// on the <li> (data-rv), the pin transform on the inner .pin — the shared
+// rv recipe ends at `transform: none`, so the two must not share an element.
+const PIN = [
+  { y: '0px', r: '-1.2deg' },
+  { y: '36px', r: '0.9deg' },
+  { y: '12px', r: '-0.5deg' },
+];
+---
+
+<section class="fc-testimonials-a" id="testimonials" aria-labelledby="testimonials-a-title">
+  <h2 id="testimonials-a-title" data-rv style="--rvi: 0">What families are saying</h2>
+
+  <ul class="wall">
+    {
+      QUOTES.map((q, i) => (
+        <li
+          class="scrap"
+          data-rv
+          style={`--rvi: ${i + 1}; --y: ${PIN[i].y}; --r: ${PIN[i].r}; --ar: ${q.w} / ${q.h}`}
+        >
+          <div class="pin">
+            <picture class="paper" aria-hidden="true">
+              <source srcset={`/brand/${q.bg}.webp`} type="image/webp" />
+              <img src={`/brand/${q.bg}.png`} alt="" loading="lazy" width={q.w} height={q.h} />
+            </picture>
+            <blockquote>
+              <p class="quote">&ldquo;{q.quote}&rdquo;</p>
+              <footer class="byline">{q.byline}</footer>
+            </blockquote>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-testimonials-a {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    /* Extra bottom room so the staggered scraps never crowd the green band. */
+    padding: clamp(56px, 6.1vw, 88px) 48px clamp(80px, 9vw, 140px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5.2vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    text-align: center;
+  }
+
+  .wall {
+    list-style: none;
+    margin: clamp(40px, 4.5vw, 68px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 2.6vw, 40px);
+    align-items: start;
+  }
+
+  /* The pin carries the hang: stagger + tilt, and a soft offset shadow so
+     the scraps sit just off the wall. Hover lifts the whole scrap. */
+  .pin {
+    position: relative;
+    aspect-ratio: var(--ar);
+    transform: translateY(var(--y)) rotate(var(--r));
+    filter: drop-shadow(0 12px 20px rgb(0 0 0 / 0.1));
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .scrap:hover .pin {
+    transform: translateY(calc(var(--y) - 8px)) rotate(var(--r));
+  }
+
+  .paper,
+  .paper img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  /* Text stays inside the scrap's slanted edges — generous inset padding
+     rather than trying to trace the cut. */
+  blockquote {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 13% 14%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .quote {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(13px, 1.2vw, 17px);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+
+  .byline {
+    margin-top: clamp(10px, 1.3vw, 18px);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(13px, 1.2vw, 17px);
+    letter-spacing: -0.01em;
+  }
+
+  /* Mobile: the wall becomes a swipeable row — one scrap per swipe, edges
+     of the neighbors peeking so the row invites the thumb. */
+  @media (max-width: 768px) {
+    .fc-testimonials-a {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .wall {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 16px;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 8px 20px 24px;
+      scrollbar-width: none;
+    }
+
+    .wall::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrap {
+      flex: 0 0 min(80vw, 360px);
+      scroll-snap-align: center;
+    }
+
+    /* No hang on mobile — the swipe row keeps a level baseline. */
+    .pin {
+      transform: rotate(var(--r));
+    }
+
+    .quote {
+      font-size: 14px;
+    }
+
+    .byline {
+      font-size: 14px;
+    }
+  }
+</style>
