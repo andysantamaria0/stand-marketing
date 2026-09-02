@@ -1,8 +1,9 @@
 ---
-// Our approach — ABOUT B (WINNER, Sep 1 review): tall 2-COLUMN table, one
-// value per row beside a photo, sides alternating (T P / P T / T P / P T),
-// and the last value spans the full row — no empty cell ending the grid
-// (Sep 1 note). All four HR1 photos; flush shared red rules.
+// Our approach — ABOUT B (WINNER, Sep 1 review): tall 2×5 table, one value
+// per row beside a photo, sides alternating the whole way down
+// (T P / P T / T P / P T / T P) — five photos, complete checker, no empty
+// cell (Sep 1 note) and no full-width compromise row. Flush shared red
+// rules.
 //
 // Copy: the LOCKED values from "Copy Updates_Sept 2026" (Celestine's doc,
 // swapped in Sep 1) — name + body + skill tags, verbatim.
@@ -62,6 +63,13 @@ const CELLS = [
     name: 'Own it',
     body: 'This is your thing. You learn to see what needs to happen next, take initiative, follow through, and be proud of what you’ve made.',
     skills: 'Initiative · Accountability · Follow-through',
+  },
+  {
+    // Fifth photo (JY, Sep 2) — completes the checker, no full-width row.
+    kind: 'photo',
+    src: '/brand/about-laptop-couch.jpg',
+    alt: 'A kid on the couch working on her laptop, post-its at her side',
+    pos: '50% 25%',
   },
 ];
 ---
@@ -148,15 +156,9 @@ const CELLS = [
     border-right: 0;
   }
 
-  /* Bottom row — the container's edge is its rule. Own It (9th and last
-     cell) spans the full row so the grid never ends on a hole. */
+  /* Bottom row — the container's edge is its rule. */
   .cell:nth-child(n + 9) {
     border-bottom: 0;
-  }
-
-  .cell:last-child {
-    grid-column: 1 / -1;
-    border-right: 0;
   }
 
   .value {
