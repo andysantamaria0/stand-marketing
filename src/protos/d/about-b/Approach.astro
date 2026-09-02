@@ -14,10 +14,13 @@ const CELLS = [
     skills: 'Communication · Self-confidence',
   },
   {
-    // JY's Aug 31 photo drop (HR1 shoot, resized to 1600px JPEGs).
+    // JY's Aug 31 photo drop (HR1 shoot, resized to 1600px JPEGs). Each
+    // photo carries its own cover-crop focus (--pos) so faces survive the
+    // short wide cells (Sep 2 note: baker's face was cut off).
     kind: 'photo',
     src: '/brand/about-baker.jpg',
     alt: 'A kid baker presenting her flour power brand card',
+    pos: '50% 14%',
   },
   {
     kind: 'photo',
@@ -40,11 +43,13 @@ const CELLS = [
     kind: 'photo',
     src: '/brand/about-sticker-toss.jpg',
     alt: 'Two kids laughing and tossing stickers in the air',
+    pos: '50% 38%',
   },
   {
     kind: 'photo',
     src: '/brand/about-sticker-cheer.jpg',
     alt: 'Two kids cheering with their arms up as stickers rain down',
+    pos: '50% 32%',
   },
   {
     kind: 'value',
@@ -80,7 +85,7 @@ const CELLS = [
             <p class="skills">{c.skills}</p>
           </li>
         ) : (
-          <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}`}>
+          <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}; --pos: ${c.pos ?? '50% 50%'}`}>
             <img src={c.src} alt={c.alt} loading="lazy" />
           </li>
         ),
@@ -208,6 +213,7 @@ const CELLS = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: var(--pos, 50% 50%);
   }
 
   @media (max-width: 768px) {
