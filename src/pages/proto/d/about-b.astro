@@ -28,21 +28,19 @@ import Marquee from '@/protos/d/Marquee.astro';
       ]}
     />
     <Approach />
-    {/* Credential ticker — introduces the founder feature below; same
-        grammar as the red strip. The track moves one copy-width per loop,
-        so duration scales with the wide copy to keep the red marquee's
-        30s px/s pace. */}
+    {/* Values ticker (Sep 1 review note: this page's values, not Lauren's
+        credentials) — same grammar as the red strip. The track moves one
+        copy-width per loop, so duration scales with the copy width to keep
+        the red marquee's 30s px/s pace. */}
     <Marquee
       bg="var(--stand-green)"
-      duration={110}
+      duration={70}
       items={[
-        { text: 'Lauren — Founder & CEO of STAND', font: 'sans' },
-        { text: 'co-founded The Wing', font: 'serif' },
-        { text: 'ClassPass', font: 'sans' },
-        { text: 'SLT', font: 'serif' },
-        { text: 'Forbes 30 Under 30', font: 'sans' },
-        { text: 'Fast Company 100 Most Creative', font: 'serif' },
-        { text: 'Goldman Sachs 100 Most Intriguing', font: 'sans' },
+        { text: 'Say what you think', font: 'sans' },
+        { text: 'Make something real', font: 'serif' },
+        { text: 'Figure it out', font: 'sans' },
+        { text: 'Build with other people', font: 'serif' },
+        { text: 'Own it', font: 'sans' },
       ]}
     />
     <MeetLauren />

@@ -1,20 +1,17 @@
 ---
-// Our approach — ABOUT B: same content as accepted A, reshaped to a tall
-// 2-COLUMN × 5-ROW table (JY, Aug 31): one value per row beside a photo,
-// sides alternating (T P / P T / T P / P T / T _). All four HR1 photos;
-// the tenth cell is an empty ruled cream cell. Flush shared red rules as
-// in A.
+// Our approach — ABOUT B (WINNER, Sep 1 review): tall 2-COLUMN table, one
+// value per row beside a photo, sides alternating (T P / P T / T P / P T),
+// and the last value spans the full row — no empty cell ending the grid
+// (Sep 1 note). All four HR1 photos; flush shared red rules.
+//
+// Copy: the LOCKED values from "Copy Updates_Sept 2026" (Celestine's doc,
+// swapped in Sep 1) — name + body + skill tags, verbatim.
 const CELLS = [
   {
     kind: 'value',
-    n: '01',
-    name: 'Take ownership',
-    dek: 'Learn to take an idea and make it happen.',
-    body: [
-      'At STAND, kids aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
-      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
-    ],
-    kicker: 'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+    name: 'Say what you think',
+    body: 'You have ideas, and a point of view. At STAND, you learn to trust your thinking, put it into your own words, and share it with confidence.',
+    skills: 'Communication · Self-confidence',
   },
   {
     // JY's Aug 31 photo drop (HR1 shoot, resized to 1600px JPEGs).
@@ -29,26 +26,15 @@ const CELLS = [
   },
   {
     kind: 'value',
-    n: '02',
-    name: 'Communicate confidently',
-    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
-    body: [
-      'Kids practice talking about what they think, what they’re making, and why it matters.',
-      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Present their work. Stand in front of a room and share what they’ve made.',
-    ],
-    kicker:
-      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+    name: 'Make something real',
+    body: 'You start with an idea in your head and turn it into something only you could make. You create with your hands, express your own style, and use whatever tools help bring it to life.',
+    skills: 'Creativity · Self-expression',
   },
   {
     kind: 'value',
-    n: '03',
-    name: 'Express yourself creatively',
-    dek: 'Develop your own ideas, taste, and point of view.',
-    body: [
-      'Kids get to decide what they like, what they care about, how something should look, what they want to make, and what they want to put into the world.',
-      'They draw. Build. Write. Design. Experiment.',
-    ],
-    kicker: 'They develop a point of view and the confidence to turn it into something real.',
+    name: 'Figure it out',
+    body: 'Things break. Plans change. You make decisions, solve problems, and try another way… until you find one that works.',
+    skills: 'Problem-solving · Resourcefulness · Resilience',
   },
   {
     kind: 'photo',
@@ -61,34 +47,16 @@ const CELLS = [
     alt: 'Two kids cheering with their arms up as stickers rain down',
   },
   {
-    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
-    // conceptual direction, not final copy.
     kind: 'value',
-    n: '04',
-    name: 'Human first',
-    dek: 'Start analog, then bring in the right digital tools.',
-    body: [
-      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
-      'Then kids use technology and AI where it makes the work stronger.',
-    ],
-    kicker:
-      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+    name: 'Build with other people',
+    body: 'The best ideas get better when other people are part of them. You learn to listen, consider different perspectives, ask for feedback, and work alongside other kids to make it great.',
+    skills: 'Collaboration · Empathy · Teamwork',
   },
   {
     kind: 'value',
-    n: '05',
-    name: 'Problem-solve',
-    dek: 'Learn to make decisions, get unstuck, and keep going.',
-    body: [
-      'Building something real rarely goes exactly according to plan.',
-      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
-    ],
-    kicker:
-      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
-  },
-  {
-    // Tenth cell — empty ruled cream, closes the checker.
-    kind: 'empty',
+    name: 'Own it',
+    body: 'This is your thing. You learn to see what needs to happen next, take initiative, follow through, and be proud of what you’ve made.',
+    skills: 'Initiative · Accountability · Follow-through',
   },
 ];
 ---
@@ -108,16 +76,13 @@ const CELLS = [
         c.kind === 'value' ? (
           <li class="cell value" data-rv style={`--rvi: ${(i % 2) + 2}`}>
             <h3>{c.name}</h3>
-            <p class="dek">{c.dek}</p>
-            {c.body.map((p) => <p class="body">{p}</p>)}
-            <p class="kicker">{c.kicker}</p>
+            <p class="body">{c.body}</p>
+            <p class="skills">{c.skills}</p>
           </li>
-        ) : c.kind === 'photo' ? (
+        ) : (
           <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}`}>
             <img src={c.src} alt={c.alt} loading="lazy" />
           </li>
-        ) : (
-          <li class="cell empty" aria-hidden="true" />
         ),
       )
     }
@@ -134,7 +99,6 @@ const CELLS = [
     padding: clamp(120px, 13vw, 168px) 48px clamp(56px, 6.1vw, 88px);
   }
 
-  /* Reference masthead: centered serif, roman + italic pairing. */
   h2 {
     margin: 0;
     font-family: var(--font-serif);
@@ -179,9 +143,15 @@ const CELLS = [
     border-right: 0;
   }
 
-  /* Bottom row — the container's edge is its rule. */
+  /* Bottom row — the container's edge is its rule. Own It (9th and last
+     cell) spans the full row so the grid never ends on a hole. */
   .cell:nth-child(n + 9) {
     border-bottom: 0;
+  }
+
+  .cell:last-child {
+    grid-column: 1 / -1;
+    border-right: 0;
   }
 
   .value {
@@ -201,17 +171,6 @@ const CELLS = [
     text-wrap: balance;
   }
 
-  .dek {
-    margin: clamp(8px, 0.9vw, 13px) 0 0;
-    font-family: var(--font-serif);
-    font-weight: 300;
-    font-size: clamp(16px, 1.4vw, 20px);
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    color: var(--stand-black);
-    text-wrap: pretty;
-  }
-
   .body {
     margin: clamp(12px, 1.4vw, 20px) 0 0;
     font-family: var(--font-sans);
@@ -219,20 +178,21 @@ const CELLS = [
     font-size: clamp(14px, 1.15vw, 16px);
     line-height: 1.55;
     letter-spacing: -0.005em;
+    max-width: 58ch;
     text-wrap: pretty;
   }
 
-  /* Each value lands on its punchline — the line JY wrote to stick. */
-  /* Last paragraph in Authentic Sans like the body (JY, Aug 31) — still
-     bottom-aligned so every cell lands on its closing line. */
-  .kicker {
+  /* The doc's skill tags close each cell — small meta row, bottom-aligned
+     so every value lands on its skills. */
+  .skills {
     margin: auto 0 0;
-    padding-top: clamp(12px, 1.4vw, 20px);
+    padding-top: clamp(14px, 1.6vw, 22px);
     font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: clamp(14px, 1.15vw, 16px);
-    line-height: 1.55;
-    letter-spacing: -0.005em;
+    font-weight: 700;
+    font-size: clamp(11px, 0.95vw, 13px);
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   /* Photo cells: the image fills whatever height the row's text sets, so
@@ -256,8 +216,7 @@ const CELLS = [
       padding-right: 20px;
     }
 
-    /* One column: DOM order already alternates text / photo the whole way
-       down (T P T / P T P / T A T reads T,P,T,P,T,P,T,A,T stacked). */
+    /* One column: DOM order alternates text / photo the whole way down. */
     .checker {
       grid-template-columns: 1fr;
     }
@@ -266,13 +225,8 @@ const CELLS = [
       aspect-ratio: 4 / 3;
     }
 
-    /* Stacked single-column: an empty bordered box is dead space, not air. */
-    .empty {
-      display: none;
-    }
-
-    /* One column: no vertical seams; every visible cell keeps a bottom rule
-       except the last, which hands off to the container edge. */
+    /* One column: no vertical seams; every cell keeps a bottom rule except
+       the last, which hands off to the container edge. */
     .cell,
     .cell:nth-child(2n),
     .cell:nth-child(n + 9) {

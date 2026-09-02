@@ -1,39 +1,57 @@
 ---
-// Meet Lauren — PROTO D: "magazine feature" (Aug 28 reference: Q-magazine
-// Q&A page — big display name top-left, dek beneath, multi-column article
-// text, and a full-height CUTOUT of the subject standing on the right).
-// Layout follows the reference; styling stays STAND (Editorial New red
-// display, cream page, small dense sans columns). Cutout generated from
-// lauren.webp via the Vision foreground mask (lauren-cutout.webp, alpha).
+// Meet Lauren — magazine feature (big display name, multi-column article,
+// full-height cutout right). Copy: "About Lauren" from Copy Updates_Sept
+// 2026 (Celestine's doc, swapped in Sep 1), verbatim — main story then the
+// career paragraphs. Cutout: TEMPORARY — Lauren is sending a new photo
+// that includes her children; swap it in when it lands.
 ---
 
 <section class="fc-lauren-d" id="meet-lauren" aria-labelledby="lauren-title-d" data-nav-cream>
   <div class="grid">
     <div class="article">
-      <h2 id="lauren-title-d" data-rv style="--rvi: 0">Meet Lauren</h2>
+      <h2 id="lauren-title-d" data-rv style="--rvi: 0">Meet Lauren Kassan</h2>
 
       <p class="dek" data-rv style="--rvi: 1">
-        &ldquo;I didn&rsquo;t go to business school.
-        <em>I just did business.&rdquo;</em>
+        Founder and CEO of STAND
       </p>
 
       <div class="cols" data-rv style="--rvi: 2">
         <p>
-          Lauren is the founder and CEO of STAND. Before this she co-founded
-          The Wing, a groundbreaking membership network built across
-          women-focused workspaces &mdash; a company that redefined what a
-          shared space could mean for the people inside it.
+          Lauren learned by doing. Getting it right, getting it wrong, trying
+          again. That made her more capable than any classroom could have.
         </p>
         <p>
-          Earlier she led business development at ClassPass and was the first
-          employee at the fitness brand SLT, building consumer businesses and
-          community-driven platforms from zero to scale. Along the way
-          she&rsquo;s been named to Forbes 30 Under 30, Fast Company&rsquo;s
-          100 Most Creative People in Business, and Goldman Sachs&rsquo; 100
-          Most Intriguing Entrepreneurs.
+          Now a mother of two, she thinks a lot about what kids need. Schools
+          do a lot well, but the world is changing faster than any classroom
+          can keep up with. She wants to help kids think for themselves, solve
+          real problems, talk without a screen between them, gain financial
+          literacy before it can scare them, and carry an idea all the way to
+          the end.
         </p>
-        {/* Why-STAND-exists paragraph goes here once JY writes it — draft
-            copy was removed on request (Aug 31: only JY-fed copy on page). */}
+        <p>
+          That&rsquo;s what she&rsquo;s building with STAND. Entrepreneurship
+          is the vehicle. Everything they learn along the way is the point.
+        </p>
+        <p>
+          This fall STAND opens its first location in Los Angeles, for kids
+          ages 8-to-13. The modern-day lemonade stand for the next
+          generation.
+        </p>
+        <p>
+          <a href="/enroll" class="signup-line">Sign up here</a> to join us.
+        </p>
+        <p>
+          Lauren has spent her career building things from scratch. She was
+          the first employee at SLT, led business development at ClassPass,
+          and co-founded The Wing. She&rsquo;s been named to Forbes 30 Under
+          30, Fast Company&rsquo;s 100 Most Creative People in Business, and
+          Goldman Sachs&rsquo; 100 Most Intriguing Entrepreneurs.
+        </p>
+        <p>
+          She never went to business school. She just did business. Now
+          she&rsquo;s building the place she wishes existed when she was a
+          kid figuring it out on her own.
+        </p>
       </div>
     </div>
 
@@ -93,6 +111,18 @@
 
   .dek em {
     font-style: normal;
+    color: var(--stand-red);
+  }
+
+  .signup-line {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    font-weight: 700;
+  }
+
+  .signup-line:hover {
     color: var(--stand-red);
   }
 
