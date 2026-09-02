@@ -6,10 +6,11 @@
 // Chunks use the page-level data-rv reveal (armed by the index script).
 import SignupButton from './SignupButton.astro';
 
+// Copy per JY's Sep 1 website copy edit doc.
 const WEEKS = [
   { label: 'Week 1–2', text: 'Find the idea.' },
-  { label: 'Week 3–7', text: 'Build the brand, the product and the plan.' },
-  { label: 'Week 8', text: 'Pitch it live in front of a room.' },
+  { label: 'Week 3–7', text: 'Create it. Design it. Build it.' },
+  { label: 'Week 8', text: 'Share what you made.' },
 ];
 ---
 
@@ -29,8 +30,8 @@ const WEEKS = [
 
     <div class="detail">
       <p class="intro" data-rv style="--rvi: 3">
-        For eight weeks, kids ages 8&ndash;13 take an idea and turn it into a
-        real business.
+        For eight weeks, kids ages 8 to 13 take an idea and build it into
+        something real.
       </p>
 
       <dl class="weeks" data-rv style="--rvi: 4">
@@ -47,12 +48,17 @@ const WEEKS = [
       </dl>
 
       <p class="para" data-rv style="--rvi: 5">
-        Along the way, they&rsquo;ll get hands-on mentorship, build alongside
-        other kids, and use digital tools to help bring their ideas to life.
+        The eight weeks culminate in Pitch Night, where kids get up and
+        present the business they built.
       </p>
 
       <p class="para" data-rv style="--rvi: 6">
-        Because some things you only learn by doing them.
+        Along the way, they get hands-on mentorship and build alongside
+        other kids.
+      </p>
+
+      <p class="para" data-rv style="--rvi: 7">
+        Because some things you only learn by doing.
       </p>
     </div>
   </div>
