@@ -43,16 +43,37 @@ import { QUOTES } from './quotes';
   }
 
   /* Red-ruled ledger — the container opens with a rule, each row closes with
-     one (same single-rule discipline as the About checker). */
+     one. Rules run the full viewport width (JY, Sep 3) — the About-C poster
+     recipe: 100vw pseudos centered under the container; tokens.css's global
+     overflow-x: hidden absorbs the bleed. */
   .ledger {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: 1px solid var(--stand-red);
+    position: relative;
+  }
+
+  .ledger::before,
+  .row::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 1px;
+    background: var(--stand-red);
+  }
+
+  .ledger::before {
+    top: 0;
   }
 
   .row {
-    border-bottom: 1px solid var(--stand-red);
+    position: relative;
+  }
+
+  .row::after {
+    bottom: 0;
   }
 
   .row blockquote {
