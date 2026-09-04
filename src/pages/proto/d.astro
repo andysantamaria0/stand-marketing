@@ -16,6 +16,7 @@ import WalkAway from '@/protos/d/founders/WalkAway.astro';
 import Faq from '@/protos/d/founders/Faq.astro';
 import Closing from '@/protos/d/founders/Closing.astro';
 import Marquee from '@/protos/d/Marquee.astro';
+import Testimonials from '@/protos/d/testimonials/C.astro';
 ---
 
 <Layout
@@ -31,6 +32,10 @@ import Marquee from '@/protos/d/Marquee.astro';
     <Location />
     {/* Meet Lauren + the green credential ticker moved to /proto/d/about
         (Aug 31 review note: About is its own nav page now). */}
+    {/* Testimonials — C "mustard stage" won the Sep 3 review (A/B retired,
+        recover the lab at 55f3b7f). QUOTES ARE STILL FPO — do not promote
+        this section to production until real family quotes land. */}
+    <Testimonials />
     <WalkAway />
     <Faq />
     <Closing />
