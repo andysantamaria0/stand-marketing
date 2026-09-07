@@ -3,7 +3,6 @@
 // Location and the green kid collage — a new color beat for the page. One
 // giant Editorial New quote holds the stage at a time; the long ExtraBio
 // arrows walk between them. No headline — the quote announces itself.
-// Quotes are FPO — see ./quotes.ts.
 import { QUOTES } from './quotes';
 ---
 
@@ -101,6 +100,11 @@ import { QUOTES } from './quotes';
   .slide {
     grid-area: 1 / 1;
     margin: 0;
+    /* Slides share one cell sized to the tallest quote; center each so a short
+       quote sits mid-stage instead of pinned to the top of that cell. */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: center;
     opacity: 0;
     visibility: hidden;
