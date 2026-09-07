@@ -1,6 +1,5 @@
-// FPO testimonial copy — carried verbatim from the Figma-era ExtraBio deck
-// (node 113:244). No real quotes exist yet (first LA cohort is fall 2026);
-// swap for real family quotes before any of these variants is promoted.
+// Real family testimonial copy (received from JY, Sep 7 2026) — replaces the
+// FPO ExtraBio placeholders. Safe to promote.
 export interface Quote {
   bg: 'testimonial-pink' | 'testimonial-mustard' | 'testimonial-yellow';
   /** Intrinsic px of the paper asset — Proto A sizes its scraps by these. */
@@ -16,23 +15,23 @@ export const QUOTES: Quote[] = [
     w: 1024,
     h: 762,
     quote:
-      'Watching her take orders, handle her own money, and stay proud of something she built herself. That’s the stuff you can’t teach in a classroom.',
-    byline: 'Parent of Lily, age 12',
+      'At first I didn’t know what I wanted to make. Then I had an idea, and STAND helped me turn it into an actual business.',
+    byline: 'Ripley, 12',
   },
   {
     bg: 'testimonial-mustard',
     w: 971,
     h: 697,
     quote:
-      'I thought starting a business would be easy. Then I had to make decisions, set prices, and keep going when it got hard. STAND helped me figure it out.',
-    byline: 'Ryan, age 10',
+      'Watching my child turn an idea into a real business was so rewarding. STAND helped them become more confident sharing their ideas, working through challenges, and making decisions on their own.',
+    byline: 'Ashley, parent of Myer, 13',
   },
   {
     bg: 'testimonial-yellow',
     w: 957,
     h: 702,
     quote:
-      'He cared about every detail - the name, the logo, the product, the packaging. STAND turned his creativity into something structured.',
-    byline: 'Parent of Leo, 13',
+      'STAND gave my child the confidence to take their ideas seriously and actually do something with them.',
+    byline: 'Brett, parent of Ryan, 10',
   },
 ];
