@@ -1,0 +1,286 @@
+---
+// Our approach — ABOUT E: "the scrolly index". Split editorial scrolly:
+// the five skill names sit pinned on the left like a table of contents,
+// dimmed; the copy scrolls on the right, and whichever value you're
+// reading lights its name up (IO on the blocks, class toggle on the
+// index — no scroll-jacking, and with JS off everything renders full
+// strength and simply scrolls). Names double as anchors: click to ride
+// Lenis to that value. All type black per JY's rule; verbatim copy.
+// Mobile drops the index and shows each name inline above its copy.
+const VALUES = [
+  {
+    name: 'Take ownership',
+    dek: 'Learn to take an idea and make it happen.',
+    body: [
+      'At STAND, kids aren’t following a set of instructions to arrive at the same answer. They’re building something that belongs to them.',
+      'That means deciding what needs to happen next, taking responsibility for getting it done, following through, and knowing when to ask for help.',
+    ],
+    kicker: 'Over time, it’s less “What do I do?” and more “I’ll figure it out.”',
+    photo: { src: '/brand/about-baker.jpg', alt: 'A kid baker presenting her flour power brand card' },
+  },
+  {
+    name: 'Communicate confidently',
+    dek: 'Learn to speak up, explain your ideas, and connect with real people.',
+    body: [
+      'Kids practice talking about what they think, what they’re making, and why it matters.',
+      'They ask questions. Listen. Explain. Give and receive feedback. Talk to customers. Present their work. Stand in front of a room and share what they’ve made.',
+    ],
+    kicker:
+      'In a world where so much communication happens through screens, we want kids to get really good at talking to actual people.',
+    photo: { src: '/brand/about-sticker-cheer.jpg', alt: 'Two kids cheering with their arms up as stickers rain down' },
+  },
+  {
+    name: 'Express yourself creatively',
+    dek: 'Develop your own ideas, taste, and point of view.',
+    body: [
+      'Kids get to decide what they like, what they care about, how something should look, what they want to make, and what they want to put into the world.',
+      'They draw. Build. Write. Design. Experiment.',
+    ],
+    kicker: 'They develop a point of view and the confidence to turn it into something real.',
+    photo: { src: '/brand/about-bead-kit.jpg', alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table' },
+  },
+  {
+    // Working name (JY, Aug 31): "Human first" vs "Technology with purpose" —
+    // conceptual direction, not final copy.
+    name: 'Human first',
+    dek: 'Start analog, then bring in the right digital tools.',
+    body: [
+      'The creative process starts offline: talking, drawing, making, experimenting, researching, and thinking.',
+      'Then kids use technology and AI where it makes the work stronger.',
+    ],
+    kicker:
+      'We want them to know how to use powerful tools without handing the entire creative process over to them.',
+    photo: { src: '/brand/about-sticker-toss.jpg', alt: 'Two kids laughing and tossing stickers in the air' },
+  },
+  {
+    name: 'Problem-solve',
+    dek: 'Learn to make decisions, get unstuck, and keep going.',
+    body: [
+      'Building something real rarely goes exactly according to plan.',
+      'Kids learn to test another approach, gather information, ask for help, make a decision, adjust, and move forward.',
+    ],
+    kicker:
+      'There won’t always be someone telling them the right answer. We want them to develop the judgment and resilience to find their own way through.',
+    photo: null,
+  },
+];
+---
+
+<section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  {/* Static header — same tall-section lesson as D: don't arm reveals the
+      shared 25%-of-section observer can never fire. */}
+  <header class="head">
+    <h2 id="approach-title">Our approach</h2>
+    <p class="frame">
+      STAND uses entrepreneurship as the vehicle. These are the life skills
+      we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <div class="split">
+    <nav class="index" aria-label="The five life skills">
+      {
+        VALUES.map((v, i) => (
+          <a href={`#skill-${i + 1}`} class:list={['idx', i === 0 && 'is-active']}>
+            {v.name}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="reader">
+      {
+        VALUES.map((v, i) => (
+          <article class="block" id={`skill-${i + 1}`} data-idx={i}>
+            <h3>{v.name}</h3>
+            <p class="dek">{v.dek}</p>
+            {v.body.map((p) => (
+              <p class="body">{p}</p>
+            ))}
+            <p class="body kicker">{v.kicker}</p>
+            {v.photo && (
+              <img
+                class="art"
+                src={v.photo.src}
+                alt={v.photo.alt}
+                loading="lazy"
+                width="1067"
+                height="1600"
+              />
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(120px, 13vw, 168px) 48px clamp(56px, 6.1vw, 88px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(36px, 4.4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    text-align: center;
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(32px, 4vw, 64px);
+    margin-top: clamp(40px, 4.4vw, 72px);
+    align-items: start;
+  }
+
+  /* The pinned table of contents: every skill visible at once, the one
+     being read at full strength. */
+  .index {
+    position: sticky;
+    top: clamp(96px, 12vh, 128px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.8vw, 26px);
+  }
+
+  .idx {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(24px, 2.6vw, 40px);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--stand-black);
+    /* Dimmed via opacity so the ink stays black (JY's all-black rule);
+       0.3 keeps large text above the 3:1 floor on cream. */
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    text-wrap: balance;
+  }
+
+  .idx:hover {
+    opacity: 0.65;
+  }
+
+  .idx.is-active {
+    opacity: 1;
+  }
+
+  /* Reading column: one block per value, roomy so only one is "current"
+     at a time. */
+  .block {
+    padding-bottom: clamp(56px, 8vh, 96px);
+  }
+
+  .block + .block {
+    padding-top: clamp(56px, 8vh, 96px);
+    border-top: 1px solid var(--stand-black);
+  }
+
+  /* Desktop: the index carries the names; the inline ones serve mobile. */
+  .block h3 {
+    display: none;
+    margin: 0 0 12px;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .dek {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(20px, 2vw, 30px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  .body {
+    margin: clamp(12px, 1.3vw, 18px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .art {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 52vh;
+    object-fit: cover;
+    object-position: center 30%;
+    margin-top: clamp(20px, 2.4vw, 36px);
+  }
+
+  @media (max-width: 900px) {
+    .fc-abt-approach {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    /* One column: the pinned index goes away, names ride inline. */
+    .split {
+      grid-template-columns: 1fr;
+    }
+
+    .index {
+      display: none;
+    }
+
+    .block h3 {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  // Light the index as you read: one observer over the value blocks; the
+  // block crossing the viewport's upper-middle band becomes active. A
+  // narrow rootMargin band (top 35% / bottom 55%) means exactly one block
+  // qualifies at a time, so no flicker between neighbors.
+  const links = document.querySelectorAll<HTMLElement>('.fc-abt-approach .idx');
+  const blocks = document.querySelectorAll<HTMLElement>('.fc-abt-approach .block');
+
+  if ('IntersectionObserver' in window && links.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const idx = Number((e.target as HTMLElement).dataset.idx);
+          links.forEach((l, i) => l.classList.toggle('is-active', i === idx));
+        }
+      },
+      { rootMargin: '-35% 0px -55% 0px' },
+    );
+    blocks.forEach((b) => io.observe(b));
+  }
+</script>
