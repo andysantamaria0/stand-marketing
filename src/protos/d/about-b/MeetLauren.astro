@@ -1,9 +1,9 @@
 ---
 // Meet Lauren — magazine feature (big display name, multi-column article,
-// full-height cutout right). Copy: "About Lauren" from Copy Updates_Sept
-// 2026 (Celestine's doc, swapped in Sep 1), verbatim — main story then the
-// career paragraphs. Cutout: TEMPORARY — Lauren is sending a new photo
-// that includes her children; swap it in when it lands.
+// cutout right). Copy: first-person bio pasted by JY Sep 9, verbatim.
+// (Replaced the Sep 1 Celestine third-person draft — career credentials and
+// the "Sign up here" enroll link went with it.) Cutout: Lauren with her two
+// boys (landed Sep 9), seated group standing on the section's bottom edge.
 ---
 
 <section class="fc-lauren-d" id="meet-lauren" aria-labelledby="lauren-title-d" data-nav-cream>
@@ -12,56 +12,37 @@
       <h2 id="lauren-title-d" data-rv style="--rvi: 0">Meet Lauren Kassan</h2>
 
       <p class="dek" data-rv style="--rvi: 1">
-        Founder and CEO of STAND
+        Founder of STAND
       </p>
 
       <div class="cols" data-rv style="--rvi: 2">
         <p>
-          Lauren learned by doing. Getting it right, getting it wrong, trying
-          again. That made her more capable than any classroom could have.
+          I&rsquo;ve been an entrepreneur for most of my adult life. I
+          didn&rsquo;t go to business school &mdash; I learned by doing:
+          putting ideas into the world, getting things right, getting things
+          wrong, and trying again. That experience taught me how to solve
+          problems, trust my judgment, and carry an idea from its earliest
+          stages into something real.
         </p>
         <p>
-          Now a mother of two, she thinks a lot about what kids need. Schools
-          do a lot well, but the world is changing faster than any classroom
-          can keep up with. She wants to help kids think for themselves, solve
-          real problems, talk without a screen between them, gain financial
-          literacy before it can scare them, and carry an idea all the way to
-          the end.
-        </p>
-        <p>
-          That&rsquo;s what she&rsquo;s building with STAND. Entrepreneurship
-          is the vehicle. Everything they learn along the way is the point.
-        </p>
-        <p>
-          This fall STAND opens its first location in Los Angeles, for kids
-          ages 8-to-13. The modern-day lemonade stand for the next
-          generation.
-        </p>
-        <p>
-          <a href="/enroll" class="signup-line">Sign up here</a> to join us.
-        </p>
-        <p>
-          Lauren has spent her career building things from scratch. She was
-          the first employee at SLT, led business development at ClassPass,
-          and co-founded The Wing. She&rsquo;s been named to Forbes 30 Under
-          30, Fast Company&rsquo;s 100 Most Creative People in Business, and
-          Goldman Sachs&rsquo; 100 Most Intriguing Entrepreneurs.
-        </p>
-        <p>
-          She never went to business school. She just did business. Now
-          she&rsquo;s building the place she wishes existed when she was a
-          kid figuring it out on her own.
+          Now, as a mother of two, I think deeply about what kids need to
+          thrive in a world changing faster than schools can adapt. I created
+          STAND to help kids think for themselves, solve real problems,
+          understand money, communicate confidently, and use the tools of
+          their generation without losing their own judgment and creativity.
+          Entrepreneurship is the vehicle. The real product is the
+          confidence, resourcefulness, and agency they build along the way.
         </p>
       </div>
     </div>
 
     <img
       class="cutout"
-      src="/brand/lauren-cutout-2.webp"
-      alt="Lauren, founder and CEO of STAND"
+      src="/brand/lauren-family-cutout-3.webp"
+      alt="Lauren, founder and CEO of STAND, with her two sons"
       loading="lazy"
-      width="427"
-      height="749"
+      width="1600"
+      height="1509"
       data-rv
       style="--rvi: 3"
     />
@@ -76,10 +57,11 @@
 
   .grid {
     display: grid;
-    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    /* Family cutout gets a full half — the photo is the feature now. */
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
     gap: clamp(32px, 4vw, 56px);
     align-items: end;
-    max-width: calc(1132px + 2 * 48px);
+    max-width: calc(1440px + 2 * 48px);
     margin: 0 auto;
     padding: clamp(48px, 5.5vw, 88px) 48px 0;
   }
@@ -114,23 +96,11 @@
     color: var(--stand-red);
   }
 
-  .signup-line {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 3px;
-    font-weight: 700;
-  }
-
-  .signup-line:hover {
-    color: var(--stand-red);
-  }
-
   /* Magazine columns: small dense article text. */
   .cols {
     margin-top: clamp(20px, 2.2vw, 32px);
     columns: 2;
-    column-gap: clamp(24px, 2.6vw, 40px);
+    column-gap: clamp(36px, 3.6vw, 64px);
   }
 
   .cols p {
@@ -147,7 +117,7 @@
   /* Full-height cutout standing on the section's bottom edge. */
   .cutout {
     display: block;
-    width: min(100%, 380px);
+    width: min(100%, 656px);
     height: auto;
     justify-self: center;
     align-self: end;
