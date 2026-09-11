@@ -17,17 +17,20 @@ const CELLS = [
   {
     // HR1 shoot, resized to 1600px JPEGs. Each photo carries its own
     // cover-crop focus (--pos) so faces survive the short wide cells.
-    // First cell swapped Sep 2 (JY): baker → team high-five at the
-    // sticky-note wall.
+    // Sep 10 (JY): every value got its named photo — hat portrait here,
+    // jewelry shoot for Make Something Real, poster boys (tight in-file
+    // crop) for Figure It Out, high-five re-centered for Build With
+    // Other People, baker (legs cropped off in-file) for Own It.
     kind: 'photo',
-    src: '/brand/about-highfive.jpg',
-    alt: 'Kids high-fiving over a table of craft supplies, their marketing wall covered in sticky notes behind them',
-    pos: '50% 60%',
+    src: '/brand/about-stand-hat.jpg',
+    alt: 'A kid in a red STAND cap tipping the brim, tote bag over one shoulder',
+    pos: '50% 15%',
   },
   {
     kind: 'photo',
-    src: '/brand/about-bead-kit.jpg',
-    alt: 'A kid assembling bracelets from a bead kit, STAND sticker strip on the table',
+    src: '/brand/about-jewelry-shoot.jpg',
+    alt: 'A girl photographing the beaded bracelets she just made, laid out on the table',
+    pos: '50% 48%',
   },
   {
     kind: 'value',
@@ -43,15 +46,16 @@ const CELLS = [
   },
   {
     kind: 'photo',
-    src: '/brand/about-sticker-toss.jpg',
-    alt: 'Two kids laughing and tossing stickers in the air',
-    pos: '50% 38%',
+    src: '/brand/about-poster-team.jpg',
+    alt: 'Two boys sprawled on the rug working on a poster together, markers out',
+    pos: '50% 35%',
   },
   {
     kind: 'photo',
-    src: '/brand/about-sticker-cheer.jpg',
-    alt: 'Two kids cheering with their arms up as stickers rain down',
-    pos: '50% 42%',
+    // -2 = left edge trimmed 140px so the high-five lands dead center.
+    src: '/brand/about-highfive-2.jpg',
+    alt: 'Kids high-fiving over a table of craft supplies, their marketing wall covered in sticky notes behind them',
+    pos: '50% 55%',
   },
   {
     kind: 'value',
@@ -66,12 +70,11 @@ const CELLS = [
     skills: 'Initiative · Accountability · Follow-through',
   },
   {
-    // Fifth photo — completes the checker, no full-width row. Swapped
-    // Sep 2 (JY): laptop couch → flour power bakers in the kitchen.
+    // Fifth photo — completes the checker, no full-width row.
     kind: 'photo',
-    src: '/brand/about-baking-duo.jpg',
-    alt: 'Two kids baking in the kitchen, laying out cookies and whisking batter for their flour power brand',
-    pos: '50% 45%',
+    src: '/brand/about-box-baker.jpg',
+    alt: 'A girl in her flour power apron packing fresh cookies into a STAND box at the kitchen counter',
+    pos: '50% 68%',
   },
 ];
 ---
