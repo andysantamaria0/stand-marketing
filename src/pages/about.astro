@@ -1,0 +1,110 @@
+---
+// About — promoted from the lab's About B (won the Sep 1 review; photos
+// finalized Sep 10). Our Approach (the life skills, with entrepreneurship
+// as the vehicle) + Who We Are (founder story).
+//
+// Page rhythm: nav → Our approach (cream 2×5 checker, opens the page) →
+// GREEN values ticker → Meet Lauren magazine feature → red closing.
+import Layout from '@/layouts/Layout.astro';
+import Nav from '@/components/founders/Nav.astro';
+import Approach from '@/components/founders/Approach.astro';
+import MeetLauren from '@/components/founders/MeetLauren.astro';
+import Closing from '@/components/founders/Closing.astro';
+import Marquee from '@/components/Marquee.astro';
+---
+
+<Layout
+  title="About — Stand"
+  description="STAND uses entrepreneurship as the vehicle to build real-life skills — and it was founded by Lauren Kassan, who learned business by doing business."
+>
+  <main class="founders-page">
+    <Nav tabs={[{ label: 'About', href: '/about', current: true }]} />
+    <Approach />
+    {/* Values ticker — this page's five values in the red strip's grammar.
+        The track moves one copy-width per loop, so duration scales with the
+        copy width to keep the red marquee's 30s px/s pace. */}
+    <Marquee
+      bg="var(--stand-green)"
+      duration={70}
+      items={[
+        { text: 'Say what you think', font: 'sans' },
+        { text: 'Make something real', font: 'serif' },
+        { text: 'Figure it out', font: 'sans' },
+        { text: 'Build with other people', font: 'serif' },
+        { text: 'Own it', font: 'sans' },
+      ]}
+    />
+    <MeetLauren />
+    <Closing />
+  </main>
+</Layout>
+
+<style is:global>
+  /* Same shared chunk-reveal recipe as the homepage — sections mark chunks
+     with data-rv / --rvi, the script below arms them (.rv-ready) and fires
+     once ~25% visible (.rv-shown). No JS → static render. */
+  .founders-page [id] {
+    scroll-margin-top: var(--space-4);
+  }
+
+  .rv-ready [data-rv] {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(2px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s ease;
+    transition-delay: calc(var(--rvi, 0) * 180ms);
+  }
+
+  .rv-shown [data-rv] {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv-ready [data-rv] {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Buttery scroll — same Lenis setup as the homepage.
+  import Lenis from 'lenis';
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      anchors: true,
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }
+
+  // Arm the shared chunk-reveals. The approach checker sits at the top of
+  // the page, so its reveal fires on load; deeper sections fire as they
+  // enter.
+  if ('IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('.founders-page section').forEach((sec) => {
+      if (!sec.querySelector('[data-rv]')) return;
+      sec.classList.add('rv-ready');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            sec.classList.add('rv-shown');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(sec);
+    });
+  }
+</script>

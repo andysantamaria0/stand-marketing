@@ -1,0 +1,256 @@
+---
+// Our approach — ABOUT B (WINNER, Sep 1 review): tall 2×5 table, one value
+// per row beside a photo, sides alternating the whole way down
+// (T P / P T / T P / P T / T P) — five photos, complete checker, no empty
+// cell (Sep 1 note) and no full-width compromise row. Flush shared red
+// rules.
+//
+// Copy: the LOCKED values from "Copy Updates_Sept 2026" (Celestine's doc,
+// swapped in Sep 1) — name + body + skill tags, verbatim.
+const CELLS = [
+  {
+    kind: 'value',
+    name: 'Say what you think',
+    body: 'You have ideas, and a point of view. At STAND, you learn to trust your thinking, put it into your own words, and share it with confidence.',
+    skills: 'Communication · Self-confidence',
+  },
+  {
+    // HR1 shoot, resized to 1600px JPEGs. Each photo carries its own
+    // cover-crop focus (--pos) so faces survive the short wide cells.
+    // Sep 10 (JY): every value got its named photo — hat portrait here,
+    // jewelry shoot for Make Something Real, poster boys (tight in-file
+    // crop) for Figure It Out, high-five re-centered for Build With
+    // Other People, baker (legs cropped off in-file) for Own It.
+    kind: 'photo',
+    // -2 = wide re-master: hat-to-chest band from the full-res original,
+    // white wall edge-extended both sides so cover renders him ~20%
+    // smaller in the short desktop cell (JY: "zoom out a little").
+    src: '/brand/about-stand-hat-2.jpg',
+    alt: 'A kid in a red STAND cap tipping the brim',
+    pos: '45% 35%',
+  },
+  {
+    kind: 'photo',
+    src: '/brand/about-jewelry-shoot.jpg',
+    alt: 'A girl photographing the beaded bracelets she just made, laid out on the table',
+    pos: '50% 48%',
+  },
+  {
+    kind: 'value',
+    name: 'Make something real',
+    body: 'You start with an idea in your head and turn it into something only you could make. You create with your hands, express your own style, and use whatever tools help bring it to life.',
+    skills: 'Creativity · Self-expression',
+  },
+  {
+    kind: 'value',
+    name: 'Figure it out',
+    body: 'Things break. Plans change. You make decisions, solve problems, and try another way… until you find one that works.',
+    skills: 'Problem-solving · Resourcefulness · Resilience',
+  },
+  {
+    kind: 'photo',
+    src: '/brand/about-poster-team.jpg',
+    alt: 'Two boys sprawled on the rug working on a poster together, markers out',
+    pos: '50% 35%',
+  },
+  {
+    kind: 'photo',
+    // -2 = left edge trimmed 140px so the high-five lands dead center.
+    src: '/brand/about-highfive-2.jpg',
+    alt: 'Kids high-fiving over a table of craft supplies, their marketing wall covered in sticky notes behind them',
+    pos: '50% 55%',
+  },
+  {
+    kind: 'value',
+    name: 'Build with other people',
+    body: 'The best ideas get better when other people are part of them. You learn to listen, consider different perspectives, ask for feedback, and work alongside other kids to make it great.',
+    skills: 'Collaboration · Empathy · Teamwork',
+  },
+  {
+    kind: 'value',
+    name: 'Own it',
+    body: 'This is your thing. You learn to see what needs to happen next, take initiative, follow through, and be proud of what you’ve made.',
+    skills: 'Initiative · Accountability · Follow-through',
+  },
+  {
+    // Fifth photo — completes the checker, no full-width row.
+    kind: 'photo',
+    src: '/brand/about-box-baker.jpg',
+    alt: 'A girl in her flour power apron packing fresh cookies into a STAND box at the kitchen counter',
+    pos: '50% 68%',
+  },
+];
+---
+
+<section class="fc-abt-approach" id="about" aria-labelledby="approach-title" data-nav-cream>
+  <header class="head">
+    <h2 id="approach-title" data-rv style="--rvi: 0">Our approach</h2>
+    <p class="frame" data-rv style="--rvi: 1">
+      STAND uses entrepreneurship as the vehicle. These are the life skills
+      we&rsquo;re actually building.
+    </p>
+  </header>
+
+  <ul class="checker">
+    {
+      CELLS.map((c, i) =>
+        c.kind === 'value' ? (
+          <li class="cell value" data-rv style={`--rvi: ${(i % 2) + 2}`}>
+            <h3>{c.name}</h3>
+            <p class="body">{c.body}</p>
+            <p class="skills">{c.skills}</p>
+          </li>
+        ) : (
+          <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}; --pos: ${c.pos ?? '50% 50%'}`}>
+            <img src={c.src} alt={c.alt} loading="lazy" />
+          </li>
+        ),
+      )
+    }
+  </ul>
+</section>
+
+<style>
+  .fc-abt-approach {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+    max-width: calc(1132px + 2 * 48px);
+    margin: 0 auto;
+    /* Opens the page now — top clears the fixed nav. */
+    padding: clamp(120px, 13vw, 168px) 48px clamp(56px, 6.1vw, 88px);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5.2vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-black);
+    text-align: center;
+  }
+
+  .frame {
+    margin: clamp(14px, 1.6vw, 22px) auto 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 44ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  /* The checkerboard: flush cells sharing single red rules (JY, Aug 31: no
+     gutters). The frame lives on the container; cells draw only their right
+     and bottom edges so shared lines never double to 2px. */
+  .checker {
+    list-style: none;
+    margin: clamp(32px, 3.6vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid var(--stand-red);
+  }
+
+  .cell {
+    border-right: 1px solid var(--stand-red);
+    border-bottom: 1px solid var(--stand-red);
+  }
+
+  .cell:nth-child(2n) {
+    border-right: 0;
+  }
+
+  /* Bottom row — the container's edge is its rule. */
+  .cell:nth-child(n + 9) {
+    border-bottom: 0;
+  }
+
+  .value {
+    display: flex;
+    flex-direction: column;
+    padding: clamp(20px, 2.4vw, 36px);
+  }
+
+  .value h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: clamp(17px, 1.5vw, 22px);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .body {
+    margin: clamp(12px, 1.4vw, 20px) 0 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  /* The doc's skill tags close each cell — Editorial New meta row (JY,
+     Sep 2), bottom-aligned so every value lands on its skills. */
+  .skills {
+    margin: auto 0 0;
+    padding-top: clamp(14px, 1.6vw, 22px);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(15px, 1.3vw, 19px);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* Photo cells: the image fills whatever height the row's text sets, so
+     the checker's rows stay ruled by copy, not crops. */
+  .photo {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos, 50% 50%);
+  }
+
+  @media (max-width: 768px) {
+    .fc-abt-approach {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    /* One column: DOM order alternates text / photo the whole way down. */
+    .checker {
+      grid-template-columns: 1fr;
+    }
+
+    .photo {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* One column: no vertical seams; every cell keeps a bottom rule except
+       the last, which hands off to the container edge. */
+    .cell,
+    .cell:nth-child(2n),
+    .cell:nth-child(n + 9) {
+      border-right: 0;
+      border-bottom: 1px solid var(--stand-red);
+    }
+
+    .cell:last-child {
+      border-bottom: 0;
+    }
+  }
+</style>
