@@ -7,8 +7,9 @@
 // green, photo, pink, red) it stays cream (.is-scrolled, toggled by the
 // script at the bottom).
 // About is a real page now (Sep 10: About B promoted to /about, Location
-// tab dropped from the bar) — so the tabs are a prop: the homepage uses the
-// default, /about passes the same tab back marked current.
+// tab dropped from the bar), and the bar names the landing page too so
+// cross-page wayfinding doesn't hang on the wordmark alone. Tabs are a
+// prop: the homepage uses the default, /about re-marks current.
 interface Tab {
   label: string;
   href: string;
@@ -16,7 +17,10 @@ interface Tab {
 }
 
 const {
-  tabs = [{ label: 'About', href: '/about' }],
+  tabs = [
+    { label: 'Home', href: '/', current: true },
+    { label: 'About', href: '/about' },
+  ],
 } = Astro.props as { tabs?: Tab[] };
 ---
 

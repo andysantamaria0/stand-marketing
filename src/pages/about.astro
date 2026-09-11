@@ -18,7 +18,12 @@ import Marquee from '@/components/Marquee.astro';
   description="STAND uses entrepreneurship as the vehicle to build real-life skills — and it was founded by Lauren Kassan, who learned business by doing business."
 >
   <main class="founders-page">
-    <Nav tabs={[{ label: 'About', href: '/about', current: true }]} />
+    <Nav
+      tabs={[
+        { label: 'Home', href: '/' },
+        { label: 'About', href: '/about', current: true },
+      ]}
+    />
     <Approach />
     {/* Values ticker — this page's five values in the red strip's grammar.
         The track moves one copy-width per loop, so duration scales with the
