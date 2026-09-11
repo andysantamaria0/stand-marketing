@@ -1,0 +1,145 @@
+---
+// Meet Lauren — magazine feature (big display name, multi-column article,
+// cutout right). Copy: first-person bio pasted by JY Sep 9, verbatim.
+// (Replaced the Sep 1 Celestine third-person draft — career credentials and
+// the "Sign up here" enroll link went with it.) Cutout: Lauren with her two
+// boys (landed Sep 9), seated group standing on the section's bottom edge.
+---
+
+<section class="fc-lauren-d" id="meet-lauren" aria-labelledby="lauren-title-d" data-nav-cream>
+  <div class="grid">
+    <div class="article">
+      <h2 id="lauren-title-d" data-rv style="--rvi: 0">Meet Lauren Kassan</h2>
+
+      <p class="dek" data-rv style="--rvi: 1">
+        Founder of STAND
+      </p>
+
+      <div class="cols" data-rv style="--rvi: 2">
+        <p>
+          I&rsquo;ve been an entrepreneur for most of my adult life. I
+          didn&rsquo;t go to business school &mdash; I learned by doing:
+          putting ideas into the world, getting things right, getting things
+          wrong, and trying again. That experience taught me how to solve
+          problems, trust my judgment, and carry an idea from its earliest
+          stages into something real.
+        </p>
+        <p>
+          Now, as a mother of two, I think deeply about what kids need to
+          thrive in a world changing faster than schools can adapt. I created
+          STAND to help kids think for themselves, solve real problems,
+          understand money, communicate confidently, and use the tools of
+          their generation without losing their own judgment and creativity.
+          Entrepreneurship is the vehicle. The real product is the
+          confidence, resourcefulness, and agency they build along the way.
+        </p>
+      </div>
+    </div>
+
+    <img
+      class="cutout"
+      src="/brand/lauren-family-cutout-3.webp"
+      alt="Lauren, founder and CEO of STAND, with her two sons"
+      loading="lazy"
+      width="1600"
+      height="1509"
+      data-rv
+      style="--rvi: 3"
+    />
+  </div>
+</section>
+
+<style>
+  .fc-lauren-d {
+    background: var(--stand-cream);
+    color: var(--stand-black);
+  }
+
+  .grid {
+    display: grid;
+    /* Family cutout gets a full half — the photo is the feature now. */
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    gap: clamp(32px, 4vw, 56px);
+    align-items: end;
+    max-width: calc(1440px + 2 * 48px);
+    margin: 0 auto;
+    padding: clamp(48px, 5.5vw, 88px) 48px 0;
+  }
+
+  .article {
+    padding-bottom: clamp(48px, 5.5vw, 88px);
+  }
+
+  /* The reference's big display name, top-left. */
+  h2 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(48px, 6.4vw, 100px);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--stand-red);
+  }
+
+  .dek {
+    margin: clamp(16px, 1.8vw, 26px) 0 0;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(20px, 2vw, 30px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .dek em {
+    font-style: normal;
+    color: var(--stand-red);
+  }
+
+  /* Magazine columns: small dense article text. */
+  .cols {
+    margin-top: clamp(20px, 2.2vw, 32px);
+    columns: 2;
+    column-gap: clamp(36px, 3.6vw, 64px);
+  }
+
+  .cols p {
+    margin: 0 0 1em;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    /* Same size as the Location week-table rows. */
+    font-size: clamp(15px, 1.4vw, 19px);
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    text-wrap: pretty;
+  }
+
+  /* Full-height cutout standing on the section's bottom edge. */
+  .cutout {
+    display: block;
+    width: min(100%, 656px);
+    height: auto;
+    justify-self: center;
+    align-self: end;
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .article {
+      padding-bottom: 0;
+    }
+
+    .cols {
+      columns: 1;
+    }
+
+    .cutout {
+      width: min(70%, 300px);
+    }
+  }
+</style>
