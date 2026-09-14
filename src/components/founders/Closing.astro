@@ -22,6 +22,14 @@ import SubscribeBar from './SubscribeBar.astro';
   <hr class="rule" aria-hidden="true" />
   <div class="foot" data-rv style="--rvi: 2">
     <a class="email" href="mailto:hello@standkids.com">hello@standkids.com</a>
+    <!-- The only route to /about below 1024px. Nav.astro hides its tab list
+         there and is the site's sole other link to the page, so without this
+         row the About page is live but unreachable on every phone and tablet. -->
+    <nav class="pages" aria-label="Pages">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/faq">FAQ</a>
+    </nav>
     <div class="social">
       <a href="https://www.instagram.com/buildwithstand" aria-label="Instagram">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
@@ -140,6 +148,30 @@ import SubscribeBar from './SubscribeBar.astro';
   }
 
   .email:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Same voice as .email, same 44px targets as .social. */
+  .pages {
+    display: flex;
+    gap: 24px;
+  }
+
+  .pages a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--stand-cream);
+    text-decoration: none;
+    text-underline-offset: 3px;
+  }
+
+  .pages a:hover,
+  .pages a:focus-visible {
+    text-decoration: underline;
     text-decoration-thickness: 2px;
   }
 
