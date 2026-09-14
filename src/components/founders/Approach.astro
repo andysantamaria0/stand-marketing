@@ -26,12 +26,14 @@ const CELLS = [
     // white wall edge-extended both sides so cover renders him ~20%
     // smaller in the short desktop cell (JY: "zoom out a little").
     src: '/brand/about-stand-hat-2.jpg',
+    ar: '1600 / 663',
     alt: 'A kid in a red STAND cap tipping the brim',
     pos: '45% 35%',
   },
   {
     kind: 'photo',
     src: '/brand/about-jewelry-shoot.jpg',
+    ar: '1600 / 1280',
     alt: 'A girl photographing the beaded bracelets she just made, laid out on the table',
     pos: '50% 48%',
   },
@@ -50,6 +52,7 @@ const CELLS = [
   {
     kind: 'photo',
     src: '/brand/about-poster-team.jpg',
+    ar: '1230 / 1590',
     alt: 'Two boys sprawled on the rug working on a poster together, markers out',
     pos: '50% 35%',
   },
@@ -57,6 +60,7 @@ const CELLS = [
     kind: 'photo',
     // -2 = left edge trimmed 140px so the high-five lands dead center.
     src: '/brand/about-highfive-2.jpg',
+    ar: '1460 / 1066',
     alt: 'Kids high-fiving over a table of craft supplies, their marketing wall covered in sticky notes behind them',
     pos: '50% 55%',
   },
@@ -76,6 +80,7 @@ const CELLS = [
     // Fifth photo — completes the checker, no full-width row.
     kind: 'photo',
     src: '/brand/about-box-baker.jpg',
+    ar: '1600 / 1500',
     alt: 'A girl in her flour power apron packing fresh cookies into a STAND box at the kitchen counter',
     pos: '50% 68%',
   },
@@ -101,7 +106,11 @@ const CELLS = [
             <p class="skills">{c.skills}</p>
           </li>
         ) : (
-          <li class="cell photo" data-rv style={`--rvi: ${(i % 2) + 2}; --pos: ${c.pos ?? '50% 50%'}`}>
+          <li
+            class="cell photo"
+            data-rv
+            style={`--rvi: ${(i % 2) + 2}; --pos: ${c.pos ?? '50% 50%'}; --ar: ${c.ar ?? '4 / 3'}`}
+          >
             <img src={c.src} alt={c.alt} loading="lazy" />
           </li>
         ),
@@ -216,6 +225,18 @@ const CELLS = [
     overflow: hidden;
   }
 
+  /* The row used to be as tall as the copy beside it — around 220px against a
+     565px-wide cell, which cropped the near-square shots to roughly half. A
+     16/9 floor lifts the average visible from 55% to 65% (poster team 29% ->
+     43%, high-five 57% -> 77%) while keeping the checker's tight rhythm. The
+     text cells already bottom-align their skills, so the extra height reads
+     as deliberate. */
+  @media (min-width: 769px) {
+    .photo {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
   .photo img {
     position: absolute;
     inset: 0;
@@ -231,13 +252,35 @@ const CELLS = [
       padding-right: 20px;
     }
 
-    /* One column: DOM order alternates text / photo the whole way down. */
     .checker {
       grid-template-columns: 1fr;
     }
 
+    /* One column. The source order is the checker's (T P / P T / T P / P T /
+       T P), so stacking it straight gives photo, photo, text, text — two
+       photos back to back, and three photos sitting after their value while
+       two sit before it. These pairs put every value directly above its own
+       photo. Order must be set on ALL ten: any cell left unset defaults to 0
+       and jumps to the front. */
+    .cell:nth-child(1) { order: 1; }
+    .cell:nth-child(2) { order: 2; }
+    .cell:nth-child(3) { order: 4; }
+    .cell:nth-child(4) { order: 3; }
+    .cell:nth-child(5) { order: 5; }
+    .cell:nth-child(6) { order: 6; }
+    .cell:nth-child(7) { order: 8; }
+    .cell:nth-child(8) { order: 7; }
+    .cell:nth-child(9) { order: 9; }
+    .cell:nth-child(10) { order: 10; }
+
+    /* Each photo keeps its own shape rather than every one being squeezed
+       into 4/3, so nothing is cropped and four of the five get taller
+       (poster team 261px -> 451px). The floor is for the hat band, which is
+       remastered wide for the short desktop cell and would otherwise land as
+       a 145px strip. */
     .photo {
-      aspect-ratio: 4 / 3;
+      aspect-ratio: var(--ar, 4 / 3);
+      min-height: 200px;
     }
 
     /* One column: no vertical seams; every cell keeps a bottom rule except
